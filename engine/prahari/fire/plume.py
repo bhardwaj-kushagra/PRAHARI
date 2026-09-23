@@ -1,6 +1,6 @@
 """Smoke transport (SPEC §5.5). Stub: legacy exponential-directional model (M12, M13, M16). Off: no smoke.
 
-The Gaussian plume (M11, M14, M15) is the optional real upgrade in Phase 3b.
+The Gaussian plume (M11, M14, M15) is the real upgrade, in `fire/gaussian.py` (Phase 3b).
 """
 from __future__ import annotations
 

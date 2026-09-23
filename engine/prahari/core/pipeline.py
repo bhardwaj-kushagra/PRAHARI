@@ -65,7 +65,8 @@ class Simulation:
             s = slot.chain[0]
             card.append({"model": name, "kind": s.kind, "equation": s.equation, "tag": s.tag,
                          "description": s.description, "version": s.version,
-                         "source": cfg["params"].get(name, {}).get("source", "")})
+                         "source": cfg["params"].get(name, {}).get("source", ""),
+                         "notes": s.snapshot()})
         return {"schema": C.CONTRACT_VERSION, "label": "SIMULATION",
                 "scenario": cfg["scenario"]["name"], "description": cfg["scenario"]["description"],
                 "seed": int(cfg["run"]["seed"]), "start": cfg["run"]["start"], "days": float(cfg["run"]["days"]),

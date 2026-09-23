@@ -49,7 +49,7 @@ modules:
   ffmc: real                      # Phase 2, verified against cffdrs
   ignition: real                  # Phase 3a (scripted + Poisson; expected_fires 0 = scripted only)
   growth: stub
-  plume: stub
+  plume: stub                     # legacy M12 (reproduces the report); `real` = Gaussian M11 (Phase 3b, advanced)
   nuisance: real                  # Phase 2
   haze: real                      # Phase 2
   sensor: real                    # Phase 2
@@ -143,8 +143,20 @@ params:
     source: "DER q_ref from M12 target 2.5 su at 50 m (LIT [3]); ASM tau_g, sigma, A_15"
   plume:
     decay_length_m: 40.0          # M12 — L
-    intermittency_sigma: 0.5      # M12 — ε = exp(N(0, σ²) − σ²/2)
-    source: "ASM; tuned to ~50 m downwind detection LIT [3]"
+    intermittency_sigma: 0.5      # M12 — ε = exp(N(0, σ²) − σ²/2); also applied to the Gaussian plume
+    receptor_height_m: 2.5        # M11 — z, trunk mount (LIT [3])
+    source_height_m: 0.5          # M11 — H, plume rise ignored for small fires
+    stability_day: C              # M14 — class by day
+    stability_night: E            # M14 — class at night
+    day_hours: [6.0, 18.0]
+    canopy_alpha: 0.4             # M15 — u_c = α_c u10
+    canopy_floor_ms: 0.5          # M15 — floor
+    upwind_floor: 0.1             # M11/M13 — upwind nodes see ~10% (LIT [3])
+    calibration_target_su: 2.5    # calibrate_q — legacy value 50 m downwind at full growth
+    calibration_distance_m: 50.0
+    calibration_class: C
+    calibration_wind_ms: 1.5      # reference 10 m wind (median of the India card)
+    source: "ASM; L tuned to ~50 m downwind detection LIT [3]; Briggs σ LIT; receptor height and upwind floor LIT [3]; Q calibrated DER"
   sensor:
     baseline_su: 0.0              # stub
     noise_sd_su: 0.23             # stub; SPEC §5 units: quiet residual sd ≈ 0.23 su

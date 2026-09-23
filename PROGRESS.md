@@ -5,8 +5,8 @@
 | 0 | Foundation and replay shell | accepted (2026-09-23) |
 | 1 | World, network and siting | accepted (2026-09-23) |
 | 2 | Weather, fuel moisture and sensor signals | accepted (2026-09-23) |
-| 3a | Fires and plumes, legacy | awaiting review |
-| 3b | Gaussian plume (optional) | not started |
+| 3a | Fires and plumes, legacy | accepted (2026-09-23) |
+| 3b | Gaussian plume (optional) | awaiting review |
 | 4 | Baselines and evaluation harness | not started |
 | 5 | PRAHARI node layer | not started |
 | 6 | PRAHARI edge layer, trace and live mode | not started |
@@ -129,3 +129,29 @@ ignitions, M9, M12, M13, M16) and the map's fire and plume overlay.
 
 **Next step:** review and accept Phase 3a. Then Phase 3b (optional Gaussian plume, M11/M14/M15) or Phase 4 — baselines
 and the evaluation harness (P0 fixed threshold, P1 v1, M44–M46, the first golden numbers).
+
+### 2026-09-23 — Session 5 (Phase 3b)
+
+- Phase 3a accepted by the developer ("good").
+- Built Phase 3b — Gaussian plume: the `plume` module's real implementation (`fire/gaussian.py`) with M11 ground-reflected
+  Gaussian plume, M14 Briggs σ by stability class (C by day, E at night), M15 sub-canopy wind, M16 delay x/u_c, and
+  `calibrate_q()` (Q = 125.94, recorded in the model card as `notes`). The legacy M12 stays the stub and the default
+  (it reproduces the report; M11 is marked advanced), and scenarios opt in with `modules.plume: real`.
+- New scenario and recording `fires_day_gaussian`: the same seed, fires and weather as `fires_day`, only the plume
+  model differs — switching recordings in the dashboard shows real vs stub on the same run. The smoke legend names the
+  running plume model.
+
+**Phase 3b acceptance (all pass, `engine/tests/unit/test_plume_phase3b.py`):**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | Calibrated concentration 50 m downwind equals the legacy value | 2.5 su (class C, full growth, reference wind) |
+| 2 | Crosswind profile Gaussian with the tabulated σ_y | C(y)/C(0) = exp(−y²/2σ_y²) at 0–2 σ_y, within 0.1% |
+| 3 | Switching `plume: real` / `stub` works | both states run with identical fires; a failing Gaussian degrades to the legacy stub and the run completes |
+| — | Risk register, M14, M15 | near-field values finite (< 50 su within 10 m); Briggs σ values; u_c = 0.4·u10 floored at 0.5; night class E stronger; delay x/u_c |
+| — | Full suite, determinism | 110 engine + 20 dashboard tests; recordings byte-identical on rerun |
+
+"Live" switching through the engine server arrives with Phase 6; in replay the two recordings are the switch.
+
+**Next step:** review and accept Phase 3b, then Phase 4 — baselines (P0 fixed threshold M22, P1 v1 M23) and the
+evaluation harness (M44–M46), with the first golden numbers from the report.

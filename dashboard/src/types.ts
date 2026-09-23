@@ -5,6 +5,7 @@ export interface Gateway { id: string; x: number; y: number }
 export interface ModelCardRow {
   model: string; kind: string; equation: string; tag: string;
   description: string; version: string; source: string;
+  notes?: Record<string, unknown>;   // stage snapshot at the start of the run, e.g. calibrated values (DER)
 }
 // World sections (Phase 1, additive; absent in older recordings)
 export interface Interface { kind: "path" | "village" | "road" | "power_line" | string; closed?: boolean; points: [number, number][] }

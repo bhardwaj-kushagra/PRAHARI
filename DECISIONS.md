@@ -126,6 +126,25 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `record/frames.py` (grid encode/decode), `configs/default.yaml`; dashboard `CommandMap.tsx`, `MapLayers.tsx`,
   `MapTools.tsx`, `mapView.ts`, `layers.ts`, `types.ts` (additive), `theme.css`.
 
+## Phase 3b design choices
+
+- **P3b-1. Legacy stays default.** SPEC §5: defaults reproduce the report unless marked advanced, and M11 is advanced;
+  golden runs need M12. So `plume: stub` (legacy) stays the default and scenarios opt in to `plume: real`. The Gaussian
+  model also narrows plumes (σ_y ≈ 5.5 m at 50 m in class C), which changes which nodes see smoke.
+- **P3b-2. Upwind floor (ASM, from LIT [3]).** C = max(M11(x, y), 0.1 · M11 centreline at the same distance d), so
+  upwind and far-crosswind nodes see about 10%; this reproduces the legacy 0.25 su at 50 m upwind.
+- **P3b-3. Source scaling (DER).** The Gaussian source follows the legacy M9 ramp and lognormal Q_max, rescaled so that
+  a legacy-strength source gives the calibrated Q: Q(τ) = Q_cal · q(τ) · e^{−50/L} / 2.5. Calibration is at the
+  reference wind (10 m median 1.5 m/s → u_c 0.6 m/s) in class C; at other winds concentration scales with 1/u_c, as
+  M11 prescribes, whereas the legacy model ignores wind speed except for delay.
+- **P3b-4. Stability by time of day (ASM).** Class C from 06:00 to 18:00, E otherwise (SPEC default "C by day, E at
+  night"); intermittency uses the same mean-one lognormal as M12.
+- **P3b-5. Model-card notes.** Header model-card rows gain `notes` (the stage's snapshot at run start), which records
+  `q_cal` as SPEC §5.5 asks. Additive; the dashboard's model card shows them.
+- **P3b-6. Files from accepted phases touched.** `core/pipeline.py` (model-card `notes`), `stages.py` (import),
+  `fire/plume.py` (docstring only), `configs/default.yaml` (plume parameters; state unchanged); dashboard
+  `ModuleHealth.tsx`, `MapTools.tsx`, `types.ts` (additive).
+
 ## Dependencies beyond CLAUDE.md rule 13
 
 - **Dep-1.** `@vitejs/plugin-react` (dev): standard React support for Vite.

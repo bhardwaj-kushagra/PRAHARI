@@ -9,6 +9,8 @@ export function MapTools() {
   const L = source?.header.layouts;
   if (!source) return null;
   const active = L?.active ?? "grid";
+  const plumeCard = source.header.model_card.find((m) => m.model === "plume");
+  const plumeModel = plumeCard?.equation.startsWith("M11") ? "Gaussian plume (M11)" : "legacy plume (M12)";
   const shown = preview ?? active;
   return (
     <div className="map-tools">
@@ -39,7 +41,7 @@ export function MapTools() {
           <span className="sw-grad" /> low → high (M3, relative)
         </Layer>
         <Layer k="smoke" on={layers.smoke} toggle={toggleLayer} label="Smoke">
-          <span className="sw-smoke" /> 0.05 → 2.5 su (plume model, log scale)
+          <span className="sw-smoke" /> 0.05 → 2.5 su, log scale · {plumeModel}
         </Layer>
         <Layer k="links" on={layers.links} toggle={toggleLayer} label="Radio links">
           {[7, 8, 9, 10, 11, 12].map((sf) => (

@@ -30,6 +30,9 @@ export function ModuleHealth() {
                 <td>
                   <div>{row.description}</div>
                   <div className="muted mono small">{row.equation} · v{row.version}{row.source ? ` · ${row.source}` : ""}</div>
+                  {row.notes && Object.keys(row.notes).length
+                    ? <div className="mono small">{Object.entries(row.notes).map(([k, v]) => `${k} = ${v}`).join(" · ")}</div>
+                    : null}
                   {end?.last_error ? <div className="err small">{end.last_error} (t = {end.degraded_at})</div> : null}
                 </td>
                 <td className="mono">{row.tag}</td>

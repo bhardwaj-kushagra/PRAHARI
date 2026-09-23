@@ -1,0 +1,19 @@
+# fires_day variant (Phase 3b): identical seed, fires and weather; only the plume model changes — the Gaussian plume
+# (M11, M14, M15) instead of the legacy M12. Clean stub signals as in fires_day. Replay switch between the two files
+# shows "plume: real vs stub" on the same run.
+scenario:
+  name: fires_day_gaussian
+  description: "fires_day with the Gaussian plume (M11): same fires, narrower plumes that follow Briggs dispersion"
+modules:
+  plume: real                     # Phase 3b — Gaussian plume instead of the legacy M12
+  sensor: stub
+  nuisance: stub
+  haze: stub
+run:
+  seed: 11
+  days: 1
+params:
+  ignition:
+    expected_fires: 4.0
+    scripted:
+      - {t_min: 840, x: 600, y: 445}
