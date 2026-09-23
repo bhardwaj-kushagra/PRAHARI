@@ -15,6 +15,8 @@ const SignalsPanel = lazy(() => import("./components/SignalsPanel").then((m) => 
 
 const ResultsPanel = lazy(() => import("./components/ResultsPanel").then((m) => ({ default: m.ResultsPanel })));
 
+const NodeInspector = lazy(() => import("./components/NodeInspector").then((m) => ({ default: m.NodeInspector })));
+
 const TABS: [Panel, string][] = [
   ["health", "Health & model card"], ["signals", "Signals"], ["node", "Node"], ["alerts", "Alerts"], ["results", "Results"],
 ];
@@ -81,7 +83,9 @@ export function App() {
             {panel === "health" ? <ModuleHealth /> : panel === "signals"
               ? <Suspense fallback={<p className="muted">Loading charts…</p>}><SignalsPanel /></Suspense>
               : panel === "results" ? <Suspense fallback={<p className="muted">Loading charts…</p>}><ResultsPanel /></Suspense>
-              : panel === "node" ? <NodePanel /> : <AlertsPanel />}
+              : panel === "node" ? (
+                <><NodePanel /><Suspense fallback={<p className="muted">Loading charts…</p>}><NodeInspector /></Suspense></>
+              ) : <AlertsPanel />}
           </div>
         </aside>
       </main>

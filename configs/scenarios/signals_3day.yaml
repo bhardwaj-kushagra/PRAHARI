@@ -1,7 +1,8 @@
 # Signals scenario (Phase 2): three simulated days of realistic sensor streams, no fire.
 # Weather (M5–M7), drift, daily cycles, AR(1) noise, nuisance spikes and one scripted haze episode on day 2.
-# The detection chain is still at its Phase 0 stubs (v1 CUSUM), which floods on correlated signals —
-# the report's P1 result; real detection arrives in Phase 5. Three days keeps the recording light.
+# Phase 2 ran the stub node layer (v1 CUSUM), which floods on correlated signals — the report's P1 result. Since
+# Phase 5 the real node layer (M24–M28) runs here: calibration matures over the three days and the haze episode
+# shows the common-mode burst that the edge layer (SCMR, Phase 6) must reject. Three days keeps the recording light.
 scenario:
   name: signals_3day
   description: "Three days of sensor signals: daily cycles, nuisance spikes and a haze episode (no fire)"

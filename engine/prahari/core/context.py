@@ -18,6 +18,7 @@ class RunContext:
     t: int = 0                       # minutes since start
     tick: int = 0
     landscape: object = None         # Landscape from the setup modules (Phase 3a: ignition needs λ)
+    z_slow: object = None            # latest TTC slow z (N, C), set by the pipeline; M28 common-mode exclusion
 
     @property
     def n_nodes(self) -> int:

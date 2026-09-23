@@ -22,7 +22,7 @@ OUTPUT = {
     "cusum": C.Candidates, "comms": C.Delivered, "srp": C.Prior, "cluster": C.Clusters,
     "scmr": C.Scmr, "fisher": C.Fisher, "learn": C.BayesFactors, "raq": C.Raq,
     "escalate": C.Decision, "energy": C.EnergyState, "satellite": C.SatelliteAlerts,
-    "baseline_p0": C.BaselineAlarms, "baseline_p1": C.BaselineAlarms,
+    "baseline_p0": C.BaselineAlarms, "baseline_p1": C.BaselineAlarms, "baseline_p1t": C.BaselineAlarms,
 }
 # Setup modules run once before the first tick (Phase 1): landscape → siting → links.
 SETUP = {"landscape": C.Landscape, "siting": C.Layout, "links": C.Links}
@@ -105,16 +105,22 @@ class Simulation:
         return env, fuel, fires, src, conc, haze, x
 
     def step_baselines(self, x):
-        """Baseline detectors P0 (M22) and P1 (M23) on the same signals (SPEC §4.5)."""
-        return self.stage("baseline_p0", x), self.stage("baseline_p1", x)
+        """Baseline detectors P0 (M22), P1 (M23) and P1t (M23 with M28 tuning) on the same signals (SPEC §4.5)."""
+        return self.stage("baseline_p0", x), self.stage("baseline_p1", x), self.stage("baseline_p1t", x)
 
-    def tick(self, t: int):
-        env, fuel, fires, src, conc, haze, x = self.step_signals(t)
-        base0, base1 = self.step_baselines(x)
+    def step_node(self, x):
+        """PRAHARI node layer: TTC → QCC → score → CUSUM (shared by `tick` and the headless experiments)."""
         res = self.stage("ttc", x)
+        self.ctx.z_slow = res.z                            # M28 — common-mode exclusion reads the slow z
         pv = self.stage("qcc", res)
         sc = self.stage("score", pv)
         cand = self.stage("cusum", sc)
+        return res, pv, sc, cand
+
+    def tick(self, t: int):
+        env, fuel, fires, src, conc, haze, x = self.step_signals(t)
+        base0, base1, base1t = self.step_baselines(x)
+        res, pv, sc, cand = self.step_node(x)
         dl = self.stage("comms", cand)
         prior = self.stage("srp", (t, env, fuel))
         cl = self.stage("cluster", dl)
@@ -150,6 +156,8 @@ class Simulation:
             events.append({"type": "p0_alarm", "node": int(i)})
         for i, members in base1.alarms:
             events.append({"type": "p1_alarm", "node": int(i), "members": list(members)})
+        for i, members in base1t.alarms:
+            events.append({"type": "p1t_alarm", "node": int(i), "members": list(members)})
         for fid, ta in sat.alert_t:
             if fid not in self._sat_done and ta <= t:
                 self._sat_done.add(fid)
@@ -168,7 +176,8 @@ class Simulation:
                  "prior": {"odds": float(f"{prior.odds:.4g}"), "quorum": int(raq.quorum), "day_type": prior.day_type},
                  "nodes": {"state": states.tolist(), "reading": fr.sig4(x.x[:, 0]), "residual": fr.sig4(res.r[:, 0]),
                            "p": fr.sig4(sc.p_node), "cusum": fr.sig4(cand.G), "health": fr.sig4(sc.c.min(axis=1)),
-                           "soc": fr.sig4(energy.soc), "conc": fr.sig4(conc.c)},
+                           "soc": fr.sig4(energy.soc), "conc": fr.sig4(conc.c),
+                           "baseline": fr.sig4(res.b[:, 0]), "n_cal": [int(v) for v in pv.n_cal]},
                  "cusum_h": float(f"{cand.h:.4g}"),
                  "haze": float(f"{haze.level:.4g}"),
                  "fires": fr.fires_list(src),

@@ -13,9 +13,10 @@ import numpy as np
 
 from prahari.core.pipeline import Simulation
 from prahari.core.rng import make_rngs
+from prahari.eval.node_metrics import NodeObserver, summarise_node
 from prahari.eval.stats import detect, incidents, per_month, wilson
 
-PIPELINE_STAGES = {"P0": "baseline_p0", "P1": "baseline_p1"}
+PIPELINE_STAGES = {"P0": "baseline_p0", "P1": "baseline_p1", "P1t": "baseline_p1t"}
 REFERENCE = Path(__file__).resolve().parents[2] / "tests" / "golden" / "report_reference.json"
 
 
@@ -35,8 +36,9 @@ def protocol_fires(seed: int, ev: dict, xy: np.ndarray, t_total: int) -> tuple[l
     return fires, dry.tolist()
 
 
-def run_pass(cfg: dict, pipelines, scripted=()) -> tuple[Simulation, dict]:
-    """Step signals and baselines for the whole run; return the alarms (t, node, members) per pipeline."""
+def run_pass(cfg: dict, pipelines, scripted=(), observe=None) -> tuple[Simulation, dict]:
+    """Step signals and baselines for the whole run; return the alarms (t, node, members) per pipeline.
+    With `observe`, the node layer is stepped too and `observe(t, res, pv, cand)` is called every tick."""
     cfg = copy.deepcopy(cfg)
     cfg["params"]["ignition"]["scripted"] = [{"t_min": int(t0), "x": float(p[0]), "y": float(p[1])} for t0, p in scripted]
     sim = Simulation(cfg)
@@ -49,18 +51,26 @@ def run_pass(cfg: dict, pipelines, scripted=()) -> tuple[Simulation, dict]:
         for name, stage in want.items():
             out = sim.stage(stage, x)
             alarms[name].extend((t, i, list(members)) for i, members in out.alarms)
+        if observe is not None:
+            res, pv, _, cand = sim.step_node(x)
+            observe(t, res, pv, cand)
     return sim, alarms
 
 
-def run_seed(base_cfg: dict, seed: int, pipelines) -> dict:
+def run_seed(base_cfg: dict, seed: int, pipelines, node_metrics: bool = False) -> dict:
     ev = base_cfg["params"]["evaluation"]
     days = ev["calibration_days"] + ev["tuning_days"] + ev["test_days"]
     test0, t_total = (ev["calibration_days"] + ev["tuning_days"]) * 1440, days * 1440
     cfg = copy.deepcopy(base_cfg)
     cfg["run"]["seed"], cfg["run"]["days"] = seed, days
-    for stage in PIPELINE_STAGES.values():
-        cfg["params"][stage]["start_min"] = test0
-    sim, quiet = run_pass(cfg, pipelines)
+    for stage in [*PIPELINE_STAGES.values(), "cusum"]:
+        cfg["params"][stage]["start_min"] = test0              # the report starts every CUSUM at the test period
+    for stage in ("cusum", "baseline_p1t"):                     # M28 tuning days follow the protocol
+        cfg["params"][stage]["tune_start_min"] = ev["calibration_days"] * 1440
+        cfg["params"][stage]["tune_end_min"] = test0
+    cfg["params"]["qcc"]["cal_days"] = ev["calibration_days"]
+    obs = NodeObserver(test0, t_total, ev["exceed_p"], cfg["params"]["cusum"]["cm_z"]) if node_metrics else None
+    sim, quiet = run_pass(cfg, pipelines, observe=obs)
     xy, dist, R = sim.ctx.xy, sim.ctx.dist, sim.ctx.radius_m
     fires, dry = protocol_fires(seed, ev, xy, t_total)
     _, burn = run_pass(cfg, pipelines, fires)
@@ -76,6 +86,8 @@ def run_seed(base_cfg: dict, seed: int, pipelines) -> dict:
             "alarms_quiet": len(quiet[name]), "latencies_min": lat,
             "detected": sum(v is not None for v in lat), "state": stage.health.state,
         }
+    if obs is not None:
+        out["node"] = obs.summary(sim, ev)
     return out
 
 
@@ -101,17 +113,19 @@ def summarise(per_seed: list, preset: str, cfg: dict) -> dict:
                "spacing_m": cfg["world"]["spacing_m"],
                "days": {"calibration": ev["calibration_days"], "tuning": ev["tuning_days"], "test": ev["test_days"]},
                "pipelines": pipes}
+    if all("node" in s for s in per_seed):
+        summary["node"] = summarise_node([{"seed": s["seed"], **s["node"]} for s in per_seed], ev)
     if REFERENCE.is_file():
         summary["reference"] = json.loads(REFERENCE.read_text(encoding="utf-8"))
     return summary
 
 
-def run_experiment(cfg: dict, preset: str, seeds, pipelines, out_dir: str | Path) -> dict:
+def run_experiment(cfg: dict, preset: str, seeds, pipelines, out_dir: str | Path, node_metrics: bool = False) -> dict:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     per_seed = []
     for seed in seeds:
-        res = run_seed(cfg, int(seed), pipelines)
+        res = run_seed(cfg, int(seed), pipelines, node_metrics)
         (out / f"{preset}_seed{seed}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
         per_seed.append(res)
     summary = summarise(per_seed, preset, cfg)

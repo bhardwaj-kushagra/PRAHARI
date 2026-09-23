@@ -7,6 +7,7 @@ regime: null                      # name of configs/regimes/<name>.yaml, or null
 experiment:                       # `prahari experiment` (Phase 4)
   pipelines: [P0, P1]
   seeds: [11]
+  node_metrics: false            # Phase 5: also step the node layer in the quiet pass (M26/M28 acceptance)
 
 run:
   seed: 11
@@ -58,10 +59,10 @@ modules:
   haze: real                      # Phase 2
   sensor: real                    # Phase 2
   faults: stub
-  ttc: stub
-  qcc: stub
-  score: stub
-  cusum: stub
+  ttc: real                       # Phase 5 — M24 with the freeze cap, M25 fast residual
+  qcc: real                       # Phase 5 — M26 conformal p-values
+  score: stub                     # M27 with one channel and c = 1 is exactly the stub; M29 is advanced
+  cusum: real                     # Phase 5 — M28, replay-tuned h
   comms: stub
   srp: stub
   cluster: stub
@@ -74,6 +75,7 @@ modules:
   satellite: stub
   baseline_p0: real               # Phase 4 — P0 fixed threshold (M22)
   baseline_p1: real               # Phase 4 — P1 v1 as written (M23)
+  baseline_p1t: real              # Phase 5 — P1t, v1 with h replay-tuned by M28
 
 params:
   landscape:
@@ -202,14 +204,37 @@ params:
     slow_tau_min: 720             # M24 — α = 1/720 per minute
     freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3
     initial_sd_su: 0.23
-    source: "ASM; M24 v1 as written"
+    freeze_cap_min: 180           # M24 — resume with a winsorised residual after 180 frozen minutes (real)
+    init_min: 1440                # real: first day sets b and s², then the filter replays it (report simulation)
+    var_floor: 1.0e-4             # real: s² floor at initialisation (report simulation)
+    fast_lag0_min: 60             # M25 — fast residual against the mean of x over t−180 … t−61
+    fast_lag1_min: 180
+    source: "LIT M24/M25 and the report simulation (reference/prahari_simulation.py); ASM stub warm-up"
+  qcc:
+    bins: 6                       # M26 — six 4-hour time-of-day bins
+    cal_days: 14                  # M26 — calibration days (M46 protocol)
+    window: frozen                # frozen = report simulation; sliding = SPEC maturity window (advanced)
+    window_days: 28               # M26 — sliding window maximum
+    source: "LIT M26 and the report simulation; ASM sliding option"
   cusum:
     k: 0.5                        # M23 — reference value on the z scale (stub = v1 CUSUM)
     arl_min: 43200                # M23 — in-control ARL of 30 days
     refractory_min: 30            # M28
     warmup_min: 60                # stub only: CUSUM held at 0 while the TTC baseline warms up
     single_sample_h: 6.9          # off mode: −ln(1e-3)
-    source: "TGT ARL 30 d; ASM k and refractory (report simulation)"
+    k_node: 1.5                   # M28 — real: reference value on the −ln p scale
+    start_min: 180                # real: CUSUM starts once the M25 window is full (experiments: test period)
+    tune_start_min: 20160         # M28 — tuning days 15–28 (M46 protocol: 14 d calibration, 14 d tuning)
+    tune_end_min: 40320
+    target_per_node_30d: 1.0      # M28 — target r: 1 node-local false candidate per node per 30 days
+    h_default: 218.7              # SPEC §10 fallback until tuned: mean tuned h of the report simulation, seeds 11–55
+    h_lo: 0.5                     # M28 — bisection bracket and iterations (report simulation)
+    h_hi: 400.0
+    bisect_iters: 18
+    cm_z: 3.0                     # M28 — common mode: ≥ 25% of nodes with slow z ≥ 3, padded ±60 min
+    cm_frac: 0.25
+    cm_pad_min: 60
+    source: "TGT ARL 30 d and r = 1/30 d; LIT M28 and the report simulation; DER h_default (oracle mean tuned h)"
   cluster:
     window_min: 30                # M30 — W
     source: "ASM; report simulation"
@@ -246,6 +271,28 @@ params:
     quorum: 2                     # M23 — two or more candidates within R
     start_min: 1440
     source: "TGT; M23 v1 as written, parameters as in the report simulation (DER h)"
+  baseline_p1t:
+    init_min: 1440
+    slow_tau_min: 720             # M24
+    freeze_z: 3.0
+    freeze_cap_min: 180           # M24 — with the cap (report simulation's P1t uses the lock-up fix)
+    var_floor: 1.0e-4
+    k: 0.5                        # M23
+    refractory_min: 30
+    window_min: 30
+    quorum: 2
+    start_min: 1440
+    tune_start_min: 20160         # M28 tuning, as for the node CUSUM
+    tune_end_min: 40320
+    target_per_node_30d: 1.0
+    h_default: 400.0              # DER — the report simulation's bisection ends at its 400 cap on seeds 11–55
+    h_lo: 0.5
+    h_hi: 400.0
+    bisect_iters: 18
+    cm_z: 3.0
+    cm_frac: 0.25
+    cm_pad_min: 60
+    source: "LIT SPEC §5.7 P1t = P1 with h tuned by M28; parameters as in the report simulation (DER h_default)"
   evaluation:
     calibration_days: 14          # M46 — test protocol
     tuning_days: 14
@@ -262,7 +309,10 @@ params:
     fire_prob_dry: 0.8            # M46 — probability 0.8 on dry days
     fire_prob_wet: 0.2            # M46 — 0.2 on wet days
     month_days: 30
-    source: "LIT FIRENET–PRAHARI report protocol (M46), as in reference/prahari_simulation.py"
+    exceed_p: 0.01                # Phase 5 acceptance 1 — QCC exceedance at nominal 1% …
+    exceed_target: [0.008, 0.020] # … within 0.8–2.0% on held-out quiet data
+    local_cand_target: [0.5, 1.5] # Phase 5 acceptance 2 — 1 ± 0.5 node-local false candidates per node per 30 d
+    source: "LIT FIRENET–PRAHARI report protocol (M46), as in reference/prahari_simulation.py; TGT SPEC §7 Phase 5 acceptance"
   display:
     elevated_p: 0.01              # node shown as elevated below this p-value
     confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation

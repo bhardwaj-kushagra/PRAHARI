@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { detectionRows, falseAlarmRows, logBounds, type Row, type Summary } from "../results";
+import { detectionRows, falseAlarmRows, logBounds, nodeRows, type Row, type Summary } from "../results";
 import { EChart, type EOption } from "./EChart";
 
 // Grey = baselines (SPEC §6.3); ember is reserved for PRAHARI pipelines (Phase 6+). Report values: hollow, text-2.
@@ -98,6 +98,26 @@ export function ResultsPanel() {
         </tbody>
       </table>
       {summary.reference ? <p className="muted small">Hollow diamonds: {summary.reference.source}</p> : null}
+      {summary.node ? (
+        <>
+          <h2>Node layer <span className="muted small">quiet pass, held-out test days (M26, M28)</span></h2>
+          <table className="results-table" data-testid="node-table">
+            <thead><tr><th></th><th>p ≤ {summary.node.targets.exceed_p} share</th><th>Local false cand. / node / 30 d</th>
+              <th>All cand. / node / 30 d</th><th>Tuned h</th><th>P1t h</th><th>Common-mode time</th></tr></thead>
+            <tbody>
+              {nodeRows(summary.node).map((r) => (
+                <tr key={r.label}><td>{r.label}</td><td className="mono">{r.exceed}</td><td className="mono">{r.local}</td>
+                  <td className="mono">{r.all}</td><td className="mono">{r.h}</td><td className="mono">{r.p1t}</td>
+                  <td className="mono">{r.cm}</td></tr>
+              ))}
+            </tbody>
+          </table>
+          <p className="muted small">
+            Targets are the SPEC §7 Phase 5 acceptance criteria. Local candidates exclude common-mode periods (≥ 25% of
+            nodes with slow z ≥ 3, ±60 min), which the edge layer handles; "(cap)" marks h at the bisection's 400 limit.
+          </p>
+        </>
+      ) : null}
       <p className="chart-foot">
         SIMULATION · seeds {summary.seeds.join(", ")} · {d.calibration} + {d.tuning} + {d.test} simulated days per seed ·
         {" "}{summary.n_nodes} nodes at {summary.spacing_m} m · legacy mode

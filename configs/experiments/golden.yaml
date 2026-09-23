@@ -1,12 +1,14 @@
 # Golden preset (SPEC §9.3): legacy mode — M9 source, M12 plume, M17 linear, report signal model — on the
 # report's 100-node grid at 70 m, seeds 11–55, and the M46 protocol (14 d calibration, 14 d tuning, 30 d test).
-# Detection chain stages are not stepped by the headless harness; only signals and the baselines are.
+# The headless harness steps the signals, the baselines (P0, P1, P1t) and, with node_metrics, the node layer
+# (TTC → QCC → score → CUSUM) in the quiet pass; the edge layer is not stepped until Phase 6.
 scenario:
   name: golden_legacy
-  description: "Legacy-mode reproduction of the report's baseline false-alarm rates (P0, P1)"
+  description: "Legacy-mode reproduction of the report's baseline false-alarm rates (P0, P1, P1t) and node-layer calibration"
 experiment:
-  pipelines: [P0, P1]
+  pipelines: [P0, P1, P1t]
   seeds: [11, 22, 33, 44, 55]
+  node_metrics: true
 modules:
   ignition: stub                  # scripted by the protocol in the fire pass
   growth: stub                    # M9 legacy

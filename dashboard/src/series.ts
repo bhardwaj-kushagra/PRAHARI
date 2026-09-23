@@ -68,3 +68,42 @@ export function minuteLabel(t: number): string {
   const m = Math.floor(t % 1440);
   return `d${d} ${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 }
+
+// -- Phase 5: node inspector series (SPEC §6.2 view 2) ------------------------------------------------
+export type NodeKey = "reading" | "residual" | "p" | "cusum" | "health" | "baseline";
+
+/** One recorded per-node field over time; frames that lack the field (older recordings) are skipped. */
+export function nodeField(frames: Frame[], key: NodeKey, node: number): Series {
+  const t: number[] = [];
+  const v: number[] = [];
+  for (const f of frames) {
+    const arr = f.nodes[key];
+    if (arr && arr[node] !== undefined) { t.push(f.t); v.push(arr[node]); }
+  }
+  return { t, v };
+}
+
+/** M26 floor p_min = 1/(n+1) of the node's calibration set at each frame. */
+export function floorSeries(frames: Frame[], node: number): Series {
+  const t: number[] = [];
+  const v: number[] = [];
+  for (const f of frames) {
+    const n = f.nodes.n_cal?.[node];
+    if (n !== undefined) { t.push(f.t); v.push(1 / (n + 1)); }
+  }
+  return { t, v };
+}
+
+/** CUSUM threshold h in use at each frame (M28: h_default until the replay tuning completes). */
+export function hSeries(frames: Frame[]): Series {
+  return { t: frames.map((f) => f.t), v: frames.map((f) => f.cusum_h) };
+}
+
+/** Candidate events of one node as [t, G at the crossing] (every event tick is recorded). */
+export function candidateMarks(frames: Frame[], node: number): [number, number][] {
+  const out: [number, number][] = [];
+  for (const f of frames) {
+    if (f.events.some((e) => e.type === "candidate" && e.node === node)) out.push([f.t, f.nodes.cusum[node]]);
+  }
+  return out;
+}

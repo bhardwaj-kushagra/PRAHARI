@@ -9,6 +9,9 @@ modules:
   sensor: stub
   nuisance: stub
   haze: stub
+  ttc: stub                       # Phase 5: framework scenarios keep the stub node layer (v1 behaviour)
+  qcc: stub
+  cusum: stub
 run:
   seed: 11
   days: 1

@@ -7,8 +7,8 @@
 | 2 | Weather, fuel moisture and sensor signals | accepted (2026-09-23) |
 | 3a | Fires and plumes, legacy | accepted (2026-09-23) |
 | 3b | Gaussian plume (optional) | accepted (2026-09-23) |
-| 4 | Baselines and evaluation harness | awaiting review |
-| 5 | PRAHARI node layer | not started |
+| 4 | Baselines and evaluation harness | accepted (2026-09-23) |
+| 5 | PRAHARI node layer | awaiting review |
 | 6 | PRAHARI edge layer, trace and live mode | not started |
 | 7 | Experiments and results | not started |
 | 8 | Communications and energy (optional) | not started |
@@ -187,3 +187,46 @@ P1 141.8 ± 2.1 — no detectable difference from the oracle (Welch p 0.58 and 0
 
 **Next step:** review Phase 4. If the P0 explanation is accepted, Phase 5 — the PRAHARI node layer (M24 EWMA with
 the freeze cap, M25–M28 and the P1t tuning), replacing the detection-chain stubs through the registry.
+
+### 2026-09-23 — Session 7 (Phase 5)
+
+- Phase 4 accepted by the developer ("good").
+- Built Phase 5 — the PRAHARI node layer, as real stages beside the untouched stubs:
+  - `ttc` real: M24 slow baseline with the 180-minute freeze cap (winsorised resumption) and M25 fast residual
+    against the lagged 60–180-minute window mean, O(1) per tick.
+  - `qcc` real: M26 conformal p-values per node and 4-hour bin; 14 calibration days, then frozen and searched with
+    one vectorised binary search (optional 28-day sliding window).
+  - `cusum` real: M28 CUSUM of −ln p with k = 1.5; h replay-tuned by bisection on the tuning days with common-mode
+    periods excluded; `h_default` (DER) until tuned.
+  - `baseline_p1t`: P1t, v1 with the capped slow z and h tuned by M28.
+  - Harness: P1t pipeline and node metrics (`experiment.node_metrics`); `results/summary.json` gains a `node` block.
+  - Dashboard: Node Inspector (reading and slow baseline, fast residual, p-value with its floor, CUSUM with h and
+    candidates, health weight) and calibration badge in the Node tab; node-layer table in Results.
+  - New scenario and recording `node_3day` (signals_3day plus a day-3 fire); `signals_3day` now runs the real node
+    layer; framework scenarios keep the stub node layer.
+
+**Phase 5 acceptance (golden seeds 11, 22, 33, 44, 55; details in `DECISIONS.md` P5-9…P5-11):**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | QCC exceedance on held-out quiet data within 0.8–2.0% at nominal 1% | **pass** — 1.10% (per seed 0.61–1.58%); report simulation 1.54% |
+| 2 | Replay-tuned h gives 1 ± 0.5 node-local false candidates per node per 30 d | **pass** — 0.65 (median 0.70); report simulation 1.70 on the same seeds |
+| 3 | TTC stub reproduces v1's lock-up and daily-cycle leakage | **pass** — stub frozen for days after a +2 su step while the real TTC re-baselines; stub keeps 0.953 of a daily cycle (DER ωτ/√(1+(ωτ)²)), the fast residual 0.52 |
+| — | M24, M25, M26, M28 and P1t against the report simulation on identical inputs | exact agreement |
+| — | M26 reference value (n = 1000 → p_min = 1/1001), exchangeable-data exceedance, sliding window | pass |
+| — | Failing real QCC degrades to its stub; the run completes | pass |
+| — | Step time of the node layer (SPEC §10: < 5 ms) | ttc 0.06 + qcc 0.14 + score 0.05 + cusum 0.06 ms per tick |
+| — | Full suite, determinism | 133 engine passed + golden run separately; 28 dashboard; recordings byte-identical on rerun |
+
+P0 and P1 golden numbers are unchanged from Phase 4. P1t gives 14.4 false incidents per month (11.3–18.1) against the
+report's 18.6 (15.0–22.8); over 20 seeds the engine (17.1) and the report
+simulation (18.3) do not differ detectably (Welch p 0.58), so the 5-seed miss is sampling, as for P0 in Phase 4. One finding is logged, not tuned: after a long haze episode the M28
+common-mode exclusion (slow z ≥ 3 on 25% of nodes) can miss a second network-wide rise, which pushes seed 22's tuned h
+to its cap (P5-10, with a proposal).
+
+**To see it:** `cd dashboard && npm run dev`, choose `node_3day.prs.jsonl.gz`, click node 31 (south-west of the
+fire, which starts on day 3 at 13:00): the Node tab shows the stacked evidence. The Results tab shows the node-layer
+table.
+
+**Next step:** review Phase 5. Then Phase 6 — the PRAHARI edge layer (M30 clustering, M31 SCMR, M32 Fisher, M33
+legacy prior, M34 legacy quorum then the Bayes form, M35 escalation), the evidence trace and live mode.

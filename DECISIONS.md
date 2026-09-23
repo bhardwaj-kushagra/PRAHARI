@@ -205,6 +205,79 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   dashboard `App.tsx`, `CommandMap.tsx`, `MapTools.tsx`, `mapView.ts`, `types.ts` (additive), `layers.ts`,
   `store.ts`, `scripts/sync-recordings.mjs`.
 
+## Phase 5 design choices
+
+- **P5-1. Real node stages beside the stubs.** `ttc_real.py` (M24 with the 180-minute freeze cap and winsorised
+  resumption, M25 fast residual from a ring of cumulative sums), `qcc_real.py` (M26), `cusum_real.py` (M28) and the
+  pure `tuning.py` register as `real` under the existing names; the stub files are unchanged. `score` stays the stub:
+  with one channel and c = 1 it is exactly M27 (S = −ln p); M29 health weights are advanced (Phase 9).
+- **P5-2. Oracle semantics, verified on identical inputs.** Unit tests require exact agreement with the report
+  simulation's `ewma_z(lockup_fix=True)` (from the end of day 1), `fast_resid`, `conformal_p`, `cusum`, `cm_mask`
+  and `tune_h`, and with its P1t path (h, candidates, confirmations). Inherited details: day-1 hindsight
+  initialisation of the slow baseline (as P4-2); a candidate only when the refractory counter is 0 (set to 30 and
+  decremented the same tick); bisection over [0.5, 400] for 18 steps returning the upper bound.
+- **P5-3. QCC calibration (LIT).** Default `window: frozen`: each node's set per 4-hour bin grows over the first 14
+  days, then is frozen, sorted once and searched with one row-offset `searchsorted` per tick (0.14 ms). While a set
+  grows, p is computed against the set so far and the score is then appended (online conformal; the report
+  simulation uses the full 14 days with hindsight, which only changes p during the calibration days — never used
+  for tuning or testing). `window: sliding` (the SPEC's 28-day maturity window) is available as an advanced option
+  (ASM). Scores are the raw fast residual, as in the report. A tick with any missing reading is not learned.
+- **P5-4. Causal common-mode mask.** The report pads its mask ±60 minutes with hindsight; a tick loop tunes at the
+  end of the tuning window, so the 60 minutes after it are not available. Only candidates in the last hour of tuning
+  that precede a common-mode episode starting in the first hour of testing are affected. Evaluation statistics use
+  the full hindsight mask, as the report does.
+- **P5-5. Proposed erratum E-7 (not applied).** SPEC M28 says "|z| ≥ 3"; the report simulation uses the one-sided
+  z ≥ 3 (smoke only raises readings). The engine follows the simulation (`cm_z`); SPEC text to be aligned on approval.
+- **P5-6. `h_default` (DER, SPEC §10 fallback).** Until the tuning window has been seen (every demo recording), the
+  node CUSUM uses 218.7 — the mean tuned h of the report simulation on seeds 11–55 (238.1, 230.3, 204.8, 232.1,
+  188.0). P1t uses 400: the simulation's bisection ends at its cap on all five seeds.
+- **P5-7. Common-mode input via the context.** `RunContext.z_slow` (additive) carries the latest TTC slow z; the
+  pipeline sets it in `step_node` and the real CUSUM reads it for the M28 exclusion, so no stage signature changed.
+  P1t computes the mask from its own capped z, as the report does.
+- **P5-8. Framework scenarios pin the stub node layer.** `smoke`, `siting_*` and `fires_day*` exist to show the
+  framework with clean stub signals and stub detectors (Phase 0 acceptance: the stub pipeline confirms the scripted
+  fire); they now pin `ttc`, `qcc`, `cusum: stub`, as they already pinned the signal stubs. `signals_3day` runs the
+  real node layer (its comment updated), and the new `node_3day` adds a day-3 fire. The Phase 0 runner test that
+  used `qcc` as its "no real implementation yet" example now uses `energy`.
+- **P5-9. Acceptance outcome (golden seeds 11, 22, 33, 44, 55; quiet pass, 30 held-out test days each).**
+
+  | | This simulator | Target | Report simulation, same seeds |
+  | --- | --- | --- | --- |
+  | QCC exceedance at p ≤ 0.01 | **1.10%** (0.61–1.58% per seed) | 0.8–2.0% | 1.54% (1.16–1.69%) |
+  | Node-local false candidates / node / 30 d | **0.65** (median 0.70; 0.03–1.02) | 0.5–1.5 | 1.70 (median 1.24; 0.81–4.25) |
+  | Tuned h (mean) | 251.8 (seed 22 at the 400 cap) | — | 218.7 |
+  | P1t false incidents / month | **14.4** (11.3–18.1) | report 18.6 (15.0–22.8) | 18.6 |
+  | P1t confirmed within 3 h | 197/324 = 61% | report 59% (53–64) | — |
+
+  Both Phase 5 criteria pass on the means. The report simulation itself misses criterion 2 on these seeds (its seed
+  55 gives 4.25).
+- **P5-10. Finding: the M28 exclusion can miss a common-mode rise right after a long one.** Seed 22's tuning window
+  holds a second network-wide rise straight after a long haze episode. During the first episode the capped slow
+  baseline inflates s² (winsorised updates), so in the second only about 10% of nodes reach slow z ≥ 3 — below the
+  25% threshold — while every node's −ln p is near its floor (mean S ≈ 5). The 67 near-simultaneous candidates are
+  counted as node-local, so the bisection ends at its cap (h = 400) and that seed's test-period local rate drops to
+  0.03. The engine's slow z equals the report's exactly (P5-2), so this is the method's behaviour, not a code
+  difference; the report simulation's seed-55 outlier looks like the same effect. Not tuned away (rule 10).
+  Proposal for the developer: define the common-mode signal on the detection evidence itself (share of nodes with
+  p ≤ 0.01, or with G above a fraction of h) — an advanced option, left for approval.
+- **P5-11. P1t equivalence (report simulation vs engine, seeds 11–30, quiet pass).** Our 5-seed P1t (14.4 per
+  month) sits just below the report's interval (15.0–22.8), as P0 did in Phase 4. Over 20 seeds (per-seed values in
+  `engine/tests/golden/equivalence_p1t_seeds11_30.json`): report simulation 18.3 (sd 7.0, SE 1.6), engine 17.1
+  (sd 6.8, SE 1.5); difference −1.2, Welch t −0.55, p 0.58; Mann–Whitney p 0.66. No detectable difference; both
+  bisections end at or near the 400 cap on almost every seed. The golden test keeps the report's interval as written
+  and is expected to miss with these five seeds; nothing was tuned.
+- **P5-12. Dashboard.** Node tab: the existing readout gains "Calibration n / floor p_min"; below it the lazy-loaded
+  Node Inspector (SPEC View 2) stacks reading with the slow baseline, fast residual, p-value on a log axis with the
+  falling floor 1/(n+1), CUSUM G with h and the node's candidates (ember = the map's candidate state), and the health
+  weight. Frames gain `nodes.baseline` and `nodes.n_cal` (additive). The Results tab gains a node-layer table with
+  per-seed values, the means and the targets.
+- **P5-13. Files from accepted phases touched (as in the Phase 4 pattern).** `core/pipeline.py` (`step_node`,
+  `baseline_p1t`, `p1t_alarm` events, two frame keys), `core/context.py` (+`z_slow`), `stages.py` (imports),
+  `eval/experiments.py` and `cli.py` (P1t, `node_metrics`), `configs/default.yaml` (module states, parameters),
+  `configs/experiments/golden.yaml`, the five framework scenarios (pins) and `signals_3day.yaml` (comment),
+  `tests/unit/test_runner.py` (example module), `tests/golden/test_golden_baselines.py` (P1t, node acceptance);
+  dashboard `App.tsx`, `NodePanel.tsx`, `ResultsPanel.tsx`, `results.ts`, `series.ts`, `types.ts` (additive).
+
 ## Dependencies beyond CLAUDE.md rule 13
 
 - **Dep-1.** `@vitejs/plugin-react` (dev): standard React support for Vite.

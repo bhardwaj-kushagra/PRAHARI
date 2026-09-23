@@ -14,6 +14,43 @@ export interface Summary {
   days: { calibration: number; tuning: number; test: number };
   pipelines: Record<string, PipelineResult>;
   reference?: { source: string; pipelines: Record<string, ReferenceRow> };
+  node?: NodeSummary;
+}
+
+// Phase 5: node-layer statistics from the quiet pass (M26 exceedance, M28 replay-tuned candidates).
+export interface NodeSeed {
+  seed: number; exceed: number | null; p_min: number; cand_per_node_30d: number; local_cand_per_node_30d: number;
+  cm_time_frac_test: number; h: number; h_tuned: boolean; h_at_cap: boolean; p1t_h: number; p1t_at_cap: boolean;
+}
+export interface NodeSummary {
+  per_seed: NodeSeed[]; exceed_mean: number; local_cand_mean: number; local_cand_median: number; h_mean: number;
+  targets: { exceed_p: number; exceed: [number, number]; local_cand_per_node_30d: [number, number] };
+  pass: { exceed: boolean; local_cand: boolean };
+}
+export interface NodeRow { label: string; exceed: string; local: string; all: string; h: string; p1t: string; cm: string }
+
+const pct = (v: number | null) => (v === null ? "—" : `${(v * 100).toFixed(2)}%`);
+const inBand = (v: number, [lo, hi]: [number, number]) => v >= lo && v <= hi;
+
+/** Table rows for the node layer: one per seed, then the mean with each value checked against its target band. */
+export function nodeRows(n: NodeSummary): NodeRow[] {
+  const t = n.targets;
+  const mark = (v: number, band: [number, number]) => (inBand(v, band) ? " ✓" : " ✗");
+  const rows = n.per_seed.map((r) => ({
+    label: `seed ${r.seed}`, exceed: pct(r.exceed), local: r.local_cand_per_node_30d.toFixed(2),
+    all: r.cand_per_node_30d.toFixed(2), h: `${r.h.toFixed(1)}${r.h_at_cap ? " (cap)" : ""}`,
+    p1t: `${r.p1t_h.toFixed(1)}${r.p1t_at_cap ? " (cap)" : ""}`, cm: pct(r.cm_time_frac_test),
+  }));
+  rows.push({
+    label: "mean", exceed: pct(n.exceed_mean) + mark(n.exceed_mean, t.exceed),
+    local: n.local_cand_mean.toFixed(2) + mark(n.local_cand_mean, t.local_cand_per_node_30d),
+    all: "", h: n.h_mean.toFixed(1), p1t: "", cm: "",
+  });
+  rows.push({
+    label: "target", exceed: `${pct(t.exceed[0])}–${pct(t.exceed[1])}`,
+    local: `${t.local_cand_per_node_30d[0]}–${t.local_cand_per_node_30d[1]}`, all: "", h: "", p1t: "", cm: "",
+  });
+  return rows;
 }
 
 export const PIPELINE_LABEL: Record<string, string> = {

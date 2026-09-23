@@ -34,3 +34,21 @@ describe("results chart data", () => {
     expect(logBounds([])).toEqual([1, 10]);
   });
 });
+
+describe("node-layer rows (Phase 5)", () => {
+  it("lists seeds, then the mean against its targets", async () => {
+    const { nodeRows } = await import("./results");
+    const seed = (s: number, ex: number, loc: number) => ({ seed: s, exceed: ex, p_min: 3e-4, cand_per_node_30d: 5,
+      local_cand_per_node_30d: loc, cm_time_frac_test: 0.02, h: 226.58, h_tuned: true, h_at_cap: false, p1t_h: 400,
+      p1t_at_cap: true });
+    const rows = nodeRows({ per_seed: [seed(11, 0.0088, 0.7), seed(22, 0.03, 2.1)], exceed_mean: 0.0194,
+      local_cand_mean: 1.4, local_cand_median: 1.4, h_mean: 226.6,
+      targets: { exceed_p: 0.01, exceed: [0.008, 0.02], local_cand_per_node_30d: [0.5, 1.5] },
+      pass: { exceed: true, local_cand: true } });
+    expect(rows.map((r) => r.label)).toEqual(["seed 11", "seed 22", "mean", "target"]);
+    expect(rows[0]).toMatchObject({ exceed: "0.88%", local: "0.70", h: "226.6", p1t: "400.0 (cap)" });
+    expect(rows[2].exceed).toBe("1.94% ✓");
+    expect(rows[2].local).toBe("1.40 ✓");
+    expect(rows[3]).toMatchObject({ exceed: "0.80%–2.00%", local: "0.5–1.5" });
+  });
+});

@@ -2,7 +2,7 @@ import { sci } from "../format";
 import { NODE_STATE } from "../types";
 import { useFrame, useSim } from "../store";
 
-/** Minimal node readout; the full Node Inspector (View 2) arrives in Phases 2 and 5. */
+/** Node readout and badges (SPEC §6.2 View 2); the stacked evidence charts are in NodeInspector (Phase 5). */
 export function NodePanel() {
   const source = useSim((s) => s.source);
   const i = useSim((s) => s.selectedNode);
@@ -18,6 +18,7 @@ export function NodePanel() {
     ["Residual", `${v.residual[i]} su`],
     ["p-value", sci(v.p[i])],
     ["CUSUM G / h", `${v.cusum[i]} / ${frame.cusum_h}`],
+    ...(v.n_cal ? [["Calibration n / floor p_min", `${v.n_cal[i]} / ${sci(1 / (v.n_cal[i] + 1))}`] as [string, string]] : []),
     ["Health weight", String(v.health[i])],
     ["State of charge", `${Math.round(v.soc[i] * 100)}%`],
   ];
@@ -32,7 +33,7 @@ export function NodePanel() {
     <div className="node-panel">
       <h2>Node {i} <span className="muted small">type {n.type}</span></h2>
       <dl className="kv">{rows.map(([k, val]) => <div key={k}><dt>{k}</dt><dd className="mono">{val}</dd></div>)}</dl>
-      <p className="muted small">Values at the current frame. Time-series charts arrive with the Node Inspector.</p>
+      <p className="muted small">Values at the current frame; the charts below cover the whole recording.</p>
     </div>
   );
 }

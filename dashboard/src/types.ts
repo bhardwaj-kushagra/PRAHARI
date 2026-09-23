@@ -42,7 +42,9 @@ export interface Frame {
   weather: { T: number; RH: number; wind_ms: number; wind_dir_deg: number; rain_mm: number; ffmc: number; dew_c?: number };
   prior: { odds: number; quorum: number; day_type: string };
   nodes: { state: number[]; reading: number[]; residual: number[]; p: number[]; cusum: number[]; health: number[]; soc: number[];
-           conc?: number[] };
+           conc?: number[];
+           baseline?: number[];      // TTC slow baseline b (M24), Phase 5
+           n_cal?: number[] };       // QCC calibration-set size n (M26): floor p_min = 1/(n+1), Phase 5
   plume?: PlumeGrid;
   cusum_h: number;
   haze?: number;               // regional haze level H(t), su (Phase 2)

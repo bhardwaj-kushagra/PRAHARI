@@ -46,12 +46,18 @@ def experiment(args) -> int:
     seeds = [int(v) for v in args.seeds.split(",")] if args.seeds else cfg["experiment"]["seeds"]
     pipes = args.pipelines.split(",") if args.pipelines else cfg["experiment"]["pipelines"]
     t0 = time.perf_counter()
-    summary = run_experiment(cfg, path.stem, seeds, pipes, args.out)
+    node = bool(cfg["experiment"].get("node_metrics", False))
+    summary = run_experiment(cfg, path.stem, seeds, pipes, args.out, node)
     for name, p in summary["pipelines"].items():
         fa, det = p["false_incidents_per_month"], p["confirmed_within_3h"]
         print(f"{name}: {fa['rate']:.1f} false incidents/month (95% CI {fa['ci95'][0]:.1f}–{fa['ci95'][1]:.1f}; "
               f"per seed {[round(v, 1) for v in fa['per_seed']]}), confirmed within 3 h "
               f"{det['k']}/{det['n']} — SIMULATION")
+    if "node" in summary:
+        nd = summary["node"]
+        print(f"node layer: QCC exceedance at p ≤ {nd['targets']['exceed_p']} {nd['exceed_mean']:.2%}; node-local false "
+              f"candidates {nd['local_cand_mean']:.2f} per node per 30 d (median {nd['local_cand_median']:.2f}); "
+              f"mean tuned h {nd['h_mean']:.1f} — SIMULATION")
     print(f"wrote {args.out}/summary.json in {time.perf_counter() - t0:.0f} s")
     return 0
 
