@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+build/
+results/*
+!results/summary.json
+node_modules/
+dashboard/dist/
+*.health.json
+.DS_Store
