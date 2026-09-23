@@ -78,17 +78,27 @@ Written beside each recording by `prahari run`: seconds, frame and trace counts,
 ## Experiment results
 
 - `results/<preset>_seed<N>.json` (ignored by git): per pipeline the false incidents, alarms, latencies of each
-  protocol fire; the protocol fires themselves; the `node` block when node metrics are on.
-- `results/summary.json` (committed), read by the Results tab:
+  protocol fire; the protocol fires themselves; the tuned h; the `node` block when node metrics are on; the `dial`
+  points when the preset has a dial.
+- `results/<preset>.json` (committed): the pooled result of one preset (`golden`, `ablation`, `spacing`,
+  `seeds20`); a spacing preset holds one pooled result per spacing under `by_spacing`.
+- `results/summary.json` (committed), read by the Results tab, built by `eval/report.py`:
 
 | Field | Meaning |
 | --- | --- |
-| `label`, `preset`, `scenario`, `seeds`, `n_nodes`, `spacing_m`, `days` | run identity |
+| `label`, `preset`, `scenario`, `seeds`, `n_nodes`, `spacing_m`, `days` | run identity (of the golden preset) |
 | `pipelines.<P>.false_incidents_per_month` | `rate`, `ci95` (M45), `count`, `days`, `per_seed` |
 | `pipelines.<P>.confirmed_within_3h` | `k`, `n`, `rate`, `ci95` (M44) |
+| `pipelines.<P>.single_node_within_3h` | fires with at least one node candidate within 3 h (P2 variants) |
 | `pipelines.<P>.latency_median_min` | median minutes from ignition to confirmation |
+| `pipelines.<P>.h_per_seed` | the tuned node threshold per seed (P2 variants) |
 | `node.per_seed[]` | `exceed`, `p_min`, `cand_per_node_30d`, `local_cand_per_node_30d`, `cm_time_frac_test`, `h`, `h_tuned`, `h_at_cap`, `p1t_h`, `p1t_at_cap`, module `states` |
 | `node` summary | `exceed_mean`, `local_cand_mean`, `local_cand_median`, `h_mean`, `targets`, `pass` |
+| `dial[]` | per target (false candidates per node per 30 d): `h_per_seed` and the same pooled fields as a pipeline |
+| `spacing` | `seeds` and `rows[]`: `spacing_m`, `confirmed_within_3h`, `single_node_within_3h`, `false_incidents_per_month`, `latency_median_min` |
+| `seed_sweep` | `seeds` and `pipelines` of the 20-seed sweep |
+| `sources` | which preset file supplied which part, with its seeds |
+| `table[]` | one row per pipeline in the report's order: `pipeline`, `label`, our rate and intervals, and `report` (the report's row) |
 | `reference` | the report's values, copied from `engine/tests/golden/report_reference.json`, labelled as such |
 
 ## Configuration files

@@ -367,12 +367,117 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `plume.wind: per_fire` option (random constant direction θ ~ U(0, 2π) and speed U(30, 120) m/min per fire, as the
   report simulation injects fires) for the golden preset only, keeping the weather-driven wind for demos; then rerun
   the 20-seed comparison. Logged in `KNOWN_ISSUES.md` (improvement backlog).
+  *Follow-up (Phase 7):* approved and built as P7-1; it did not raise detection, and a direct footprint check showed
+  the fires were not the cause — the transport attribution above is withdrawn (P7-9).
 - **P6-12. Files from accepted phases touched.** `core/pipeline.py` (`step_edge`, `last_env`, `switch_module`,
   trace extras, alert incident), `core/runner.py` (optional fields in `expect_len`), `core/contracts_edge.py`
   (additive fields), `core/trace.py` (legacy-RAQ template, `extra`), `core/rng.py` (+`srp`), `stages.py`,
   `eval/experiments.py` (P2, shared day types), `configs/default.yaml`, `configs/experiments/golden.yaml` (+P2),
   `configs/scenarios/node_mature.yaml` (day 31), `engine/pyproject.toml` (extras); dashboard `App.tsx`,
   `AlertsPanel.tsx`, `store.ts` (additive), `theme.css`.
+
+## Phase 7 design choices
+
+- **P7-1. Per-fire wind for the golden presets (approved after Phase 6).** The plume stub gains
+  `plume.wind: per_fire` (default `weather`, so every demo scenario and recording is unchanged): each fire, when it
+  is first seen, draws a constant downwind direction θ ~ U(0, 2π) and speed u ~ U(30, 120) m/min from the plume's own
+  stream, exactly as the report simulation's `inject_fires`. Fires already end after 180 minutes
+  (`ignition.fire_lifetime_min`), so no duration parameter was added. All experiment presets set it. With it, the
+  engine's protocol fire is the report simulation's fire term for term: the same Q_ref (2.5 su at 50 m, L = 40 m),
+  lognormal Q_max (σ 0.5), growth τ_g = 10 min, directional factor, transport delay, mean-one intermittency
+  (σ 0.5), linear sensor response and uniform placement over the grid. A unit test checks that a fire's wind stays
+  constant and that the option is opt-in.
+- **P7-2. Offline edge replay (DER, exact).** A pass now records the node evidence S = −ln p (float32, T × N), the
+  share of nodes with slow z ≥ 3 and the node candidates (`eval/offline.py`, `ScoreRecorder`). The edge variants
+  are replayed from the recorded candidates through the same registered stages (`registry.build`), so P2, P2-SCMR
+  (SCMR stub) and P2-RAQ (RAQ stub) share one pair of passes instead of three. Unit tests show that the offline
+  replay equals the live edge alarm for alarm, and that the offline tuned h and replayed candidates equal the live
+  CUSUM's. The live P2 edge path in the harness was removed; recordings still run the live edge (`step_edge`).
+- **P7-3. Pipeline groups.** An ablation that changes the node layer (P2-QCC: `qcc: stub`; P2-TTC: `ttc: stub`) needs
+  passes of its own; an edge ablation does not. `_groups` sorts the requested pipelines by their node-layer
+  overrides. The baselines (P0, P1, P1t) ride in the unmodified group's passes.
+- **P7-4. Operating dial.** For each target r (false node candidates per node per 30 days) the harness re-tunes h
+  from the recorded quiet-pass evidence with the live tuner's own bisection and common-mode mask (`tuning.tune_h`,
+  `cm_mask`), replays the CUSUM from the test start (`cusum_replay`) and the edge, and pools each point like a
+  pipeline. The golden preset uses the report simulation's four targets: 1 per 60, 30, 14 and 7 days per node. The
+  point at 1 per 30 days is the design point; a unit test checks it equals P2 exactly.
+- **P7-5. Results layout.** Each preset writes `results/<preset>.json` (committed) and per-seed files (ignored), then
+  `eval/report.py` rebuilds `results/summary.json`: the golden preset is the primary table; the node ablations join
+  its pipelines; the spacing sweep and the 20-seed sweep are attached (`spacing`, `seed_sweep`); `sources` says which
+  file supplied what; `table` lists every pipeline in the report's order beside the report's row. The report values
+  still live only in `engine/tests/golden/report_reference.json` (rule 10). `.gitignore` admits the four preset files.
+- **P7-6. Golden tests extended.** Besides P0–P2 false incidents and the node targets, the golden suite now checks
+  the four ablations' false incidents against the report's intervals, P0–P2 detection against the report's
+  intervals (§9.3 gives both), and — where the report gives a point value without an interval (ablation detection,
+  spacing) — that the report's value falls inside our own M44 interval. `PRAHARI_JOBS` runs seeds in parallel.
+  Run in this session (16.5 minutes, `PRAHARI_JOBS=3`): 6 pass, 15 miss — the misses are the P7-9 findings.
+- **P7-7. `--jobs N`.** Seeds run in N forked processes (`multiprocessing`, standard library). Each seed's streams
+  come from its own master seed, so the output does not depend on N (checked: the seed-11 golden P2 row is the same
+  with 1 and 4 jobs).
+- **P7-8. Results view.** Main charts show P0–P2; a separate ablation chart shows P2 and each variant with its
+  confirmation rate; `ExperimentCharts.tsx` adds the operating dial (false incidents per month on a log axis
+  against median minutes to confirm, one point per target, the design point enlarged) and the spacing chart
+  (confirmed and single-node shares within 3 h with M44 intervals, report values as hollow diamonds). Every value is
+  read from `summary.json`; every chart footer names its seeds and simulated days. Value labels now sit past the
+  interval and per-seed ticks, and legends sit below titles, so nothing overlaps.
+- **P7-9. Results, recorded as they came out — nothing tuned.** Golden seeds 11, 22, 33, 44, 55 (`results/summary.json`):
+
+  | Pipeline | False incidents / month | Report (SPEC §9.3) | Confirmed within 3 h | Report |
+  | --- | --- | --- | --- | --- |
+  | P0 | 340.6 (324.6–357.2) | 291 (277–307) | 317/324 = 97.8% | 95% (93–97) |
+  | P1 | 136.2 (126.2–146.8) | 132 (123–143) — inside | 318/324 = 98.1% | 99% (98–100) — inside |
+  | P1t | 14.4 (11.3–18.1) | 18.6 (15.0–22.8) | 198/324 = 61.1% | 59% (53–64) — inside |
+  | P2 | 3.4 (2.0–5.4) | 6.4 (4.4–9.0) | 231/324 = 71.3% | 83% (79–87) |
+  | P2-QCC | 30.8 (26.1–36.1) | 17.4 (13.9–21.5) | 242/324 = 74.7% | 78% — inside our interval |
+  | P2-TTC | 8.2 (5.9–11.1) | 11.8 (9.0–15.2) | 234/324 = 72.2% | 66% |
+  | P2-SCMR | 5.0 (3.2–7.4) | 12.0 (9.2–15.4) | 232/324 = 71.6% | 84% |
+  | P2-RAQ | 5.4 (3.6–7.9) | 10.0 (7.4–13.2) | 250/324 = 77.2% | 88% |
+
+  Every ablation raises false alarms above P2, as in the report. Spacing (seeds 11, 22, 33): confirmed within 3 h
+  63% / 33% / 5% at 70 / 100 / 150 m (report 85 / 56 / 13%); single-node alerts 96% / 85% / 59%; false alarms are
+  the same at every spacing because R = 1.6 s scales with the grid. Operating dial (1 per 60, 30, 14, 7 days per
+  node): 4.0 / 3.4 / 7.6 / 14.2 false incidents per month, 222 / 231 / 267 / 280 of 324 confirmed, median 67 / 62 /
+  55 / 46 minutes. The first two false-alarm points invert (20 against 17 incidents in total; seed 44 gives 1 against
+  0) because a higher h shifts when node candidates coincide; detection and latency are monotone.
+
+  **Per-fire wind (P7-1) did not raise detection.** Golden P2 went from 246/324 to 231/324 (same fire times and
+  places, new winds and intermittency draws). The fire model now equals the report simulation's term for term, and a
+  direct check on seed 11 confirms it: the mean number of nodes a fire lifts by ≥ 0.5 / 1 / 2 su in the fast residual
+  is 8.24 / 5.19 / 2.92 in the engine and 8.17 / 5.10 / 3.02 in the report simulation. The Phase 6 attribution of half
+  the gap to transport (P6-11) is therefore withdrawn; that background-swap difference (+3.5 points) was within
+  sampling error (z ≈ 1.3).
+
+  **20 seeds (11–30), engine against the report simulation** (`engine/tests/golden/equivalence_p7_seeds11_30.json`):
+  false incidents agree for P0, P1, P1t, P2, P2-SCMR and P2-RAQ (every Welch p > 0.4); detection agrees for P0, P1
+  and P1t, and is lower for the pipelines with the conformal node layer — P2 72.8% vs 82.2% (Welch p 0.015,
+  Mann–Whitney p 0.002), P2-SCMR 73.3% vs 82.4%, P2-RAQ 79.6% vs 86.1%.
+
+  **Where the difference sits.** On seed 11 the quiet fast residual in the calibration days has a much heavier upper
+  tail in the engine (2.2% of minutes above 1 su; report simulation 0.29%); with haze switched off it falls to
+  0.18%. A haze-heavy calibration window widens the conformal reference set, so a fire's lift earns a less extreme
+  p-value and fewer neighbours cross h within the 30-minute window (seed 11's missed dry-day fires show one node
+  re-triggering while its neighbours stay below h). The haze model is the same in both simulators; the engine's
+  seeds 11–30 drew 66 episodes in days 0–27 (56 expected, Poisson p ≈ 0.10) against the report simulation's 45.
+  **Independent check on fresh seeds 31–50** (same file, `seeds31_50`): false incidents are identical for P2 (7.05 vs
+  7.05 per month) and agree for every pipeline; P2 detection is 79.4% (902/1136) against 84.4% (1019/1208), a
+  smaller difference that is not significant on its own (Welch p 0.16, Mann–Whitney p 0.29). Over all 40 seeds the
+  PRAHARI pipelines still detect about 7 points less (P2 76.1% vs 83.3%, Welch p 0.007) while P0 and P1t agree
+  (p 0.97 and 0.65). Conclusion: part of the Phase 6 gap was sampling of haze-heavy seeds; a smaller residual
+  difference in the node layer's calibration remains, open in `KNOWN_ISSUES.md` with the next diagnostic.
+- **P7-10. Ablation definitions.** Our ablations replace a mechanism by its registered stub, the SPEC's meaning and
+  the same switch the dashboard's View 5 uses: P2-QCC = `qcc: stub` (Gaussian p-value of the slow z, k 1.5 on −ln p);
+  P2-TTC = `ttc: stub` (v1 slow residual without the freeze cap, conformal); P2-SCMR = `scmr: stub`; P2-RAQ =
+  `raq: stub` (fixed quorum). The report simulation defines the two node ablations differently: "minus conformal"
+  runs the CUSUM on the MAD-scaled fast residual with k 0.5, and "minus two-timescale" uses a conformal p-value of
+  the capped slow z. The edge ablations are defined identically, and their 20-seed false alarms agree with it
+  (P2-SCMR 9.4 vs 10.05, P2-RAQ 9.8 vs 10.15). Legacy forms of the node ablations would need additions to accepted
+  Phase 5 modules (rule 4) and are proposed in `KNOWN_ISSUES.md` for approval.
+- **P7-11. Files from accepted phases touched.** `fire/plume.py` (per-fire wind, approved), `eval/experiments.py`
+  (groups, recorders, offline edge, dial, jobs, spacing), `cli.py` (`--jobs`, dial and spacing lines),
+  `configs/default.yaml` (plume keys, experiment `dial`/`spacings`), `configs/experiments/golden.yaml`,
+  `tests/smoke/test_experiment.py` (new results layout), `tests/golden/test_golden_baselines.py` and
+  `report_reference.json` (ablations, spacing — the report's values only), `.gitignore`, `CLAUDE.md` (commands);
+  dashboard `ResultsPanel.tsx`, `results.ts`, `results.test.ts` (additive).
 
 ## Documentation
 

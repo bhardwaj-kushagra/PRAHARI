@@ -16,8 +16,8 @@ working session with an AI coding agent (Claude Code), under the rules in `CLAUD
 | 3b | Gaussian plume (optional) | accepted | calibrated to the legacy 2.5 su; σ_y profile within 0.1% | [phase-3b-gaussian-plume.md](phase-3b-gaussian-plume.md) |
 | 4 | Baselines and evaluation harness | accepted | P1 136.2/month (in the report's interval); P0 340.6 (outside; explained) | [phase-4-baselines.md](phase-4-baselines.md) |
 | 5 | PRAHARI node layer | accepted | QCC exceedance 1.10%; 0.65 local false candidates per node per 30 d | [phase-5-node-layer.md](phase-5-node-layer.md) |
-| 6 | Edge layer, trace, live mode | awaiting review | P2 3.4 false incidents/month, 75.9% detection (report 6.4, 83%; diagnosed); SCMR cuts haze alarms 15 → 3; live mode | [phase-6-edge-layer.md](phase-6-edge-layer.md) |
-| 7 | Experiments and results | next | — | — |
+| 6 | Edge layer, trace, live mode | accepted | P2 3.4 false incidents/month, 75.9% detection (report 6.4, 83%; diagnosed); SCMR cuts haze alarms 15 → 3; live mode | [phase-6-edge-layer.md](phase-6-edge-layer.md) |
+| 7 | Experiments and results | awaiting review | P2 3.4 false incidents/month (P0 340.6); every ablation raises false alarms; dial 46–67 min median; spacing 63/33/5% confirmed; detection gap to the report traced to haze in calibration windows | [phase-7-experiments.md](phase-7-experiments.md) |
 
 Cross-cutting pages:
 

@@ -27,14 +27,20 @@ def legacy_concentration(q, d, cosphi, decay_length_m):
     return q * np.exp(-np.asarray(d, dtype=float) / decay_length_m) * directional_factor(cosphi)
 
 
-def plume_at_nodes(xy, sx, sy, age, q_max, tau_g, wind_ms, wind_dir_deg, decay_length_m):
-    """M12 with M16 delay for M fires at N nodes, before intermittency. Returns (M, N)."""
+def plume_at_nodes(xy, sx, sy, age, q_max, tau_g, wind_ms, wind_dir_deg, decay_length_m, per_fire=None):
+    """M12 with M16 delay for M fires at N nodes, before intermittency. Returns (M, N).
+
+    `per_fire` (legacy injection, as the report simulation): (downwind unit vectors (M, 2), speeds (M,) in m/min)
+    that replace the weather wind for each fire."""
     v = xy[None, :, :] - np.stack([sx, sy], axis=1)[:, None, :]        # (M, N, 2) fire -> node
     d = np.hypot(v[..., 0], v[..., 1]) + 1e-6
-    w = downwind_unit(wind_dir_deg)
-    cosphi = (v[..., 0] * w[0] + v[..., 1] * w[1]) / d
-    u = max(wind_ms, 1e-3) * 60.0                                          # m/min
-    tau = age[:, None] - d / u                                             # M16 — transport delay d/u
+    if per_fire is None:
+        w = np.broadcast_to(downwind_unit(wind_dir_deg), (len(sx), 2))
+        u = np.full(len(sx), max(wind_ms, 1e-3) * 60.0)                   # m/min
+    else:
+        w, u = per_fire
+    cosphi = (v[..., 0] * w[:, 0:1] + v[..., 1] * w[:, 1:2]) / d
+    tau = age[:, None] - d / u[:, None]                                    # M16 — transport delay d/u
     q = source_strength(tau, q_max[:, None], tau_g)
     return legacy_concentration(q, d, cosphi, decay_length_m)
 
@@ -45,13 +51,28 @@ class PlumeStub(Stage):
     tag = "ASM"
     description = "Exponential-decay directional plume with mean-one lognormal intermittency"
 
+    def _per_fire(self, src):
+        """Legacy injection (`wind: per_fire`, the report simulation): each fire gets a constant random downwind
+        direction θ ~ U(0, 2π) and speed u ~ U(30, 120) m/min, drawn when it is first seen."""
+        if self.params.get("wind", "weather") != "per_fire":
+            return None
+        if not hasattr(self, "_fire_wind"):
+            self._fire_wind = {}
+        lo, hi = self.params["per_fire_speed_m_min"]
+        for i in src.ids:
+            if i not in self._fire_wind:
+                th = self.rng.uniform(0.0, 2.0 * np.pi)
+                self._fire_wind[i] = (np.cos(th), np.sin(th), self.rng.uniform(lo, hi))
+        vals = np.array([self._fire_wind[i] for i in src.ids], dtype=float)
+        return vals[:, :2], vals[:, 2]
+
     def step(self, inputs, ctx) -> Concentration:
         src, env = inputs
         n = ctx.n_nodes
         if not src.ids:
             return Concentration(c=np.zeros(n))
         c = plume_at_nodes(ctx.xy, src.x, src.y, src.age_min, src.q_max, src.tau_g,
-                           env.wind_ms, env.wind_dir_deg, self.params["decay_length_m"])
+                           env.wind_ms, env.wind_dir_deg, self.params["decay_length_m"], self._per_fire(src))
         s = self.params["intermittency_sigma"]
         eps = np.exp(self.rng.normal(0.0, s, c.shape) - s * s / 2.0)       # M12 — ε mean-one intermittency
         return Concentration(c=(c * eps).sum(axis=0))                      # multiple fires add linearly
@@ -61,7 +82,7 @@ class PlumeStub(Stage):
         if not src.ids:
             return np.zeros(len(points))
         return plume_at_nodes(np.asarray(points, dtype=float), src.x, src.y, src.age_min, src.q_max, src.tau_g,
-                              env.wind_ms, env.wind_dir_deg, self.params["decay_length_m"]).sum(axis=0)
+                              env.wind_ms, env.wind_dir_deg, self.params["decay_length_m"], self._per_fire(src)).sum(axis=0)
 
 
 @register("plume", kind="off")

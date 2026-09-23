@@ -5,6 +5,7 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 
 | Term | Meaning |
 | --- | --- |
+| **Ablation** | A PRAHARI variant with one mechanism replaced by its stub (P2-QCC, P2-TTC, P2-SCMR, P2-RAQ), run to show what that mechanism contributes. |
 | **Anchor** | In the legacy edge form, the new candidate around which a cluster is formed. |
 | **ARL (average run length)** | Average time a quiet detector runs before a false alarm. P1's h ≈ 8.8 targets 30 days under textbook assumptions (M23). |
 | **ASM, DER, LIT, TGT, VEN** | Provenance tags on every parameter: ASM assumption, DER derived by calculation, LIT literature, TGT design target, VEN vendor datasheet. |
@@ -31,8 +32,8 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **h** | CUSUM threshold. P1 uses 8.8; PRAHARI tunes it by replay (M28); `h_default` is used before tuning. |
 | **Haze** | Regional smoke or pollution raising all nodes together for hours (M20). |
 | **Health weight (c)** | A 0–1 weight discounting a suspect node (M29; the stub uses 1). |
-| **Incident** | Alarms merged within 60 minutes and 2R into one event for counting (M46). |
 | **Incident** (escalation) | A tracked group of clusters in one place, with a level that only rises until it clears after 120 min without candidates (M35). Not the same as an M46 counting incident. |
+| **Incident** | Alarms merged within 60 minutes and 2R into one event for counting (M46). |
 | **Isolation / Slot** | The wrapper that runs every stage and falls back to its stub, then off, then the last good output, if it fails. |
 | **k** | CUSUM allowance subtracted each step: 0.5 on the z scale (P1), 1.5 on the −ln p scale (PRAHARI). |
 | **Legacy form** (edge) | The report simulation's edge decision: around each new candidate, count agreeing neighbours, test SCMR against the network, apply the day-type quorum (DECISIONS N-b, P6-2). |
@@ -45,10 +46,15 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **Node layer** | Per-node processing: TTC, QCC, score, CUSUM (M24–M29). |
 | **Nuisance event** | A short spike not caused by fire (vehicle, cooking) (M20). |
 | **Off** | A module state that switches the module out entirely (not allowed for weather, growth, sensor, siting). |
+| **Offline replay** | Phase 7 harness technique: record each minute's node evidence and candidates once, then feed them through edge variants or re-tuned thresholds without simulating the world again. |
+| **Operating dial** | The trade-off between false incidents and time to confirm, traced by re-tuning the node threshold h for several false-candidate targets (1 per 60, 30, 14 and 7 days per node). |
 | **Oracle** | `reference/prahari_simulation.py`, the report's original simulation, used to check the engine. |
 | **Overdispersion** | More seed-to-seed variation than a Poisson model predicts, because false alarms cluster. |
 | **P0, P1, P1t, P2** | Pipelines: fixed threshold; v1 as written; v1 replay-tuned; PRAHARI. |
+| **Per-fire wind** | Legacy fire-injection option (`plume.wind: per_fire`): each protocol fire has its own constant random wind, as in the report's simulation. |
+| **Preset (experiment)** | A YAML file in `configs/experiments/` naming pipelines, seeds and options for `prahari experiment` (golden, ablation, spacing, seeds20). |
 | **Prior / prior odds** | Chance of a fire before looking at sensors, from activity and dryness (M33). |
+| **QCC** | Quantile-calibrated conformal p-values (M26). |
 | **Quiet pass / fire pass** | The two runs per seed in an experiment: without fires (false alarms) and with scripted fires (detection). |
 | **R** | Neighbourhood radius, 1.6 × node spacing (112 m at 70 m spacing). |
 | **RAQ** | Risk-adaptive quorum: the Bayes decision that sets how many nodes must agree today (M34). |
@@ -65,7 +71,6 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **Trace (evidence trace)** | A record explaining a candidate or a decision: p-values, CUSUM, SCMR, Fisher, prior, rule used. |
 | **TTC** | Two-timescale conditioning: slow baseline plus fast lagged residual (M24, M25). |
 | **Tuning days** | Days 15–28 of a run, used to tune h (M28). |
-| **QCC** | Quantile-calibrated conformal p-values (M26). |
 | **Variant recording** | A recording of the same scenario and seed with one module switched, named `<scenario>__<module>-<state>`; used by the mechanism switches in replay. |
 | **Warm start** | Simulating from day 0 but recording from a later day (`record.from_day`), to show a mature network. |
 | **z-score** | (reading − baseline) / spread. |

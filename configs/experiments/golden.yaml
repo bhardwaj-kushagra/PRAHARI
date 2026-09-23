@@ -6,9 +6,10 @@ scenario:
   name: golden_legacy
   description: "Legacy-mode reproduction of the report's baseline false-alarm rates (P0, P1, P1t) and node-layer calibration"
 experiment:
-  pipelines: [P0, P1, P1t, P2]
+  pipelines: [P0, P1, P1t, P2, P2-SCMR, P2-RAQ]    # edge ablations are replayed offline from P2's passes
   seeds: [11, 22, 33, 44, 55]
   node_metrics: true
+  dial: [0.5, 1.0, 2.142857, 4.285714]   # operating dial: r = 1/60, 1/30, 1/14, 1/7 per node-day (report simulation)
 modules:
   ignition: stub                  # scripted by the protocol in the fire pass
   growth: stub                    # M9 legacy
@@ -17,3 +18,6 @@ modules:
   nuisance: real
   haze: real
   faults: stub
+params:
+  plume:
+    wind: per_fire                # the report simulation's fire injection: constant random wind per fire (P7-1)

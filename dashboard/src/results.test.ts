@@ -52,3 +52,25 @@ describe("node-layer rows (Phase 5)", () => {
     expect(rows[3]).toMatchObject({ exceed: "0.80%–2.00%", local: "0.5–1.5" });
   });
 });
+
+describe("Phase 7 builders", () => {
+  it("orders rows by a pipeline list and skips missing ones", async () => {
+    const { falseAlarmRows } = await import("./results");
+    expect(falseAlarmRows(summary, ["P1", "P2", "P0"]).map((r) => [r.name, r.y])).toEqual([["P1", 0], ["P0", 1]]);
+  });
+  it("builds dial points and spacing points with the report's reference", async () => {
+    const { dialPoints, spacingPoints } = await import("./results");
+    const pr = (rate: number, k: number) => ({
+      false_incidents_per_month: { rate, ci95: [rate - 1, rate + 1] as [number, number], count: 1, days: 30, per_seed: [rate] },
+      confirmed_within_3h: { k, n: 10, rate: k / 10, ci95: [0.1, 0.9] as [number, number] }, latency_median_min: 60 });
+    const s = { ...summary,
+      dial: [{ target_per_node_30d: 0.5, h_per_seed: [260], ...pr(3, 6) }, { target_per_node_30d: 1, h_per_seed: [230], ...pr(6, 8) }],
+      spacing: { seeds: [11], rows: [{ spacing_m: 70, confirmed_within_3h: pr(1, 8).confirmed_within_3h,
+        single_node_within_3h: pr(1, 10).confirmed_within_3h, false_incidents_per_month: pr(1, 1).false_incidents_per_month,
+        latency_median_min: 60 }] },
+      reference: { source: "r", pipelines: {}, spacing: { seeds: [11], confirmed_within_3h: { "70": 0.85 } } } };
+    expect(dialPoints(s).map((p) => [p.target, p.fa, p.isDefault])).toEqual([[0.5, 3, false], [1, 6, true]]);
+    const sp = spacingPoints(s);
+    expect(sp.map((p) => [p.kind, p.mean, p.ref])).toEqual([["confirmed", 0.8, 0.85], ["single node", 1, undefined]]);
+  });
+});

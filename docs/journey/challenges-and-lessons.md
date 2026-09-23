@@ -31,6 +31,15 @@ weather wind vs one random wind per fire).
 **Lesson.** When results differ, swap inputs one at a time between the two implementations; it turns a vague
 "something is off" into named, measurable causes. → [phase 6](phase-6-edge-layer.md), `DECISIONS.md` P6-11.
 
+**Update (Phase 7).** The per-fire wind option was built and made no difference to detection (golden P2 246 → 231
+of 324): a direct check showed the fires now lift the same number of nodes in both simulators, so the transport
+explanation was withdrawn — the earlier swap difference was within sampling error. Measuring the quiet fast residual
+itself showed where the gap sits: haze in the calibration days gives the engine's conformal reference set a much
+heavier upper tail, so fires earn less extreme p-values. → [phase 7](phase-7-experiments.md), `DECISIONS.md` P7-9.
+
+**Second lesson.** A plausible cause found by a swap is a hypothesis until an intervention confirms it; test the fix
+before crediting the explanation.
+
 ## 2. Stubs that are too naive to be useful
 
 **What happened.** The Phase 0 CUSUM stub, fed realistic Phase 2 signals, raised about 2,000 false candidates a day;

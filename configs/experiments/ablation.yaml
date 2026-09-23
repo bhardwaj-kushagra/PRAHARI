@@ -1,0 +1,19 @@
+# Node-layer ablations (SPEC §9.3, Phase 7): PRAHARI with QCC or TTC replaced by its stub, on the golden seeds and
+# the golden legacy configuration. Each needs its own passes; the edge ablations (P2-SCMR, P2-RAQ) are in golden.
+scenario:
+  name: ablation_legacy
+  description: "PRAHARI minus QCC and minus TTC (module stubs), golden seeds and protocol"
+experiment:
+  pipelines: [P2-QCC, P2-TTC]
+  seeds: [11, 22, 33, 44, 55]
+modules:
+  ignition: stub                  # scripted by the protocol in the fire pass
+  growth: stub                    # M9 legacy
+  plume: stub                     # M12 legacy
+  sensor: real
+  nuisance: real
+  haze: real
+  faults: stub
+params:
+  plume:
+    wind: per_fire                # the report simulation's fire injection: constant random wind per fire (P7-1)

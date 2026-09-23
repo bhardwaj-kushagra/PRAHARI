@@ -5,6 +5,10 @@ __pycache__/
 build/
 results/*
 !results/summary.json
+!results/golden.json
+!results/ablation.json
+!results/spacing.json
+!results/seeds20.json
 node_modules/
 dashboard/dist/
 *.health.json

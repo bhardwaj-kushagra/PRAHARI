@@ -30,7 +30,8 @@ engine/prahari/
 ├── comms/                  pathloss (M38), lorawan (stub)
 ├── energy/, satellite/     stubs until Phases 8–9
 ├── record/                 writer and reader of recordings, frame helpers, world header sections
-└── eval/                   stats (M44–M46), experiments (harness), node_metrics (Phase 5)
+└── eval/                   stats (M44–M46), experiments (harness), node_metrics (Phase 5),
+                            offline (edge replay, dial), report (summary table) (Phase 7)
 server/                     optional live server: app.py (FastAPI), live.py (threaded run + LiveWriter)
 ```
 
@@ -112,12 +113,27 @@ code but building no frames:
 - per seed, a **quiet pass** (no fires) for false alarms, and a **fire pass** with protocol fires (every 6 hours in
   the test period, kept with probability 0.8 on dry days and 0.2 on wet days, drawn from the `protocol` stream);
 - the same day types are written into the prior's `day_type_overrides`, so fires, prior and quorum share a calendar;
-- P2 steps the node and edge layers and records an alarm for every cluster the RAQ confirms (as the report's
-  `confirm`);
+- pipelines are grouped by what they change: the baselines (P0, P1, P1t) and every P2 variant that differs only at
+  the edge share one pair of passes; a node-layer ablation (P2-QCC, P2-TTC) swaps its module and gets passes of its
+  own;
+- during a pass with the node layer, `eval/offline.py`'s `ScoreRecorder` keeps each tick's node evidence
+  S = −ln p, the share of nodes with slow z ≥ 3 and the node candidates;
+- the edge is then **replayed offline** from those candidates through the same registered stages (`edge_stages`,
+  `edge_alarms`), once per edge variant: P2, P2-SCMR (SCMR as stub) and P2-RAQ (RAQ as stub). A unit test checks
+  that the offline P2 equals the live edge alarm for alarm;
+- the **operating dial** re-tunes h (M28) from the recorded S for other false-candidate targets with the same
+  bisection as the live tuner, replays the CUSUM (`cusum_replay`) and the edge, and pools each point like a
+  pipeline;
 - incidents and detections are counted with `eval/stats.py` (M44–M46);
 - with `node_metrics`, `eval/node_metrics.py` also records QCC exceedance, node candidates and the tuned h;
-- output: `results/<preset>_seed<N>.json` and `results/summary.json` (which also copies the report's reference
-  values from `engine/tests/golden/report_reference.json`, the only place such numbers live).
+- with `spacings`, the whole protocol repeats per node spacing;
+- `--jobs N` maps seeds over N forked processes; each seed's streams come from its own master seed, so the result
+  does not depend on N;
+- output: `results/<preset>_seed<N>.json`, `results/<preset>.json`, and `results/summary.json`, which
+  `eval/report.py` rebuilds after every preset: the golden preset is the primary table, the ablation pipelines
+  join it, the spacing sweep and the 20-seed sweep are attached, and a `table` block lists every pipeline in the
+  report's order beside the report's value (copied from `engine/tests/golden/report_reference.json`, the only place
+  such numbers live).
 
 ## Adding a real module (the pattern used in every phase)
 

@@ -59,9 +59,12 @@ prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/
 prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz           # Phase 5 node layer
 prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz       # 31 d, recorded from day 29 (~70 s)
 prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz   # View 5 variant
-prahari experiment --preset golden            # P0/P1/P1t/P2 + node metrics, seeds 11,22,33,44,55 → results/summary.json (~13 min)
+prahari experiment --preset golden --jobs 4   # P0–P2, edge ablations, node metrics, dial → results/golden.json + summary.json
+prahari experiment --preset ablation --jobs 4 # P2-QCC, P2-TTC (run after golden; joins summary.json)
+prahari experiment --preset spacing --jobs 4  # P2 at 70/100/150 m, seeds 11,22,33
+prahari experiment --preset seeds20 --jobs 4  # P0–P2 over seeds 11–30
 prahari experiment --preset golden --seeds 11 --pipelines P1   # quicker single-seed check
-PRAHARI_GOLDEN=1 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)
+PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)
 uvicorn server.app:app --reload               # live server (Phase 6); dashboard: Live engine ▸ Scenarios ▸ Start
 cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
 cd dashboard && npm test                      # dashboard unit tests (Vitest)

@@ -84,13 +84,20 @@ Alerts tab the mechanism switches (TTC, QCC, SCMR, RAQ, SRP) then reconfigure th
 ## Run experiments
 
 ```bash
-prahari experiment --preset golden                              # P0, P1, P1t, P2 + node metrics, seeds 11–55, ~13 min
-prahari experiment --preset golden --seeds 11 --pipelines P1    # quick single-seed check
-PRAHARI_GOLDEN=1 pytest engine/tests/golden                    # golden assertions (slow)
+prahari experiment --preset golden --jobs 4    # P0, P1, P1t, P2, P2-SCMR, P2-RAQ, node metrics, dial; seeds 11–55
+prahari experiment --preset ablation --jobs 4  # P2-QCC, P2-TTC (node-layer ablations); seeds 11–55
+prahari experiment --preset spacing --jobs 4   # P2 at 70, 100 and 150 m; seeds 11, 22, 33
+prahari experiment --preset seeds20 --jobs 4   # P0, P1, P1t, P2 over seeds 11–30
+prahari experiment --preset golden --seeds 11 --pipelines P1   # quick single-seed check
+PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden     # golden assertions (slow)
 ```
 
-The experiment writes `results/<preset>_seed<N>.json` (ignored by git) and `results/summary.json` (committed), which
-the dashboard's **Results** tab reads.
+`--jobs N` runs N seeds at once in separate processes (results are identical to `--jobs 1`; each seed has its own
+random streams). On a 4-core machine the four presets take about 45 minutes in total (SIM development machine).
+
+Each preset writes `results/<preset>_seed<N>.json` (per seed, ignored by git) and `results/<preset>.json` (the
+pooled preset, committed), then rebuilds `results/summary.json` (committed) from whichever preset files exist. The
+dashboard's **Results** tab reads `summary.json`. Run `golden` first: it is the primary table the others join.
 
 ## Where things are
 
@@ -100,7 +107,7 @@ the dashboard's **Results** tab reads.
 | `engine/tests/` | unit, smoke and golden tests |
 | `configs/` | `default.yaml`, scenarios, experiment presets |
 | `recordings/` | committed demo recordings |
-| `results/summary.json` | committed experiment summary |
+| `results/` | committed preset summaries (`golden.json`, `ablation.json`, `spacing.json`, `seeds20.json`) and the combined `summary.json` |
 | `dashboard/` | the React dashboard |
 | `server/` | optional live server (FastAPI) |
 | `reference/` | the report's original simulation (read-only oracle) |

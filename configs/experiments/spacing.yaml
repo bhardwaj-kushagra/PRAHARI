@@ -1,0 +1,20 @@
+# Node-spacing sweep (SPEC §9.3, Phase 7): PRAHARI at 70, 100 and 150 m on three seeds, reporting confirmed fires and
+# single-node alerts within 3 h. The background signals and the tuned threshold do not depend on spacing.
+scenario:
+  name: spacing_legacy
+  description: "PRAHARI at 70, 100 and 150 m node spacing, seeds 11, 22, 33"
+experiment:
+  pipelines: [P2]
+  seeds: [11, 22, 33]
+  spacings: [70, 100, 150]
+modules:
+  ignition: stub                  # scripted by the protocol in the fire pass
+  growth: stub                    # M9 legacy
+  plume: stub                     # M12 legacy
+  sensor: real
+  nuisance: real
+  haze: real
+  faults: stub
+params:
+  plume:
+    wind: per_fire                # the report simulation's fire injection: constant random wind per fire (P7-1)

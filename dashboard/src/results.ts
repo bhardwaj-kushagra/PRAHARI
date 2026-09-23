@@ -5,16 +5,31 @@ export interface PipelineResult {
   false_incidents_per_month: Interval & { count: number; days: number; per_seed: number[] };
   confirmed_within_3h: { k: number; n: number; rate: number | null; ci95: [number, number] };
   latency_median_min: number | null;
+  single_node_within_3h?: { k: number; n: number; rate: number | null; ci95: [number, number] };   // Phase 7
+  h_per_seed?: number[];
 }
 export interface ReferenceRow {
-  false_incidents_per_month: number; ci95: [number, number]; confirmed_within_3h: number; confirmed_ci95: [number, number];
+  false_incidents_per_month: number; ci95: [number, number]; confirmed_within_3h: number;
+  confirmed_ci95: [number, number] | null;
+}
+// Phase 7 sections of the combined summary (`prahari.eval.report.combine`).
+export interface DialPoint extends PipelineResult { target_per_node_30d: number; h_per_seed: number[] }
+export interface SpacingRow {
+  spacing_m: number; confirmed_within_3h: PipelineResult["confirmed_within_3h"];
+  single_node_within_3h: PipelineResult["confirmed_within_3h"];
+  false_incidents_per_month: PipelineResult["false_incidents_per_month"]; latency_median_min: number | null;
 }
 export interface Summary {
   label: string; preset: string; scenario: string; seeds: number[]; n_nodes: number; spacing_m: number;
   days: { calibration: number; tuning: number; test: number };
   pipelines: Record<string, PipelineResult>;
-  reference?: { source: string; pipelines: Record<string, ReferenceRow> };
+  reference?: { source: string; pipelines: Record<string, ReferenceRow>;
+                spacing?: { seeds: number[]; confirmed_within_3h: Record<string, number> } };
   node?: NodeSummary;
+  dial?: DialPoint[];
+  spacing?: { seeds: number[]; rows: SpacingRow[] };
+  sources?: Record<string, { seeds: number[] }>;
+  seed_sweep?: { seeds: number[]; pipelines: Record<string, PipelineResult> };
 }
 
 // Phase 5: node-layer statistics from the quiet pass (M26 exceedance, M28 replay-tuned candidates).
@@ -55,7 +70,16 @@ export function nodeRows(n: NodeSummary): NodeRow[] {
 
 export const PIPELINE_LABEL: Record<string, string> = {
   P0: "P0 fixed threshold", P1: "P1 v1 as written", P1t: "P1t v1 replay-tuned", P2: "P2 PRAHARI",
+  "P2-QCC": "P2 minus QCC", "P2-TTC": "P2 minus TTC", "P2-SCMR": "P2 minus SCMR", "P2-RAQ": "P2 minus RAQ",
 };
+export const MAIN = ["P0", "P1", "P1t", "P2"];
+export const ABLATION = ["P2", "P2-QCC", "P2-TTC", "P2-SCMR", "P2-RAQ"];
+
+/** Pipelines of `s` in the order of `names` (all pipelines when omitted). */
+function pick(s: Summary, names?: string[]): [string, PipelineResult][] {
+  const all = Object.entries(s.pipelines);
+  return names ? names.filter((n) => s.pipelines[n]).map((n) => [n, s.pipelines[n]]) : all;
+}
 
 export interface Row {
   name: string; label: string; y: number; mean: number; lo: number; hi: number; perSeed: number[];
@@ -63,8 +87,8 @@ export interface Row {
 }
 
 /** One row per pipeline for the false-alarm chart: our mean, M45 interval, per-seed values and the report's interval. */
-export function falseAlarmRows(s: Summary): Row[] {
-  return Object.entries(s.pipelines).map(([name, p], y) => {
+export function falseAlarmRows(s: Summary, names?: string[]): Row[] {
+  return pick(s, names).map(([name, p], y) => {
     const r = s.reference?.pipelines[name];
     const fa = p.false_incidents_per_month;
     return {
@@ -75,13 +99,14 @@ export function falseAlarmRows(s: Summary): Row[] {
 }
 
 /** Detection rows: confirmed within 3 h with the Wilson interval (M44), and the report's where available. */
-export function detectionRows(s: Summary): Row[] {
-  return Object.entries(s.pipelines).map(([name, p], y) => {
+export function detectionRows(s: Summary, names?: string[]): Row[] {
+  return pick(s, names).map(([name, p], y) => {
     const r = s.reference?.pipelines[name];
     const d = p.confirmed_within_3h;
     return {
       name, label: PIPELINE_LABEL[name] ?? name, y, mean: d.rate ?? 0, lo: d.ci95[0], hi: d.ci95[1], perSeed: [],
-      ref: r ? { mean: r.confirmed_within_3h, lo: r.confirmed_ci95[0], hi: r.confirmed_ci95[1] } : undefined,
+      ref: r ? { mean: r.confirmed_within_3h, lo: r.confirmed_ci95?.[0] ?? r.confirmed_within_3h,
+                 hi: r.confirmed_ci95?.[1] ?? r.confirmed_within_3h } : undefined,
     };
   });
 }
@@ -91,4 +116,31 @@ export function logBounds(rows: Row[]): [number, number] {
   const vals = rows.flatMap((r) => [r.lo, r.hi, ...r.perSeed, ...(r.ref ? [r.ref.lo, r.ref.hi] : [])]).filter((v) => v > 0);
   if (!vals.length) return [1, 10];
   return [10 ** Math.floor(Math.log10(Math.min(...vals))), 10 ** Math.ceil(Math.log10(Math.max(...vals)))];
+}
+
+// -- Phase 7: operating dial and spacing ------------------------------------------------------------------------
+export interface DialPt { target: number; fa: number; lo: number; hi: number; latency: number | null; det: number | null;
+                          isDefault: boolean }
+
+/** The operating dial (SPEC View 6): false incidents per month against median latency, one point per M28 target. */
+export function dialPoints(s: Summary): DialPt[] {
+  return (s.dial ?? []).map((d) => ({
+    target: d.target_per_node_30d, fa: d.false_incidents_per_month.rate, lo: d.false_incidents_per_month.ci95[0],
+    hi: d.false_incidents_per_month.ci95[1], latency: d.latency_median_min, det: d.confirmed_within_3h.rate,
+    isDefault: Math.abs(d.target_per_node_30d - 1) < 1e-9,
+  }));
+}
+
+export interface SpacingPt { spacing: number; kind: "confirmed" | "single node"; mean: number; lo: number; hi: number;
+                             ref?: number }
+
+/** Spacing sweep (SPEC View 6): confirmations and single-node alerts within 3 h at each spacing, with the report's. */
+export function spacingPoints(s: Summary): SpacingPt[] {
+  const ref = s.reference?.spacing?.confirmed_within_3h ?? {};
+  return (s.spacing?.rows ?? []).flatMap((r) => [
+    { spacing: r.spacing_m, kind: "confirmed" as const, mean: r.confirmed_within_3h.rate ?? 0,
+      lo: r.confirmed_within_3h.ci95[0], hi: r.confirmed_within_3h.ci95[1], ref: ref[String(r.spacing_m)] },
+    { spacing: r.spacing_m, kind: "single node" as const, mean: r.single_node_within_3h.rate ?? 0,
+      lo: r.single_node_within_3h.ci95[0], hi: r.single_node_within_3h.ci95[1] },
+  ]);
 }

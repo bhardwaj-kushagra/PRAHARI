@@ -285,3 +285,39 @@ from day 29".
 
 **Next step:** review Phase 6 and decide on the proposed legacy per-fire wind option (KNOWN_ISSUES). Then Phase 7 —
 experiments and results (ablations, operating dial, node spacing, maturity curve).
+
+### 2026-09-23 — Session 10 (Phase 7)
+
+- Phase 6 accepted by the developer, with approval for the legacy per-fire wind option.
+- Built Phase 7 — experiments and results:
+  - Per-fire wind (`plume.wind: per_fire`) for experiment presets; demos keep the weather wind (DECISIONS P7-1).
+  - Offline edge and dial replay from recorded node evidence (`eval/offline.py`), tested equal to the live path;
+    pipelines grouped by node-layer overrides; `--jobs N`; spacing sweeps (P7-2 … P7-4, P7-7).
+  - Presets `golden` (P0, P1, P1t, P2, P2-SCMR, P2-RAQ, node metrics, dial), `ablation` (P2-QCC, P2-TTC), `spacing`
+    (70/100/150 m), `seeds20` (seeds 11–30); `results/summary.json` combines them in the report's table format
+    (`eval/report.py`, P7-5).
+  - Results view: ablation chart, operating-dial chart, spacing chart; label layout fixed; every footer names seeds
+    and simulated days (P7-8).
+  - Golden tests extended to ablations, detection and spacing (P7-6); evidence file
+    `engine/tests/golden/equivalence_p7_seeds11_30.json`.
+
+**Phase 7 acceptance (details in `DECISIONS.md` P7-9 and `docs/journey/phase-7-experiments.md`):**
+
+| # | Test | Result (SIM) |
+| --- | --- | --- |
+| 1 | Golden-number tests pass (§9.3) | **not met** — 6 of 21 golden tests pass (P1 false incidents; P1 and P1t detection; P2-QCC detection; both node-layer targets); 15 miss: false incidents for P0, P1t, P2 and the four ablations, P0 and P2 detection, three ablation-detection checks and all three spacing checks. Documented, not tuned (DECISIONS P7-9, P7-10; KNOWN_ISSUES) |
+| 2 | Charts render from files | **pass** — every chart reads `results/summary.json` |
+| 3 | Each chart shows seeds and days | **pass** — every footer; browser check with no console errors |
+| — | Suite | 151 engine tests pass (21 golden skipped unless enabled), 35 dashboard tests |
+
+Key numbers (golden seeds): P2 3.4 false incidents/month against P0 340.6; every ablation raises false alarms (P2-QCC
+30.8, P2-TTC 8.2, P2-SCMR 5.0, P2-RAQ 5.4); dial 46–67 minutes median time to confirm; spacing 63 / 33 / 5%
+confirmed at 70 / 100 / 150 m. Over seeds 11–30 and 31–50 false alarms agree with the report simulation for every
+pipeline; the PRAHARI pipelines detect less (about 9 points on seeds 11–30, 5 points and not significant on fresh
+seeds 31–50, 7 points over all 40, p 0.007), linked to haze in the calibration windows; open in KNOWN_ISSUES.
+
+**To see it:** `cd dashboard && npm run dev`, tab *Results* (main, ablation, dial and spacing charts).
+Files: `results/summary.json`, `docs/journey/phase-7-experiments.md`, `docs/results/validation.md`.
+
+**Next step:** review Phase 7; decide on the proposed legacy node-ablation forms and on the calibration-haze item
+(KNOWN_ISSUES). Then Phase 8 (communications and energy, optional) or Phase 9/10 as the developer prefers.

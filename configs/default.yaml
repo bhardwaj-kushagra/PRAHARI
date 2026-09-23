@@ -8,6 +8,8 @@ experiment:                       # `prahari experiment` (Phase 4)
   pipelines: [P0, P1]
   seeds: [11]
   node_metrics: false            # Phase 5: also step the node layer in the quiet pass (M26/M28 acceptance)
+  dial: []                        # Phase 7: operating dial — re-tuned M28 targets (node-local false candidates per node per 30 d)
+  spacings: []                    # Phase 7: node spacings to sweep (m); empty = world.spacing_m only
 
 run:
   seed: 11
@@ -153,6 +155,8 @@ params:
   plume:
     decay_length_m: 40.0          # M12 — L
     intermittency_sigma: 0.5      # M12 — ε = exp(N(0, σ²) − σ²/2); also applied to the Gaussian plume
+    wind: weather                 # legacy stub: weather = the simulated wind; per_fire = the report's fire injection
+    per_fire_speed_m_min: [30.0, 120.0]   # per_fire: each fire's own speed ~ U(30, 120) m/min, direction ~ U(0, 2π)
     receptor_height_m: 2.5        # M11 — z, trunk mount (LIT [3])
     source_height_m: 0.5          # M11 — H, plume rise ignored for small fires
     stability_day: C              # M14 — class by day
@@ -165,7 +169,7 @@ params:
     calibration_distance_m: 50.0
     calibration_class: C
     calibration_wind_ms: 1.5      # reference 10 m wind (median of the India card)
-    source: "ASM; L tuned to ~50 m downwind detection LIT [3]; Briggs σ LIT; receptor height and upwind floor LIT [3]; Q calibrated DER"
+    source: "ASM; L tuned to ~50 m downwind detection LIT [3]; Briggs σ LIT; receptor height and upwind floor LIT [3]; Q calibrated DER; per_fire LIT reference/prahari_simulation.py inject_fires"
   sensor:
     baseline_su: 0.0              # stub
     noise_sd_su: 0.23             # stub; SPEC §5 units: quiet residual sd ≈ 0.23 su

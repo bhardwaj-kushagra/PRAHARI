@@ -46,19 +46,26 @@ def experiment(args) -> int:
     seeds = [int(v) for v in args.seeds.split(",")] if args.seeds else cfg["experiment"]["seeds"]
     pipes = args.pipelines.split(",") if args.pipelines else cfg["experiment"]["pipelines"]
     t0 = time.perf_counter()
-    node = bool(cfg["experiment"].get("node_metrics", False))
-    summary = run_experiment(cfg, path.stem, seeds, pipes, args.out, node)
-    for name, p in summary["pipelines"].items():
-        fa, det = p["false_incidents_per_month"], p["confirmed_within_3h"]
-        print(f"{name}: {fa['rate']:.1f} false incidents/month (95% CI {fa['ci95'][0]:.1f}–{fa['ci95'][1]:.1f}; "
-              f"per seed {[round(v, 1) for v in fa['per_seed']]}), confirmed within 3 h "
-              f"{det['k']}/{det['n']} — SIMULATION")
+    ex = cfg["experiment"]
+    summary = run_experiment(cfg, path.stem, seeds, pipes, args.out, bool(ex.get("node_metrics", False)),
+                             jobs=args.jobs, dial=ex.get("dial", []), spacings=ex.get("spacings", []))
+    blocks = summary["by_spacing"].items() if "by_spacing" in summary else [("", summary)]
+    for sp, block in blocks:
+        for name, p in block["pipelines"].items():
+            fa, det = p["false_incidents_per_month"], p["confirmed_within_3h"]
+            print(f"{sp + ' m ' if sp else ''}{name}: {fa['rate']:.1f} false incidents/month (95% CI "
+                  f"{fa['ci95'][0]:.1f}–{fa['ci95'][1]:.1f}; per seed {[round(v, 1) for v in fa['per_seed']]}), "
+                  f"confirmed within 3 h {det['k']}/{det['n']} — SIMULATION")
+    for pt in summary.get("dial", []):
+        print(f"dial r = {pt['target_per_node_30d']:.2f}/node/30 d: {pt['false_incidents_per_month']['rate']:.1f} "
+              f"false incidents/month, confirmed {pt['confirmed_within_3h']['k']}/{pt['confirmed_within_3h']['n']}, "
+              f"median latency {pt['latency_median_min']} min — SIMULATION")
     if "node" in summary:
         nd = summary["node"]
         print(f"node layer: QCC exceedance at p ≤ {nd['targets']['exceed_p']} {nd['exceed_mean']:.2%}; node-local false "
               f"candidates {nd['local_cand_mean']:.2f} per node per 30 d (median {nd['local_cand_median']:.2f}); "
               f"mean tuned h {nd['h_mean']:.1f} — SIMULATION")
-    print(f"wrote {args.out}/summary.json in {time.perf_counter() - t0:.0f} s")
+    print(f"wrote {args.out}/{path.stem}.json and {args.out}/summary.json in {time.perf_counter() - t0:.0f} s")
     return 0
 
 
@@ -76,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--pipelines", default=None, help="comma list, e.g. P0,P1 (default from the preset)")
     e.add_argument("--seeds", default=None, help="comma list, e.g. 11,22,33 (default from the preset)")
     e.add_argument("--out", default="results", help="output directory")
+    e.add_argument("--jobs", type=int, default=1, help="seeds run in parallel processes")
     args = ap.parse_args(argv)
     if args.cmd == "experiment":
         return experiment(args)

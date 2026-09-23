@@ -16,8 +16,10 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | Two runs of the same scenario differ | Something used unseeded randomness, or the scenario or code changed between runs. | All randomness must come from `core/rng.py`; compare the configs. |
 | `record.from_day … is not inside the run` | The warm-start day is at or after the end of the run. | Lower `record.from_day` or raise `run.days`. |
 | `prahari: command not found` | The package is not installed in the active environment. | `pip install -e "engine[dev]"` and activate the venv. |
-| The golden experiment takes many minutes | It simulates 5 seeds × 58 days × 2 passes. | Use `--seeds 11` for a quick check; the full run is about 8 minutes. |
+| The golden experiment takes many minutes | It simulates 5 seeds × 58 days × 2 passes, plus the dial replays. | Add `--jobs 4` on a 4-core machine (about 5 minutes); use `--seeds 11` for a quick check. The four presets together take about 45 minutes with `--jobs 4`. |
 | Golden test reports P0 or P1t outside the report interval | A known sampling effect, documented and checked against the oracle over 20 seeds. | See [../results/validation.md](../results/validation.md); do not tune to make it pass. |
+| Golden tests fail for P2, the ablations or spacing | Known and documented: P2 detection is below the report (haze in calibration windows, `KNOWN_ISSUES.md`); node ablations are defined as module stubs. | See [../results/validation.md](../results/validation.md) and `DECISIONS.md` P7-9, P7-10. |
+| Results tab lacks the spacing or ablation chart | Only `golden` has run; `summary.json` is rebuilt from whichever preset files exist. | Run the `ablation` and `spacing` presets, then restart the dashboard. |
 
 ## Dashboard
 

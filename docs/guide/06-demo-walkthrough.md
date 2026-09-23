@@ -57,6 +57,12 @@ and about 0.65 local false candidates per node per 30 days (target 0.5–1.5). "
 intervals, we show that too, and we checked against the original simulation over 20 seeds." See
 [../results/validation.md](../results/validation.md).
 
+**4b. What each mechanism buys (40 s) — *Results* tab, lower charts.**
+The ablation chart: take away QCC, TTC, SCMR or RAQ and false incidents rise every time (SIM). The operating dial:
+the design point confirms in about an hour at a few false incidents a month; asking for faster confirmation moves
+along the curve and costs more false alarms. The spacing chart: at 70 m most fires reach two nodes; at 150 m almost
+none do. Every footer names the seeds and simulated days.
+
 **5. Robustness (optional, 20 s) — *Health & model card* tab.**
 Every module, its equation, its source tag and its state. "If any real model fails during a run, its simple stub
 takes over and the demo keeps going."
@@ -67,6 +73,8 @@ takes over and the demo keeps going."
 | --- | --- |
 | Is this real data? | No. Everything is simulation, labelled SIM. The models are calibrated to literature, datasheets or stated assumptions, and each parameter carries its tag. |
 | Why not just use satellites? | They see fires only after overpass and processing, and only once fires are hot and large. Early fires under canopy are too small. |
+| Why these node spacings? | The spacing chart: a fire's smoke reaches two nodes reliably only when they are about 70 m apart (SIM). |
+| What does each mechanism contribute? | The ablation chart: removing any of QCC, TTC, SCMR or RAQ raises false incidents (SIM). |
 | Why not a threshold on each sensor? | Daily cycles, drift and haze cross any fixed line. The P0 row in Results shows the cost. |
 | What stops haze triggering PRAHARI? | Two things: common-mode periods are excluded when thresholds are tuned, and spatial common-mode rejection needs a cluster to be at least 3× more active than the network. Switch SCMR off and watch the difference (3 vs 15 alarms on the haze day, SIM). |
 | How do you know the p-values are right? | They are conformal: ranked against each node's own quiet history, so on quiet data about 1% fall below 1%. We measure that (1.10%, SIM). |

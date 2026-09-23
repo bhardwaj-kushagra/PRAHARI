@@ -37,7 +37,7 @@ flowchart LR
 | Node | `NodePanel.tsx`, `NodeInspector.tsx` | readout and badges (calibration n and floor); stacked charts: reading and baseline, fast residual, p-value with floor, CUSUM with h and candidates, health weight |
 | Alerts | `AlertsPanel.tsx`, `MechanismSwitches.tsx`, `WhyPanel.tsx` | mechanism switches with live counters (View 5); "Why this alarm" (View 3): escalation ladder, SCMR gauge, Fisher evidence, prior, Bayes bar, explanation; clickable alert list |
 | Live engine | `LivePanel.tsx` | server URL, scenario, speed, start/stop, status (optional; replay needs none of it) |
-| Results | `ResultsPanel.tsx` | false incidents per month (log axis, M45 intervals, per-seed ticks, report intervals), detection within 3 h (M44), table, node-layer calibration table |
+| Results | `ResultsPanel.tsx`, `ExperimentCharts.tsx` | false incidents per month for P0–P2 (log axis, M45 intervals, per-seed ticks, report intervals), detection within 3 h (M44), the ablation chart (P2 and each mechanism removed, with its confirmation rate), the operating dial (false incidents against median time to confirm), node spacing (confirmed and single-node within 3 h at 70/100/150 m), the table, the node-layer calibration table; every chart footer names its seeds and simulated days |
 | Footer | `Footer.tsx` | seed, simulated days (and first recorded day for warm starts), frames, SIM |
 
 Chart panels are loaded lazily when their tab opens, so the map view stays light.
@@ -48,7 +48,7 @@ Chart panels are loaded lazily when their tab opens, so the map view stays light
 | --- | --- |
 | `layers.ts` | colour ramps (SF, likelihood, smoke), plume grid decoding (float16), glow opacity, recent baseline alarms |
 | `series.ts` | time series from frames: weather, haze bands, node fields, p floor, h, candidate markers; thinning |
-| `results.ts` | chart rows for false alarms and detection, log bounds, node-layer rows |
+| `results.ts` | chart rows for false alarms and detection (main set or ablation set), dial points, spacing points, log bounds, node-layer rows; everything is read from `summary.json`, nothing is hard-coded |
 | `format.ts` | clock, compact numbers, simulated-days label |
 | `edge.ts` | replay-variant names, live counters (M46 rule), log-scale positions, the escalation ladder |
 | `sources/LiveSource.ts` | applying streamed lines, WebSocket URL |

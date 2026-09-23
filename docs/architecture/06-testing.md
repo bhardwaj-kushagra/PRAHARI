@@ -11,11 +11,12 @@ tests using the reference values in SPEC §9.2.
 | Isolation | `engine/tests/unit/test_runner.py` | a failing module degrades to its stub and the run completes | always |
 | Equations | `engine/tests/unit/test_*_phaseN.py` | each model against SPEC reference values and closed-form results | always |
 | Oracle cross-checks | `test_eval_phase4.py`, `test_node_phase5.py`, `test_edge_phase6.py` | P0, P1, P1t, M24–M28, the legacy edge (`confirm`) and the M46 counting agree **exactly** with `reference/prahari_simulation.py` on identical inputs | always |
+| Offline replay | `test_experiments_phase7.py` | the offline edge equals the live edge, offline tuned h and replayed candidates equal the live CUSUM, per-fire wind, pipeline grouping, dial at the design target equals P2, table order | always |
 | Live server | `test_server_phase6.py` | scenarios, a live run streams recording lines in order, module switches, health | when fastapi and httpx are installed |
 | Configuration | `test_config.py` | merge rules, unknown keys, missing source tags | always |
 | Traces | `test_trace.py` | evidence records and explanation sentences | always |
 | Smoke and determinism | `engine/tests/smoke/` | the smoke scenario runs fast, the same seed gives identical bytes, the experiment harness works | always |
-| Golden | `engine/tests/golden/` | legacy-mode results against the report's intervals, node-layer acceptance | only with `PRAHARI_GOLDEN=1` (about 8 minutes) |
+| Golden | `engine/tests/golden/` | legacy-mode results against the report's intervals (false incidents for all eight pipelines, detection for P0–P2), ablation and spacing rates (report value inside our interval), node-layer acceptance | only with `PRAHARI_GOLDEN=1` (about 25 minutes on one core; `PRAHARI_JOBS=4` parallelises seeds) |
 | Dashboard | `dashboard/src/**/*.test.ts` (Vitest) | recording parser, helpers for layers, series, results and formatting | always |
 | Browser check | a Playwright script run during development | the static build loads each view, charts render, no console errors | at the end of each phase |
 
@@ -23,7 +24,7 @@ tests using the reference values in SPEC §9.2.
 
 ```bash
 pytest engine/tests -q                      # engine: about 1 minute
-PRAHARI_GOLDEN=1 pytest engine/tests/golden # golden: slow
+PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden # golden: slow
 cd dashboard && npm test                    # dashboard
 ```
 

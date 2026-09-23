@@ -13,7 +13,9 @@ def test_short_protocol_writes_results(tmp_path):
     cfg = load_config(REPO / "configs" / "experiments" / "golden.yaml", SHORT)
     summary = run_experiment(cfg, "short", [11], ["P0", "P1"], tmp_path)
     assert summary["label"] == "SIMULATION" and summary["seeds"] == [11]
-    assert json.loads((tmp_path / "summary.json").read_text()) == json.loads(json.dumps(summary))
+    assert json.loads((tmp_path / "short.json").read_text()) == json.loads(json.dumps(summary))
+    combined = json.loads((tmp_path / "summary.json").read_text())             # Phase 7: the report-format table
+    assert [r["pipeline"] for r in combined["table"]] == ["P0", "P1"] and combined["sources"] == {"short": {"seeds": [11]}}
     per_seed = json.loads((tmp_path / "short_seed11.json").read_text())
     assert per_seed["n_fires"] == len(per_seed["fires"])          # may be 0 by chance in a 2-day test window
     for name in ("P0", "P1"):

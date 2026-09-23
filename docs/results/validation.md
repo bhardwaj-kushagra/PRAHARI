@@ -1,23 +1,34 @@
 # Results and validation
 
-All numbers below are **simulation output (SIM)** from the files named, as of Phase 6. They change only when the
+All numbers below are **simulation output (SIM)** from the files named, as of Phase 7. They change only when the
 engine or configuration changes; regenerate them with the commands at the end.
 
 ## 1. Golden reproduction (legacy mode)
 
-Configuration `configs/experiments/golden.yaml`: 100 nodes at 70 m, seeds 11, 22, 33, 44, 55, the M46 protocol
-(14 calibration + 14 tuning + 30 test days per seed), legacy signal, source and plume models. Source:
-`results/summary.json`.
+Configuration `configs/experiments/golden.yaml` and `ablation.yaml`: 100 nodes at 70 m, seeds 11, 22, 33, 44, 55, the
+M46 protocol (14 calibration + 14 tuning + 30 test days per seed), legacy signal, source and plume models, and the
+report simulation's fire injection (a constant random wind per fire, `DECISIONS.md` P7-1). Source:
+`results/summary.json` (`table`).
 
 | Pipeline | False incidents / month (95% CI, M45) | Report (SPEC §9.3) | Confirmed within 3 h (M44) | Report |
 | --- | --- | --- | --- | --- |
-| P0 fixed threshold | 340.6 (324.6–357.2) | 291 (277–307) — outside | 314/324 = 96.9% | 95% (93–97) |
-| P1 v1 as written | 136.2 (126.2–146.8) | 132 (123–143) — **inside** | 322/324 = 99.4% | 99% (98–100) |
-| P1t v1 replay-tuned | 14.4 (11.3–18.1) | 18.6 (15.0–22.8) — just outside | 197/324 = 60.8% | 59% (53–64) — inside |
-| P2 PRAHARI | 3.4 (2.0–5.4) | 6.4 (4.4–9.0) — below | 246/324 = 75.9% (71–80%) | 83% (79–87) — below |
+| P0 fixed threshold | 340.6 (324.6–357.2) | 291 (277–307) — outside | 317/324 = 97.8% | 95% (93–97) — just above |
+| P1 v1 as written | 136.2 (126.2–146.8) | 132 (123–143) — **inside** | 318/324 = 98.1% | 99% (98–100) — **inside** |
+| P1t v1 replay-tuned | 14.4 (11.3–18.1) | 18.6 (15.0–22.8) — just outside | 198/324 = 61.1% | 59% (53–64) — **inside** |
+| P2 PRAHARI | 3.4 (2.0–5.4) | 6.4 (4.4–9.0) — below | 231/324 = 71.3% | 83% (79–87) — below |
+| P2 minus QCC | 30.8 (26.1–36.1) | 17.4 (13.9–21.5) | 242/324 = 74.7% | 78% — inside our interval |
+| P2 minus TTC | 8.2 (5.9–11.1) | 11.8 (9.0–15.2) | 234/324 = 72.2% | 66% |
+| P2 minus SCMR | 5.0 (3.2–7.4) | 12.0 (9.2–15.4) | 232/324 = 71.6% | 84% |
+| P2 minus RAQ | 5.4 (3.6–7.9) | 10.0 (7.4–13.2) | 250/324 = 77.2% | 88% |
 
 Per-seed false incidents per month: P0 299, 321, 388, 308, 387; P1 139, 145, 117, 140, 140; P1t 14, 12, 16, 19, 11;
-P2 5, 5, 2, 0, 5. P2's median time from ignition to confirmation is 65 minutes.
+P2 5, 5, 2, 0, 5. Median minutes from ignition to confirmation: P2 62, P2-QCC 42, P2-TTC 74, P2-SCMR 62, P2-RAQ 59.5.
+
+**What holds and what does not.** The report's qualitative result holds: P2 has about 100× fewer false incidents
+than P0, and removing any mechanism raises them. The absolute P2-family numbers do not match the 5-seed report
+values: false alarms are lower on these five seeds (over 20 seeds they agree, section 2), and detection is lower
+(section 2 traces why). The node ablations are also defined differently from the report simulation's (as module
+stubs; `DECISIONS.md` P7-10).
 
 ## 2. Why some 5-seed results miss — and why that is not a code error
 
@@ -40,21 +51,39 @@ incidents per month.
 
 No difference is detectable. The report's 5-seed P0 (291) is itself a low draw from its simulation's distribution.
 
-**P2 (Phase 6)**, same 20 seeds, both passes (`equivalence_p2_seeds11_30.json`):
+**PRAHARI pipelines (Phase 7)**, seeds 11–30, both passes, with per-fire wind
+(`engine/tests/golden/equivalence_p7_seeds11_30.json`; per-seed means, Welch and Mann–Whitney p-values):
 
-| P2 | Report simulation | Engine | Welch p | Mann–Whitney p |
-| --- | --- | --- | --- | --- |
-| False incidents / month | 7.20 (sd 5.20) | 6.25 (sd 2.73) | 0.48 | 0.84 |
-| Confirmed within 3 h | 82.2% (sd 11.2) | 74.0% (sd 11.9) | 0.03 | 0.005 |
+| Pipeline | False incidents: report simulation | Engine | Welch p | Confirmed: report simulation | Engine | Welch p | Mann–Whitney p |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| P0 | 321.9 | 310.9 | 0.58 | 98.8% | 97.1% | 0.053 | 0.11 |
+| P1 | 139.1 | 141.8 | 0.40 | 99.7% | 99.6% | 0.64 | 0.47 |
+| P1t | 18.3 | 17.1 | 0.59 | 61.6% | 60.0% | 0.51 | 0.75 |
+| P2 | 7.20 | 6.25 | 0.48 | 82.2% | 72.8% | 0.015 | 0.002 |
+| P2 minus SCMR | 10.05 | 9.40 | 0.71 | 82.4% | 73.3% | 0.017 | 0.002 |
+| P2 minus RAQ | 10.15 | 9.80 | 0.86 | 86.1% | 79.6% | 0.088 | 0.012 |
 
-False alarms agree; detection does not. Our node and edge code reproduces the report simulation exactly on its own
-data (seed 11: tuned h 238.13, 54/63 fires), so the difference lies in the simulated world: the engine's seeds drew
-more haze in their calibration and tuning days (3.3 vs 2.25 episodes on average; detection falls about 4 points per
-episode), and the engine carries smoke on its continuous weather wind while the report simulation gives each injected
-fire a constant random wind (swapping in the report's fires on seeds 12–19 raises detection from 79.2% to 82.7%).
-The proposed legacy per-fire wind option awaits approval (`DECISIONS.md` P6-11, `KNOWN_ISSUES.md`).
+False alarms agree everywhere; detection agrees for the baselines and is lower for the pipelines that use the
+conformal node layer. What we established:
+
+- **Same code.** Our node and edge stages give the report simulation's exact result on its own signals (seed 11:
+  tuned h 238.13, 54 of 63 fires).
+- **Same fires.** With per-fire wind the fire term is the same model; a direct check on seed 11 finds the same
+  footprint — on average a fire lifts 8.24 / 5.19 / 2.92 nodes by ≥ 0.5 / 1 / 2 su in the engine and 8.17 / 5.10 /
+  3.02 in the report simulation. Per-fire wind lowered golden P2 detection slightly (246 → 231 of 324), so the Phase 6
+  wind explanation was withdrawn.
+- **Different calibration tails.** On seed 11 the engine's quiet fast residual exceeds 1 su in 2.2% of calibration
+  minutes against 0.29% in the report simulation; with haze switched off the engine's share drops to 0.18%. Haze in
+  the calibration window widens each node's conformal reference set, so a fire's lift earns a less extreme p-value
+  and fewer neighbours confirm within 30 minutes. The haze model is the same; the engine's seeds 11–30 drew 66
+  episodes in days 0–27 (56 expected) against the report simulation's 45.
+- **Independent seeds.** On fresh seeds 31–50 false incidents are identical for P2 (7.05 vs 7.05 per month) and
+  P2 detection is 79.4% against 84.4% (Welch p 0.16, Mann–Whitney p 0.29). Over all 40 seeds the PRAHARI pipelines
+  detect about 7 points less (P2 76.1% vs 83.3%, Welch p 0.007) while P0 and P1t agree. Part of the Phase 6 gap was
+  therefore sampling; a smaller difference in the node layer's calibration remains open (`KNOWN_ISSUES.md`).
+
 The golden tests keep the report's intervals as written, and their misses are documented rather than tuned away
-(`DECISIONS.md` P4-6, P4-7, P5-11).
+(`DECISIONS.md` P4-6, P4-7, P5-11, P7-9).
 
 ## 3. Node-layer calibration (Phase 5 acceptance)
 
@@ -72,6 +101,29 @@ Quiet pass, held-out test days, golden seeds. Source: `results/summary.json → 
 The report's simulation on the same seeds: exceedance 1.54%, local candidates 1.70 (seed 55 alone gives 4.25).
 "All candidates" includes common-mode periods such as haze, which the edge layer handles in Phase 6. Seed 22's cap is
 explained in `KNOWN_ISSUES.md` (improvement backlog) and `DECISIONS.md` P5-10.
+
+## 3b. Operating dial and node spacing (Phase 7)
+
+**Operating dial** (golden seeds, P2; source `summary.json → dial`). Each point re-tunes h for another node-local
+false-candidate target and replays the same runs:
+
+| Target (false candidates per node) | Mean h | False incidents / month | Confirmed within 3 h | Median minutes |
+| --- | --- | --- | --- | --- |
+| 1 per 60 days | 277.2 | 4.0 | 222/324 | 67 |
+| 1 per 30 days (design) | 251.8 | 3.4 | 231/324 | 62 |
+| 1 per 14 days | 198.1 | 7.6 | 267/324 | 55 |
+| 1 per 7 days | 158.6 | 14.2 | 280/324 | 46 |
+
+**Node spacing** (seeds 11, 22, 33, P2; source `summary.json → spacing`):
+
+| Spacing | Confirmed within 3 h | Report | Single-node alert within 3 h | False incidents / month |
+| --- | --- | --- | --- | --- |
+| 70 m | 119/189 = 63% | 85% | 181/189 = 96% | 4.0 |
+| 100 m | 63/189 = 33% | 56% | 160/189 = 85% | 4.0 |
+| 150 m | 10/189 = 5% | 13% | 112/189 = 59% | 4.0 |
+
+The fall with spacing matches the report's shape; the levels are lower for the reason in section 2. False alarms do
+not change with spacing because the neighbourhood radius scales with it (R = 1.6 s) on a regular grid.
 
 ## 4. Model checks against published references
 
@@ -97,10 +149,14 @@ busy day. The day-31 fire (13:00) gave node candidates at nodes 41 (+67 min) and
 ## Reproduce
 
 ```bash
-prahari experiment --preset golden                 # sections 1 and 3 → results/summary.json (~13 min)
-PRAHARI_GOLDEN=1 pytest engine/tests/golden        # the golden assertions
+prahari experiment --preset golden --jobs 4        # sections 1, 3, 3b (dial) → results/golden.json, summary.json
+prahari experiment --preset ablation --jobs 4      # section 1 (P2 minus QCC, minus TTC)
+prahari experiment --preset spacing --jobs 4       # section 3b (spacing)
+prahari experiment --preset seeds20 --jobs 4       # section 2 (engine side of the 20-seed comparison)
+PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden   # the golden assertions
 prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz   # section 5
 ```
 
-The 20-seed comparisons (section 2) were run with short scripts that call `eval.experiments.run_pass` and the oracle's
-functions; their per-seed outputs are kept in `engine/tests/golden/equivalence_*.json`.
+The report simulation's side of the 20-seed comparisons was run with short scripts that call
+`reference/prahari_simulation.py`'s `run`; the per-seed outputs of both sides are kept in
+`engine/tests/golden/equivalence_*.json`.
