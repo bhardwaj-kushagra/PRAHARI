@@ -1,10 +1,12 @@
-import { LineChart } from "echarts/charts";
-import { GridComponent, MarkAreaComponent, MarkLineComponent, TitleComponent, TooltipComponent } from "echarts/components";
+import { LineChart, ScatterChart } from "echarts/charts";
+import { GridComponent, LegendComponent, MarkAreaComponent, MarkLineComponent, TitleComponent,
+         TooltipComponent } from "echarts/components";
 import * as echarts from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
 import { useEffect, useRef } from "react";
 
-echarts.use([LineChart, GridComponent, TooltipComponent, MarkLineComponent, MarkAreaComponent, TitleComponent, CanvasRenderer]);
+echarts.use([LineChart, ScatterChart, GridComponent, LegendComponent, TooltipComponent, MarkLineComponent,
+             MarkAreaComponent, TitleComponent, CanvasRenderer]);
 
 export type EOption = echarts.EChartsCoreOption;
 

@@ -17,6 +17,7 @@ from prahari.core.contract_checks import ContractError, _arr, _num, _same_len  #
 from prahari.core.contracts_edge import (  # noqa: F401 — edge contracts are re-exported from here
     BayesFactors, Clusters, Decision, Fisher, Prior, Raq, Scmr)
 from prahari.core.contracts_world import Landscape, Layout, Links  # noqa: F401 — world contracts (Phase 1)
+from prahari.core.contracts_baselines import BaselineAlarms  # noqa: F401 — baselines (Phase 4)
 
 CONTRACT_VERSION = "prahari.frame/1"
 

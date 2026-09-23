@@ -35,6 +35,27 @@ def run(config: str, out: str, seed: int | None = None, days: float | None = Non
     return summary
 
 
+def experiment(args) -> int:
+    from prahari.eval.experiments import run_experiment
+    path = Path(args.config) if args.config else Path("configs") / "experiments" / f"{args.preset}.yaml"
+    try:
+        cfg = load_config(path)
+    except ConfigError as exc:
+        print(f"config error: {exc}", file=sys.stderr)
+        return 2
+    seeds = [int(v) for v in args.seeds.split(",")] if args.seeds else cfg["experiment"]["seeds"]
+    pipes = args.pipelines.split(",") if args.pipelines else cfg["experiment"]["pipelines"]
+    t0 = time.perf_counter()
+    summary = run_experiment(cfg, path.stem, seeds, pipes, args.out)
+    for name, p in summary["pipelines"].items():
+        fa, det = p["false_incidents_per_month"], p["confirmed_within_3h"]
+        print(f"{name}: {fa['rate']:.1f} false incidents/month (95% CI {fa['ci95'][0]:.1f}–{fa['ci95'][1]:.1f}; "
+              f"per seed {[round(v, 1) for v in fa['per_seed']]}), confirmed within 3 h "
+              f"{det['k']}/{det['n']} — SIMULATION")
+    print(f"wrote {args.out}/summary.json in {time.perf_counter() - t0:.0f} s")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="prahari", description="PRAHARI-SIM engine (all output is SIMULATION)")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -43,7 +64,15 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--out", required=True, help="output recording, e.g. recordings/smoke.prs.jsonl.gz")
     r.add_argument("--seed", type=int, default=None, help="override run.seed")
     r.add_argument("--days", type=float, default=None, help="override run.days")
+    e = sub.add_parser("experiment", help="run the M46 evaluation protocol and write results/*.json")
+    e.add_argument("--preset", default="golden", help="configs/experiments/<preset>.yaml")
+    e.add_argument("--config", default=None, help="explicit experiment YAML (overrides --preset)")
+    e.add_argument("--pipelines", default=None, help="comma list, e.g. P0,P1 (default from the preset)")
+    e.add_argument("--seeds", default=None, help="comma list, e.g. 11,22,33 (default from the preset)")
+    e.add_argument("--out", default="results", help="output directory")
     args = ap.parse_args(argv)
+    if args.cmd == "experiment":
+        return experiment(args)
     try:
         s = run(args.config, args.out, args.seed, args.days)
     except ConfigError as exc:

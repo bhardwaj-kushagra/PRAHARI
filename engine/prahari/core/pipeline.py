@@ -22,6 +22,7 @@ OUTPUT = {
     "cusum": C.Candidates, "comms": C.Delivered, "srp": C.Prior, "cluster": C.Clusters,
     "scmr": C.Scmr, "fisher": C.Fisher, "learn": C.BayesFactors, "raq": C.Raq,
     "escalate": C.Decision, "energy": C.EnergyState, "satellite": C.SatelliteAlerts,
+    "baseline_p0": C.BaselineAlarms, "baseline_p1": C.BaselineAlarms,
 }
 # Setup modules run once before the first tick (Phase 1): landscape → siting → links.
 SETUP = {"landscape": C.Landscape, "siting": C.Layout, "links": C.Links}
@@ -89,9 +90,9 @@ class Simulation:
         return {k: v.health.status() for k, v in self.slots.items()}
 
     # -- one tick ----------------------------------------------------------
-    def tick(self, t: int):
-        ctx = self.ctx
-        ctx.t = t
+    def step_signals(self, t: int):
+        """Weather → fires → plume → sensor signals for tick t (shared by `tick` and the headless experiments)."""
+        self.ctx.t = t
         env = self.stage("weather", t)
         fuel = self.stage("ffmc", env)
         fires = self.stage("ignition", (t, env, fuel))
@@ -101,6 +102,15 @@ class Simulation:
         haze = self.stage("haze", t)
         x = self.stage("sensor", (t, conc, env, nuis, haze))
         x = self.stage("faults", x)
+        return env, fuel, fires, src, conc, haze, x
+
+    def step_baselines(self, x):
+        """Baseline detectors P0 (M22) and P1 (M23) on the same signals (SPEC §4.5)."""
+        return self.stage("baseline_p0", x), self.stage("baseline_p1", x)
+
+    def tick(self, t: int):
+        env, fuel, fires, src, conc, haze, x = self.step_signals(t)
+        base0, base1 = self.step_baselines(x)
         res = self.stage("ttc", x)
         pv = self.stage("qcc", res)
         sc = self.stage("score", pv)
@@ -136,6 +146,10 @@ class Simulation:
         if haze.level > 0 and self._haze_prev == 0:
             events.append({"type": "haze_start", "level": float(f"{haze.level:.4g}")})
         self._haze_prev = haze.level
+        for i, _ in base0.alarms:
+            events.append({"type": "p0_alarm", "node": int(i)})
+        for i, members in base1.alarms:
+            events.append({"type": "p1_alarm", "node": int(i), "members": list(members)})
         for fid, ta in sat.alert_t:
             if fid not in self._sat_done and ta <= t:
                 self._sat_done.add(fid)
@@ -206,11 +220,15 @@ class Simulation:
         self.ctx.landscape = self.landscape
         self.links = self.stage("links", (self.ctx.xy, self.ctx.gateways))
 
-    def run(self, writer) -> dict:
+    def prepare(self) -> None:
+        """Setup modules, then reset every tick stage (used by `run` and the headless experiments)."""
         self.setup()
         for name, slot in self.slots.items():
             if name not in SETUP:
                 slot.reset(self.ctx)
+
+    def run(self, writer) -> dict:
+        self.prepare()
         writer.header(self.header())
         every = int(self.cfg["record"]["every_k_ticks"])
         for tick, t in enumerate(self.clock.minutes()):

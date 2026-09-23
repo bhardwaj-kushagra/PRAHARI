@@ -15,3 +15,13 @@ const files = existsSync(src)
 for (const f of files) copyFileSync(join(src, f), join(dst, f));
 writeFileSync(join(dst, "index.json"), JSON.stringify({ recordings: files }, null, 2));
 console.log(`synced ${files.length} recording(s) to public/recordings`);
+
+// Experiment summary for the Results tab (Phase 4), if one has been produced by `prahari experiment`.
+const resSrc = join(here, "..", "..", "results", "summary.json");
+const resDst = join(here, "..", "public", "results");
+rmSync(resDst, { recursive: true, force: true });
+if (existsSync(resSrc)) {
+  mkdirSync(resDst, { recursive: true });
+  copyFileSync(resSrc, join(resDst, "summary.json"));
+  console.log("synced results/summary.json");
+}

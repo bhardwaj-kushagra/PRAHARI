@@ -13,8 +13,10 @@ import { type Panel, useSim } from "./store";
 // Charts (ECharts) load only when the Signals tab opens, keeping the map view light.
 const SignalsPanel = lazy(() => import("./components/SignalsPanel").then((m) => ({ default: m.SignalsPanel })));
 
+const ResultsPanel = lazy(() => import("./components/ResultsPanel").then((m) => ({ default: m.ResultsPanel })));
+
 const TABS: [Panel, string][] = [
-  ["health", "Health & model card"], ["signals", "Signals"], ["node", "Node"], ["alerts", "Alerts"],
+  ["health", "Health & model card"], ["signals", "Signals"], ["node", "Node"], ["alerts", "Alerts"], ["results", "Results"],
 ];
 
 function usePlayback() {
@@ -78,6 +80,7 @@ export function App() {
           <div className="panel">
             {panel === "health" ? <ModuleHealth /> : panel === "signals"
               ? <Suspense fallback={<p className="muted">Loading charts…</p>}><SignalsPanel /></Suspense>
+              : panel === "results" ? <Suspense fallback={<p className="muted">Loading charts…</p>}><ResultsPanel /></Suspense>
               : panel === "node" ? <NodePanel /> : <AlertsPanel />}
           </div>
         </aside>

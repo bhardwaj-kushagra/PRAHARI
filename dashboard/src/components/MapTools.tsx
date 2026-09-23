@@ -43,6 +43,9 @@ export function MapTools() {
         <Layer k="smoke" on={layers.smoke} toggle={toggleLayer} label="Smoke">
           <span className="sw-smoke" /> 0.05 → 2.5 su, log scale · {plumeModel}
         </Layer>
+        <Layer k="baselines" on={layers.baselines} toggle={toggleLayer} label="Baselines">
+          <span className="sw-p0" /> P0 alarm <span className="sw-p1" /> P1 alarm (last 30 min)
+        </Layer>
         <Layer k="links" on={layers.links} toggle={toggleLayer} label="Radio links">
           {[7, 8, 9, 10, 11, 12].map((sf) => (
             <span key={sf} className="sf-key"><span className="sw-line" style={{ background: SF_RAMP[sf] }} />SF{sf}</span>

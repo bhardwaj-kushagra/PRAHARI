@@ -33,3 +33,18 @@ describe("map layer helpers", () => {
     expect(pct(null)).toBe("—");
   });
 });
+
+describe("recentBaselineAlarms", () => {
+  it("collects P0 nodes and P1 members from the last window only", async () => {
+    const { recentBaselineAlarms } = await import("./layers");
+    const frames = [
+      { t: 0, events: [{ type: "p0_alarm", node: 1 }] },
+      { t: 40, events: [{ type: "p0_alarm", node: 2 }, { type: "p1_alarm", node: 3, members: [3, 4] }] },
+      { t: 60, events: [] },
+    ];
+    const src = { frameAt: (i: number) => frames[i], indexAt: (t: number) => frames.reduce((k, f, i) => (f.t <= t ? i : k), 0) };
+    const r = recentBaselineAlarms(src as any, 60, 30);
+    expect([...r.p0]).toEqual([2]);
+    expect([...r.p1].sort()).toEqual([3, 4]);
+  });
+});

@@ -2,7 +2,7 @@ import { create } from "zustand";
 import type { FrameSource } from "./sources/FrameSource";
 
 export const SPEEDS = [1, 10, 60, 600] as const;   // ×real time (SPEC §6.2)
-export type Panel = "health" | "node" | "alerts" | "signals";
+export type Panel = "health" | "node" | "alerts" | "signals" | "results";
 
 interface State {
   source: FrameSource | null;

@@ -7,7 +7,8 @@ from __future__ import annotations
 
 import numpy as np
 
-STREAMS = ["weather", "ignition", "growth", "plume", "sensor", "nuisance", "haze", "faults", "comms", "satellite"]
+STREAMS = ["weather", "ignition", "growth", "plume", "sensor", "nuisance", "haze", "faults", "comms", "satellite",
+           "protocol"]                     # Phase 4: evaluation protocol (day types, protocol fires)
 
 
 def make_rngs(seed: int) -> dict[str, np.random.Generator]:

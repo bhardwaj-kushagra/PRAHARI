@@ -32,7 +32,7 @@ export interface Header {
   detection_radius_m?: number;
   satellite_pixel_m?: number;
 }
-export interface FrameEvent { type: string; node?: number; fire?: number; module?: string; error?: string; trace_id?: string; x?: number; y?: number; cause?: string }
+export interface FrameEvent { type: string; node?: number; fire?: number; module?: string; error?: string; trace_id?: string; x?: number; y?: number; cause?: string; members?: number[] }
 // Plume grid (Phase 3a): float16 little-endian, base64; row 0 is the southern row.
 export interface PlumeGrid { x0: number; y0: number; cell_m: number; nx: number; ny: number; max: number; data: string }
 export interface Alert { level: string; cluster: number[]; trace_id: string }

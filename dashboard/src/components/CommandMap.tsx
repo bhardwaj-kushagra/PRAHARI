@@ -1,4 +1,4 @@
-import { glowOpacity, glyphScale, latestPlume } from "../layers";
+import { glowOpacity, glyphScale, latestPlume, recentBaselineAlarms } from "../layers";
 import { useMapView } from "../mapView";
 import type { FireState, Header } from "../types";
 import { NODE_STATE } from "../types";
@@ -49,6 +49,23 @@ function WindArrow({ speed, fromDeg, header, k }: { speed: number; fromDeg: numb
       <line x1={x0 - dx / 2} y1={y0 - dy / 2} x2={x0 + dx / 2} y2={y0 + dy / 2} className="wind-line" markerEnd="url(#arrow)" />
       <text x={x0} y={y0 + 62} textAnchor="middle" className="map-label">wind {speed} m/s</text>
       <text x={x0} y={y0 + 80} textAnchor="middle" className="map-label">from {fromDeg}°</text>
+    </g>
+  );
+}
+
+/** P0 alarms (grey triangle above the node) and P1 alarms (dashed grey ring on each member) from the last 30 min. */
+function BaselineMarks({ h, H, k, t }: { h: Header; H: number; k: number; t: number }) {
+  const source = useSim((s) => s.source);
+  if (!source) return null;
+  const { p0, p1 } = recentBaselineAlarms(source, t, 30);
+  return (
+    <g className="baselines" aria-label="baseline alarms">
+      {[...p1].map((i) => <circle key={`p1-${i}`} cx={h.nodes[i].x} cy={H - h.nodes[i].y} r={15 * k} className="p1-mark"
+                                  strokeWidth={1.8 * k}><title>P1 alarm (v1) · node {i} · SIM</title></circle>)}
+      {[...p0].map((i) => (
+        <path key={`p0-${i}`} transform={`translate(${h.nodes[i].x},${H - h.nodes[i].y - 13 * k}) scale(${k})`}
+              d="M0,-5L5,4L-5,4Z" className="p0-mark"><title>P0 alarm (fixed threshold) · node {i} · SIM</title></path>
+      ))}
     </g>
   );
 }
@@ -113,6 +130,7 @@ export function CommandMap() {
         ))}
         </g>
         {previewing ? <PreviewNodes h={h} H={H} name={preview!} /> : null}
+        {layers.baselines && !previewing ? <BaselineMarks h={h} H={H} k={k} t={frame.t} /> : null}
         <WindArrow speed={frame.weather.wind_ms} fromDeg={frame.weather.wind_dir_deg} header={h} k={k} />
         <text x={0} y={H + 16 * k} className="map-label" style={{ fontSize: 13 * k }}>0</text>
         <text x={W} y={H + 16 * k} className="map-label" textAnchor="end" style={{ fontSize: 13 * k }}>{W} m</text>

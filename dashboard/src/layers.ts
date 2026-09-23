@@ -110,3 +110,19 @@ export function latestPlume(source: FrameSource, t: number, maxAgeMin: number): 
 export function glowOpacity(conc: number | undefined): number {
   return conc && conc > 0.05 ? Math.min(1, conc / 2.5) * 0.8 : 0;
 }
+
+/** Baseline alarms (P0 nodes, P1 member sets) raised within the last `windowMin` simulated minutes. */
+export function recentBaselineAlarms(source: FrameSource, t: number, windowMin: number): { p0: Set<number>; p1: Set<number> } {
+  const p0 = new Set<number>();
+  const p1 = new Set<number>();
+  for (let i = source.indexAt(t); i >= 0; i--) {
+    const f = source.frameAt(i);
+    if (f.t > t) continue;
+    if (t - f.t > windowMin) break;
+    for (const e of f.events) {
+      if (e.type === "p0_alarm" && e.node !== undefined) p0.add(e.node);
+      if (e.type === "p1_alarm") for (const m of e.members ?? []) p1.add(m);
+    }
+  }
+  return { p0, p1 };
+}

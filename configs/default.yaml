@@ -4,6 +4,10 @@
 
 regime: null                      # name of configs/regimes/<name>.yaml, or null
 
+experiment:                       # `prahari experiment` (Phase 4)
+  pipelines: [P0, P1]
+  seeds: [11]
+
 run:
   seed: 11
   start: "2026-04-15T00:00"
@@ -68,6 +72,8 @@ modules:
   escalate: stub
   energy: stub
   satellite: stub
+  baseline_p0: real               # Phase 4 — P0 fixed threshold (M22)
+  baseline_p1: real               # Phase 4 — P1 v1 as written (M23)
 
 params:
   landscape:
@@ -222,6 +228,41 @@ params:
     fixed_delay_min: 90
     pixel_m: 375                  # VIIRS I-band pixel, for the map overlay
     source: "ASM; SPEC §4.2 satellite stub; LIT [17] VIIRS 375 m pixel"
+  baseline_p0:
+    init_min: 1440                # M22 — first day of raw data sets the threshold
+    n_sigma: 3.0                  # M22 — μ + 3σ
+    refractory_min: 30            # M22 — rising edges 30 min apart count as alarms
+    start_min: 1440               # first minute alarms may be raised (experiments: start of the test period)
+    source: "TGT; M22 as in the abstract-era design and the report simulation"
+  baseline_p1:
+    init_min: 1440                # first day initialises the EWMA (report simulation)
+    slow_tau_min: 720             # M24 — α = 1/720
+    freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3, no cap (v1 as written)
+    var_floor: 1.0e-4
+    k: 0.5                        # M23
+    h: 8.8                        # M23 — Siegmund ARL 43,200 gives 8.815; 8.8 as written in the report
+    refractory_min: 30
+    window_min: 30                # M23 — confirmation window
+    quorum: 2                     # M23 — two or more candidates within R
+    start_min: 1440
+    source: "TGT; M23 v1 as written, parameters as in the report simulation (DER h)"
+  evaluation:
+    calibration_days: 14          # M46 — test protocol
+    tuning_days: 14
+    test_days: 30
+    merge_min: 60                 # M46 — incident merging
+    merge_radius_factor: 2.0      # M46 — within 2R
+    detect_radius_m: 150.0        # M46 — detection radius
+    detect_window_min: 180        # M46 — within 3 hours
+    slot_min: 360                 # M46 — fires at 6-hour slots
+    slot_start_min: 120
+    slot_end_margin_min: 400
+    slot_jitter_min: 60
+    dry_day_prob: 0.5
+    fire_prob_dry: 0.8            # M46 — probability 0.8 on dry days
+    fire_prob_wet: 0.2            # M46 — 0.2 on wet days
+    month_days: 30
+    source: "LIT FIRENET–PRAHARI report protocol (M46), as in reference/prahari_simulation.py"
   display:
     elevated_p: 0.01              # node shown as elevated below this p-value
     confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation

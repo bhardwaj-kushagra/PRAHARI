@@ -120,6 +120,13 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .sw-smoke { display: inline-block; width: 44px; height: 10px; border: 1px solid var(--line);
             background: linear-gradient(90deg, rgba(159, 179, 200, 0), rgba(159, 179, 200, 0.75)); }
 
+/* Baseline alarms (Phase 4): grey = baselines (SPEC §6.3) */
+.p0-mark { fill: var(--grey); stroke: var(--bg); stroke-width: 1; }
+.p1-mark { fill: none; stroke: var(--grey); stroke-dasharray: 3 2; }
+.sw-p0 { display: inline-block; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+         border-bottom: 9px solid var(--grey); }
+.sw-p1 { display: inline-block; width: 11px; height: 11px; border-radius: 50%; border: 1.5px dashed var(--grey); }
+
 /* Side panel */
 .picker { display: flex; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .picker select { background: var(--bg); border: 1px solid var(--line); padding: 4px 6px; border-radius: 3px; max-width: 260px; }
@@ -150,6 +157,11 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .multi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
 .echart { width: 100%; }
 .chart-foot { font: 12px var(--font-mono); color: var(--text-2); margin-top: 8px; }
+
+/* Results tab (Phase 4) */
+.results-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 13px; }
+.results-table th, .results-table td { text-align: left; padding: 5px 6px; border-bottom: 1px solid var(--line); }
+.results-table th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); }
 
 /* Time controls */
 .controls { border-top: 1px solid var(--line); padding: 8px 16px; background: var(--panel); }
