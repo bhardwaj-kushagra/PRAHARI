@@ -74,5 +74,11 @@ describe("RecordingSource", () => {
     expect(src.header.nodes).toHaveLength(100);
     expect(src.span[0]).toBe(0);
     expect(src.eventMarks().some((m) => m.kind === "ignition")).toBe(true);
+    // Phase 1 world sections
+    const L = src.header.layouts!;
+    expect(L.active).toBe("grid");
+    expect(L.greedy!.covered!).toBeGreaterThanOrEqual(L.grid!.covered!);
+    expect(src.header.links!.sf).toHaveLength(100);
+    expect(src.header.map.interfaces.map((f) => f.kind)).toContain("village");
   });
 });

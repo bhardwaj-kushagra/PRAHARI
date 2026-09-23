@@ -1,4 +1,5 @@
 import { sci, simClock } from "../format";
+import { pct } from "../layers";
 import { useFrame, useSim } from "../store";
 import { SimBadge } from "./SimBadge";
 
@@ -16,6 +17,7 @@ export function HeaderStrip() {
       {h && frame ? (
         <dl className="strip-stats">
           <div><dt>Scenario</dt><dd>{h.scenario}</dd></div>
+          <div><dt>Layout</dt><dd>{h.layouts?.active ?? "grid"} · <b className="mono" data-testid="coverage">{pct(h.layouts?.[h.layouts.active]?.covered)}</b> likelihood covered</dd></div>
           <div><dt>Clock</dt><dd className="mono" data-testid="clock">{simClock(h, simT)}</dd></div>
           <div><dt>Day type</dt><dd>{frame.prior.day_type === "dry_busy" ? "dry / busy" : "wet / quiet"}</dd></div>
           <div><dt>Prior odds</dt><dd className="mono">{sci(frame.prior.odds)}</dd></div>

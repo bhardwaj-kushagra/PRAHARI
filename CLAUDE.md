@@ -50,6 +50,7 @@ This repository builds a **local simulator and dashboard** for the FIRENET–PRA
 pip install -e engine[dev]                    # engine
 pytest engine/tests                           # all engine tests
 prahari run --config configs/scenarios/smoke.yaml --out recordings/smoke.prs.jsonl.gz
+prahari run --config configs/scenarios/siting_greedy.yaml --out recordings/siting_greedy.prs.jsonl.gz   # also siting_corridor
 prahari experiment --preset golden            # legacy-mode reproduction (Phase 4+)
 uvicorn server.app:app --reload               # live server (Phase 6+)
 cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)

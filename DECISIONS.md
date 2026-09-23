@@ -37,6 +37,39 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 - **P0-9.** The decision trace records which rule decided (`bayes.method`, `fisher.method`). While RAQ or Fisher are stubs, the explanation says "fixed quorum … (stub RAQ; posterior shown for reference only)" and "Bonferroni p", so no alert claims a Bayes decision that was not made.
 - **P0-10.** Recordings are copied into `dashboard/public/recordings/` (gitignored) by `npm run sync-recordings`, which runs automatically before `dev` and `build`; the dashboard lists them from a generated `index.json` and also opens any file via the picker or drag-and-drop.
 
+## Phase 1 design choices
+
+- **P1-1. Larger landscape, centred grid.** On the Phase 0 map (700 m), 100 nodes at 70 m with r_d = 50 m cover 100% of
+  the map (the farthest point from a node is 49.5 m) and M38 gives SF7 to every node (SF7 closes to 746 m), so the siting
+  comparison and SF colouring would be meaningless. The default landscape is now 1400 × 1400 m with the grid centred
+  (`world.offset_m: null`). The report's golden configuration (100 nodes at 70 m) is unchanged; only the surroundings grew.
+- **P1-2. Illustrative landscape (ASM).** One village polygon, two footpaths, a road and a power line, placed by hand to
+  look like a Terai forest edge. It is not a real place; the model card tags it ASM.
+- **P1-3. Village is not forest.** Closed features listed in `landscape.non_forest` get λ = 0 and cannot host greedy
+  sites; the village still raises λ around it through its distance field (D = 0 inside).
+- **P1-4. Static λ for siting.** M3 is evaluated with a(t) = 1 and no lightning term. Covered fractions are ratios, so
+  they do not depend on λ₀ or a(t); λ₀ (1e-9 per m² per minute) is a placeholder rescaled per scenario from Phase 3a.
+- **P1-5. Corridor spacing (DER).** M1 places nodes every s metres along the chosen lines; when the lines are shorter
+  than N·s, the spacing becomes L/N so that exactly N nodes fit (35 m on the default footpaths plus village edge).
+  Offsets alternate ±15 m; a node whose offset lands inside a closed feature takes the other side.
+- **P1-6. Greedy on the raster.** Candidate sites are 10 m forest cell centres; coverage uses the same cell-centre rule
+  (distance ≤ r_d) as the M4 objective, so greedy's gains and the reported fractions agree exactly. Ties go to the
+  lowest row-major cell, so siting is deterministic and needs no RNG stream.
+- **P1-7. Setup modules.** `landscape`, `siting` and `links` run once before the first tick through the same `Slot`
+  isolation as tick stages; setup failures appear as `degraded` events in the first frame. `siting` may not be off.
+- **P1-8. `links` separate from `comms`.** Static link budgets (M38 without shadowing) live in their own module so that
+  the `comms` stub keeps its Phase 0 behaviour. Shadowing, TS011 relays and collisions arrive with Phase 8; nodes with no
+  closing SF are flagged "needs a relay" rather than hidden.
+- **P1-9. Map colours.** Spreading factor is ordinal, so links use one blue hue from dim (SF7) to bright (SF12),
+  validated with the dataviz ordinal check on the dark map surface (monotone lightness, ΔL ≥ 0.06, 2.19:1 at the dim
+  end). Ignition likelihood is a one-hue warm-white alpha ramp, keeping ember, amber and pine for node states.
+- **P1-10. Phase 0 files touched (approved with the Phase 1 plan).** `core/pipeline.py` (setup call, header fields),
+  `core/contracts.py` (re-export), `stages.py` (imports), `world/geometry.py` (additive `grid_origin`,
+  `corridor_layout`), `configs/default.yaml` (world block, new parameter blocks), `configs/scenarios/smoke.yaml` and
+  `tests/smoke/test_smoke.py` (the scripted fire moved from (300, 330) to (650, 680), the same place relative to the
+  re-centred grid). Dashboard: `CommandMap.tsx` (layers, glyph scaling), `HeaderStrip.tsx`, `NodePanel.tsx`, `App.tsx`,
+  `types.ts` (additive), `theme.css`.
+
 ## Dependencies beyond CLAUDE.md rule 13
 
 - **Dep-1.** `@vitejs/plugin-react` (dev): standard React support for Vite.

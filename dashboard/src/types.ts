@@ -6,15 +6,30 @@ export interface ModelCardRow {
   model: string; kind: string; equation: string; tag: string;
   description: string; version: string; source: string;
 }
+// World sections (Phase 1, additive; absent in older recordings)
+export interface Interface { kind: "path" | "village" | "road" | "power_line" | string; closed?: boolean; points: [number, number][] }
+export interface LambdaGrid { cell_m: number; x0: number; y0: number; nx: number; ny: number; modelled: boolean; values: number[] }
+export interface LayoutInfo { covered: number | null; nodes: [number, number][] }
+export type LayoutName = "grid" | "corridor" | "greedy";
+export type Layouts = { active: LayoutName; corridor_spacing_m: number } & Partial<Record<LayoutName, LayoutInfo>>;
+export interface LinkTable {
+  modelled: boolean; gateway: (string | null)[]; sf: (number | null)[];
+  d_m: number[]; pl_db: number[]; prx_dbm: number[];
+}
+
 export interface Header {
   schema: string; label: string; scenario: string; description: string;
   seed: number; start: string; days: number; tick_minutes: number; n_ticks: number;
   record_every: number;
-  map: { width_m: number; height_m: number; interfaces: { kind: string; points: [number, number][] }[] };
+  map: { width_m: number; height_m: number; interfaces: Interface[]; lambda_grid?: LambdaGrid };
   spacing_m: number; radius_m: number;
   nodes: NodeInfo[]; gateways: Gateway[];
   modules: Record<string, string>;
   model_card: ModelCardRow[];
+  layouts?: Layouts;
+  links?: LinkTable;
+  detection_radius_m?: number;
+  satellite_pixel_m?: number;
 }
 export interface FrameEvent { type: string; node?: number; fire?: number; module?: string; error?: string; trace_id?: string; x?: number; y?: number }
 export interface Alert { level: string; cluster: number[]; trace_id: string }

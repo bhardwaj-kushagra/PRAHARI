@@ -3,6 +3,7 @@ import { AlertsPanel } from "./components/AlertsPanel";
 import { CommandMap } from "./components/CommandMap";
 import { Footer } from "./components/Footer";
 import { HeaderStrip } from "./components/HeaderStrip";
+import { MapTools } from "./components/MapTools";
 import { ModuleHealth } from "./components/ModuleHealth";
 import { NodePanel } from "./components/NodePanel";
 import { openFile, RecordingPicker } from "./components/RecordingPicker";
@@ -61,7 +62,7 @@ export function App() {
     <div className="app">
       <HeaderStrip />
       <main className="body">
-        <section className="left"><CommandMap /></section>
+        <section className="left"><MapTools /><CommandMap /></section>
         <aside className="right">
           <RecordingPicker />
           <nav className="tabs" role="tablist">

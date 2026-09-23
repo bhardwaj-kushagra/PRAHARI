@@ -2,8 +2,8 @@
 
 | Phase | Title | Status |
 | --- | --- | --- |
-| 0 | Foundation and replay shell | awaiting review |
-| 1 | World, network and siting | not started |
+| 0 | Foundation and replay shell | accepted (2026-09-23) |
+| 1 | World, network and siting | awaiting review |
 | 2 | Weather, fuel moisture and sensor signals | not started |
 | 3a | Fires and plumes, legacy | not started |
 | 3b | Gaussian plume (optional) | not started |
@@ -40,3 +40,33 @@ Statuses: not started · in progress · awaiting review · accepted.
 
 **Next step:** review and accept Phase 0, then Phase 1 — world, network and siting (M1–M4, M38 without shadowing).
 
+
+### 2026-09-23 — Session 2 (Phase 1)
+
+- Phase 0 accepted by the developer ("good enough").
+- Built Phase 1 — world, network and siting:
+  - Three setup modules that run once before the first tick, each with a stub, through the same isolation wrapper:
+    `landscape` (M2 distance fields + M3 static intensity; stub uniform), `siting` (M1 grid and corridor, M4 greedy;
+    stub grid only) and `links` (M38 without shadowing; stub perfect SF7 link).
+  - A 1400 m Terai-style landscape in `configs/default.yaml`: village, two footpaths, road, power line; grid centred.
+  - Header additions (additive to `prahari.frame/1`): interfaces, ignition-likelihood grid, all three layouts with
+    covered likelihood, per-node links, detection radius and satellite pixel size.
+  - Dashboard: layout toggle with coverage (and a hollow-circle preview of non-simulated layouts), layer switches with
+    legends for interfaces, likelihood, radio links by SF, detection radius and satellite pixels; link details in the
+    node panel; coverage in the header strip.
+  - New scenarios and recordings: `siting_corridor`, `siting_greedy` (same landscape, fire beside a footpath).
+
+**Covered ignition likelihood, 100 nodes, r_d = 50 m (SIM, default landscape):** grid 24%, corridor 49%, greedy 83%.
+Greedy leaves 35 nodes without a direct link to `g1` (they need the Phase 8 relay); grid links span SF7–SF11.
+
+**Phase 1 acceptance (all pass):**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | Greedy covers at least as much likelihood as the grid at equal N | `test_acceptance_1_*` on the default landscape and a synthetic one; greedy also ≥ (1 − 1/e)·optimum on a brute-forced instance |
+| 2 | Distance fields and M38 (100 dB at 200 m, 120 dB at 400 m) | `test_m2_*`, `test_acceptance_2_m38_reference_values`, SF boundaries 746/828/919/1020/1112/1213 m |
+| — | Full suite, determinism, speed | 75 engine tests, 11 dashboard tests; recordings byte-identical on rerun; 1 simulated day ≈ 1.3 s |
+| — | Stub fallback | a failing or unbuildable real siting degrades to the grid and the run completes (`test_runner.py`) |
+
+**Next step:** review and accept Phase 1, then Phase 2 — weather, fuel moisture and sensor signals (M5, M6, M7 with
+`cffdrs` verification, M17 legacy, M18–M20).

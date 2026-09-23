@@ -21,6 +21,13 @@ export function NodePanel() {
     ["Health weight", String(v.health[i])],
     ["State of charge", `${Math.round(v.soc[i] * 100)}%`],
   ];
+  const L = source.header.links;
+  if (L) {
+    const ok = L.gateway[i] !== null;
+    rows.push(["Uplink", ok ? `${L.gateway[i]} · SF${L.sf[i]}${L.modelled ? "" : " (stub: perfect link)"}` : "no link closes — needs a relay (Phase 8)"]);
+    rows.push(["Distance to gateway", `${Math.round(L.d_m[i])} m`]);
+    if (L.modelled) rows.push(["Path loss / received power", `${L.pl_db[i]} dB / ${L.prx_dbm[i]} dBm`]);
+  }
   return (
     <div className="node-panel">
       <h2>Node {i} <span className="muted small">type {n.type}</span></h2>
