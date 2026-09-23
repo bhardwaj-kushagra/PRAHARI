@@ -49,7 +49,7 @@ This repository builds a **local simulator and dashboard** for the FIRENET–PRA
 ## Useful commands (keep this list up to date)
 
 ```text
-pip install -e engine[dev]                    # engine
+pip install -e "engine[dev,server]"          # engine (+ optional live server: fastapi, uvicorn, websockets)
 pytest engine/tests                           # all engine tests
 prahari run --config configs/scenarios/smoke.yaml --out recordings/smoke.prs.jsonl.gz
 prahari run --config configs/scenarios/siting_greedy.yaml --out recordings/siting_greedy.prs.jsonl.gz   # also siting_corridor
@@ -58,10 +58,11 @@ prahari run --config configs/scenarios/fires_day.yaml --out recordings/fires_day
 prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/fires_day_gaussian.prs.jsonl.gz   # 3b
 prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz           # Phase 5 node layer
 prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz       # 31 d, recorded from day 29 (~70 s)
-prahari experiment --preset golden            # P0/P1/P1t + node metrics over seeds 11,22,33,44,55 → results/summary.json (~8 min)
+prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz   # View 5 variant
+prahari experiment --preset golden            # P0/P1/P1t/P2 + node metrics, seeds 11,22,33,44,55 → results/summary.json (~13 min)
 prahari experiment --preset golden --seeds 11 --pipelines P1   # quicker single-seed check
 PRAHARI_GOLDEN=1 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)
-uvicorn server.app:app --reload               # live server (Phase 6+)
+uvicorn server.app:app --reload               # live server (Phase 6); dashboard: Live engine ▸ Scenarios ▸ Start
 cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
 cd dashboard && npm test                      # dashboard unit tests (Vitest)
 cd dashboard && npm run build && npm run preview   # static build, no engine server

@@ -13,7 +13,10 @@ interface State {
   speed: number;
   selectedNode: number | null;
   panel: Panel;
+  selectedTrace: string | null;   // Phase 6: the alert whose evidence the "why" panel shows
   setSource: (s: FrameSource) => void;
+  updateSource: (s: FrameSource) => void;
+  selectTrace: (id: string | null) => void;
   setLoading: (b: boolean) => void;
   setError: (e: string | null) => void;
   togglePlay: () => void;
@@ -34,7 +37,17 @@ export const useSim = create<State>((set, get) => ({
   speed: 60,
   selectedNode: null,
   panel: "health",
-  setSource: (source) => set({ source, simT: source.span[0], playing: false, error: null, selectedNode: null }),
+  selectedTrace: null,
+  setSource: (source) => set({ source, simT: source.span[0], playing: false, error: null, selectedNode: null,
+                               selectedTrace: null }),
+  // Live mode and replay variants: swap the source but keep the clock; at the live edge, follow new frames.
+  updateSource: (source) => {
+    const { source: old, simT, playing } = get();
+    const atEdge = !old || simT >= old.span[1] - 1e-6;
+    const t = atEdge && !playing ? source.span[1] : Math.max(source.span[0], Math.min(simT, source.span[1]));
+    set({ source, simT: t, error: null });
+  },
+  selectTrace: (selectedTrace) => set({ selectedTrace }),
   setLoading: (loading) => set({ loading }),
   setError: (error) => set({ error, loading: false }),
   togglePlay: () => {

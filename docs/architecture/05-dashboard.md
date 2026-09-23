@@ -20,7 +20,8 @@ flowchart LR
   `public/` and writes `index.json` for the recording picker.
 - `sources/FrameSource.ts` is the interface every data source implements (`header`, `frameCount`, `frameAt`,
   `span`); `RecordingSource.ts` implements it from a file, decompressing with the browser's `DecompressionStream`.
-  A live source (Phase 6) will implement the same interface.
+  `LiveSource.ts` (Phase 6) buffers the WebSocket lines and hands the store a fresh `LiveView` (a `RecordingSource`
+  over what has arrived) about four times a second; `updateSource` keeps the clock and follows the live edge.
 - `store.ts` keeps the playback clock (`simT`), speed, selected node and open tab. `useFrame()` returns the frame at
   the current time.
 
@@ -34,7 +35,8 @@ flowchart LR
 | Health & model card | `ModuleHealth.tsx` | module states, degradations, equation, tag, source, notes |
 | Signals | `SignalsPanel.tsx` | weather strip, haze, a node's reading, eight nodes as small multiples |
 | Node | `NodePanel.tsx`, `NodeInspector.tsx` | readout and badges (calibration n and floor); stacked charts: reading and baseline, fast residual, p-value with floor, CUSUM with h and candidates, health weight |
-| Alerts | `AlertsPanel.tsx` | alert list with the trace's explanation |
+| Alerts | `AlertsPanel.tsx`, `MechanismSwitches.tsx`, `WhyPanel.tsx` | mechanism switches with live counters (View 5); "Why this alarm" (View 3): escalation ladder, SCMR gauge, Fisher evidence, prior, Bayes bar, explanation; clickable alert list |
+| Live engine | `LivePanel.tsx` | server URL, scenario, speed, start/stop, status (optional; replay needs none of it) |
 | Results | `ResultsPanel.tsx` | false incidents per month (log axis, M45 intervals, per-seed ticks, report intervals), detection within 3 h (M44), table, node-layer calibration table |
 | Footer | `Footer.tsx` | seed, simulated days (and first recorded day for warm starts), frames, SIM |
 
@@ -48,6 +50,8 @@ Chart panels are loaded lazily when their tab opens, so the map view stays light
 | `series.ts` | time series from frames: weather, haze bands, node fields, p floor, h, candidate markers; thinning |
 | `results.ts` | chart rows for false alarms and detection, log bounds, node-layer rows |
 | `format.ts` | clock, compact numbers, simulated-days label |
+| `edge.ts` | replay-variant names, live counters (M46 rule), log-scale positions, the escalation ladder |
+| `sources/LiveSource.ts` | applying streamed lines, WebSocket URL |
 
 ## Visual language
 

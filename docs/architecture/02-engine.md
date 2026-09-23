@@ -25,11 +25,13 @@ engine/prahari/
 ├── sensors/                mox sensor (M17–M19), nuisance and haze (M20), faults (M21)
 ├── detect/baselines/       fixed (P0, M22), v1 (P1, M23), v1t (P1t)
 ├── detect/prahari/         ttc, qcc, score, cusum (stubs) and ttc_real, qcc_real, cusum_real, tuning (Phase 5);
-│                           cluster, scmr, fisher, srp, learn, raq, escalate (stubs until Phase 6)
+│                           cluster, scmr, fisher, srp, learn, raq, escalate (stubs) and edge_real, decide_real,
+│                           escalate_real (Phase 6)
 ├── comms/                  pathloss (M38), lorawan (stub)
 ├── energy/, satellite/     stubs until Phases 8–9
 ├── record/                 writer and reader of recordings, frame helpers, world header sections
 └── eval/                   stats (M44–M46), experiments (harness), node_metrics (Phase 5)
+server/                     optional live server: app.py (FastAPI), live.py (threaded run + LiveWriter)
 ```
 
 ## Stages and the registry
@@ -70,7 +72,7 @@ Top-level sections: `run` (seed, start, days, tick), `scenario`, `record` (frame
 ## Randomness
 
 `core/rng.py` spawns one `numpy.random.Generator` per stream from `SeedSequence(seed)`. The stream list is
-append-only (weather, ignition, growth, plume, sensor, nuisance, haze, faults, comms, satellite, protocol), so adding a
+append-only (weather, ignition, growth, plume, sensor, nuisance, haze, faults, comms, satellite, protocol, srp), so adding a
 module never changes the numbers other modules draw. Python's `random` and unseeded NumPy calls are not used.
 
 ## The tick
@@ -81,7 +83,8 @@ simulated minute:
 1. `step_signals(t)`: weather → ffmc → ignition → growth → plume, nuisance, haze → sensor → faults.
 2. `step_baselines(x)`: P0, P1 and P1t on the same readings.
 3. `step_node(x)`: ttc → qcc → score → cusum. The TTC slow z is also put in `ctx.z_slow` for the common-mode rule.
-4. The edge layer: comms → cluster → scmr → fisher → learn → raq → escalate; plus srp, energy, satellite.
+4. `step_edge(t, env, fuel, cand)`: comms → srp → cluster → scmr → fisher → learn → raq → escalate (M30–M35);
+   then energy and satellite.
 5. Events (ignitions, candidates, alarms, haze start, degradations) and evidence traces are collected, node display
    states are computed, and a frame dictionary is built.
 
@@ -93,6 +96,14 @@ threshold.
 Per-node state is held in NumPy arrays; there are no Python loops over nodes inside the tick (CLAUDE.md rule 8). The
 node layer costs about 0.3 ms per tick (SIM timing on the development machine).
 
+## Live mode (Phase 6)
+
+`server/live.py` runs a `Simulation` in a background thread through a `LiveWriter`, which has the same methods as the
+file writer (`header`, `frame`, `trace`, `close`) but appends each line to a list that WebSocket clients read. Before
+each recorded frame it applies queued module switches (`Simulation.switch_module` rebuilds that module's Slot) and
+paces frames to the requested speed. `server/app.py` exposes `GET /scenarios`, `POST /run`, `GET /health`,
+`POST /modules` and the WebSocket `/frames`. The engine never imports the server.
+
 ## The experiment harness
 
 `eval/experiments.py` runs the M46 protocol headlessly, calling exactly the same `step_signals`, baseline and node
@@ -100,6 +111,9 @@ code but building no frames:
 
 - per seed, a **quiet pass** (no fires) for false alarms, and a **fire pass** with protocol fires (every 6 hours in
   the test period, kept with probability 0.8 on dry days and 0.2 on wet days, drawn from the `protocol` stream);
+- the same day types are written into the prior's `day_type_overrides`, so fires, prior and quorum share a calendar;
+- P2 steps the node and edge layers and records an alarm for every cluster the RAQ confirms (as the report's
+  `confirm`);
 - incidents and detections are counted with `eval/stats.py` (M44–M46);
 - with `node_metrics`, `eval/node_metrics.py` also records QCC exceedance, node candidates and the tuned h;
 - output: `results/<preset>_seed<N>.json` and `results/summary.json` (which also copies the report's reference

@@ -103,7 +103,7 @@ length (ARL)** is how long, on average, a quiet node goes before a false crossin
   gives the design rate of one node-local false candidate per node per 30 days. Periods when a quarter of the network
   is elevated at once are left out of that count, because they are common-mode events for the edge to handle.
 
-## 2.7 PRAHARI's edge layer (M30–M35, Phase 6)
+## 2.7 PRAHARI's edge layer (M30–M35)
 
 - **Clustering (M30):** candidate nodes within R = 1.6 × spacing of each other in the last 30 minutes form a cluster.
 - **Spatial common-mode rejection, SCMR (M31):** a fire is local, haze is everywhere. A cluster passes only if the
@@ -117,6 +117,13 @@ length (ARL)** is how long, on average, a quiet node goes before a false crossin
   false-alarm cost to miss cost. In plain terms: on a dry, busy day two agreeing nodes are enough; on a wet, quiet day
   three are needed.
 - **Graded escalation (M35):** WATCH → CANDIDATE → CONFIRMED → ESCALATED, each step with a written explanation.
+
+How the simulator applies this by default ("legacy form", as the report's own simulation does): every time a node
+raises a candidate, it looks at the candidates of the last 30 minutes within R of that node, checks the local share
+against the network share (SCMR), and applies today's quorum. Each candidate's p-value is taken as the chance that a
+quiet node raises one within the window (about 1/30 per day × 30 minutes ≈ 6.9 × 10⁻⁴), so the Fisher combination
+depends only on how many nodes agree — which is exactly why "2 nodes on a dry day, 3 on a wet day" and the Bayes rule
+give the same answer. The dashboard's "Why this alarm" panel shows every one of these numbers for each alert.
 
 ## 2.8 Radio and power (M38–M43, Phase 8)
 

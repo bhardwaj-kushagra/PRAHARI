@@ -11,6 +11,8 @@ EXPLANATION = ("{n} node(s) {nodes} raised candidates within {window} min; "
 RULE_BAYES = "posterior odds {posterior:.2g} {verdict} the {threshold:.2g} threshold"
 RULE_QUORUM = ("fixed quorum of {quorum} {verdict} (stub RAQ; posterior odds {posterior:.2g} "
                "against {threshold:.2g} shown for reference only)")
+RULE_LEGACY = ("day-type quorum of {quorum} {verdict} (legacy RAQ, the M34 rule's consequence; posterior odds "
+               "{posterior:.2g} against {threshold:.2g})")
 
 
 def candidate_record(t: int, node: int, p: float, G: float, h: float, health: float) -> dict:
@@ -19,11 +21,12 @@ def candidate_record(t: int, node: int, p: float, G: float, h: float, health: fl
 
 
 def decision_record(t: int, seq: int, level: str, members, p_nodes, G, h: float, health,
-                    scmr: dict, fisher: dict, prior: dict, bayes: dict, window_min: int) -> dict:
+                    scmr: dict, fisher: dict, prior: dict, bayes: dict, window_min: int, extra: dict | None = None) -> dict:
     per_node = [{"node": int(i), "p_channels": [float(p)], "health": [float(health[i])],
                  "cusum": float(G[i]), "h": float(h)} for i, p in zip(members, p_nodes)]
     ratio = scmr["ratio"]
-    rule = RULE_BAYES if bayes.get("method", "bayes") == "bayes" else RULE_QUORUM
+    method = bayes.get("method", "bayes")
+    rule = RULE_BAYES if method == "bayes" else RULE_LEGACY if method == "legacy quorum" else RULE_QUORUM
     explanation = EXPLANATION.format(
         n=len(members), nodes=list(map(int, members)), window=window_min,
         ratio=f"{ratio:.3g}" if scmr.get("modelled", True) else "not modelled (stub)",
@@ -31,9 +34,9 @@ def decision_record(t: int, seq: int, level: str, members, p_nodes, G, h: float,
         combine="Fisher" if fisher.get("method", "fisher") == "fisher" else "Bonferroni",
         p_cluster=fisher["p_cluster"],
         rule=rule.format(posterior=bayes["posterior_odds"], threshold=bayes["threshold"], quorum=bayes["quorum"],
-                         verdict="met" if bayes["decision"] else "not met" if rule is RULE_QUORUM else "did not meet"),
+                         verdict="met" if bayes["decision"] else "did not meet" if rule is RULE_BAYES else "not met"),
         odds=prior["odds"], day=prior["day_type"].replace("_", ", "), quorum=bayes["quorum"])
-    return {"trace_id": f"d-{t}-{seq}", "t": t, "type": "decision", "level": level,
+    return {"trace_id": f"d-{t}-{seq}", "t": t, "type": "decision", "level": level, **(extra or {}),
             "cluster": [int(i) for i in members], "per_node": per_node,
             "scmr": scmr, "fisher": fisher, "prior": prior, "bayes": bayes,
             "explanation": explanation}

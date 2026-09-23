@@ -22,12 +22,12 @@ golden = pytest.mark.skipif(os.environ.get("PRAHARI_GOLDEN") != "1", reason="set
 @pytest.fixture(scope="module")
 def summary(tmp_path_factory):
     cfg = load_config(REPO / "configs" / "experiments" / "golden.yaml")
-    return run_experiment(cfg, "golden", cfg["experiment"]["seeds"], ["P0", "P1", "P1t"],
+    return run_experiment(cfg, "golden", cfg["experiment"]["seeds"], ["P0", "P1", "P1t", "P2"],
                           tmp_path_factory.mktemp("golden"), node_metrics=True)
 
 
 @golden
-@pytest.mark.parametrize("pipeline", ["P0", "P1", "P1t"])
+@pytest.mark.parametrize("pipeline", ["P0", "P1", "P1t", "P2"])
 def test_false_incidents_within_report_interval(summary, pipeline):
     ours = summary["pipelines"][pipeline]["false_incidents_per_month"]["rate"]
     lo, hi = REF["pipelines"][pipeline]["ci95"]

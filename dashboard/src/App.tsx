@@ -6,6 +6,7 @@ import { HeaderStrip } from "./components/HeaderStrip";
 import { MapTools } from "./components/MapTools";
 import { ModuleHealth } from "./components/ModuleHealth";
 import { NodePanel } from "./components/NodePanel";
+import { LivePanel } from "./components/LivePanel";
 import { openFile, RecordingPicker } from "./components/RecordingPicker";
 import { TimeControls } from "./components/TimeControls";
 import { type Panel, useSim } from "./store";
@@ -74,6 +75,7 @@ export function App() {
         <section className="left"><MapTools /><CommandMap /></section>
         <aside className="right">
           <RecordingPicker />
+          <LivePanel />
           <nav className="tabs" role="tablist">
             {TABS.map(([id, label]) => (
               <button key={id} role="tab" aria-selected={panel === id} className={panel === id ? "on" : ""} onClick={() => setPanel(id)}>{label}</button>

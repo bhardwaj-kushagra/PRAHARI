@@ -9,6 +9,7 @@ The decisions that most shape the project, with the alternatives considered. Ids
 | Every module has real, stub and off versions chosen by configuration | one implementation per module; feature flags in code | phases can be added safely; a failure never breaks the demo; A/B comparisons are one line of YAML | more classes; stubs must be maintained | SPEC P1–P2, P0-1 |
 | Failures fall back real → stub → off → hold → neutral | stop the run; retry | the demo always finishes; degradation is visible | a silent fallback could hide a bug — mitigated by `degraded` events and the health table | P0-1 |
 | One random stream per module, append-only list | one global stream (as the report) | adding a module never changes other results | cannot reproduce the report's exact draws — compared by distribution instead | N-c, P4-3 |
+| Live mode streams the recording's own line format | a separate live protocol | one parser, every view works live | a snapshot object per update | P6-8 |
 | Replay-first dashboard reading files | a live server | works offline at a conference; deterministic | recordings must be regenerated after engine changes | P0-5, P0-10 |
 | Additive contracts and frame fields | versioned breaking changes | old recordings still open | fields accumulate | CLAUDE.md rule 3 |
 | Provenance tag on every parameter, enforced by the loader | free-form comments | honest, auditable; the model card can show sources | more verbose configuration | P0-3, rule 9 |
@@ -31,6 +32,8 @@ The decisions that most shape the project, with the alternatives considered. Ids
 | 20-seed engine-versus-oracle comparisons when a 5-seed result misses | accept or reject on 5 seeds | separates code errors from sampling | costs minutes of compute | P4-7, P5-11 |
 | Report values stored only in `tests/golden/`, copied with a label | constants in code | no hard-coded results; clear provenance on screen | one indirection | P4-5 |
 | Traces state which rule decided (stub or real) | a single explanation template | explanations never overclaim | longer traces | P0-9 |
+| Legacy per-candidate edge by default; SPEC's component form as an option | only the SPEC's form | golden-comparable, exact match to the report's rule | two forms to explain | P6-2, N-b |
+| Keep the accepted plume stub unchanged despite the P2 detection gap; propose a legacy per-fire wind option | change it now | rule 4 respected; the diagnosis is recorded | P2 detection stays below the report until approved | P6-11 |
 | Warm-start recordings for the demo | show only young networks; shorten calibration | shows the designed operating point without touching the model | longer generation | P5-14 |
 
 ## Process

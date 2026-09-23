@@ -193,3 +193,33 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
   .body { grid-template-columns: 1fr; }
   .right { border-left: 0; border-top: 1px solid var(--line); }
 }
+
+/* Phase 6 — live panel, mechanism switches, "why this alarm" */
+.live { padding: 0 16px 8px; font-size: 13px; }
+.live-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.live-row input, .live-row select, .live-row button, .switch { background: var(--bg); border: 1px solid var(--line); color: var(--text); padding: 4px 8px; border-radius: 3px; }
+.linkish { background: none; border: 0; color: var(--text); padding: 0; cursor: pointer; font-weight: 500; }
+.switches { margin-bottom: 14px; }
+.switch-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.switch { cursor: pointer; min-width: 74px; }
+.switch.on { border-color: var(--pine); }
+.switch:disabled { opacity: 0.45; cursor: not-allowed; }
+.counters { margin: 8px 0 0; }
+.why { border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; margin-bottom: 14px; }
+.why h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-2); margin: 8px 0 4px; font-weight: 500; }
+.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 4px 16px; }
+.why-explanation { font-size: 13px; border-left: 3px solid var(--text-2); padding-left: 8px; }
+.ladder { display: flex; gap: 4px; list-style: none; padding: 0; margin: 6px 0; }
+.ladder li { flex: 1; text-align: center; font-size: 11px; letter-spacing: 0.05em; padding: 4px 2px; border: 1px solid var(--line); border-radius: 3px; color: var(--text-2); }
+.ladder li.past { color: var(--text); }
+.ladder li.on { color: var(--bg); background: var(--ember); border-color: var(--ember); font-weight: 600; }
+.logbar-track { position: relative; height: 8px; background: var(--line); border-radius: 4px; }
+.logbar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; }
+.logbar-fill.pass { background: var(--ember); }
+.logbar-fill.fail { background: var(--grey); }
+.logbar-threshold { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--text); }
+.logbar-scale { display: flex; justify-content: space-between; margin-top: 2px; }
+.mini-table { font-size: 12px; border-collapse: collapse; }
+.mini-table td { padding: 1px 8px 1px 0; }
+.alert-item { background: none; border: 0; color: var(--text); padding: 0; cursor: pointer; text-align: left; font: inherit; }
+.alerts li.sel { border-left: 2px solid var(--ember); padding-left: 6px; }

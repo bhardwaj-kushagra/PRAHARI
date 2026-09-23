@@ -65,13 +65,13 @@ modules:
   score: stub                     # M27 with one channel and c = 1 is exactly the stub; M29 is advanced
   cusum: real                     # Phase 5 — M28, replay-tuned h
   comms: stub
-  srp: stub
-  cluster: stub
-  scmr: stub
-  fisher: stub
-  learn: stub
-  raq: stub
-  escalate: stub
+  srp: real                       # Phase 6 — M33 legacy day-type prior
+  cluster: real                   # Phase 6 — M30 (legacy form: around each new candidate, as the report)
+  scmr: real                      # Phase 6 — M31
+  fisher: real                    # Phase 6 — M32
+  learn: stub                     # the M34 Sellke–Bayarri–Berger bound; the real M36 fit is Phase 9
+  raq: real                       # Phase 6 — M34 (legacy quorum by default; Bayes form selectable)
+  escalate: real                  # Phase 6 — M35
   energy: stub
   satellite: stub
   baseline_p0: real               # Phase 4 — P0 fixed threshold (M22)
@@ -238,17 +238,37 @@ params:
     source: "TGT ARL 30 d and r = 1/30 d; LIT M28 and the report simulation; DER h_default (oracle mean tuned h)"
   cluster:
     window_min: 30                # M30 — W
-    source: "ASM; report simulation"
+    form: legacy                  # legacy = around each new candidate (report simulation); components = M30 graph
+    source: "ASM; report simulation (window); LIT M30 and the report simulation (form)"
+  scmr:
+    ratio_min: 3.0                # M31 — ρ ≥ 3
+    source: "LIT M31 and the report simulation"
+  fisher:
+    rate_per_node_30d: 1.0        # M32 — candidate p-value p_i ≈ r·ΔT with r = 1 per node per 30 d …
+    window_min: 30                # … and ΔT = W = 30 min → 6.9e-4
+    source: "DER M32 from the M28 target rate and the M30 window"
   srp:
-    prior_odds: 1.0e-4            # M33 legacy — dry, busy day
-    day_type: dry_busy
-    source: "TGT; M33 legacy day-type prior"
+    prior_odds: 1.0e-4            # stub: M33 legacy — dry, busy day
+    day_type: dry_busy            # stub
+    p_dry: 0.5                    # real: P(dry, busy day), as the report simulation
+    odds_dry: 1.0e-4              # M33 legacy — dry, busy day
+    odds_wet: 1.0e-6              # M33 legacy — wet, quiet day
+    day_type_overrides: []        # scenario or harness: [{day: 31, type: dry_busy}] (1-based days)
+    source: "TGT M33 legacy day-type prior; LIT P(dry) 0.5 from the report simulation"
   raq:
-    fixed_quorum: 2               # M34 legacy — dry, busy day
+    fixed_quorum: 2               # stub: M34 legacy — dry, busy day
     cost_ratio: 0.01              # M34 — C_FA / C_miss
-    source: "TGT; M34"
+    form: legacy                  # real: legacy = day-type quorum (report); bayes = BF bound × prior odds ≥ cost ratio
+    quorum_dry: 2                 # M34 legacy consequence — dry, busy day
+    quorum_wet: 3                 # M34 legacy consequence — wet, quiet day
+    rate_per_node_30d: 1.0        # M32 candidate p-value, for the Bayes reverse view of the quorum
+    window_min: 30
+    source: "TGT M34 cost ratio and legacy quorums; LIT SBB bound"
   escalate:
     clear_min: 120                # M35 — cleared after 120 min without candidates
+    growth_min: 30                # M35 — escalate when an incident grows by ≥ 2 nodes within 30 min …
+    growth_nodes: 2
+    escalate_km: 1.0              # M35 — … or another confirmed incident lies within 1 km
     source: "ASM; M35"
   satellite:
     fixed_delay_min: 90

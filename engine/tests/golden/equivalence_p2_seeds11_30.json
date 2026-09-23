@@ -1,0 +1,418 @@
+{
+ "label": "SIMULATION",
+ "what": "P2 per seed, quiet pass false incidents per 30 test days and fire-pass detection within 3 h; legacy mode, 100 nodes at 70 m, seeds 11-30. oracle = reference/prahari_simulation.py run(); engine = eval.experiments.run_seed. Evidence for DECISIONS.md P6-11.",
+ "oracle": {
+  "11": {
+   "seed": 11,
+   "fa": 5.0,
+   "det": 54,
+   "n": 63,
+   "p1t_det": 34
+  },
+  "12": {
+   "seed": 12,
+   "fa": 8.0,
+   "det": 55,
+   "n": 66,
+   "p1t_det": 43
+  },
+  "13": {
+   "seed": 13,
+   "fa": 3.0,
+   "det": 41,
+   "n": 75,
+   "p1t_det": 49
+  },
+  "14": {
+   "seed": 14,
+   "fa": 7.0,
+   "det": 45,
+   "n": 68,
+   "p1t_det": 44
+  },
+  "15": {
+   "seed": 15,
+   "fa": 5.0,
+   "det": 47,
+   "n": 52,
+   "p1t_det": 28
+  },
+  "16": {
+   "seed": 16,
+   "fa": 3.0,
+   "det": 44,
+   "n": 50,
+   "p1t_det": 40
+  },
+  "17": {
+   "seed": 17,
+   "fa": 6.0,
+   "det": 56,
+   "n": 61,
+   "p1t_det": 35
+  },
+  "18": {
+   "seed": 18,
+   "fa": 11.0,
+   "det": 56,
+   "n": 66,
+   "p1t_det": 38
+  },
+  "19": {
+   "seed": 19,
+   "fa": 4.0,
+   "det": 50,
+   "n": 58,
+   "p1t_det": 34
+  },
+  "20": {
+   "seed": 20,
+   "fa": 6.0,
+   "det": 52,
+   "n": 68,
+   "p1t_det": 35
+  },
+  "21": {
+   "seed": 21,
+   "fa": 4.0,
+   "det": 53,
+   "n": 63,
+   "p1t_det": 41
+  },
+  "22": {
+   "seed": 22,
+   "fa": 8.0,
+   "det": 62,
+   "n": 68,
+   "p1t_det": 49
+  },
+  "23": {
+   "seed": 23,
+   "fa": 25.0,
+   "det": 48,
+   "n": 60,
+   "p1t_det": 30
+  },
+  "24": {
+   "seed": 24,
+   "fa": 10.0,
+   "det": 57,
+   "n": 61,
+   "p1t_det": 40
+  },
+  "25": {
+   "seed": 25,
+   "fa": 12.0,
+   "det": 49,
+   "n": 55,
+   "p1t_det": 35
+  },
+  "26": {
+   "seed": 26,
+   "fa": 11.0,
+   "det": 46,
+   "n": 53,
+   "p1t_det": 27
+  },
+  "27": {
+   "seed": 27,
+   "fa": 7.0,
+   "det": 50,
+   "n": 59,
+   "p1t_det": 35
+  },
+  "28": {
+   "seed": 28,
+   "fa": 2.0,
+   "det": 37,
+   "n": 68,
+   "p1t_det": 43
+  },
+  "29": {
+   "seed": 29,
+   "fa": 1.0,
+   "det": 49,
+   "n": 57,
+   "p1t_det": 41
+  },
+  "30": {
+   "seed": 30,
+   "fa": 6.0,
+   "det": 49,
+   "n": 57,
+   "p1t_det": 35
+  }
+ },
+ "engine": {
+  "11": {
+   "seed": 11,
+   "fa": 5.0,
+   "det": 44,
+   "n": 72
+  },
+  "12": {
+   "seed": 12,
+   "fa": 7.0,
+   "det": 46,
+   "n": 54
+  },
+  "13": {
+   "seed": 13,
+   "fa": 4.0,
+   "det": 42,
+   "n": 51
+  },
+  "14": {
+   "seed": 14,
+   "fa": 3.0,
+   "det": 43,
+   "n": 54
+  },
+  "15": {
+   "seed": 15,
+   "fa": 5.0,
+   "det": 38,
+   "n": 49
+  },
+  "16": {
+   "seed": 16,
+   "fa": 5.0,
+   "det": 35,
+   "n": 49
+  },
+  "17": {
+   "seed": 17,
+   "fa": 5.0,
+   "det": 50,
+   "n": 61
+  },
+  "18": {
+   "seed": 18,
+   "fa": 6.0,
+   "det": 48,
+   "n": 61
+  },
+  "19": {
+   "seed": 19,
+   "fa": 9.0,
+   "det": 49,
+   "n": 64
+  },
+  "20": {
+   "seed": 20,
+   "fa": 9.0,
+   "det": 46,
+   "n": 60
+  },
+  "21": {
+   "seed": 21,
+   "fa": 4.0,
+   "det": 38,
+   "n": 54
+  },
+  "22": {
+   "seed": 22,
+   "fa": 5.0,
+   "det": 38,
+   "n": 65
+  },
+  "23": {
+   "seed": 23,
+   "fa": 11.0,
+   "det": 62,
+   "n": 69
+  },
+  "24": {
+   "seed": 24,
+   "fa": 6.0,
+   "det": 20,
+   "n": 54
+  },
+  "25": {
+   "seed": 25,
+   "fa": 8.0,
+   "det": 50,
+   "n": 57
+  },
+  "26": {
+   "seed": 26,
+   "fa": 1.0,
+   "det": 47,
+   "n": 63
+  },
+  "27": {
+   "seed": 27,
+   "fa": 8.0,
+   "det": 46,
+   "n": 63
+  },
+  "28": {
+   "seed": 28,
+   "fa": 12.0,
+   "det": 30,
+   "n": 45
+  },
+  "29": {
+   "seed": 29,
+   "fa": 8.0,
+   "det": 48,
+   "n": 60
+  },
+  "30": {
+   "seed": 30,
+   "fa": 4.0,
+   "det": 57,
+   "n": 80
+  }
+ },
+ "background_swap_seeds12_19": {
+  "what": "engine quiet background + the oracle's injected fires, through the engine's node and edge layers",
+  "detected": 410,
+  "fires": 496
+ },
+ "haze_episodes_days_0_27": {
+  "what": "haze episodes starting in the calibration and tuning days (0-27), with P2 detection share",
+  "rows": [
+   {
+    "seed": 11,
+    "engine_haze": 9,
+    "engine_det": 0.61,
+    "oracle_haze": 3,
+    "oracle_det": 0.86
+   },
+   {
+    "seed": 12,
+    "engine_haze": 2,
+    "engine_det": 0.85,
+    "oracle_haze": 2,
+    "oracle_det": 0.83
+   },
+   {
+    "seed": 13,
+    "engine_haze": 5,
+    "engine_det": 0.82,
+    "oracle_haze": 3,
+    "oracle_det": 0.55
+   },
+   {
+    "seed": 14,
+    "engine_haze": 3,
+    "engine_det": 0.8,
+    "oracle_haze": 3,
+    "oracle_det": 0.66
+   },
+   {
+    "seed": 15,
+    "engine_haze": 1,
+    "engine_det": 0.78,
+    "oracle_haze": 3,
+    "oracle_det": 0.9
+   },
+   {
+    "seed": 16,
+    "engine_haze": 1,
+    "engine_det": 0.71,
+    "oracle_haze": 1,
+    "oracle_det": 0.88
+   },
+   {
+    "seed": 17,
+    "engine_haze": 2,
+    "engine_det": 0.82,
+    "oracle_haze": 0,
+    "oracle_det": 0.92
+   },
+   {
+    "seed": 18,
+    "engine_haze": 4,
+    "engine_det": 0.79,
+    "oracle_haze": 2,
+    "oracle_det": 0.85
+   },
+   {
+    "seed": 19,
+    "engine_haze": 3,
+    "engine_det": 0.77,
+    "oracle_haze": 1,
+    "oracle_det": 0.86
+   },
+   {
+    "seed": 20,
+    "engine_haze": 3,
+    "engine_det": 0.77,
+    "oracle_haze": 2,
+    "oracle_det": 0.76
+   },
+   {
+    "seed": 21,
+    "engine_haze": 3,
+    "engine_det": 0.7,
+    "oracle_haze": 5,
+    "oracle_det": 0.84
+   },
+   {
+    "seed": 22,
+    "engine_haze": 5,
+    "engine_det": 0.58,
+    "oracle_haze": 1,
+    "oracle_det": 0.91
+   },
+   {
+    "seed": 23,
+    "engine_haze": 0,
+    "engine_det": 0.9,
+    "oracle_haze": 3,
+    "oracle_det": 0.8
+   },
+   {
+    "seed": 24,
+    "engine_haze": 5,
+    "engine_det": 0.37,
+    "oracle_haze": 2,
+    "oracle_det": 0.93
+   },
+   {
+    "seed": 25,
+    "engine_haze": 2,
+    "engine_det": 0.88,
+    "oracle_haze": 1,
+    "oracle_det": 0.89
+   },
+   {
+    "seed": 26,
+    "engine_haze": 5,
+    "engine_det": 0.75,
+    "oracle_haze": 3,
+    "oracle_det": 0.87
+   },
+   {
+    "seed": 27,
+    "engine_haze": 2,
+    "engine_det": 0.73,
+    "oracle_haze": 2,
+    "oracle_det": 0.85
+   },
+   {
+    "seed": 28,
+    "engine_haze": 4,
+    "engine_det": 0.67,
+    "oracle_haze": 3,
+    "oracle_det": 0.54
+   },
+   {
+    "seed": 29,
+    "engine_haze": 2,
+    "engine_det": 0.8,
+    "oracle_haze": 1,
+    "oracle_det": 0.86
+   },
+   {
+    "seed": 30,
+    "engine_haze": 5,
+    "engine_det": 0.71,
+    "oracle_haze": 4,
+    "oracle_det": 0.86
+   }
+  ]
+ }
+}

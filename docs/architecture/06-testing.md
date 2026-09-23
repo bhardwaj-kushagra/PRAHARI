@@ -10,7 +10,8 @@ tests using the reference values in SPEC §9.2.
 | Contracts | `engine/tests/unit/test_contracts.py` | every stage's real and stub outputs satisfy their data contracts | always |
 | Isolation | `engine/tests/unit/test_runner.py` | a failing module degrades to its stub and the run completes | always |
 | Equations | `engine/tests/unit/test_*_phaseN.py` | each model against SPEC reference values and closed-form results | always |
-| Oracle cross-checks | `test_eval_phase4.py`, `test_node_phase5.py` | P0, P1, P1t, M24–M28 and the M46 counting agree **exactly** with `reference/prahari_simulation.py` on identical inputs | always |
+| Oracle cross-checks | `test_eval_phase4.py`, `test_node_phase5.py`, `test_edge_phase6.py` | P0, P1, P1t, M24–M28, the legacy edge (`confirm`) and the M46 counting agree **exactly** with `reference/prahari_simulation.py` on identical inputs | always |
+| Live server | `test_server_phase6.py` | scenarios, a live run streams recording lines in order, module switches, health | when fastapi and httpx are installed |
 | Configuration | `test_config.py` | merge rules, unknown keys, missing source tags | always |
 | Traces | `test_trace.py` | evidence records and explanation sentences | always |
 | Smoke and determinism | `engine/tests/smoke/` | the smoke scenario runs fast, the same seed gives identical bytes, the experiment harness works | always |
@@ -45,6 +46,6 @@ cross-checks separate the two questions:
 - `engine/tests/golden/equivalence_*.json` — per-seed evidence of the engine-versus-oracle comparisons.
 - Synthetic data in tests is drawn from explicitly seeded generators and marked "test fixture only".
 
-## Counts at the end of Phase 5
+## Counts at the end of Phase 6
 
-134 engine tests pass (5 golden tests skipped unless enabled) and 29 dashboard tests pass (SIM development machine).
+146 engine tests pass (6 golden tests skipped unless enabled) and 33 dashboard tests pass (SIM development machine).

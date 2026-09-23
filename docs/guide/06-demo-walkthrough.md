@@ -1,6 +1,6 @@
 # 6. Demo walkthrough
 
-A route through the dashboard for a 3–5 minute explanation, as of Phase 5. The final conference storyboard is in
+A route through the dashboard for a 3–5 minute explanation, as of Phase 6. The final conference storyboard is in
 SPEC §11 and will be completed in Phase 10. Every value on screen is simulator output, and the SIMULATION badge stays
 visible throughout.
 
@@ -41,6 +41,16 @@ then pulse as candidates. Click node 41 or 31 and open the *Node* tab:
 The fire is confirmed when a second nearby node agrees, about two hours after ignition in this run (SIM). A satellite
 would need an overpass plus processing time and a much bigger fire.
 
+**3b. Why this alarm (45 s) — *Alerts* tab, still on `node_mature`.**
+The latest alert opens "Why this alarm": the escalation ladder lit at CONFIRMED; the SCMR gauge (the fire's
+neighbourhood is 11× more active than the network, well above 3); Fisher combining the two nodes' evidence; today's
+prior ("dry, busy day — 2 agreeing nodes needed"); the Bayes bar (posterior odds 0.42 against a 0.01 threshold).
+"Every number here comes from the recorded trace; nothing on this panel is free text."
+
+**3c. Switch SCMR off (30 s).** Scrub to day 30 around 14:00 (the haze day). The counter reads 3 false alarms. Press
+*SCMR* in the Mechanisms row: the same run with SCMR off loads at the same moment and the counter jumps to 15.
+"Haze is everywhere at once; a fire is local. That one rule removes most of the haze alarms."
+
 **4. Honesty (30 s) — *Results* tab.**
 The node-layer table shows the two calibration checks: about 1.1% of quiet p-values fall below 1% (target 0.8–2.0%)
 and about 0.65 local false candidates per node per 30 days (target 0.5–1.5). "Where our numbers miss the report's
@@ -58,8 +68,8 @@ takes over and the demo keeps going."
 | Is this real data? | No. Everything is simulation, labelled SIM. The models are calibrated to literature, datasheets or stated assumptions, and each parameter carries its tag. |
 | Why not just use satellites? | They see fires only after overpass and processing, and only once fires are hot and large. Early fires under canopy are too small. |
 | Why not a threshold on each sensor? | Daily cycles, drift and haze cross any fixed line. The P0 row in Results shows the cost. |
-| What stops haze triggering PRAHARI? | Two things: common-mode periods are excluded when thresholds are tuned (Phase 5), and the edge layer's spatial common-mode rejection (Phase 6) needs a cluster to be much more active than the network. |
+| What stops haze triggering PRAHARI? | Two things: common-mode periods are excluded when thresholds are tuned, and spatial common-mode rejection needs a cluster to be at least 3× more active than the network. Switch SCMR off and watch the difference (3 vs 15 alarms on the haze day, SIM). |
 | How do you know the p-values are right? | They are conformal: ranked against each node's own quiet history, so on quiet data about 1% fall below 1%. We measure that (1.10%, SIM). |
 | Why did detection take about two hours in the demo? | The node needs sustained evidence to cross a threshold set for one false candidate per node per month, and a second node must agree. The operating curve (Phase 7) shows the trade-off. |
 | What happens if a node fails? | Health weights (M29) and fault injection (M21) arrive in Phase 9; module-level failures already fall back to stubs. |
-| How long did it take to build? | See [../journey/README.md](../journey/README.md): phases 0–5 so far, each ending with a working dashboard. |
+| How long did it take to build? | See [../journey/README.md](../journey/README.md): phases 0–6 so far, each ending with a working dashboard. |

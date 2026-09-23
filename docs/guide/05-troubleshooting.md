@@ -35,6 +35,17 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | The node inspector is empty | No node is selected. | Click a node on the map (the tab switches to Node automatically). |
 | The floor line or baseline is missing from the inspector | The recording predates Phase 5. | Regenerate the recording. |
 
+## Live mode
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| "server not reachable — replay still works" | The server is not running, or on another port. | `uvicorn server.app:app --port 8000` from the repository root; check the URL in the Live panel. |
+| `ModuleNotFoundError: fastapi` / `uvicorn` | The optional server extra is not installed. | `pip install -e "engine[dev,server]"`. |
+| `ModuleNotFoundError: server` | uvicorn was started outside the repository root. | Start it from the root (the `server` package lives there). |
+| Live run stops advancing | The run finished, or a new run replaced it. | Status shows "live run finished"; press Start again. |
+| A switch in replay is greyed out | No pre-recorded variant exists for that module. | Use live mode, or record the variant (`<scenario>__<module>-stub.yaml`). |
+| After switching QCC live, candidates stop for a while | Switching rebuilds the module; QCC restarts its calibration. | Expected (DECISIONS P6-8). |
+
 ## Before a demo
 
 1. `pytest engine/tests -q` and `cd dashboard && npm test` pass.

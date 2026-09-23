@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Python | 3.11 (3.11 or newer required) | engine; NumPy, SciPy, PyYAML, pytest |
 | Node.js | 22 (20 or newer recommended) | dashboard; npm 10 |
-| Disk | about 400 MB with `node_modules` | recordings in the repo take about 12 MB |
+| Disk | about 400 MB with `node_modules` | recordings in the repo take about 17 MB |
 | Browser | Chromium, Chrome, Edge or Firefox (recent) | the dashboard uses `DecompressionStream` to read `.gz` recordings |
 | Network | only for `pip install` and `npm install` | the dashboard itself runs offline |
 
@@ -24,7 +24,7 @@ From the repository root:
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate      # optional but recommended
-pip install -e "engine[dev]"                            # quotes matter in zsh
+pip install -e "engine[dev,server]"                     # quotes matter in zsh; "server" is only for live mode
 cd dashboard && npm install && cd ..
 ```
 
@@ -63,15 +63,28 @@ Each command simulates a scenario and writes a recording plus a `*.health.json` 
 | `prahari run --config configs/scenarios/fires_day.yaml --out recordings/fires_day.prs.jsonl.gz` | Poisson and scripted fires, legacy plume | ~2 s |
 | `prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/fires_day_gaussian.prs.jsonl.gz` | the same fires with the Gaussian plume | ~2 s |
 | `prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz` | a young network: calibration maturing, haze day 2, fire day 3 | ~7 s |
-| `prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz` | a mature network: 31 days simulated, days 29–31 recorded, fire on day 31 | ~70 s |
+| `prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz` | a mature network: 31 days simulated, days 29–31 recorded, haze day 30, fire day 31 (a dry, busy day) | ~70 s |
+| `prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz` | the same with SCMR off — the replay variant behind the SCMR switch | ~70 s |
 
 Options: `--seed N` overrides the seed, `--days D` the length. Restart `npm run dev` (or rerun `npm run build`) after
 generating, so the new files are copied into the dashboard.
 
+## Live mode (optional)
+
+Replay never needs a server. To watch a simulation as it runs and switch mechanisms on the fly:
+
+```bash
+uvicorn server.app:app --port 8000        # from the repository root
+cd dashboard && npm run dev               # then: Live engine ▸ Scenarios ▸ choose ▸ Start
+```
+
+Speed ×60 is one simulated minute per second; ×3600 an hour per second; "max" as fast as the machine allows. In the
+Alerts tab the mechanism switches (TTC, QCC, SCMR, RAQ, SRP) then reconfigure the running engine.
+
 ## Run experiments
 
 ```bash
-prahari experiment --preset golden                              # P0, P1, P1t + node metrics, seeds 11–55, ~8 min
+prahari experiment --preset golden                              # P0, P1, P1t, P2 + node metrics, seeds 11–55, ~13 min
 prahari experiment --preset golden --seeds 11 --pipelines P1    # quick single-seed check
 PRAHARI_GOLDEN=1 pytest engine/tests/golden                    # golden assertions (slow)
 ```
@@ -89,5 +102,6 @@ the dashboard's **Results** tab reads.
 | `recordings/` | committed demo recordings |
 | `results/summary.json` | committed experiment summary |
 | `dashboard/` | the React dashboard |
+| `server/` | optional live server (FastAPI) |
 | `reference/` | the report's original simulation (read-only oracle) |
 | `docs/` | the specification and this documentation |

@@ -7,6 +7,7 @@ marks the module `degraded`, records the error and carries on. The run never cra
 """
 from __future__ import annotations
 
+import dataclasses
 import time
 from typing import Any, Callable
 
@@ -78,8 +79,11 @@ class Slot:
 def expect_len(k: int) -> Callable[[Any], None]:
     """A check that every per-cluster field of an edge output has k entries."""
     def check(out) -> None:
-        for name in out.__dataclass_fields__:
-            v = getattr(out, name)
+        optional = getattr(type(out), "OPTIONAL", ())        # additive fields an older implementation leaves empty
+        for f in dataclasses.fields(out):                     # instance fields only (not ClassVar)
+            name, v = f.name, getattr(out, f.name)
+            if name in optional and len(v) == 0:
+                continue
             if isinstance(v, tuple) and len(v) != k:
                 raise ContractError(f"{type(out).__name__}.{name}: expected {k} entries, got {len(v)}")
     return check

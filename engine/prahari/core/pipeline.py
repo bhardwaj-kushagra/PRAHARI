@@ -86,6 +86,16 @@ class Simulation:
                 "modules": {k: v.health.requested for k, v in self.slots.items()},
                 "model_card": card}
 
+    def switch_module(self, name: str, state: str) -> None:
+        """Live mode (Phase 6): rebuild one module's Slot in a new state between ticks. The new implementation starts
+        from `reset`, so stateful modules (for example QCC's calibration) start afresh; the random stream continues."""
+        old = self.slots[name]
+        rng = getattr(old.chain[0], "_rng", None)
+        slot = Slot(name, state, self.cfg["params"].get(name, {}), rng, old.out_type)
+        slot.reset(self.ctx)
+        self.slots[name] = slot
+        self.cfg["modules"][name] = state
+
     def health_states(self) -> dict:
         return {k: v.health.status() for k, v in self.slots.items()}
 
@@ -102,6 +112,7 @@ class Simulation:
         haze = self.stage("haze", t)
         x = self.stage("sensor", (t, conc, env, nuis, haze))
         x = self.stage("faults", x)
+        self.last_env = (env, fuel)                        # the edge layer's prior reads them (step_edge)
         return env, fuel, fires, src, conc, haze, x
 
     def step_baselines(self, x):
@@ -117,10 +128,8 @@ class Simulation:
         cand = self.stage("cusum", sc)
         return res, pv, sc, cand
 
-    def tick(self, t: int):
-        env, fuel, fires, src, conc, haze, x = self.step_signals(t)
-        base0, base1, base1t = self.step_baselines(x)
-        res, pv, sc, cand = self.step_node(x)
+    def step_edge(self, t: int, env, fuel, cand):
+        """PRAHARI edge layer: comms → cluster → SCMR → Fisher → Bayes factor → RAQ → escalation (M30–M35)."""
         dl = self.stage("comms", cand)
         prior = self.stage("srp", (t, env, fuel))
         cl = self.stage("cluster", dl)
@@ -130,6 +139,14 @@ class Simulation:
         bf = self.stage("learn", fisher, expect_len(k))
         raq = self.stage("raq", (cl, scmr, bf, prior), expect_len(k))
         dec = self.stage("escalate", (cl, scmr, raq), expect_len(k))
+        return dl, prior, cl, scmr, fisher, bf, raq, dec
+
+    def tick(self, t: int):
+        env, fuel, fires, src, conc, haze, x = self.step_signals(t)
+        base0, base1, base1t = self.step_baselines(x)
+        res, pv, sc, cand = self.step_node(x)
+        dl, prior, cl, scmr, fisher, bf, raq, dec = self.step_edge(t, env, fuel, cand)
+        k = len(cl.members)
         energy = self.stage("energy", t)
         sat = self.stage("satellite", fires)
 
@@ -148,7 +165,8 @@ class Simulation:
             if dec.levels[j] in ("CONFIRMED", "ESCALATED"):
                 self._last_conf[list(cl.members[j])] = t
             if dec.new_alert[j]:
-                alerts.append({"level": dec.levels[j], "cluster": list(cl.members[j]), "trace_id": traces[-1]["trace_id"]})
+                alerts.append({"level": dec.levels[j], "cluster": list(cl.members[j]), "trace_id": traces[-1]["trace_id"],
+                               "incident": int(dec.incident[j]) if dec.incident else -1})
         if haze.level > 0 and self._haze_prev == 0:
             events.append({"type": "haze_start", "level": float(f"{haze.level:.4g}")})
         self._haze_prev = haze.level
@@ -212,9 +230,10 @@ class Simulation:
                     "method": "fisher" if st["fisher"] == "real" else "bonferroni (stub)"},
             prior={"lambda": prior.lam, "p_s": prior.p_s, "odds": prior.odds, "day_type": prior.day_type},
             bayes={"bf_bound": bf.bf[j], "posterior_odds": raq.posterior_odds[j], "threshold": raq.threshold,
-                   "quorum": int(raq.quorum), "decision": bool(raq.decide[j]),
-                   "method": "bayes" if st["raq"] == "real" else "fixed quorum (stub)"},
-            window_min=int(self.cfg["params"]["cluster"]["window_min"]))
+                   "quorum": int(raq.quorum), "decision": bool(raq.decide[j]), "method": raq.method},
+            window_min=int(self.cfg["params"]["cluster"]["window_min"]),
+            extra={"incident": int(dec.incident[j]) if dec.incident else -1,
+                   "anchor": int(cl.anchor[j]) if cl.anchor else -1})
 
     # -- setup and whole run -----------------------------------------------
     def setup(self) -> None:

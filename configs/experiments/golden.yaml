@@ -6,7 +6,7 @@ scenario:
   name: golden_legacy
   description: "Legacy-mode reproduction of the report's baseline false-alarm rates (P0, P1, P1t) and node-layer calibration"
 experiment:
-  pipelines: [P0, P1, P1t]
+  pipelines: [P0, P1, P1t, P2]
   seeds: [11, 22, 33, 44, 55]
   node_metrics: true
 modules:

@@ -5,6 +5,7 @@ Re-exported by `prahari.core.contracts`; import them from there. Same additive r
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import ClassVar
 
 from prahari.core.contract_checks import ContractError, _num, _same_len
 
@@ -13,9 +14,14 @@ from prahari.core.contract_checks import ContractError, _num, _same_len
 class Clusters:
     members: tuple = ()      # tuple of sorted node-id tuples, one per cluster
     p: tuple = ()            # matching tuples of node p-values
+    anchor: tuple = ()       # Phase 6: per cluster, the triggering node (legacy form) or −1 (M30 components)
+    n_recent: tuple = ()     # Phase 6: per cluster, distinct candidate nodes network-wide in the window (M31 f_net)
 
     def validate(self, n: int) -> None:
         _same_len("clusters", self.members, self.p)
+        for extra in (self.anchor, self.n_recent):
+            if extra:
+                _same_len("clusters", self.members, extra)
         for m, p in zip(self.members, self.p):
             _same_len("cluster", m, p)
             if not m:
@@ -95,6 +101,7 @@ class Raq:
     threshold: float             # C_FA / C_miss
     posterior_odds: tuple = ()
     decide: tuple = ()
+    method: str = "fixed quorum (stub)"   # Phase 6: which rule decided — shown in traces
 
     def validate(self, n: int) -> None:
         _same_len("raq", self.posterior_odds, self.decide)
@@ -108,8 +115,10 @@ class Raq:
 
 @dataclass(frozen=True)
 class Decision:
+    OPTIONAL: ClassVar[tuple] = ("incident",)
     levels: tuple = ()           # per cluster: WATCH, CANDIDATE, CONFIRMED, ESCALATED
     new_alert: tuple = ()        # per cluster: True when this tick raises a new alert
+    incident: tuple = ()         # Phase 6: per cluster, the tracked incident id (−1 for the stub)
 
     def validate(self, n: int) -> None:
         _same_len("decision", self.levels, self.new_alert)

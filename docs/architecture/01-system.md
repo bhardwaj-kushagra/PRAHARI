@@ -2,7 +2,7 @@
 
 PRAHARI-SIM has three parts that talk only through files: a **configuration** that describes a world and chooses
 which model runs for each module, an **engine** that simulates it minute by minute, and a **dashboard** that replays
-what the engine wrote. A live server (Phase 6) will stream the same frames; the dashboard will never require it.
+what the engine wrote. A live server (`server/`, Phase 6) streams the same lines over a WebSocket; the dashboard never requires it.
 
 ```mermaid
 flowchart LR
@@ -33,6 +33,11 @@ flowchart LR
   L --> H --> X
   R --> RS --> V
   X --> V
+  subgraph srv[server/ optional]
+    API[FastAPI: /scenarios /run /health /modules]
+    WS[WebSocket /frames]
+  end
+  L --> API --> WS --> LS[LiveSource] --> V
 ```
 
 ## One minute of simulated time
@@ -64,7 +69,7 @@ flowchart TD
 
 Before the first tick three **setup** stages run once: `landscape` (M2–M3), `siting` (M1, M4) and `links` (M38).
 
-## State of the modules (after Phase 5)
+## State of the modules (after Phase 6)
 
 | Group | Real | Still stub |
 | --- | --- | --- |
@@ -74,7 +79,7 @@ Before the first tick three **setup** stages run once: `landscape` (M2–M3), `s
 | Signals | sensor, nuisance, haze | faults |
 | Baselines | P0, P1, P1t | — |
 | Node layer | ttc, qcc, cusum | score (with one channel the stub *is* M27), health weights |
-| Edge layer | — | comms, cluster, scmr, fisher, srp, learn, raq, escalate (Phase 6) |
+| Edge layer | cluster, scmr, fisher, srp (legacy day type), raq (legacy quorum; Bayes selectable), escalate | comms (Phase 8), learn (the stub *is* the M34 bound; M36 in Phase 9) |
 | Other | — | energy, satellite (Phases 8–9) |
 
 ## Design principles that shape the architecture

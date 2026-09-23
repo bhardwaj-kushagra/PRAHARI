@@ -8,8 +8,8 @@
 | 3a | Fires and plumes, legacy | accepted (2026-09-23) |
 | 3b | Gaussian plume (optional) | accepted (2026-09-23) |
 | 4 | Baselines and evaluation harness | accepted (2026-09-23) |
-| 5 | PRAHARI node layer | awaiting review |
-| 6 | PRAHARI edge layer, trace and live mode | not started |
+| 5 | PRAHARI node layer | accepted (2026-09-23) |
+| 6 | PRAHARI edge layer, trace and live mode | awaiting review |
 | 7 | Experiments and results | not started |
 | 8 | Communications and energy (optional) | not started |
 | 9 | Regimes, satellite race, learning loop and faults (optional) | not started |
@@ -252,3 +252,36 @@ legacy prior, M34 legacy quorum then the Bayes form, M35 escalation), the eviden
 from day 29".
 
 **Next step:** Phase 6 — the PRAHARI edge layer (M30–M35), the evidence trace and live mode; plan first, then "go".
+
+### 2026-09-23 — Session 9 (Phase 6)
+
+- Phase 5 and the documentation set accepted by the developer ("good").
+- Built Phase 6 — the PRAHARI edge layer, evidence trace and live mode:
+  - Real edge stages beside the stubs: clustering M30 (legacy per-candidate form by default, as the report's
+    simulation; components form optional), SCMR M31, Fisher M32, legacy day-type prior M33 (new `srp` stream,
+    per-day overrides), RAQ M34 (legacy quorum 2 dry / 3 wet by default; Bayes form selectable), escalation M35.
+  - Traces name the rule that decided, the incident and the triggering node; alerts carry the incident.
+  - Harness pipeline P2; server `server/app.py` (FastAPI + WebSocket) streaming the recording's line format; module
+    switches between frames.
+  - Dashboard: "Why this alarm" (View 3) with the escalation ladder, SCMR gauge, Fisher, prior and Bayes bar;
+    mechanism switches with live counters (View 5); Live engine panel and `LiveSource`.
+  - `node_mature` day 31 set to a dry, busy day; new replay variant `node_mature__scmr-stub`.
+
+**Phase 6 acceptance (details in `DECISIONS.md` P6-1…P6-12 and `docs/journey/phase-6-edge-layer.md`):**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | P2 reproduces the report's numbers within intervals (legacy mode) | **miss** — 3.4 (2.0–5.4) false incidents/month vs 6.4 (4.4–9.0); 75.9% confirmed within 3 h vs 83% (79–87). Over 20 seeds false alarms match the report simulation (6.25 vs 7.20, p 0.48); detection is 8 points lower (74.0% vs 82.2%, p 0.03). Our code reproduces the report simulation exactly on its own data; the gap is in the simulated world (more haze in the engine seeds' calibration days; continuous weather wind vs a constant random wind per injected fire). Fix proposed, pending approval (KNOWN_ISSUES) |
+| 2 | Legacy and Bayes RAQ agree on the worked example | **pass** — 2 nodes on dry days, 3 on wet days, in both forms |
+| 3 | Every alert has a complete trace | **pass** — SCMR, Fisher, prior, Bayes, incident, anchor, explanation; methods named |
+| 4 | The dashboard works in replay and live mode | **pass** — replay: why panel, SCMR switch keeps the clock (haze-day alarms 3 → 15); live: frames stream, a switch is applied mid-run; no console errors |
+| — | Legacy edge vs the report's `confirm` on identical candidate streams | identical alarms |
+| — | Reference values | Fisher 7.4e-6 and 8.6e-8; SBB bound 100 and 1e4 |
+| — | Full suite, determinism | 146 engine passed (6 golden skipped unless enabled), 33 dashboard; recordings byte-identical on rerun |
+
+**To see it:** `cd dashboard && npm run dev`, open `node_mature.prs.jsonl.gz`, go to day 31 at 15:15, tab *Alerts*
+("Why this alarm"); then day 30 at 14:00 and press *SCMR*. Live: `uvicorn server.app:app --port 8000`, then
+*Live engine* ▸ *Scenarios* ▸ *Start*.
+
+**Next step:** review Phase 6 and decide on the proposed legacy per-fire wind option (KNOWN_ISSUES). Then Phase 7 —
+experiments and results (ablations, operating dial, node spacing, maturity curve).

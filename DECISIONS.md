@@ -291,6 +291,89 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `tests/unit/test_runner.py` (example module), `tests/golden/test_golden_baselines.py` (P1t, node acceptance);
   dashboard `App.tsx`, `NodePanel.tsx`, `ResultsPanel.tsx`, `results.ts`, `series.ts`, `types.ts` (additive).
 
+## Phase 6 design choices
+
+- **P6-1. Real edge stages beside the stubs.** `detect/prahari/edge_real.py` (cluster M30, SCMR M31, Fisher M32),
+  `decide_real.py` (SRP M33 legacy, RAQ M34) and `escalate_real.py` (M35) register as `real` under the existing
+  names; the stub files are unchanged. `learn` stays the stub, which *is* the M34 Sellke–Bayarri–Berger bound (the real
+  M36 fit is Phase 9).
+- **P6-2. Legacy clustering form by default (N-b).** `cluster.form: legacy` reproduces the report simulation's
+  `confirm`: every new candidate forms a cluster of the window's candidate nodes within R of it (candidates within a
+  tick processed in node order), SCMR compares that node's neighbourhood with the network, and the quorum is counted
+  per candidate. A unit test feeds identical candidate streams to our chain and to `confirm` and requires identical
+  alarms. `form: components` (M30 as written: connected components, SCMR over every node within R of any member) is
+  the advanced option.
+- **P6-3. Candidate p-values for Fisher (DER).** M32 states p_i ≈ r·ΔT; with r = 1 per node per 30 d (the M28 target)
+  and ΔT = W = 30 min, p_i = 6.9e-4 for every member. p_C therefore depends on the cluster size only, which is why
+  the legacy quorum and the Bayes rule agree (acceptance 2: 2 nodes on dry days — BF 4.2e3 × 1e-4 = 0.42 ≥ 0.01 —
+  and 3 on wet days). The members' own QCC p-values stay in the trace for the reader.
+- **P6-4. RAQ forms.** `raq.form: legacy` (default, the report) decides by the day-type quorum; `bayes` by
+  BF(p_C)·odds ≥ C_FA/C_miss. Either way the frame's `prior.quorum` is the reverse view the SPEC asks for, and the
+  trace records the rule used (`bayes.method`: "legacy quorum", "bayes" or "fixed quorum (stub)").
+- **P6-5. Legacy prior and day types (M33).** Day types are drawn per day with P(dry) = 0.5 from a new `srp` random
+  stream (appended at the end, rule 7) and can be overridden per day (`srp.day_type_overrides`). The experiment
+  harness overrides them with its protocol's day types so fires, prior and quorum share one calendar. The full M33
+  integral (λ × p_s over the cluster area) needs a per-cluster prior and is left for the regime work (Phase 9).
+- **P6-6. Escalation (M35, ASM details).** Clusters join the incident holding any node within R of them; levels only
+  rise until the incident clears after 120 minutes without candidates; a new alert is raised when an incident first
+  reaches CONFIRMED or ESCALATED. Growth is measured from the incident's size at the start of the 30-minute window
+  (or its first cluster, if younger). On the 1.4 km demo map the "another confirmed incident within 1 km" rule
+  escalates almost any second incident; that is the SPEC's rule, kept as written. The SPEC's prior-only WATCH has no
+  cluster to attach to; the header strip shows the day type and quorum instead.
+- **P6-7. Contracts (additive).** `Clusters.anchor`, `Clusters.n_recent`, `Raq.method`, `Decision.incident`;
+  `Decision.OPTIONAL` lets the runner's per-cluster length check accept an empty `incident` from the stub
+  (`runner.expect_len` now iterates `dataclasses.fields`). Traces gain `incident` and `anchor`; alerts gain
+  `incident`; the explanation template gains the legacy-RAQ wording.
+- **P6-8. Live mode.** `server/app.py` (FastAPI) and `server/live.py`: the engine runs in a thread through a
+  `LiveWriter` that implements the recording writer's interface, so the WebSocket carries exactly a recording's lines
+  (header, frames, traces, footer). Frames are paced to a chosen speed (×60 = one simulated minute per second; 0 = as
+  fast as possible). `POST /modules` queues a switch that is applied between recorded frames via
+  `Simulation.switch_module`, which rebuilds the module's Slot (stateful modules restart from `reset`, e.g. QCC loses
+  its calibration) and marks the frame with a `module_switch` event. The dashboard's `LiveSource` wraps each snapshot
+  of the stream in a `RecordingSource`, so every view works unchanged; `updateSource` keeps the clock and follows the
+  live edge. Replay stays the default and needs no server (rule 11).
+- **P6-9. Mechanism switches in replay.** SPEC View 5 asks for pre-recorded variants; they are named
+  `<scenario>__<module>-<state>.prs.jsonl.gz`. One variant ships: `node_mature__scmr-stub` (the SPEC's demo moment —
+  switch SCMR off during haze). Switches without a variant are disabled in replay and work in live mode.
+- **P6-10. `node_mature` day 31 is a dry, busy day.** With random day types, day 31 drew "wet, quiet", so the rule
+  needed three nodes and the two-node fire was not confirmed. The scenario now sets day 31 dry (the SPEC §11
+  storyboard's condition, stated in the scenario file); no model changed. Day 30's haze gives 3 alerts with SCMR and
+  15 without (SIM).
+- **P6-11. Golden P2 (seeds 11, 22, 33, 44, 55) and the equivalence check — recorded as it came out, nothing tuned.**
+
+  | P2 PRAHARI | This simulator | Report (SPEC §9.3) | Result |
+  | --- | --- | --- | --- |
+  | False incidents / month | 3.4 (2.0–5.4); per seed 5, 5, 2, 0, 5 | 6.4 (4.4–9.0) | below the interval |
+  | Confirmed within 3 h | 246/324 = 75.9% (M44 CI 71–80%) | 83% (79–87%) | below the interval |
+
+  **Code equivalence.** Fed the report simulation's own seed-11 fire-pass signals, our node and edge stages give its
+  exact result: tuned h 238.13 and 54 of 63 fires confirmed, as the report simulation. The legacy edge also matches
+  its `confirm` alarm for alarm on synthetic candidate streams (unit test).
+
+  **20 seeds (11–30), engine vs report simulation** (`engine/tests/golden/equivalence_p2_seeds11_30.json`):
+  false incidents 6.25 vs 7.20 per month (Welch p 0.48, Mann–Whitney p 0.84) — no detectable difference;
+  detection 74.0% vs 82.2% (Welch p 0.03, Mann–Whitney p 0.005) — the engine detects less. Diagnosis:
+  - *Haze in the calibration and tuning windows.* Detection falls with the number of haze episodes in days 0–27
+    (correlation −0.57 engine, −0.36 report simulation; about −3.8 points per episode pooled). The engine's seeds
+    happened to hold 3.3 episodes on average against 2.25 for the report simulation's seeds (the expected value is
+    2.8; each is within ordinary sampling range). That accounts for about 4 of the 8 points. The mechanism is the
+    P5-10 one: haze inflates the calibration tails and can push the tuned h to its cap (engine seed 24: 37%).
+  - *How smoke reaches the nodes.* The report simulation gives every injected fire its own constant random wind
+    direction and speed; the engine carries smoke on its continuous weather wind (mostly from the WSW, drifting during
+    a fire). Swapping in the engine's quiet background under the report simulation's injected fires (seeds 12–19)
+    gives 82.7% (410/496) against 79.2% for the engine's own fires on the same seeds (351/443): about 3.5 points.
+
+  Proposed, pending the developer's approval because it touches the accepted plume stub (rule 4): a legacy
+  `plume.wind: per_fire` option (random constant direction θ ~ U(0, 2π) and speed U(30, 120) m/min per fire, as the
+  report simulation injects fires) for the golden preset only, keeping the weather-driven wind for demos; then rerun
+  the 20-seed comparison. Logged in `KNOWN_ISSUES.md` (improvement backlog).
+- **P6-12. Files from accepted phases touched.** `core/pipeline.py` (`step_edge`, `last_env`, `switch_module`,
+  trace extras, alert incident), `core/runner.py` (optional fields in `expect_len`), `core/contracts_edge.py`
+  (additive fields), `core/trace.py` (legacy-RAQ template, `extra`), `core/rng.py` (+`srp`), `stages.py`,
+  `eval/experiments.py` (P2, shared day types), `configs/default.yaml`, `configs/experiments/golden.yaml` (+P2),
+  `configs/scenarios/node_mature.yaml` (day 31), `engine/pyproject.toml` (extras); dashboard `App.tsx`,
+  `AlertsPanel.tsx`, `store.ts` (additive), `theme.css`.
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four
@@ -307,4 +390,7 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 - **Dep-2.** `vitest` 5 (dev): dashboard unit tests, named in SPEC §9.1. Version 5 because ≤ 4.1.10 carries advisory GHSA-82fw-gwwq-j7x9 and npm 10.9 fails to resolve 4.1.11's optional peers; `npm audit` reports 0 vulnerabilities.
 - **Dep-3.** `@fontsource/barlow-condensed`, `@fontsource/ibm-plex-sans`, `@fontsource/ibm-plex-mono`: bundle the §6.3 fonts locally for offline use.
 - **Dep-4.** `@types/node`, `typescript` (dev): type checking for `npm run build`. React is pinned to 18.x as SPEC §6.1 requires.
+- **Dep-6 (Phase 6).** `fastapi`, `uvicorn` (named in rule 13) plus `websockets` (uvicorn's WebSocket backend) as the
+  optional `server` extra; `httpx` in the `dev` extra, needed by FastAPI's test client. The engine and the replay
+  dashboard do not depend on any of them.
 - **Dep-5 (Phase 2).** `echarts` 6.1 (named in rule 13). Version 6.1 because 5.x carries advisory GHSA-fgmj-fm8m-jvvx (XSS); `npm audit` reports 0 vulnerabilities.

@@ -9,7 +9,7 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 
 ```text
 {"header": {...}}         line 1
-{"frame": {...}}          one per recorded tick
+{"t": 840, ...}           one frame object per recorded tick
 {"trace": {...}}          evidence records, interleaved at the tick they were made
 {"footer": {...}}         last line
 ```
@@ -44,8 +44,8 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 | `fires` | active fires: id, position, area, age, source strength |
 | `plume` | optional smoke grid: origin, cell size, shape, max, base64 float16 values (row 0 = south) |
 | `packets` | uplink packets this tick |
-| `events` | `ignition`, `candidate`, `p0_alarm`, `p1_alarm`, `p1t_alarm`, `haze_start`, `satellite_alert`, `degraded` |
-| `alerts` | new alerts: level, cluster members, trace id |
+| `events` | `ignition`, `candidate`, `p0_alarm`, `p1_alarm`, `p1t_alarm`, `haze_start`, `satellite_alert`, `degraded`, `module_switch` (live) |
+| `alerts` | new alerts: level, cluster members, trace id, `incident` (Phase 6) |
 | `health` | state of every module |
 
 A frame is written every `record.every_k_ticks` ticks, at every tick with an event or alert, and at the last tick.
@@ -55,7 +55,7 @@ A frame is written every `record.every_k_ticks` ticks, at every tick with an eve
 Two kinds, linked from events and alerts by `trace_id`:
 
 - `candidate` — node, p-value, CUSUM value and threshold, health weight.
-- `decision` — level, cluster, per-node evidence, SCMR (`f_loc`, `f_net`, `ratio`, `pass`, `modelled`), Fisher (`X`,
+- `decision` — level, cluster, `incident` and `anchor` (Phase 6), per-node evidence, SCMR (`f_loc`, `f_net`, `ratio`, `pass`, `modelled`), Fisher (`X`,
   `dof`, `p_cluster`, `method`), prior (λ, p_s, odds, day type), Bayes (bound, posterior odds, threshold, quorum,
   decision, `method`) and a generated `explanation` sentence. The `method` fields say when a stub made the decision
   (for example "fixed quorum (stub)"), so no explanation claims a calculation that did not happen.
@@ -63,6 +63,12 @@ Two kinds, linked from events and alerts by `trace_id`:
 ### Footer
 
 `frames`, `traces`, and each module's final health (requested, state, running, errors, last error, degraded at).
+
+## Live stream (Phase 6)
+
+The server's WebSocket `/frames` sends exactly the recording's lines as text messages: `{"header": …}` (with
+`"live": true`), frames, `{"trace": …}`, and `{"footer": …}` (or `{"footer": {"stopped": true}}` /
+`{"footer": {"error": …}}`). A client that connects late receives everything from the start.
 
 ## Health: `recordings/<scenario>.health.json`
 

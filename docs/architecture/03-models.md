@@ -56,16 +56,16 @@ Every equation in [`SPEC.md`](../SPEC.md) §5, where it lives in `engine/prahari
 | M28 | −ln p CUSUM, k 1.5, replay-tuned h | `detect/prahari/cusum_real.py`, `tuning.py` (stub: v1 CUSUM in `cusum.py`) | real | Phase 5 |
 | M29 | Health weight | — | stub (c = 1) | Phase 9 |
 
-## PRAHARI edge layer (Phase 6)
+## PRAHARI edge layer
 
-| M | What it does | File | Default |
-| --- | --- | --- | --- |
-| M30 | Clustering within R over 30 minutes | `detect/prahari/cluster.py` | stub (all candidates in the window form one cluster) |
-| M31 | Spatial common-mode rejection | `detect/prahari/scmr.py` | stub (always passes) |
-| M32 | Fisher combination | `detect/prahari/fisher.py` | stub (Bonferroni) |
-| M33 | Prior from activity and fuel (legacy: day type) | `detect/prahari/srp.py` | stub (constant prior odds from configuration) |
-| M34 | Bayes-factor bound and risk-adaptive quorum | `detect/prahari/learn.py` (bound), `raq.py` | stub (fixed quorum 2) |
-| M35 | Graded escalation | `detect/prahari/escalate.py` | stub (CONFIRMED when the quorum is met) |
+| M | What it does | File (real; stub) | Default | Since |
+| --- | --- | --- | --- | --- |
+| M30 | Clustering within R over 30 minutes (legacy: around each new candidate; advanced: connected components) | `detect/prahari/edge_real.py`; `cluster.py` | real (legacy form) | Phase 6 |
+| M31 | Spatial common-mode rejection, ratio ≥ 3 | `edge_real.py`; `scmr.py` (always passes) | real | Phase 6 |
+| M32 | Fisher combination of candidate p-values p_i ≈ r·W | `edge_real.py`; `fisher.py` (Bonferroni) | real | Phase 6 |
+| M33 | Prior: legacy day type (1e-4 dry, 1e-6 wet); full λ × p_s form later | `decide_real.py`; `srp.py` (constant) | real (legacy) | Phase 6 |
+| M34 | SBB Bayes-factor bound and risk-adaptive quorum (legacy 2/3 or Bayes) | `learn.py` (bound), `decide_real.py`; `raq.py` (fixed 2) | real (legacy quorum) | Phase 6 |
+| M35 | Incident ladder WATCH → CANDIDATE → CONFIRMED → ESCALATED | `escalate_real.py`; `escalate.py` | real | Phase 6 |
 | M36 | Fitted likelihood ratio (learning loop) | `detect/prahari/learn.py` | stub (Phase 9) |
 
 ## Satellite, communications, energy (Phases 8–9)

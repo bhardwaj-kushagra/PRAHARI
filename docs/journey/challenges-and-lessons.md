@@ -17,6 +17,20 @@ difference (P0 Welch p = 0.58, P1 p = 0.40, P1t p = 0.58).
 over many seeds before suspecting the code, and never tune a model to hit a number (CLAUDE.md rule 10). →
 [phase 4](phase-4-baselines.md), [phase 5](phase-5-node-layer.md), `DECISIONS.md` P4-6, P4-7, P5-11.
 
+## 1b. Separating "same code" from "same world" (Phase 6)
+
+**What happened.** P2's false alarms matched the report's simulation over 20 seeds, but its detection was 8 points
+lower (74% vs 82%).
+
+**What we did.** Ran our node and edge code on the report simulation's own signals: identical result (54/63 fires,
+same tuned threshold). So the code was not the cause. Then swapped one ingredient at a time: our quiet background with
+the report's injected fires recovered most of the gap. Counting haze episodes per seed showed our seeds had drawn more
+haze in their calibration days (sampling), and the remaining difference traced to how smoke is carried (continuous
+weather wind vs one random wind per fire).
+
+**Lesson.** When results differ, swap inputs one at a time between the two implementations; it turns a vague
+"something is off" into named, measurable causes. → [phase 6](phase-6-edge-layer.md), `DECISIONS.md` P6-11.
+
 ## 2. Stubs that are too naive to be useful
 
 **What happened.** The Phase 0 CUSUM stub, fed realistic Phase 2 signals, raised about 2,000 false candidates a day;
@@ -81,6 +95,17 @@ accepted file was listed in the plan, approved and logged ("files touched" entri
 that used `qcc` as an example of a stub-only module was updated when `qcc` gained a real version.
 
 **Lesson.** Additive change plus an explicit list of touched files keeps a growing codebase reviewable.
+
+## 7b. Optional fields and strict checks (Phase 6)
+
+**What happened.** Adding an optional `incident` field to the escalation output made the runner's strict "one entry
+per cluster" check reject the stub's empty field, silently degrading the module in every stub run.
+
+**What we did.** Contracts now declare which additive fields may stay empty (`OPTIONAL`), and the check iterates only
+real dataclass fields.
+
+**Lesson.** Additive contracts need the validators to know what "additive" means; test every module state (the
+contract test runs all-stub, all-off and all-real configurations, which is how this was caught).
 
 ## 8. Tooling surprises
 

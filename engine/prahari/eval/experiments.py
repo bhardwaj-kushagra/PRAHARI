@@ -17,14 +17,14 @@ from prahari.eval.node_metrics import NodeObserver, summarise_node
 from prahari.eval.stats import detect, incidents, per_month, wilson
 
 PIPELINE_STAGES = {"P0": "baseline_p0", "P1": "baseline_p1", "P1t": "baseline_p1t"}
+EDGE_PIPELINES = {"P2": "raq"}          # PRAHARI: node layer + edge layer; health reported for its decision stage
 REFERENCE = Path(__file__).resolve().parents[2] / "tests" / "golden" / "report_reference.json"
 
 
 def protocol_fires(seed: int, ev: dict, xy: np.ndarray, t_total: int) -> tuple[list, list]:
     """M46 — fires at 6-hour slots in the test period, kept with p 0.8 (dry) / 0.2 (wet), uniform in the grid."""
     rng = make_rngs(seed)["protocol"]
-    n_days = t_total // 1440 + 1
-    dry = rng.random(n_days) < ev["dry_day_prob"]
+    dry = rng.random(t_total // 1440 + 1) < ev["dry_day_prob"]          # first draw: see protocol_day_types
     test0 = (ev["calibration_days"] + ev["tuning_days"]) * 1440
     lo, hi = xy.min(axis=0), xy.max(axis=0)
     fires = []
@@ -36,6 +36,11 @@ def protocol_fires(seed: int, ev: dict, xy: np.ndarray, t_total: int) -> tuple[l
     return fires, dry.tolist()
 
 
+def protocol_day_types(seed: int, ev: dict, t_total: int) -> list[bool]:
+    """M46 — the protocol's day types (True = dry, busy); the same first draw as `protocol_fires`."""
+    return (make_rngs(seed)["protocol"].random(t_total // 1440 + 1) < ev["dry_day_prob"]).tolist()
+
+
 def run_pass(cfg: dict, pipelines, scripted=(), observe=None) -> tuple[Simulation, dict]:
     """Step signals and baselines for the whole run; return the alarms (t, node, members) per pipeline.
     With `observe`, the node layer is stepped too and `observe(t, res, pv, cand)` is called every tick."""
@@ -44,16 +49,23 @@ def run_pass(cfg: dict, pipelines, scripted=(), observe=None) -> tuple[Simulatio
     sim = Simulation(cfg)
     sim.prepare()
     alarms = {name: [] for name in pipelines}
-    want = {name: PIPELINE_STAGES[name] for name in pipelines}
+    want = {name: PIPELINE_STAGES[name] for name in pipelines if name in PIPELINE_STAGES}
+    edge = "P2" in pipelines
     for tick, t in enumerate(sim.clock.minutes()):
         sim.ctx.tick = tick
         *_, x = sim.step_signals(t)
         for name, stage in want.items():
             out = sim.stage(stage, x)
             alarms[name].extend((t, i, list(members)) for i, members in out.alarms)
-        if observe is not None:
+        if observe is not None or edge:
             res, pv, _, cand = sim.step_node(x)
-            observe(t, res, pv, cand)
+            if observe is not None:
+                observe(t, res, pv, cand)
+            if edge:                             # an alarm per cluster the RAQ confirms, as the report's `confirm`
+                env, fuel = sim.last_env
+                _, _, cl, _, _, _, raq, _ = sim.step_edge(t, env, fuel, cand)
+                anchors = cl.anchor or tuple(m[0] for m in cl.members)
+                alarms["P2"].extend((t, int(a), list(m)) for a, m, d in zip(anchors, cl.members, raq.decide) if d)
     return sim, alarms
 
 
@@ -63,6 +75,9 @@ def run_seed(base_cfg: dict, seed: int, pipelines, node_metrics: bool = False) -
     test0, t_total = (ev["calibration_days"] + ev["tuning_days"]) * 1440, days * 1440
     cfg = copy.deepcopy(base_cfg)
     cfg["run"]["seed"], cfg["run"]["days"] = seed, days
+    dry = protocol_day_types(seed, ev, t_total)                 # M33 legacy prior shares the protocol's day types
+    cfg["params"]["srp"]["day_type_overrides"] = [{"day": d + 1, "type": "dry_busy" if v else "wet_quiet"}
+                                                  for d, v in enumerate(dry)]
     for stage in [*PIPELINE_STAGES.values(), "cusum"]:
         cfg["params"][stage]["start_min"] = test0              # the report starts every CUSUM at the test period
     for stage in ("cusum", "baseline_p1t"):                     # M28 tuning days follow the protocol
@@ -80,7 +95,7 @@ def run_seed(base_cfg: dict, seed: int, pipelines, node_metrics: bool = False) -
     for name in pipelines:
         k = incidents(quiet[name], dist, R, test0, t_total, ev["merge_min"], ev["merge_radius_factor"])
         lat = detect(burn[name], fires, xy, ev["detect_radius_m"], ev["detect_window_min"])
-        stage = sim.slots[PIPELINE_STAGES[name]]
+        stage = sim.slots[PIPELINE_STAGES.get(name) or EDGE_PIPELINES[name]]
         out["pipelines"][name] = {
             "false_incidents": k, "false_incidents_per_month": k / ev["test_days"] * ev["month_days"],
             "alarms_quiet": len(quiet[name]), "latencies_min": lat,
