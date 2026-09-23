@@ -10,7 +10,7 @@ tests using the reference values in SPEC §9.2.
 | Contracts | `engine/tests/unit/test_contracts.py` | every stage's real and stub outputs satisfy their data contracts | always |
 | Isolation | `engine/tests/unit/test_runner.py` | a failing module degrades to its stub and the run completes | always |
 | Equations | `engine/tests/unit/test_*_phaseN.py` | each model against SPEC reference values and closed-form results | always |
-| Oracle cross-checks | `test_eval_phase4.py`, `test_node_phase5.py`, `test_edge_phase6.py` | P0, P1, P1t, M24–M28, the legacy edge (`confirm`) and the M46 counting agree **exactly** with `reference/prahari_simulation.py` on identical inputs | always |
+| Oracle cross-checks | `test_eval_phase4.py`, `test_node_phase5.py`, `test_edge_phase6.py`, `test_ablation_legacy.py` | P0, P1, P1t, M24–M28, the legacy ablation forms, the legacy edge (`confirm`) and the M46 counting agree **exactly** with `reference/prahari_simulation.py` on identical inputs | always |
 | Offline replay | `test_experiments_phase7.py` | the offline edge equals the live edge, offline tuned h and replayed candidates equal the live CUSUM, per-fire wind, pipeline grouping, dial at the design target equals P2, table order | always |
 | Live server | `test_server_phase6.py` | scenarios, a live run streams recording lines in order, module switches, health | when fastapi and httpx are installed |
 | Configuration | `test_config.py` | merge rules, unknown keys, missing source tags | always |

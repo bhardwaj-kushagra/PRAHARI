@@ -30,6 +30,7 @@ export interface Summary {
   spacing?: { seeds: number[]; rows: SpacingRow[] };
   sources?: Record<string, { seeds: number[] }>;
   seed_sweep?: { seeds: number[]; pipelines: Record<string, PipelineResult> };
+  ablation_form?: "stub" | "legacy";
 }
 
 // Phase 5: node-layer statistics from the quiet pass (M26 exceedance, M28 replay-tuned candidates).
@@ -143,4 +144,11 @@ export function spacingPoints(s: Summary): SpacingPt[] {
     { spacing: r.spacing_m, kind: "single node" as const, mean: r.single_node_within_3h.rate ?? 0,
       lo: r.single_node_within_3h.ci95[0], hi: r.single_node_within_3h.ci95[1] },
   ]);
+}
+
+/** Phase 7: how the node ablations (P2-QCC, P2-TTC) were formed — the report simulation's variants or module stubs. */
+export function ablationNote(s: Summary): string {
+  return s.ablation_form === "legacy"
+    ? "QCC and TTC ablations in the report simulation's legacy forms"
+    : "QCC and TTC ablations as module stubs";
 }

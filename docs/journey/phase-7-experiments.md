@@ -68,18 +68,47 @@ layer (QCC, TTC) need passes of their own. Every result is pooled over seeds wit
     seeds drew more haze episodes (66 against 45 in days 0–27).
   - on fresh seeds 31–50 the gap halves (79.4% against 84.4%) and is no longer significant on its own, while false
     alarms are identical (7.05 per month each); over all 40 seeds a gap of about 7 points remains (p 0.007). Part of
-    the Phase 6 gap was sampling; a smaller residual stays open in `KNOWN_ISSUES.md`, with a reverse swap as the next
-    diagnostic.
-- 4: documented; legacy forms of the two node ablations proposed for approval (`KNOWN_ISSUES.md`).
+    the Phase 6 gap was sampling; the follow-up below (reverse swap) traced the rest to sampling as well.
+- 4: legacy forms built after approval (follow-up below); the stub forms remain the default switch.
 - 5: labels moved past each interval, legends below titles, the x axis pinned to the bottom.
 - 6: explained — with few incidents, a higher h can shift when two nodes' candidates coincide; detection and latency
   along the dial are monotone.
+
+## Follow-up: legacy ablations and the reverse swap
+
+After reviewing Phase 7 the developer approved two follow-ups.
+
+**Legacy ablations.** The report's simulation removes QCC and TTC differently from our module stubs: "minus
+conformal" runs the CUSUM directly on a median/MAD-scaled fast residual, and "minus two-timescale" ranks the capped
+slow z. Three parameters now reproduce those variants (`ttc.detect_on`, `qcc.form`, `cusum.statistic`), selected by
+`experiment.ablation_form: legacy`; the signed z travels in two new optional contract fields. Every default run is
+unchanged (frames identical). On the report simulation's own seed-11 signals the engine gives its results — exactly
+for P2 minus QCC, and for P2 minus TTC once its day-1 look-ahead is accounted for (a causal system cannot see the
+whole first day before scoring it). On the golden seeds: P2 minus QCC 8.8 and P2 minus TTC 8.4 false incidents per
+month (report 17.4 and 11.8); over seeds 11–30 both agree with the report simulation's distribution (p 0.48 and
+0.44) (SIM).
+
+**Reverse swap.** Every combination of the two backgrounds and the two fire sets went through the same chain over
+seeds 11–30:
+
+| Confirmed within 3 h (SIM) | Engine fires | Report-simulation fires |
+| --- | --- | --- |
+| Engine background | 72.7% | 77.4% |
+| Report-simulation background | 81.1% | 81.4% |
+
+Both ingredients matter, and neither is a model difference: the haze process is statistically the same (200
+histories each), the fire sets match in geometry and timing but the report's seeds happened to draw fewer wet-day
+fires (16.7% against the expected 20%), and the calibration tails of the two backgrounds do not differ significantly
+on 60 fresh seeds. The detection gap is therefore treated as sampling (`DECISIONS.md` P7-14).
+
+**Lesson.** A 2 × 2 swap is worth its compute: it split one unexplained number into two named, testable causes,
+and each was then checked against the model itself on fresh seeds rather than on the seeds that showed the gap.
 
 ## Acceptance results
 
 | # | Test | Result (SIM) |
 | --- | --- | --- |
-| 1 | Golden-number tests pass (§9.3) | **not met** — 6 of 21 golden tests pass (P1 false incidents; P1 and P1t detection; P2-QCC detection; both node-layer targets); 15 miss: false incidents for P0, P1t, P2 and the four ablations, P0 and P2 detection, three ablation-detection checks and all three spacing checks. Documented, not tuned (DECISIONS P7-9, P7-10; KNOWN_ISSUES) |
+| 1 | Golden-number tests pass (§9.3) | **not met** — after the follow-up 5 of 21 golden tests pass (P1 false incidents; P1 and P1t detection; both node-layer targets; with the stub ablations P2-QCC detection had also passed); 16 miss: P2-QCC detection (legacy 67.3% vs 78%), false incidents for P0, P1t, P2 and the four ablations, P0 and P2 detection, three ablation-detection checks and all three spacing checks. Documented, not tuned (DECISIONS P7-9, P7-10; KNOWN_ISSUES) |
 | 2 | Charts render from files | **pass** — every chart reads `results/summary.json`; no result values in the dashboard code |
 | 3 | Each chart shows seeds and days | **pass** — footers name the seeds and "14 + 14 + 30 simulated days per seed" |
 

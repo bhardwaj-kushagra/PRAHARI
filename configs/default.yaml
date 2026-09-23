@@ -10,6 +10,7 @@ experiment:                       # `prahari experiment` (Phase 4)
   node_metrics: false            # Phase 5: also step the node layer in the quiet pass (M26/M28 acceptance)
   dial: []                        # Phase 7: operating dial — re-tuned M28 targets (node-local false candidates per node per 30 d)
   spacings: []                    # Phase 7: node spacings to sweep (m); empty = world.spacing_m only
+  ablation_form: stub             # P2-QCC / P2-TTC as module stubs (SPEC switches); legacy = the report simulation's variants
 
 run:
   seed: 11
@@ -214,13 +215,15 @@ params:
     var_floor: 1.0e-4             # real: s² floor at initialisation (report simulation)
     fast_lag0_min: 60             # M25 — fast residual against the mean of x over t−180 … t−61
     fast_lag1_min: 180
-    source: "LIT M24/M25 and the report simulation (reference/prahari_simulation.py); ASM stub warm-up"
+    detect_on: fast               # fast = M25 residual; slow = capped slow z (legacy "minus two-timescale" ablation)
+    source: "LIT M24/M25 and the report simulation (reference/prahari_simulation.py); ASM stub warm-up; LIT detect_on slow = scores() C_slow"
   qcc:
     bins: 6                       # M26 — six 4-hour time-of-day bins
     cal_days: 14                  # M26 — calibration days (M46 protocol)
     window: frozen                # frozen = report simulation; sliding = SPEC maturity window (advanced)
     window_days: 28               # M26 — sliding window maximum
-    source: "LIT M26 and the report simulation; ASM sliding option"
+    form: conformal               # conformal = M26; robust_z = median/MAD z of r (legacy "minus conformal" ablation)
+    source: "LIT M26 and the report simulation; ASM sliding option; LIT form robust_z = gauss_z()"
   cusum:
     k: 0.5                        # M23 — reference value on the z scale (stub = v1 CUSUM)
     arl_min: 43200                # M23 — in-control ARL of 30 days
@@ -228,6 +231,8 @@ params:
     warmup_min: 60                # stub only: CUSUM held at 0 while the TTC baseline warms up
     single_sample_h: 6.9          # off mode: −ln(1e-3)
     k_node: 1.5                   # M28 — real: reference value on the −ln p scale
+    statistic: neglogp            # neglogp = M28; z = signed z from qcc robust_z (legacy "minus conformal" ablation)
+    k_z: 0.5                      # legacy ablation: reference value on the z scale (report simulation KS G_fast)
     start_min: 180                # real: CUSUM starts once the M25 window is full (experiments: test period)
     tune_start_min: 20160         # M28 — tuning days 15–28 (M46 protocol: 14 d calibration, 14 d tuning)
     tune_end_min: 40320
@@ -239,7 +244,7 @@ params:
     cm_z: 3.0                     # M28 — common mode: ≥ 25% of nodes with slow z ≥ 3, padded ±60 min
     cm_frac: 0.25
     cm_pad_min: 60
-    source: "TGT ARL 30 d and r = 1/30 d; LIT M28 and the report simulation; DER h_default (oracle mean tuned h)"
+    source: "TGT ARL 30 d and r = 1/30 d; LIT M28 and the report simulation; DER h_default (oracle mean tuned h); LIT statistic z, k_z (KS)"
   cluster:
     window_min: 30                # M30 — W
     form: legacy                  # legacy = around each new candidate (report simulation); components = M30 graph

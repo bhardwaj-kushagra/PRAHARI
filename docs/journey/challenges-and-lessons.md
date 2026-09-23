@@ -40,6 +40,11 @@ heavier upper tail, so fires earn less extreme p-values. → [phase 7](phase-7-e
 **Second lesson.** A plausible cause found by a swap is a hypothesis until an intervention confirms it; test the fix
 before crediting the explanation.
 
+**Closing the loop (Phase 7 follow-up).** A full 2 × 2 swap (two backgrounds × two fire sets, one chain) split the gap
+into a background part (the engine seeds' haze-heavy calibration windows) and a fire-set part (the report seeds drew
+fewer wet-day fires than expected). Checking each ingredient at the model level on fresh seeds found no model
+difference, so the gap is recorded as sampling. → `DECISIONS.md` P7-14.
+
 ## 2. Stubs that are too naive to be useful
 
 **What happened.** The Phase 0 CUSUM stub, fed realistic Phase 2 signals, raised about 2,000 false candidates a day;

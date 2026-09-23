@@ -410,7 +410,8 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   the four ablations' false incidents against the report's intervals, P0–P2 detection against the report's
   intervals (§9.3 gives both), and — where the report gives a point value without an interval (ablation detection,
   spacing) — that the report's value falls inside our own M44 interval. `PRAHARI_JOBS` runs seeds in parallel.
-  Run in this session (16.5 minutes, `PRAHARI_JOBS=3`): 6 pass, 15 miss — the misses are the P7-9 findings.
+  Run in this session (16.5 minutes, `PRAHARI_JOBS=3`): 6 pass, 15 miss — the misses are the P7-9 findings. After the
+  legacy ablations (P7-12): 5 pass, 16 miss — P2-QCC detection now misses (67.3% vs 78%).
 - **P7-7. `--jobs N`.** Seeds run in N forked processes (`multiprocessing`, standard library). Each seed's streams
   come from its own master seed, so the output does not depend on N (checked: the seed-11 golden P2 row is the same
   with 1 and 4 jobs).
@@ -478,6 +479,54 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `tests/smoke/test_experiment.py` (new results layout), `tests/golden/test_golden_baselines.py` and
   `report_reference.json` (ablations, spacing — the report's values only), `.gitignore`, `CLAUDE.md` (commands);
   dashboard `ResultsPanel.tsx`, `results.ts`, `results.test.ts` (additive).
+
+- **P7-12. Legacy node ablations (approved after Phase 7; small additive changes to accepted Phase 5 modules).**
+  `experiment.ablation_form: legacy` (set by the `ablation` preset; default `stub`) builds P2-QCC and P2-TTC as the
+  report simulation does, through three parameters whose defaults leave every existing run unchanged:
+  `ttc.detect_on: slow` (the detection residual is the capped slow z), `qcc.form: robust_z` (z = (r − median) /
+  (1.4826·MAD) per node over the calibration days, p = Φ(−z)) and `cusum.statistic: z` with `cusum.k_z: 0.5` (the
+  CUSUM adds the signed z). The signed z travels in two optional contract fields, `PValues.z` and `Scores.z`
+  (rule 3, additive); the score stub passes it on. `_groups` keys each ablation on its module or parameter
+  overrides. Unit tests (`test_ablation_legacy.py`) check each form against the report simulation's `ewma_z`,
+  `gauss_z`, `cusum` and `tune_h` on identical inputs. Default recordings: every frame identical; only the model
+  card's source text changed, and the recordings were regenerated for it.
+- **P7-13. Legacy ablation results.** On the report simulation's own seed-11 signals the engine's legacy chains give
+  its results: P2-QCC exactly (h 210.229, identical candidate lists, 14 false incidents per month, 48 of 63 fires);
+  P2-TTC 7 vs 8 false incidents and 46 vs 48 fires with the same h (400, the cap). The P2-TTC difference is fully
+  explained by day 1: the report simulation computes the first day's slow z against a baseline taken from the whole
+  first day (look-ahead), which a causal engine cannot; replacing those day-1 values with the engine's warm-up z makes
+  the candidate lists identical (897 = 897). Kept as is (ASM, one of 14 calibration days).
+  Golden seeds (`results/ablation.json`): P2-QCC 8.8 (6.4–11.8) false incidents per month, 218/324 = 67.3% confirmed
+  (report 17.4, 13.9–21.5; 78%); P2-TTC 8.4 (6.1–11.4), 194/324 = 59.9% (report 11.8, 9.0–15.2; 66%). The stub
+  forms had given 30.8 and 8.2 (P7-9). Over seeds 11–30 against the report simulation
+  (evidence file, `legacy_ablations`): false incidents agree — P2-QCC 10.25 vs 12.40 per month (Welch p 0.48), P2-TTC
+  12.75 vs 11.20 (p 0.44); detection shows the same seed-driven gap as P2 — 69.2% vs 74.4% (p 0.08) and 60.6% vs
+  69.8% (p 0.05).
+- **P7-14. Reverse swap and model checks — where the P2 detection gap comes from.** A 2 × 2 design over seeds 11–30
+  ran every combination of background (engine; report simulation) and fire set (engine protocol fires; the report
+  simulation's injected fires) through the same engine chain (evidence file, `reverse_swap`). The two anchor cells
+  reproduce the known results exactly (862/1185 and 1000/1228). Confirmed within 3 h:
+
+  | | Engine fires | Report-simulation fires |
+  | --- | --- | --- |
+  | Engine background | 862/1185 = 72.7% | 950/1228 = 77.4% |
+  | Report-simulation background | 961/1185 = 81.1% | 1000/1228 = 81.4% |
+
+  Both factors contribute: the engine backgrounds cost 4.6–7.4 points (Mann–Whitney p 0.02–0.10) and the engine fire
+  sets 2.0–4.8 points (paired p 0.11 and 0.001). Neither is a model difference:
+  - *Fires.* The fire sets agree on distance to the nearest node (27.0 vs 26.4 m, KS p 0.62), nodes within 100 m
+    (6.1 vs 6.2) and time of day (KS p 0.99); they differ in the share of fires on wet days, which need three nodes
+    (21.9% vs 16.7%, KS p 0.08; the protocol expects 20%) — a day-type sampling difference.
+  - *Haze.* 200 independent 58-day haze histories from each model agree in episodes (5.76 vs 5.68, KS p 1.0),
+    durations (449 vs 453 min, p 0.86) and amplitudes (1.64 vs 1.64 su, p 0.69).
+  - *Background as a whole.* On 60 fresh seeds (101–160) the calibration-period tail of the quiet fast residual —
+    the quantity the conformal p-values rank against — does not differ significantly: share of node-minutes above
+    1 su 0.80% vs 0.65% (KS p 0.51), mean per-node 99.9% quantile 1.83 vs 1.74 su (p 0.27), 99.97% quantile 2.35 vs
+    2.29 su (p 0.18). The engine is slightly higher on all three, so a small background difference cannot be ruled
+    out at this sample size.
+  Conclusion: the code is the same (C1 and Phase 6), the fire model and the haze model are the same, and the
+  detection gap on seeds 11–30 comes from which worlds those seeds happened to draw — haze-heavy calibration windows
+  in the engine's, and fewer wet-day fires in the report simulation's.
 
 ## Documentation
 

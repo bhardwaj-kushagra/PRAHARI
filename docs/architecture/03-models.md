@@ -56,6 +56,20 @@ Every equation in [`SPEC.md`](../SPEC.md) §5, where it lives in `engine/prahari
 | M28 | −ln p CUSUM, k 1.5, replay-tuned h | `detect/prahari/cusum_real.py`, `tuning.py` (stub: v1 CUSUM in `cusum.py`) | real | Phase 5 |
 | M29 | Health weight | — | stub (c = 1) | Phase 9 |
 
+**Legacy ablation forms (Phase 7 follow-up, `DECISIONS.md` P7-12).** To reproduce the report simulation's two
+node-layer ablations, three parameters switch a node stage into that simulation's variant; every default leaves the
+design above unchanged:
+
+| Parameter | Effect | Used by |
+| --- | --- | --- |
+| `ttc.detect_on: slow` | the detection residual is the capped slow z (M24) instead of the fast residual (M25) | P2 minus TTC |
+| `qcc.form: robust_z` | no ranks: z = (r − median) / (1.4826 · MAD) per node over the calibration days, p = Φ(−z) | P2 minus QCC |
+| `cusum.statistic: z`, `cusum.k_z: 0.5` | the CUSUM adds the signed z with k 0.5 instead of −ln p with k 1.5 | P2 minus QCC |
+
+The signed z travels in two optional contract fields, `PValues.z` and `Scores.z` (the score stub passes it on). An
+experiment picks the forms with `experiment.ablation_form: legacy` (the `ablation` preset); `stub` swaps the whole
+module for its stub, as the dashboard's mechanism switches do.
+
 ## PRAHARI edge layer
 
 | M | What it does | File (real; stub) | Default | Since |

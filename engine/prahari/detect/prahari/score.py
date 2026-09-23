@@ -22,7 +22,8 @@ class ScoreStub(Stage):
     def step(self, pv: PValues, ctx) -> Scores:
         c = np.ones_like(pv.p)
         s = node_score(pv.p, c)
-        return Scores(s=s, p_node=np.clip(np.exp(-s), P_FLOOR, 1.0), c=c)
+        z = None if pv.z is None else pv.z[:, 0]                 # passed on for a z-statistic CUSUM (P7-12)
+        return Scores(s=s, p_node=np.clip(np.exp(-s), P_FLOOR, 1.0), c=c, z=z)
 
 
 @register("score", kind="off")

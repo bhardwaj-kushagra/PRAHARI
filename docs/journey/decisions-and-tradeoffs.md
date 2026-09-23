@@ -37,7 +37,8 @@ The decisions that most shape the project, with the alternatives considered. Ids
 | Warm-start recordings for the demo | show only young networks; shorten calibration | shows the designed operating point without touching the model | longer generation | P5-14 |
 | Legacy per-fire wind for experiment presets (after approval) | keep weather wind everywhere | the report's fire model exactly; demos unchanged | did not close the detection gap (recorded) | P7-1 |
 | Offline edge and dial replay from recorded node evidence | simulate every variant | one pair of passes per node configuration; tested equal to the live path | the harness no longer runs the edge live | P7-2, P7-4 |
-| Ablations as module stubs, not the report simulation's variants | copy the report simulation's variants | the SPEC's meaning, the same switches as the dashboard | node ablations are not directly comparable | P7-10 |
+| Both ablation forms: module stubs (default, the dashboard's switches) and the report simulation's legacy variants (the `ablation` preset) | one form only | the SPEC's meaning and a like-for-like comparison with the report | three extra parameters and two optional contract fields in accepted modules (approved) | P7-10, P7-12 |
+| A 2 × 2 reverse swap before calling a gap "sampling" | stop at the fresh-seed check | separates background from fire-set effects; each then checked at model level | about an hour of compute | P7-14 |
 
 ## Process
 

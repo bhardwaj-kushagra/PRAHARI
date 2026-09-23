@@ -321,3 +321,27 @@ Files: `results/summary.json`, `docs/journey/phase-7-experiments.md`, `docs/resu
 
 **Next step:** review Phase 7; decide on the proposed legacy node-ablation forms and on the calibration-haze item
 (KNOWN_ISSUES). Then Phase 8 (communications and energy, optional) or Phase 9/10 as the developer prefers.
+
+### 2026-09-23 — Session 11 (Phase 7 follow-up: legacy ablations and the reverse swap)
+
+- The developer approved building the report simulation's node ablations and running the reverse swap.
+- **Legacy ablations** (DECISIONS P7-12, P7-13): `ttc.detect_on: slow`, `qcc.form: robust_z`, `cusum.statistic: z`
+  (+ `k_z`), optional contract fields `PValues.z` and `Scores.z`, selected by `experiment.ablation_form: legacy` (the
+  `ablation` preset). Defaults unchanged: every recorded frame identical; recordings regenerated only for the model
+  card's source text. On the report simulation's own seed-11 signals: P2-QCC exact; P2-TTC exact once its day-1
+  look-ahead is accounted for. Golden seeds: P2-QCC 8.8, P2-TTC 8.4 false incidents/month (report 17.4, 11.8);
+  seeds 11–30 match the report simulation's false alarms (p 0.48, 0.44).
+- **Reverse swap and model checks** (DECISIONS P7-14): 2 × 2 over seeds 11–30 — engine backgrounds cost 4.6–7.4
+  points of detection, engine fire sets 2.0–4.8; no model difference behind either (haze process, fire geometry and
+  timing, calibration tails on 60 fresh seeds all agree; the report seeds drew fewer wet-day fires). The P2
+  detection gap is recorded as sampling (KNOWN_ISSUES updated; the ablation item resolved).
+- Tests: 157 engine tests pass (21 golden skipped unless enabled), 36 dashboard tests; golden suite 5 of 21 pass (P1
+  false incidents, P1 and P1t detection, both node targets) — P2-QCC detection now misses (legacy 67.3% vs the report's
+  78%; the stub form had passed); every other result as in session 10. Browser check: 5 Results charts, no console errors.
+
+**To see it:** `cd dashboard && npm run dev`, tab *Results* — the ablation chart now shows the legacy forms (footer
+says so). Evidence: `engine/tests/golden/equivalence_p7_seeds11_30.json`; write-up:
+`docs/journey/phase-7-experiments.md` (follow-up section) and `docs/results/validation.md` §1–2.
+
+**Next step:** review Phase 7. Then Phase 8 (communications and energy, optional), 9 (regimes and learning) or 10
+(demo packaging), as the developer prefers.

@@ -170,6 +170,7 @@ class Residuals:
 class PValues:
     p: np.ndarray            # (N, C) in (0, 1]
     n_cal: np.ndarray        # (N,) calibration-set size (0 for the Gaussian stub)
+    z: np.ndarray | None = None   # (N, C) signed statistic of a Gaussian-form QCC (legacy ablation, P7-12)
 
     def validate(self, n: int) -> None:
         c = self.p.shape[1] if self.p.ndim == 2 else -1
@@ -186,6 +187,7 @@ class Scores:
     s: np.ndarray            # (N,) node score S_t (M27), >= 0
     p_node: np.ndarray       # (N,) node-level p-value
     c: np.ndarray            # (N, C) health weights in [0, 1] (M29)
+    z: np.ndarray | None = None   # (N,) signed node statistic passed on from PValues.z (legacy ablation, P7-12)
 
     def validate(self, n: int) -> None:
         _arr("score", self.s, (n,), lo=0.0)

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { ABLATION, detectionRows, PIPELINE_LABEL, falseAlarmRows, logBounds, MAIN, nodeRows, type Row, type Summary } from "../results";
+import { ABLATION, ablationNote, detectionRows, PIPELINE_LABEL, falseAlarmRows, logBounds, MAIN, nodeRows, type Row, type Summary } from "../results";
 import { ExperimentCharts } from "./ExperimentCharts";
 import { EChart, type EOption } from "./EChart";
 
@@ -79,7 +79,7 @@ export function ResultsPanel() {
                              unit: "per month", fmt: (v) => (v >= 10 ? v.toFixed(0) : v.toFixed(1)), bounds: logBounds(fa) }),
     det: intervalOption(det, { title: "Fires confirmed within 3 h (fire pass; 95% CI M44)", log: false, unit: "share",
                                fmt: (v) => `${Math.round(v * 100)}%`, bounds: [0, 1] }),
-    abl: intervalOption(abl, { title: "Ablation: PRAHARI with one mechanism replaced by its stub", log: true,
+    abl: intervalOption(abl, { title: "Ablation: PRAHARI with one mechanism removed", log: true,
                                unit: "false incidents per month", fmt: (v) => (v >= 10 ? v.toFixed(0) : v.toFixed(1)),
                                bounds: logBounds(abl), note: (r) => {
                                  const c = summary?.pipelines[r.name]?.confirmed_within_3h.rate;
@@ -115,7 +115,7 @@ export function ResultsPanel() {
         <section data-testid="ablation">
           <EChart option={opts.abl} height={80 + abl.length * 64} testId="chart-ablation" />
           <p className="chart-foot">SIMULATION · seeds {(summary.sources?.ablation?.seeds ?? summary.seeds).join(", ")} ·
-            {" "}{d.calibration} + {d.tuning} + {d.test} simulated days per seed · SCMR and RAQ ablations replayed from P2's runs</p>
+            {" "}{d.calibration} + {d.tuning} + {d.test} simulated days per seed · {ablationNote(summary)}; SCMR and RAQ ablations replayed from P2's runs</p>
         </section>
       ) : null}
       <ExperimentCharts summary={summary} />

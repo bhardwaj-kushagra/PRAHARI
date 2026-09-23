@@ -36,6 +36,7 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **Incident** | Alarms merged within 60 minutes and 2R into one event for counting (M46). |
 | **Isolation / Slot** | The wrapper that runs every stage and falls back to its stub, then off, then the last good output, if it fails. |
 | **k** | CUSUM allowance subtracted each step: 0.5 on the z scale (P1), 1.5 on the −ln p scale (PRAHARI). |
+| **Legacy ablation** | A node-layer ablation built the way the report's simulation built it (for example, the CUSUM run on a median/MAD-scaled residual instead of conformal p-values), as opposed to swapping in the module's stub. |
 | **Legacy form** (edge) | The report simulation's edge decision: around each new candidate, count agreeing neighbours, test SCMR against the network, apply the day-type quorum (DECISIONS N-b, P6-2). |
 | **Legacy mode** | The model choices that reproduce the report (M9, M12, M17 linear, legacy prior and quorum). |
 | **Live mode** | The dashboard streaming frames from the optional FastAPI server instead of a file; mechanism switches then reconfigure the running engine. |
@@ -62,6 +63,7 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **Recording** | A gzipped JSON-lines file (`*.prs.jsonl.gz`): header, frames, traces, footer. |
 | **Refractory** | 30 minutes after a candidate during which the node cannot raise another. |
 | **Replay tuning** | Finding h by rerunning the CUSUM over stored tuning-day scores (M28). |
+| **Reverse swap (2 × 2)** | A diagnostic that runs every combination of two backgrounds (engine, report simulation) and two fire sets through one chain, to separate the effect of the background from the effect of the fires. |
 | **SCMR** | Spatial common-mode rejection: a cluster must be ≥ 3× more active than the network (M31). |
 | **Seed** | The master random number; the same seed gives a byte-identical recording. |
 | **SIM** | Label on every simulated value; nothing here is field data. |

@@ -73,4 +73,9 @@ describe("Phase 7 builders", () => {
     const sp = spacingPoints(s);
     expect(sp.map((p) => [p.kind, p.mean, p.ref])).toEqual([["confirmed", 0.8, 0.85], ["single node", 1, undefined]]);
   });
+  it("names the form of the node ablations", async () => {
+    const { ablationNote } = await import("./results");
+    expect(ablationNote({ ...summary, ablation_form: "legacy" })).toContain("legacy forms");
+    expect(ablationNote(summary)).toContain("module stubs");
+  });
 });

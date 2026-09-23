@@ -24,6 +24,10 @@ PIPELINE_STAGES = {"P0": "baseline_p0", "P1": "baseline_p1", "P1t": "baseline_p1
 ABLATIONS = {"P2": {}, "P2-SCMR": {"scmr": "stub"}, "P2-RAQ": {"raq": "stub"}, "P2-QCC": {"qcc": "stub"},
              "P2-TTC": {"ttc": "stub"}}
 NODE_MODULES = ("ttc", "qcc", "score", "cusum")
+# `experiment.ablation_form: legacy` (P7-12): the report simulation's node ablations, as parameter overrides —
+# "minus conformal" = CUSUM on the median/MAD z of the fast residual (k 0.5); "minus two-timescale" = conformal p of
+# the capped slow z. Edge ablations are the same in both forms.
+LEGACY_ABLATIONS = {"P2-QCC": {"qcc.form": "robust_z", "cusum.statistic": "z"}, "P2-TTC": {"ttc.detect_on": "slow"}}
 REFERENCE = Path(__file__).resolve().parents[2] / "tests" / "golden" / "report_reference.json"
 
 
@@ -87,12 +91,19 @@ def protocol_config(base_cfg: dict, seed: int) -> tuple[dict, dict, int, int]:
     return cfg, ev, test0, t_total
 
 
-def _groups(pipelines) -> dict:
+def _node_overrides(name: str, form: str) -> dict:
+    """Node-layer overrides of a PRAHARI variant: module states ("qcc": "stub") or parameters ("qcc.form": …)."""
+    if form == "legacy" and name in LEGACY_ABLATIONS:
+        return LEGACY_ABLATIONS[name]
+    return {m: s for m, s in ABLATIONS[name].items() if m in NODE_MODULES}
+
+
+def _groups(pipelines, form: str = "stub") -> dict:
     """PRAHARI variants grouped by their node-layer overrides: each group needs its own pair of passes."""
     groups: dict[tuple, list] = {}
     for name in pipelines:
         if name in ABLATIONS:
-            key = tuple(sorted((m, s) for m, s in ABLATIONS[name].items() if m in NODE_MODULES))
+            key = tuple(sorted(_node_overrides(name, form).items()))
             groups.setdefault(key, []).append(name)
     if any(n in PIPELINE_STAGES for n in pipelines):
         groups.setdefault((), [])
@@ -110,9 +121,14 @@ def run_seed(base_cfg: dict, seed: int, pipelines, node_metrics: bool = False, d
     cfg0, ev, test0, t_total = protocol_config(base_cfg, seed)
     out = {"seed": seed, "test_days": ev["test_days"], "pipelines": {}}
     fires = None
-    for key, names in _groups(pipelines).items():
+    for key, names in _groups(pipelines, base_cfg["experiment"].get("ablation_form", "stub")).items():
         cfg = copy.deepcopy(cfg0)
-        cfg["modules"].update(dict(key))
+        for k, v in key:                                         # module state, or "module.param" override
+            if "." in k:
+                m, param = k.split(".", 1)
+                cfg["params"][m][param] = v
+            else:
+                cfg["modules"][k] = v
         base = key == ()
         n = int(cfg["world"]["n_nodes"])
         rec_q = ScoreRecorder(t_total, n, cfg["params"]["cusum"]["cm_z"])
@@ -185,6 +201,7 @@ def summarise(per_seed: list, preset: str, cfg: dict) -> dict:
                "seeds": [s["seed"] for s in per_seed], "n_nodes": cfg["world"]["n_nodes"],
                "spacing_m": cfg["world"]["spacing_m"],
                "days": {"calibration": ev["calibration_days"], "tuning": ev["tuning_days"], "test": ev["test_days"]},
+               "ablation_form": cfg["experiment"].get("ablation_form", "stub"),
                "pipelines": pipes}
     if all("node" in s for s in per_seed):
         summary["node"] = summarise_node([{"seed": s["seed"], **s["node"]} for s in per_seed], ev)

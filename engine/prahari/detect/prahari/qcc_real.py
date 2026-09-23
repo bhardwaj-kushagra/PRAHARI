@@ -8,10 +8,14 @@ p_t = (1 + #{α_j ≥ α_t}) / (n + 1), so p never falls below p_min = 1/(n + 1)
 - `window: sliding` (advanced, SPEC maturity window): the set keeps the last `window_days` of scores per bin.
 
 While a set is still growing, each score is compared with the set so far and then appended (online conformal).
+
+`form: robust_z` is the report simulation's "minus conformal" ablation (P7-12): no ranks, only the fast residual
+scaled by each node's calibration median and MAD; the signed z travels in `PValues.z` for a z-statistic CUSUM.
 """
 from __future__ import annotations
 
 import numpy as np
+from scipy.special import ndtr
 
 from prahari.core.clock import MINUTES_PER_DAY
 from prahari.core.contracts import PValues, Residuals
@@ -23,6 +27,11 @@ def conformal_p_counts(cal, n: int, score):
     """M26 by counting — cal (M, ≥ n) rows of calibration scores (unsorted), score (M,) → p (M,)."""
     ge = (cal[:, :n] >= score[:, None]).sum(axis=1)
     return (1.0 + ge) / (n + 1.0)
+
+
+def robust_z(r, med, mad):
+    """Legacy ablation — z = (r − median) / (1.4826 · MAD), the report simulation's `gauss_z` (MAD passed unscaled)."""
+    return (r - med) / (1.4826 * mad)
 
 
 class RowSearch:
@@ -65,8 +74,13 @@ class QCCReal(Stage):
         self._n = np.zeros(self._bins, dtype=np.int64)          # samples in each bin (all nodes alike)
         self._head = np.zeros(self._bins, dtype=np.int64)       # next write position (sliding ring)
         self._search: dict[int, RowSearch] = {}
+        self._robust = p.get("form", "conformal") == "robust_z"
+        self._hist: list = []                                    # robust_z: calibration residuals, then (med, mad)
+        self._scale = None
 
     def step(self, res: Residuals, ctx) -> PValues:
+        if self._robust:
+            return self._robust_step(res, ctx)
         a = res.r                                                # M26 — α = r, the fast residual
         shape = a.shape
         a = a.reshape(-1)
@@ -87,6 +101,23 @@ class QCCReal(Stage):
         n_cal = np.full(shape[0], float(n))                      # the set this p was computed against: floor 1/(n+1)
         return PValues(p=np.clip(p, P_FLOOR, 1.0).reshape(shape), n_cal=n_cal)
 
+    def _robust_step(self, res: Residuals, ctx) -> PValues:
+        """Legacy "minus conformal": median and MAD per node over the calibration days, then z and p = Φ(−z)."""
+        r = res.r
+        if self._scale is None and ctx.t >= self._freeze_t and self._hist:
+            h = np.stack(self._hist)                             # (T_cal, N, C)
+            med = np.median(h, axis=0)
+            self._scale = (med, np.median(np.abs(h - med), axis=0))
+            self._hist = []
+        if self._scale is None:
+            self._hist.append(np.array(r, dtype=float))
+            z, p = np.zeros_like(r, dtype=float), np.ones_like(r, dtype=float)   # no evidence before the scale exists
+        else:
+            z = robust_z(r, *self._scale)
+            z = np.where(np.isfinite(z), z, 0.0)
+            p = np.clip(ndtr(-z), P_FLOOR, 1.0)
+        return PValues(p=p, n_cal=np.zeros(r.shape[0]), z=z)
+
     def _learn(self, b: int, a, ok, t: int) -> None:
         if b in self._search or not ok.all():                    # frozen, or a gap: keep the set exchangeable
             return
@@ -100,5 +131,5 @@ class QCCReal(Stage):
 
     def snapshot(self) -> dict:
         p = self.params
-        return {"window": p["window"], "cal_days": p["cal_days"], "bins": p["bins"],
-                "window_days": p["window_days"] if p["window"] == "sliding" else p["cal_days"]}
+        return {**({"form": "robust_z"} if self._robust else {}), "window": p["window"], "cal_days": p["cal_days"],
+                "bins": p["bins"], "window_days": p["window_days"] if p["window"] == "sliding" else p["cal_days"]}

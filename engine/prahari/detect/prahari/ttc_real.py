@@ -66,6 +66,7 @@ class TTCReal(Stage):
         self._fast = None
         self._b = self._s2 = self._fz = None
         self._k = 0
+        self._slow = p.get("detect_on", "fast") == "slow"       # legacy ablation "minus two-timescale" (P7-12)
 
     def _init_from_first_day(self):
         """Report simulation: b, s² from the whole first day, then the filter runs over that same day."""
@@ -94,16 +95,21 @@ class TTCReal(Stage):
             self._buf[k] = x
             if k == self._init - 1:
                 z = self._init_from_first_day()
-                return Residuals(r=r, z=z, b=self._b.copy())
+                return self._out(r, z, self._b.copy())
             # Warm-up display during day 1 (ASM): running mean of the samples so far; spread floored at initial_sd.
             self._sum += x
             self._sq += x * x
             b = self._sum / (k + 1)
             sd = np.maximum(np.sqrt(np.maximum(self._sq / (k + 1) - b * b, 0.0)), float(self.params["initial_sd_su"]))
-            return Residuals(r=r, z=(x - b) / sd, b=b)
+            return self._out(r, (x - b) / sd, b)
         z, self._b, self._s2, self._fz = ttc_slow_step(self._b, self._s2, x, self._fz, self._alpha,
                                                        float(self.params["freeze_z"]), self._fmax)
-        return Residuals(r=r, z=z, b=self._b.copy())
+        return self._out(r, z, self._b.copy())
+
+    def _out(self, r, z, b) -> Residuals:
+        """With `detect_on: slow` the detection residual is the capped slow z (M24) instead of the fast residual (M25),
+        as the report simulation's "minus two-timescale" ablation scores it."""
+        return Residuals(r=z if self._slow else r, z=z, b=b)
 
     def snapshot(self) -> dict:
         return {"freeze_cap_min": self.params["freeze_cap_min"],

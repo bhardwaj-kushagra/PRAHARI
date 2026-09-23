@@ -44,7 +44,8 @@ def combine(out_dir: str | Path, primary: str | None = None) -> dict:
     ablation = _load(out, "ablation")
     if ablation and base is golden:
         summary["pipelines"].update(ablation["pipelines"])
-        sources["ablation"] = {"seeds": ablation["seeds"]}
+        summary["ablation_form"] = ablation.get("ablation_form", "stub")     # form of the node ablations (P7-12)
+        sources["ablation"] = {"seeds": ablation["seeds"], "ablation_form": summary["ablation_form"]}
     spacing = _load(out, "spacing")
     if spacing and base is golden:
         summary["spacing"] = {"seeds": spacing["seeds"], "rows": [

@@ -16,8 +16,8 @@ report simulation's fire injection (a constant random wind per fire, `DECISIONS.
 | P1 v1 as written | 136.2 (126.2–146.8) | 132 (123–143) — **inside** | 318/324 = 98.1% | 99% (98–100) — **inside** |
 | P1t v1 replay-tuned | 14.4 (11.3–18.1) | 18.6 (15.0–22.8) — just outside | 198/324 = 61.1% | 59% (53–64) — **inside** |
 | P2 PRAHARI | 3.4 (2.0–5.4) | 6.4 (4.4–9.0) — below | 231/324 = 71.3% | 83% (79–87) — below |
-| P2 minus QCC | 30.8 (26.1–36.1) | 17.4 (13.9–21.5) | 242/324 = 74.7% | 78% — inside our interval |
-| P2 minus TTC | 8.2 (5.9–11.1) | 11.8 (9.0–15.2) | 234/324 = 72.2% | 66% |
+| P2 minus QCC (legacy form) | 8.8 (6.4–11.8) | 17.4 (13.9–21.5) | 218/324 = 67.3% | 78% |
+| P2 minus TTC (legacy form) | 8.4 (6.1–11.4) | 11.8 (9.0–15.2) | 194/324 = 59.9% | 66% |
 | P2 minus SCMR | 5.0 (3.2–7.4) | 12.0 (9.2–15.4) | 232/324 = 71.6% | 84% |
 | P2 minus RAQ | 5.4 (3.6–7.9) | 10.0 (7.4–13.2) | 250/324 = 77.2% | 88% |
 
@@ -27,8 +27,10 @@ P2 5, 5, 2, 0, 5. Median minutes from ignition to confirmation: P2 62, P2-QCC 42
 **What holds and what does not.** The report's qualitative result holds: P2 has about 100× fewer false incidents
 than P0, and removing any mechanism raises them. The absolute P2-family numbers do not match the 5-seed report
 values: false alarms are lower on these five seeds (over 20 seeds they agree, section 2), and detection is lower
-(section 2 traces why). The node ablations are also defined differently from the report simulation's (as module
-stubs; `DECISIONS.md` P7-10).
+(section 2 traces why). The QCC and TTC rows use the report simulation's own ablation forms (`ablation_form: legacy`,
+`DECISIONS.md` P7-12); as module stubs they gave 30.8 and 8.2 false incidents per month with 74.7% and 72.2% confirmed
+(P7-9). Over seeds 11–30 the legacy ablations' false incidents match the report simulation's (P2 minus QCC 10.25 vs
+12.40, Welch p 0.48; P2 minus TTC 12.75 vs 11.20, p 0.44).
 
 ## 2. Why some 5-seed results miss — and why that is not a code error
 
@@ -80,7 +82,22 @@ conformal node layer. What we established:
 - **Independent seeds.** On fresh seeds 31–50 false incidents are identical for P2 (7.05 vs 7.05 per month) and
   P2 detection is 79.4% against 84.4% (Welch p 0.16, Mann–Whitney p 0.29). Over all 40 seeds the PRAHARI pipelines
   detect about 7 points less (P2 76.1% vs 83.3%, Welch p 0.007) while P0 and P1t agree. Part of the Phase 6 gap was
-  therefore sampling; a smaller difference in the node layer's calibration remains open (`KNOWN_ISSUES.md`).
+  therefore sampling.
+- **Reverse swap (2 × 2).** Every combination of background and fire set, seeds 11–30, through the same engine chain
+  (`reverse_swap` in the evidence file; the two anchor cells reproduce 862/1185 and 1000/1228 exactly):
+
+  | Confirmed within 3 h | Engine fires | Report-simulation fires |
+  | --- | --- | --- |
+  | Engine background | 72.7% | 77.4% |
+  | Report-simulation background | 81.1% | 81.4% |
+
+  The engine backgrounds cost 4.6–7.4 points and the engine fire sets 2.0–4.8 points.
+- **No model difference behind either.** The haze process agrees over 200 independent histories each (episodes 5.76 vs
+  5.68, durations 449 vs 453 min, amplitudes 1.64 vs 1.64 su; all KS p > 0.6). The fire sets agree in geometry and
+  timing; the report simulation's seeds drew fewer wet-day fires, which need three nodes (16.7% against the engine's
+  21.9%; the protocol expects 20%). On 60 fresh seeds the calibration tails of the two backgrounds do not differ
+  significantly (share above 1 su 0.80% vs 0.65%, KS p 0.51; 99.97% quantile 2.35 vs 2.29 su, p 0.18), although the
+  engine is slightly higher on every measure. The gap is recorded as sampling (`DECISIONS.md` P7-14).
 
 The golden tests keep the report's intervals as written, and their misses are documented rather than tuned away
 (`DECISIONS.md` P4-6, P4-7, P5-11, P7-9).
