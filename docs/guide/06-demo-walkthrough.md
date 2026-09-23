@@ -63,6 +63,15 @@ the design point confirms in about an hour at a few false incidents a month; ask
 along the curve and costs more false alarms. The spacing chart: at 70 m most fires reach two nodes; at 150 m almost
 none do. Every footer names the seeds and simulated days.
 
+**4c. Engineering depth (optional, 60 s) — Phase 8 recordings.**
+Open `gateway_outage.prs.jsonl.gz`, day 31. At 14:07 node 41's candidate cannot reach g1 (crossed out on the map); a
+badge shows the frame waiting at the node. At 14:30 the gateway returns, the frame goes out, and at 14:48 the fire is
+confirmed. "The radio link can fail; the node keeps the evidence and the edge still decides." Then open
+`cloudy_days.prs.jsonl.gz` at day 5, 02:00: amber rings are nodes that dropped to ultra-low-power scanning after three
+cloudy days; by day 5 afternoon every ring is green again. The *Results* tab's energy chart says why the design uses the
+BME688: about 0.42 Wh a day in standard mode against 22.9 Wh for an MQ-2 heater, which would empty the store in
+about five hours (SIM).
+
 **5. Robustness (optional, 20 s) — *Health & model card* tab.**
 Every module, its equation, its source tag and its state. "If any real model fails during a run, its simple stub
 takes over and the demo keeps going."
@@ -73,6 +82,8 @@ takes over and the demo keeps going."
 | --- | --- |
 | Is this real data? | No. Everything is simulation, labelled SIM. The models are calibrated to literature, datasheets or stated assumptions, and each parameter carries its tag. |
 | Why not just use satellites? | They see fires only after overpass and processing, and only once fires are hot and large. Early fires under canopy are too small. |
+| What if the radio link fails? | `gateway_outage`: frames wait at the node (store-and-forward) and the fire is still confirmed when the gateway returns (SIM). |
+| Why not a cheaper MQ-2 sensor? | The energy chart: its heater needs about 55 times the energy of a BME688 in standard mode (SIM). |
 | Why these node spacings? | The spacing chart: a fire's smoke reaches two nodes reliably only when they are about 70 m apart (SIM). |
 | What does each mechanism contribute? | The ablation chart: removing any of QCC, TTC, SCMR or RAQ raises false incidents (SIM). |
 | Why not a threshold on each sensor? | Daily cycles, drift and haze cross any fixed line. The P0 row in Results shows the cost. |

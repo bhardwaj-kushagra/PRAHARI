@@ -1,8 +1,8 @@
-"""Radio links (SPEC §5.12): log-distance path loss and spreading-factor selection (M38, no shadowing yet).
+"""Radio links (SPEC §5.12): log-distance path loss with shadowing and spreading-factor selection (M38).
 
-Real: each node's best gateway and the lowest spreading factor that closes the link.
-Stub and off: every node reaches its nearest gateway at SF7 (the comms stub's perfect link).
-Shadowing (X_σ), TS011 relays and collisions arrive with the comms phase (Phase 8).
+Real: each node's best gateway and the lowest spreading factor that closes the link; with `shadowing_sd_db` > 0
+(Phase 8) every node–gateway and node–node pair gets a fixed X_σ ~ N(0, σ²), and nodes with no direct link get a
+TS011 relay. Stub and off: every node reaches its nearest gateway at SF7 (the comms stub's perfect link).
 """
 from __future__ import annotations
 
@@ -55,7 +55,7 @@ def gateway_xy(gateways: list) -> np.ndarray:
 
 @register("links", kind="real")
 class LinksReal(Stage):
-    equation = "M38 (no shadowing)"
+    equation = "M38"
     tag = "LIT"
     description = "Forest log-distance path loss; best gateway and lowest closing SF per node"
 
@@ -68,12 +68,26 @@ class LinksReal(Stage):
             return Links(gateway=np.full(n, -1), d_m=z, pl_db=z, prx_dbm=z, sf=np.zeros(n, dtype=int))
         d = distances(xy, gateway_xy(gateways))
         pl = path_loss(d, p["pl_ref_db"], p["d_ref_m"], p["pl_exponent"])
+        sd = float(p.get("shadowing_sd_db", 0.0))
+        if sd > 0:
+            pl = pl + self.rng.normal(0.0, sd, pl.shape)           # M38 — X_σ, fixed per node–gateway pair
         prx = rx_power(pl, p["ptx_dbm"], p["gain_tx_dbi"], p["gain_rx_dbi"])
         best = prx.argmax(axis=1)                                   # best gateway = strongest signal
         rows = np.arange(n)
         sf = select_sf(prx[rows, best], p["sensitivity_dbm"], p["margin_db"])
+        relay = relay_sf = relay_prx = None
+        if sd > 0:                                                  # TS011 relays (Phase 8)
+            from prahari.comms.lora import node_links, pick_relays
+            x = np.triu(self.rng.normal(0.0, sd, (n, n)), 1)
+            prx_nn, sf_nn = node_links(xy, p, x + x.T)
+            relay = pick_relays(sf, prx_nn, sf_nn)
+            has = relay >= 0
+            relay_sf = np.where(has, sf_nn[rows, np.maximum(relay, 0)], 0)
+            relay_prx = np.where(has, prx_nn[rows, np.maximum(relay, 0)], 0.0)
         return Links(gateway=np.where(sf > 0, best, -1), d_m=d[rows, best], pl_db=pl[rows, best],
-                     prx_dbm=prx[rows, best], sf=sf)
+                     prx_dbm=prx[rows, best], sf=sf, prx_all=prx,
+                     sf_all=select_sf(prx, p["sensitivity_dbm"], p["margin_db"]),
+                     relay=relay, relay_sf=relay_sf, relay_prx=relay_prx)
 
 
 @register("links", kind="stub")

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { dialPoints, type DialPt, spacingPoints, type SpacingPt, type Summary } from "../results";
+import { dialPoints, type DialPt, energyRows, type EnergyRow, spacingPoints, type SpacingPt, type Summary } from "../results";
 import { EChart, type EOption } from "./EChart";
 
 // PRAHARI wears ember (SPEC §6.3); single-node alerts use the validated series blue; the report is hollow and grey.
@@ -78,10 +78,49 @@ function spacingOption(pts: SpacingPt[]): EOption {
   };
 }
 
+/** Energy per day (SPEC View 6, M41): one bar per sensor mode on a log axis, one series hue (each bar is named on the
+ *  axis), with the clear-day harvest as a dashed reference and the cloudy-day range as a band (M42). */
+function energyOption(rows: EnergyRow[], harvest: { clear: number; cloudy: [number, number] }): EOption {
+  const lo = 0.05;
+  const hi = 10 ** Math.ceil(Math.log10(Math.max(...rows.map((r) => r.wh), harvest.clear) * 1.5));
+  return {
+    animation: false,
+    title: { text: "Energy per node per day (M41) against solar harvest (M42)", left: 4, top: 2,
+             textStyle: { color: C.text, fontSize: 13, fontWeight: 500 } },
+    grid: { left: 130, right: 150, top: 36, bottom: 40 },
+    tooltip: { trigger: "item", ...tip, formatter: (p: { data: { row?: EnergyRow } }) => {
+      const r = p.data.row;
+      return r ? `${r.label}<br/><b>${r.wh.toFixed(3)}</b> Wh per day · ${r.days.toFixed(1)} days on a full store · SIM` : "";
+    } },
+    xAxis: { type: "log", min: lo, max: hi, ...axis("Wh per day (log scale)"),
+             axisLabel: { color: C.text2, fontSize: 11, formatter: (v: number) => String(v) } },
+    yAxis: { type: "category", data: rows.map((r) => r.label), inverse: true, boundaryGap: true,
+             axisLabel: { color: C.text, fontSize: 12 }, axisTick: { show: false }, axisLine: { lineStyle: { color: C.line } } },
+    series: [{
+      // Lollipop, not bars: a log axis has no zero for a bar to start from. Stem from the axis minimum, dot at the value.
+      type: "scatter", symbolSize: 12, z: 3, itemStyle: { color: C.series, borderColor: "#161b1f", borderWidth: 2 },
+      data: rows.map((r) => ({ value: [r.wh, r.label], row: r })),
+      label: { show: true, position: "right", distance: 8, color: C.text, fontSize: 11,
+               formatter: (p: { data: { row: EnergyRow } }) =>
+                 `${p.data.row.wh < 1 ? p.data.row.wh.toFixed(2) : p.data.row.wh.toFixed(1)} Wh · ${p.data.row.days.toFixed(1)} d` },
+      markArea: { silent: true, itemStyle: { color: "rgba(168, 162, 154, 0.10)" },
+                  label: { show: true, position: "insideTop", color: C.text2, fontSize: 10, formatter: "cloudy-day harvest" },
+                  data: [[{ xAxis: harvest.cloudy[0] }, { xAxis: harvest.cloudy[1] }]] },
+      markLine: { silent: true, symbol: "none", label: { show: false }, data: [
+        ...rows.map((r) => [{ coord: [lo, r.label], lineStyle: { color: C.series, width: 4, cap: "round", type: "solid" } },
+                            { coord: [r.wh, r.label] }]),
+        { xAxis: harvest.clear, lineStyle: { color: C.text2, type: "dashed", width: 1.5 },
+          label: { show: true, position: "start", color: C.text2, fontSize: 10, formatter: "clear-day harvest" } },   // top: the y axis is inverted
+      ] },
+    }],
+  };
+}
+
 /** Phase 7 charts beneath the pipeline comparison; each shows the seeds and days it came from. */
 export function ExperimentCharts({ summary }: { summary: Summary }) {
   const dial = useMemo(() => dialPoints(summary), [summary]);
   const sp = useMemo(() => spacingPoints(summary), [summary]);
+  const en = useMemo(() => energyRows(summary), [summary]);
   const d = summary.days;
   const days = `${d.calibration} + ${d.tuning} + ${d.test} simulated days per seed`;
   return (
@@ -92,6 +131,15 @@ export function ExperimentCharts({ summary }: { summary: Summary }) {
           <p className="muted small">Each point re-tunes the node threshold h (M28) for another node-local false-candidate
             target and replays the same runs; the largest point is the design target of one per node per 30 days.</p>
           <p className="chart-foot">SIMULATION · P2 · seeds {summary.seeds.join(", ")} · {days}</p>
+        </section>
+      ) : null}
+      {en.length && summary.energy ? (
+        <section data-testid="energy">
+          <EChart option={energyOption(en, summary.energy.harvest_wh_day)} height={80 + en.length * 44} testId="chart-energy" />
+          <p className="muted small">Each point: sensor, microcontroller and radio (hourly heartbeats at SF7, {summary.energy.toa_ms} ms on
+            air) at {summary.energy.voltage_v} V; the label adds how many days a full {summary.energy.store_wh} Wh supercapacitor
+            store (M43) lasts with no sun. A node runs indefinitely while its point sits left of the harvest.</p>
+          <p className="chart-foot">SIMULATION · M41–M43 · per simulated day · computed from configs/default.yaml (no random draws)</p>
         </section>
       ) : null}
       {sp.length ? (

@@ -12,7 +12,7 @@ Every equation in [`SPEC.md`](../SPEC.md) §5, where it lives in `engine/prahari
 | M2 | Distance fields to each interface (paths, village, road, power line) | `world/landscape.py`, `world/interfaces.py` | real | Phase 1 |
 | M3 | Ignition-likelihood map λ(x, t) from the distance fields | `world/landscape.py` (static), `fire/ignition.py` (with a(t)) | real | Phases 1, 3a |
 | M4 | Greedy maximum-coverage siting | `world/siting.py` | real (used when `world.layout: greedy`) | Phase 1 |
-| M38 | Path loss and spreading factor per node (no shadowing yet) | `comms/pathloss.py` (`links` module) | real | Phase 1 |
+| M38 | Path loss and spreading factor per node; shadowing X_σ and TS011 relays when `links.shadowing_sd_db` > 0 (Phase 8 scenarios: 6 dB) | `comms/pathloss.py` (`links` module), `comms/lora.py` | real (σ = 0 by default) | Phase 1, 8 |
 
 ## Environment and fire
 
@@ -87,8 +87,12 @@ module for its stub, as the dashboard's mechanism switches do.
 | M | What it does | File | Default |
 | --- | --- | --- | --- |
 | M37 | Satellite alert time | `satellite/overpass.py` | stub (fixed delay) |
-| M39, M40 | LoRa time on air, collisions | `comms/lorawan.py` | stub (perfect link) |
-| M41–M43 | Energy budget, solar harvest, supercapacitor | `energy/budget.py` | stub (infinite energy) |
+| M39, M40 | LoRa time on air; ALOHA collisions with the 6 dB capture effect, retries, TS011 relay hops, store-and-forward during gateway outages | `comms/lora.py`, `comms/lorawan_real.py` (stub: perfect link in `lorawan.py`) | stub; real in `gateway_outage`, `cloudy_days` (Phase 8) |
+| M41–M43 | Energy budget by power mode and radio airtime; half-sine solar harvest with cloudy days; supercapacitor store with ULP (< 20%) and stop (< 5%) modes | `energy/power.py`, `energy/budget_real.py` (stub: infinite energy in `budget.py`) | stub; real in the Phase 8 scenarios |
+
+Communications and energy stay stubs in the default configuration, the golden presets and every earlier scenario, so
+their results and recordings are unchanged; the two Phase 8 scenarios switch them on (`DECISIONS.md` P8-1).
+`prahari energy` writes the M41–M43 comparison to `results/energy.json` for the Results view.
 
 ## Evaluation
 

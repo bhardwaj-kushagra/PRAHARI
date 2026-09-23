@@ -1,3 +1,4 @@
+import { hasPhase8 } from "../comms";
 import { LAYOUT_NAMES, NO_LINK, pct, SF_RAMP } from "../layers";
 import { type LayerKey, useMapView } from "../mapView";
 import { useSim } from "../store";
@@ -12,6 +13,7 @@ export function MapTools() {
   const plumeCard = source.header.model_card.find((m) => m.model === "plume");
   const plumeModel = plumeCard?.equation.startsWith("M11") ? "Gaussian plume (M11)" : "legacy plume (M12)";
   const shown = preview ?? active;
+  const p8 = hasPhase8(source.frameAt(0));
   return (
     <div className="map-tools">
       <div className="layout-toggle" role="group" aria-label="Deployment layout">
@@ -52,6 +54,18 @@ export function MapTools() {
           ))}
           <span className="sf-key"><span className="sw-ring" style={{ borderColor: NO_LINK }} />no link</span>
         </Layer>
+        {p8.comms ? (
+          <Layer k="packets" on={layers.packets} toggle={toggleLayer} label="Packets">
+            <span className="sw-line pk-delivered-key" /> delivered <span className="sw-line pk-lost-key" /> collided
+            <span className="sw-badge" /> queued · thick = candidate, thin = heartbeat (M39–M40)
+          </Layer>
+        ) : null}
+        {p8.energy ? (
+          <Layer k="energy" on={layers.energy} toggle={toggleLayer} label="Stored energy">
+            <span className="sw-ring soc-key-0" /> standard <span className="sw-ring soc-key-1" /> ULP &lt; 20%
+            <span className="sw-ring soc-key-2" /> off &lt; 5% · ring filled to state of charge (M43)
+          </Layer>
+        ) : null}
         <Layer k="coverage" on={layers.coverage} toggle={toggleLayer} label="Detection radius">
           <span className="sw-disk" /> {source.header.detection_radius_m ?? 50} m
         </Layer>

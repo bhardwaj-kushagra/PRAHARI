@@ -19,6 +19,8 @@ class RunContext:
     tick: int = 0
     landscape: object = None         # Landscape from the setup modules (Phase 3a: ignition needs λ)
     z_slow: object = None            # latest TTC slow z (N, C), set by the pipeline; M28 common-mode exclusion
+    links: object = None             # Links from the setup modules (Phase 8: comms routes and relays)
+    energy_mode: object = None       # (N,) last energy mode, set by the pipeline; comms skips nodes that are off
 
     @property
     def n_nodes(self) -> int:

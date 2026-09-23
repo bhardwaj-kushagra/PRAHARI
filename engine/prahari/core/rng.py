@@ -9,7 +9,8 @@ import numpy as np
 
 STREAMS = ["weather", "ignition", "growth", "plume", "sensor", "nuisance", "haze", "faults", "comms", "satellite",
            "protocol",                     # Phase 4: evaluation protocol (day types, protocol fires)
-           "srp"]                          # Phase 6: legacy day types (M33)
+           "srp",                          # Phase 6: legacy day types (M33)
+           "links", "energy"]              # Phase 8: M38 shadowing; cloudy days and canopy spread (M42)
 
 
 def make_rngs(seed: int) -> dict[str, np.random.Generator]:

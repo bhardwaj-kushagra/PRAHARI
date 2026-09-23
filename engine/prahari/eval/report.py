@@ -57,6 +57,10 @@ def combine(out_dir: str | Path, primary: str | None = None) -> dict:
     if sweep and base is golden:
         summary["seed_sweep"] = {"seeds": sweep["seeds"], "pipelines": sweep["pipelines"]}
         sources["seeds20"] = {"seeds": sweep["seeds"]}
+    energy = _load(out, "energy")                                   # Phase 8: M41–M43 comparison
+    if energy:
+        summary["energy"] = energy
+        sources["energy"] = {"seeds": []}
     summary["sources"] = sources
     summary["table"] = table(summary["pipelines"], summary.get("reference"))
     (out / "summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")

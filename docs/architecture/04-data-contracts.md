@@ -23,7 +23,7 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 | `record_from_min` | only for warm-start recordings: the first recorded minute (Phase 5 follow-up) |
 | `map` | width, height, `interfaces` (paths, village, road, power line), `lambda_grid` (ignition likelihood raster) |
 | `layouts` | active layout, and nodes plus covered likelihood for grid, corridor and greedy (Phase 1) |
-| `links` | per node: gateway, SF, distance, path loss, received power, `modelled` (Phase 1) |
+| `links` | per node: gateway, SF, distance, path loss, received power, `modelled` (Phase 1); `relay` (TS011 relay node, only when some node needs one — Phase 8) |
 | `nodes`, `gateways` | positions |
 | `spacing_m`, `radius_m`, `detection_radius_m`, `satellite_pixel_m` | geometry |
 | `modules` | requested state of every module |
@@ -39,11 +39,13 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 | `nodes.state` | per node: 0 normal, 1 elevated, 2 candidate, 3 confirmed, 4 fault, 5 low power |
 | `nodes.reading`, `residual`, `p`, `cusum`, `health`, `soc`, `conc` | per-node values (4 significant figures); `conc` is the fire signal reaching the node |
 | `nodes.baseline`, `nodes.n_cal` | TTC slow baseline and QCC calibration-set size (Phase 5); the p floor is 1/(n_cal + 1) |
+| `nodes.queue`, `nodes.mode` | only with the real radio and energy models (Phase 8): frames waiting at each node (store-and-forward), and the power mode 0 standard, 1 ULP, 2 off |
 | `cusum_h` | node CUSUM threshold in use (`h_default` until tuned) |
 | `haze` | regional haze level |
 | `fires` | active fires: id, position, area, age, source strength |
 | `plume` | optional smoke grid: origin, cell size, shape, max, base64 float16 values (row 0 = south) |
-| `packets` | uplink packets this tick |
+| `packets` | uplink attempts: `from`, `to` (gateway id or `n<k>` for a relay), `ok`, `sf`; Phase 8 adds `kind` (candidate, heartbeat), `retry`, `toa_ms`, `relay`, `queued`, and `t` for packets carried from ticks between recorded frames |
+| `gateways_down` | only with the real radio model: gateways out of service this minute (Phase 8) |
 | `events` | `ignition`, `candidate`, `p0_alarm`, `p1_alarm`, `p1t_alarm`, `haze_start`, `satellite_alert`, `degraded`, `module_switch` (live) |
 | `alerts` | new alerts: level, cluster members, trace id, `incident` (Phase 6) |
 | `health` | state of every module |
@@ -99,6 +101,7 @@ Written beside each recording by `prahari run`: seconds, frame and trace counts,
 | `seed_sweep` | `seeds` and `pipelines` of the 20-seed sweep |
 | `sources` | which preset file supplied which part, with its seeds |
 | `table[]` | one row per pipeline in the report's order: `pipeline`, `label`, our rate and intervals, and `report` (the report's row) |
+| `energy` | Phase 8, from `results/energy.json` (`prahari energy`): M41 `rows` (sensor, mode, `wh_day`, `autonomy_days`), M42 `harvest_wh_day` (clear, cloudy range), M43 `store_wh`, `frames_per_day`, `toa_ms` |
 | `reference` | the report's values, copied from `engine/tests/golden/report_reference.json`, labelled as such |
 
 ## Configuration files

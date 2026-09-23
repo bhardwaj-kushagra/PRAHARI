@@ -90,6 +90,11 @@ class Links:
     prx_dbm: np.ndarray                      # (N,) received power
     sf: np.ndarray                           # (N,) int spreading factor, 0 = no link
     modelled: bool = True                    # False for the perfect-link stub
+    prx_all: np.ndarray | None = None        # (N, G) received power at every gateway (Phase 8, re-routing)
+    sf_all: np.ndarray | None = None         # (N, G) lowest closing SF per gateway, 0 = none (Phase 8)
+    relay: np.ndarray | None = None          # (N,) TS011 relay node for nodes with no direct link, −1 = none
+    relay_sf: np.ndarray | None = None       # (N,) SF of the hop to that relay, 0 = none
+    relay_prx: np.ndarray | None = None      # (N,) received power at that relay (dBm)
 
     def validate(self, n: int) -> None:
         for k in ("gateway", "d_m", "pl_db", "prx_dbm", "sf"):

@@ -1,4 +1,4 @@
-"""Communications (SPEC §5.12). Real M38–M40: Phase 8. Stub and off: perfect link, zero latency."""
+"""Communications (SPEC §5.12). Real M38–M40: `lorawan_real.py` (Phase 8). Stub and off: perfect link, zero latency."""
 from __future__ import annotations
 
 import numpy as np

@@ -80,6 +80,7 @@ export function NodeInspector() {
       residual: thin(nodeField(frames, "residual", node)), p: thin(nodeField(frames, "p", node)),
       floor: thin(floorSeries(frames, node)), G: thin(nodeField(frames, "cusum", node)), h: thin(hSeries(frames)),
       health: thin(nodeField(frames, "health", node)), marks: candidateMarks(frames, node),
+      soc: frames[0]?.nodes.mode ? thin(nodeField(frames, "soc", node)) : null,
     };
   }, [frames, node]);
   const opts = useMemo(() => {
@@ -99,6 +100,11 @@ export function NodeInspector() {
                        lines: [{ name: "G", s: data.G }, { name: "h", s: data.h, ref: true, endLabel: "h" }] }),
       health: stackOption({ title: "Health weight c (M29; stub = 1)", unit: "", span, cursor, height: "compact",
                             lines: [{ name: "c", s: data.health }] }),
+      soc: data.soc ? stackOption({ title: "Stored energy · state of charge (M43)", unit: "", span, cursor, height: "compact",
+                                    lines: [{ name: "state of charge", s: data.soc },
+                                            { name: "ULP below", s: { t: [span[0], span[1]], v: [0.2, 0.2] }, ref: true, endLabel: "ULP" },
+                                            { name: "stop below", s: { t: [span[0], span[1]], v: [0.05, 0.05] }, ref: true, endLabel: "stop" }] })
+                  : null,
     };
   }, [data, cursor, span[0], span[1]]);
 
@@ -112,6 +118,7 @@ export function NodeInspector() {
       <EChart option={opts.p} height={150} testId="chart-node-p" />
       <EChart option={opts.G} height={150} testId="chart-node-cusum" />
       <EChart option={opts.health} height={90} />
+      {opts.soc ? <EChart option={opts.soc} height={110} testId="chart-node-soc" /> : null}
       <p className="chart-foot">
         SIMULATION · seed {h.seed} · {daysLabel(h.days, h.record_from_min)} · every {h.record_every}th tick plus event ticks · the floor
         steps with each 4-hour calibration bin · all values SIM

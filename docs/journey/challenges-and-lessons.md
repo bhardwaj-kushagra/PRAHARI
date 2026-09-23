@@ -128,6 +128,7 @@ contract test runs all-stub, all-off and all-real configurations, which is how t
 | vitest 4.1.x failed to install with npm 10; older versions carried a security advisory | vitest 5 (Dep-2) |
 | echarts 5.x carried an XSS advisory | echarts 6.1 (Dep-5) |
 | A week-long recording was 11 MB compressed | three-day scenarios; later, the real node layer cut event volume |
-| A pattern-based `pkill` killed the shell running it | find the process ID first, then kill that ID |
+| A pattern-based `pkill` killed the shell running it (Phase 2, and again in Phase 8 with `pgrep -f`) | list processes in one command, then kill the exact process ID in another |
+| Bars cannot be drawn on a log axis (the energy chart was empty) | lollipop stems from the axis minimum (Phase 8) |
 | Browsers block module scripts from `file://` | serve the static build (`npm run preview`); offline `file://` planned for Phase 10 |
 | Chart polish: default legend colours, misaligned axis labels, clipped labels | explicit series colours, custom axis values, wider margins |

@@ -69,6 +69,22 @@ def experiment(args) -> int:
     return 0
 
 
+def energy(args) -> int:
+    """Phase 8: M41–M43 energy comparison → results/energy.json, then rebuild results/summary.json."""
+    from prahari.eval.energy_table import energy_table
+    from prahari.eval.report import combine
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    table = energy_table(load_config(args.config))
+    (out / "energy.json").write_text(json.dumps(table, indent=1), encoding="utf-8")
+    combine(out)
+    for r in table["rows"]:
+        print(f"{r['sensor']} {r['mode']}: {r['wh_day']:.3f} Wh/day, {r['autonomy_days']:.1f} days on a full store — SIMULATION")
+    print(f"harvest {table['harvest_wh_day']['clear']} Wh/day clear, {table['harvest_wh_day']['cloudy']} cloudy; "
+          f"store {table['store_wh']} Wh; wrote {out}/energy.json")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(prog="prahari", description="PRAHARI-SIM engine (all output is SIMULATION)")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -84,9 +100,14 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--seeds", default=None, help="comma list, e.g. 11,22,33 (default from the preset)")
     e.add_argument("--out", default="results", help="output directory")
     e.add_argument("--jobs", type=int, default=1, help="seeds run in parallel processes")
+    g = sub.add_parser("energy", help="M41–M43 energy comparison (MQ-2 against BME688) → results/energy.json")
+    g.add_argument("--config", default="configs/default.yaml", help="configuration to read the energy parameters from")
+    g.add_argument("--out", default="results", help="output directory")
     args = ap.parse_args(argv)
     if args.cmd == "experiment":
         return experiment(args)
+    if args.cmd == "energy":
+        return energy(args)
     try:
         s = run(args.config, args.out, args.seed, args.days)
     except ConfigError as exc:

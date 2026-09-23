@@ -1,6 +1,6 @@
 # Results and validation
 
-All numbers below are **simulation output (SIM)** from the files named, as of Phase 7. They change only when the
+All numbers below are **simulation output (SIM)** from the files named, as of Phase 8. They change only when the
 engine or configuration changes; regenerate them with the commands at the end.
 
 ## 1. Golden reproduction (legacy mode)
@@ -163,6 +163,32 @@ busy day. The day-31 fire (13:00) gave node candidates at nodes 41 (+67 min) and
 (day 30) SCMR leaves 3 alerts; the same run with SCMR off (`node_mature__scmr-stub`) has 15. Source:
 `recordings/node_mature.prs.jsonl.gz` and its variant.
 
+## 6. Radio and energy (Phase 8)
+
+| Acceptance | Result (SIM) | Source |
+| --- | --- | --- |
+| 1. M39 time on air, 24 bytes | 61.7 ms at SF7, 1,482.75 ms at SF12 (SPEC 61.7 and 1,482.8) — pass | `test_comms_energy_phase8.py` |
+| 2. Pure ALOHA against e^(−2G), 3,000 frames per load | G = 0.1: 82.4% vs 81.9%; G = 0.25: 61.5% vs 60.7%; G = 0.5: 37.8% vs 36.8% (within 3 points) — pass | same |
+| 3. A 0.5 Wh-per-day node with no sun | stops at 5% after 8.66 days and empties after 9.11 days (9 ± 0.5) — pass | same |
+
+Energy comparison (`results/energy.json`, from `configs/default.yaml`, no random draws): BME688 ULP 0.114 Wh per day
+(40.1 days on a full 4.556 Wh store), low power 0.178 (25.6 days), standard 0.415 (11.0 days); MQ-2 heater 22.9
+(0.2 days). Clear-day harvest 1.5 Wh, cloudy days 0.15–0.6 Wh.
+
+Scenario outcomes:
+- `gateway_outage` (seed 11, 6 dB shadowing): 4 nodes use a TS011 relay. Gateway g1 is out 12:30–14:30 on day 31;
+  node 41's 14:07 candidate waits at the node and goes out at 14:30; node 31's 14:48 candidate completes the pair and
+  the fire is confirmed at 14:48 (+108 min). Over the three recorded days 200 heartbeats had no route (the outage)
+  and 2 collided; none of the 188 delivered candidate frames needed a retry.
+- `cloudy_days` (seed 11): starting at 30% with canopy spread 0.6, the lowest node falls from 32% to 19% across the
+  cloudy days 2–4; 15 nodes are scanning in ULP mode at 02:00 on day 5; all recover once the sun returns. 10 of about
+  15,000 heartbeats collided (low load).
+
+The edge clusters candidates by the minute they arrive. In `gateway_outage` the delayed frame from node 41 therefore
+lands in the same 30-minute window as node 31's, and the confirmation comes earlier (14:48) than in the perfect-link
+`node_mature` run (15:14). A deployed edge would use the detection time each frame carries; this is logged as an
+improvement (`KNOWN_ISSUES.md`).
+
 ## Reproduce
 
 ```bash
@@ -171,6 +197,9 @@ prahari experiment --preset ablation --jobs 4      # section 1 (P2 minus QCC, mi
 prahari experiment --preset spacing --jobs 4       # section 3b (spacing)
 prahari experiment --preset seeds20 --jobs 4       # section 2 (engine side of the 20-seed comparison)
 PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden   # the golden assertions
+prahari energy                                     # section 6 (energy comparison)
+prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz   # section 6
+prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz         # section 6
 prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz   # section 5
 ```
 

@@ -103,7 +103,8 @@ params:
     d_ref_m: 200
     pl_exponent: 6.644            # M38 — n = 20 / (10 log10 2), from 100 dB @ 200 m and 120 dB @ 400 m
     sensitivity_dbm: {7: -123, 8: -126, 9: -129, 10: -132, 11: -134.5, 12: -137}
-    source: "LIT [3] path loss; DER exponent; VEN SX127x sensitivities at 125 kHz, gains and power"
+    shadowing_sd_db: 0.0          # M38 — X_σ; 0 keeps Phase 1 links; Phase 8 scenarios use 6 dB (SPEC ASM)
+    source: "LIT [3] path loss; DER exponent; VEN SX127x sensitivities at 125 kHz, gains and power; ASM shadowing σ"
   weather:
     T_c: 30.0                     # stub: constant weather
     RH_pct: 40.0
@@ -343,6 +344,47 @@ params:
     exceed_target: [0.008, 0.020] # … within 0.8–2.0% on held-out quiet data
     local_cand_target: [0.5, 1.5] # Phase 5 acceptance 2 — 1 ± 0.5 node-local false candidates per node per 30 d
     source: "LIT FIRENET–PRAHARI report protocol (M46), as in reference/prahari_simulation.py; TGT SPEC §7 Phase 5 acceptance"
+  comms:                          # Phase 8 — real LoRa uplinks (M38–M40); the stub is a perfect link
+    payload_b: 24                 # M39 — frame payload, bytes
+    bw_hz: 125000                 # M39 — bandwidth
+    cr: 1                         # M39 — coding rate 4/5
+    channels: 3                   # M40 — uplink channels (IN865 default plan)
+    capture_db: 6.0               # M40 — capture effect: a frame 6 dB stronger survives an overlap
+    retries: 3                    # M40 — confirmed (candidate) uplinks retry up to 3 times
+    backoff_s: [1.0, 10.0]        # M40 — random back-off U(1, 10) s
+    heartbeat_min: 60             # M40 — heartbeat frames hourly (unconfirmed)
+    relay_delay_s: 1.0            # TS011 — relay forwarding delay
+    queue_max: 64                 # store-and-forward — frames a node can hold during an outage
+    outages: []                   # gateway outages: {gateway, t_min, duration_min}
+    source: "VEN Semtech time on air, IN865 plan and TS011 [42]; ASM capture, back-off, relay delay, queue size; SPEC M40"
+  energy:                         # Phase 8 — node energy (M41–M43); the stub is an infinite supply
+    voltage_v: 3.3                # M41
+    sensor_kind: bme688           # bme688 | mq2 (comparison: heater 950 mW)
+    bme688_mode: standard         # scan mode above 20% SoC: standard | lp (ULP below 20%)
+    bme688_ma: {ulp: 0.09, lp: 0.9, standard: 3.9}   # M41 — VEN [33]
+    mq2_heater_mw: 950.0          # M41 — VEN [34]
+    mcu_active_ma: 80.0           # M41 — ESP32 active, 1 s per minute (VEN, typical)
+    mcu_active_s_per_min: 1.0
+    mcu_sleep_ma: 0.010           # M41 — ESP32 deep sleep 10 µA
+    tx_ma: 44.0                   # M41 — LoRa transmit at 14 dBm, for each frame's time on air
+    rx_ma: 11.0                   # M41 — LoRa receive, Class A windows
+    rx_window_s: 0.1              # ASM — each of the two Class A receive windows
+    panel_kw: 0.001               # M42 — A η: 1 W panel equivalent
+    irradiance_kwh_m2_day: 5.0    # M42 — G_day, pre-monsoon India
+    canopy_k: 0.3                 # M42 — k_canopy
+    canopy_spread: 0.0            # ASM — per-node shade k_canopy × U(1 − s, 1 + s); 0 = uniform
+    cloudy_factor: [0.1, 0.4]     # M42 — a cloudy day scales harvest by U(0.1, 0.4)
+    cloudy_days: []               # scripted cloudy days (day numbers from 1)
+    cloudy_day_prob: 0.0          # ASM — random cloudy days
+    capacitance_f: 3000.0         # M43 — two 3,000 F, 2.7 V cells
+    v_max: 2.7
+    v_min: 1.35
+    cells: 2
+    initial_soc: 1.0              # ASM — full at the start of a run
+    ulp_below: 0.20               # M43 — ULP scanning below 20%
+    stop_below: 0.05              # M43 — stops below 5%
+    resume_at: 0.10               # ASM — hysteresis: restarts at 10%
+    source: "VEN [33] [34] currents and typical ESP32/SX127x figures; ASM panel, canopy, windows, hysteresis; DER M43 store"
   display:
     elevated_p: 0.01              # node shown as elevated below this p-value
     confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation

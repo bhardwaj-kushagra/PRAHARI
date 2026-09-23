@@ -6,12 +6,14 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | Term | Meaning |
 | --- | --- |
 | **Ablation** | A PRAHARI variant with one mechanism replaced by its stub (P2-QCC, P2-TTC, P2-SCMR, P2-RAQ), run to show what that mechanism contributes. |
+| **ALOHA (pure)** | Radios transmit whenever they have data; two frames that overlap in time on the same channel and SF are lost. Success probability e^(−2G) at offered load G (M40). |
 | **Anchor** | In the legacy edge form, the new candidate around which a cluster is formed. |
 | **ARL (average run length)** | Average time a quiet detector runs before a false alarm. P1's h ≈ 8.8 targets 30 days under textbook assumptions (M23). |
 | **ASM, DER, LIT, TGT, VEN** | Provenance tags on every parameter: ASM assumption, DER derived by calculation, LIT literature, TGT design target, VEN vendor datasheet. |
 | **Bayes factor (BF)** | How much more likely the data are under "fire" than "no fire". PRAHARI uses an upper bound computed from a p-value (M34). |
 | **Calibration days** | The first 14 days of a run, used to build each node's QCC reference set (M26, M46). |
 | **Candidate** | A node whose CUSUM crossed its threshold h. Shown as a pulsing ember dot on the map. Not yet an alarm. |
+| **Capture effect** | A frame at least 6 dB stronger than an overlapping one is still received (M40, assumed). |
 | **cffdrs** | The Canadian Forest Fire Danger Rating System software; its published test outputs verify M7. |
 | **Cluster** | Candidate nodes within R of each other in the last 30 minutes (M30). |
 | **Common mode** | An event that raises many nodes at once (haze, weather). Excluded from threshold tuning (M28) and rejected by SCMR (M31). |
@@ -32,6 +34,7 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **h** | CUSUM threshold. P1 uses 8.8; PRAHARI tunes it by replay (M28); `h_default` is used before tuning. |
 | **Haze** | Regional smoke or pollution raising all nodes together for hours (M20). |
 | **Health weight (c)** | A 0–1 weight discounting a suspect node (M29; the stub uses 1). |
+| **Heartbeat** | An hourly status frame from every node (unconfirmed, no retry); the main radio load in quiet times. |
 | **Incident** (escalation) | A tracked group of clusters in one place, with a level that only rises until it clears after 120 min without candidates (M35). Not the same as an M46 counting incident. |
 | **Incident** | Alarms merged within 60 minutes and 2R into one event for counting (M46). |
 | **Isolation / Slot** | The wrapper that runs every stage and falls back to its stub, then off, then the last good output, if it fails. |
@@ -66,13 +69,19 @@ Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; t
 | **Reverse swap (2 × 2)** | A diagnostic that runs every combination of two backgrounds (engine, report simulation) and two fire sets through one chain, to separate the effect of the background from the effect of the fires. |
 | **SCMR** | Spatial common-mode rejection: a cluster must be ≥ 3× more active than the network (M31). |
 | **Seed** | The master random number; the same seed gives a byte-identical recording. |
+| **Shadowing (X_σ)** | Random extra path loss per link from terrain and trees, N(0, 6²) dB in the Phase 8 scenarios (M38). |
 | **SIM** | Label on every simulated value; nothing here is field data. |
 | **SRP** | The prior module (M33). |
 | **Stage** | One replaceable step of the model (for example `qcc`), registered with its real, stub and off versions. |
+| **State of charge (SoC)** | Stored energy as a share of the supercapacitor's usable 4.56 Wh (M43). |
+| **Store-and-forward** | When a node's gateway is out, it keeps candidate frames and sends them when the gateway returns. |
 | **su (sensor units)** | The simulator's unit for sensor output; 2.5 su is a fully grown fire 50 m downwind. |
+| **Time on air** | How long one LoRa frame occupies the channel: 61.7 ms at SF7, 1,482.8 ms at SF12 for 24 bytes (M39). |
 | **Trace (evidence trace)** | A record explaining a candidate or a decision: p-values, CUSUM, SCMR, Fisher, prior, rule used. |
+| **TS011 relay** | LoRa Alliance relay specification: a node with no direct gateway link sends through a neighbour that has one. |
 | **TTC** | Two-timescale conditioning: slow baseline plus fast lagged residual (M24, M25). |
 | **Tuning days** | Days 15–28 of a run, used to tune h (M28). |
+| **ULP mode** | Ultra-low-power BME688 scanning (0.09 mA) that a node falls back to below 20% state of charge; below 5% it stops. |
 | **Variant recording** | A recording of the same scenario and seed with one module switched, named `<scenario>__<module>-<state>`; used by the mechanism switches in replay. |
 | **Warm start** | Simulating from day 0 but recording from a later day (`record.from_day`), to show a mature network. |
 | **z-score** | (reading − baseline) / spread. |

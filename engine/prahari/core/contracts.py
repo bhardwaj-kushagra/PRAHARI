@@ -225,7 +225,10 @@ class Candidates:
 class Delivered:
     nodes: tuple             # candidate frames delivered to the edge this tick
     p: tuple
-    packets: tuple = ()      # dicts for the dashboard: {"from", "to", "ok", "sf"}
+    packets: tuple = ()      # dicts for the dashboard: {"from", "to", "ok", "sf"} (+ Phase 8: "kind", "retry",
+                             # "toa_ms", "relay", "queued")
+    queue: np.ndarray | None = None   # (N,) frames waiting at each node (store-and-forward, Phase 8)
+    down: tuple = ()                  # gateways out of service this minute (Phase 8 outages)
 
     def validate(self, n: int) -> None:
         _same_len("delivered", self.nodes, self.p)
@@ -238,9 +241,12 @@ class Delivered:
 @dataclass(frozen=True)
 class EnergyState:
     soc: np.ndarray              # (N,) state of charge in [0, 1]
+    mode: np.ndarray | None = None   # (N,) 0 standard, 1 ULP, 2 off (M43, Phase 8)
 
     def validate(self, n: int) -> None:
         _arr("soc", self.soc, (n,), lo=0.0, hi=1.0)
+        if self.mode is not None:
+            _arr("energy.mode", self.mode, (n,), lo=0, hi=2)
 
     @classmethod
     def neutral(cls, n: int) -> "EnergyState":

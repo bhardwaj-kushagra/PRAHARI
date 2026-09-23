@@ -27,8 +27,9 @@ engine/prahari/
 ├── detect/prahari/         ttc, qcc, score, cusum (stubs) and ttc_real, qcc_real, cusum_real, tuning (Phase 5);
 │                           cluster, scmr, fisher, srp, learn, raq, escalate (stubs) and edge_real, decide_real,
 │                           escalate_real (Phase 6)
-├── comms/                  pathloss (M38), lorawan (stub)
-├── energy/, satellite/     stubs until Phases 8–9
+├── comms/                  pathloss (M38 + shadowing, relays), lora (M39, M40 maths), lorawan (stub), lorawan_real (Phase 8)
+├── energy/                 power (M41–M43 maths), budget (stub), budget_real (Phase 8)
+├── satellite/              stub until Phase 9
 ├── record/                 writer and reader of recordings, frame helpers, world header sections
 └── eval/                   stats (M44–M46), experiments (harness), node_metrics (Phase 5),
                             offline (edge replay, dial), report (summary table) (Phase 7)
@@ -73,7 +74,8 @@ Top-level sections: `run` (seed, start, days, tick), `scenario`, `record` (frame
 ## Randomness
 
 `core/rng.py` spawns one `numpy.random.Generator` per stream from `SeedSequence(seed)`. The stream list is
-append-only (weather, ignition, growth, plume, sensor, nuisance, haze, faults, comms, satellite, protocol, srp), so adding a
+append-only (weather, ignition, growth, plume, sensor, nuisance, haze, faults, comms, satellite, protocol, srp, links,
+energy), so adding a
 module never changes the numbers other modules draw. Python's `random` and unseeded NumPy calls are not used.
 
 ## The tick
@@ -85,17 +87,37 @@ simulated minute:
 2. `step_baselines(x)`: P0, P1 and P1t on the same readings.
 3. `step_node(x)`: ttc → qcc → score → cusum. The TTC slow z is also put in `ctx.z_slow` for the common-mode rule.
 4. `step_edge(t, env, fuel, cand)`: comms → srp → cluster → scmr → fisher → learn → raq → escalate (M30–M35);
-   then energy and satellite.
+   then energy — which receives the minute, the weather and this minute's packets — and satellite. The energy mode
+   goes into `ctx.energy_mode` so that next minute's comms skips nodes that are off (Phase 8).
 5. Events (ignitions, candidates, alarms, haze start, degradations) and evidence traces are collected, node display
    states are computed, and a frame dictionary is built.
 
 `run()` writes every `record.every_k_ticks`-th frame plus every frame that has an event or alert, and the last one.
+Packets from minutes between written frames are carried into the next written frame, each tagged with its own minute
+`t`, so the packet animation loses nothing (Phase 8).
 With `record.from_day` set (warm start), everything is simulated from day 0 but frames and traces are written only
 from that day on; the header is written after the first recorded tick so its model card shows, for example, the tuned
 threshold.
 
 Per-node state is held in NumPy arrays; there are no Python loops over nodes inside the tick (CLAUDE.md rule 8). The
 node layer costs about 0.3 ms per tick (SIM timing on the development machine).
+
+## Communications and energy (Phase 8)
+
+- **Links (setup).** `LinksReal` computes path loss to every gateway (M38). With `links.shadowing_sd_db` > 0 it adds a
+  fixed X_σ per node–gateway and node–node pair from the `links` stream, keeps every gateway's closing SF (for
+  re-routing) and picks a TS011 relay for each node without a direct link. `ctx.links` carries the result to comms.
+- **Comms (`lorawan_real.py`).** Each minute: candidate frames and hourly heartbeats get a random start in the minute
+  and a channel; `lora.collide` resolves overlaps on the same channel and SF with the capture rule; lost candidate
+  frames retry after U(1, 10) s; relayed frames make a second hop from the relay; frames that finish after the
+  minute, and later retries, are resolved and delivered in the next minute. During a gateway outage a node re-routes
+  to another gateway if one closes, otherwise queues its candidate frames and sends them when the gateway returns.
+  Only delivered candidates reach the edge, at the minute they arrive.
+- **Energy (`budget_real.py`).** Each minute: half-sine solar harvest (cloudy days scaled), draw by power mode, radio
+  energy for the node's packets, supercapacitor balance, then the mode for the next minute (ULP below 20%, off below
+  5%, back on at 10%).
+- **Defaults.** Both modules stay `stub` except in the Phase 8 scenarios, so every earlier result and recording is
+  unchanged (checked frame by frame).
 
 ## Live mode (Phase 6)
 

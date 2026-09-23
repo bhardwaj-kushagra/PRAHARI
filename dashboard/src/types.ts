@@ -16,6 +16,7 @@ export type Layouts = { active: LayoutName; corridor_spacing_m: number } & Parti
 export interface LinkTable {
   modelled: boolean; gateway: (string | null)[]; sf: (number | null)[];
   d_m: number[]; pl_db: number[]; prx_dbm: number[];
+  relay?: (number | null)[];   // TS011 relay node for nodes with no direct link (Phase 8)
 }
 
 export interface Header {
@@ -37,6 +38,12 @@ export interface FrameEvent { type: string; node?: number; fire?: number; module
 // Plume grid (Phase 3a): float16 little-endian, base64; row 0 is the southern row.
 export interface PlumeGrid { x0: number; y0: number; cell_m: number; nx: number; ny: number; max: number; data: string }
 export interface Alert { level: string; cluster: number[]; trace_id: string }
+/** One uplink attempt (M39–M40). Phase 8 adds kind, retry, time on air, relay, queued and — for packets carried
+ *  from ticks between recorded frames — their own minute `t`. `to` is a gateway id or "n<k>" for a relay node. */
+export interface Packet {
+  from: number; to: string | null; ok: boolean; sf: number | null;
+  kind?: "candidate" | "heartbeat"; retry?: number; toa_ms?: number; relay?: number | null; queued?: boolean; t?: number;
+}
 export interface FireState { id: number; x: number; y: number; area_m2: number; age_min: number; q: number }
 export interface Frame {
   t: number;
@@ -45,12 +52,15 @@ export interface Frame {
   nodes: { state: number[]; reading: number[]; residual: number[]; p: number[]; cusum: number[]; health: number[]; soc: number[];
            conc?: number[];
            baseline?: number[];      // TTC slow baseline b (M24), Phase 5
-           n_cal?: number[] };       // QCC calibration-set size n (M26): floor p_min = 1/(n+1), Phase 5
+           n_cal?: number[];         // QCC calibration-set size n (M26): floor p_min = 1/(n+1), Phase 5
+           queue?: number[];         // frames waiting at the node (store-and-forward), Phase 8
+           mode?: number[] };        // power mode 0 standard, 1 ULP, 2 off (M43), Phase 8
   plume?: PlumeGrid;
   cusum_h: number;
   haze?: number;               // regional haze level H(t), su (Phase 2)
   fires: FireState[];
-  packets: { from: number; to: string | null; ok: boolean; sf: number | null }[];
+  packets: Packet[];
+  gateways_down?: string[];    // gateways out of service (Phase 8 outage scenarios)
   events: FrameEvent[];
   alerts: Alert[];
   health: Record<string, string>;

@@ -9,6 +9,7 @@ results/*
 !results/ablation.json
 !results/spacing.json
 !results/seeds20.json
+!results/energy.json
 node_modules/
 dashboard/dist/
 *.health.json

@@ -59,6 +59,9 @@ prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/
 prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz           # Phase 5 node layer
 prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz       # 31 d, recorded from day 29 (~70 s)
 prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz   # View 5 variant
+prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz   # Phase 8 store-and-forward
+prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz         # Phase 8 energy
+prahari energy                                # Phase 8: M41–M43 comparison → results/energy.json
 prahari experiment --preset golden --jobs 4   # P0–P2, edge ablations, node metrics, dial → results/golden.json + summary.json
 prahari experiment --preset ablation --jobs 4 # P2-QCC, P2-TTC (run after golden; joins summary.json)
 prahari experiment --preset spacing --jobs 4  # P2 at 70/100/150 m, seeds 11,22,33

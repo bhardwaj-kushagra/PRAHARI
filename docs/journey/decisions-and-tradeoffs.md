@@ -39,6 +39,7 @@ The decisions that most shape the project, with the alternatives considered. Ids
 | Offline edge and dial replay from recorded node evidence | simulate every variant | one pair of passes per node configuration; tested equal to the live path | the harness no longer runs the edge live | P7-2, P7-4 |
 | Both ablation forms: module stubs (default, the dashboard's switches) and the report simulation's legacy variants (the `ablation` preset) | one form only | the SPEC's meaning and a like-for-like comparison with the report | three extra parameters and two optional contract fields in accepted modules (approved) | P7-10, P7-12 |
 | A 2 × 2 reverse swap before calling a gap "sampling" | stop at the fresh-seed check | separates background from fire-set effects; each then checked at model level | about an hour of compute | P7-14 |
+| Radio and energy models real only in the Phase 8 scenarios | real everywhere | every earlier result and recording unchanged | the default demo shows perfect links | P8-1 |
 
 ## Process
 

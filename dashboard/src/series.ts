@@ -70,7 +70,7 @@ export function minuteLabel(t: number): string {
 }
 
 // -- Phase 5: node inspector series (SPEC §6.2 view 2) ------------------------------------------------
-export type NodeKey = "reading" | "residual" | "p" | "cusum" | "health" | "baseline";
+export type NodeKey = "reading" | "residual" | "p" | "cusum" | "health" | "baseline" | "soc";
 
 /** One recorded per-node field over time; frames that lack the field (older recordings) are skipped. */
 export function nodeField(frames: Frame[], key: NodeKey, node: number): Series {

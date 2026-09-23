@@ -65,6 +65,8 @@ Each command simulates a scenario and writes a recording plus a `*.health.json` 
 | `prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz` | a young network: calibration maturing, haze day 2, fire day 3 | ~7 s |
 | `prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz` | a mature network: 31 days simulated, days 29–31 recorded, haze day 30, fire day 31 (a dry, busy day) | ~70 s |
 | `prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz` | the same with SCMR off — the replay variant behind the SCMR switch | ~70 s |
+| `prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz` | Phase 8: the mature network with the real radio and energy models; gateway g1 down 12:30–14:30 on day 31 across the fire (store-and-forward) | ~65 s |
+| `prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz` | Phase 8: six days, days 2–4 cloudy; state of charge falls, weak nodes switch to ULP scanning, all recover | ~15 s |
 
 Options: `--seed N` overrides the seed, `--days D` the length. Restart `npm run dev` (or rerun `npm run build`) after
 generating, so the new files are copied into the dashboard.
@@ -90,6 +92,7 @@ prahari experiment --preset spacing --jobs 4   # P2 at 70, 100 and 150 m; seeds 
 prahari experiment --preset seeds20 --jobs 4   # P0, P1, P1t, P2 over seeds 11–30
 prahari experiment --preset golden --seeds 11 --pipelines P1   # quick single-seed check
 PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden     # golden assertions (slow)
+prahari energy                                 # Phase 8: M41–M43 comparison → results/energy.json (instant)
 ```
 
 `--jobs N` runs N seeds at once in separate processes (results are identical to `--jobs 1`; each seed has its own
@@ -107,7 +110,7 @@ dashboard's **Results** tab reads `summary.json`. Run `golden` first: it is the 
 | `engine/tests/` | unit, smoke and golden tests |
 | `configs/` | `default.yaml`, scenarios, experiment presets |
 | `recordings/` | committed demo recordings |
-| `results/` | committed preset summaries (`golden.json`, `ablation.json`, `spacing.json`, `seeds20.json`) and the combined `summary.json` |
+| `results/` | committed preset summaries (`golden.json`, `ablation.json`, `spacing.json`, `seeds20.json`), the energy comparison `energy.json`, and the combined `summary.json` |
 | `dashboard/` | the React dashboard |
 | `server/` | optional live server (FastAPI) |
 | `reference/` | the report's original simulation (read-only oracle) |

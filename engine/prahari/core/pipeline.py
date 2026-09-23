@@ -147,7 +147,8 @@ class Simulation:
         res, pv, sc, cand = self.step_node(x)
         dl, prior, cl, scmr, fisher, bf, raq, dec = self.step_edge(t, env, fuel, cand)
         k = len(cl.members)
-        energy = self.stage("energy", t)
+        energy = self.stage("energy", (t, env, dl))          # M41–M43: harvest, draw, and this tick's frames
+        self.ctx.energy_mode = energy.mode                 # comms skips nodes that are off (next tick)
         sat = self.stage("satellite", fires)
 
         events, alerts, traces = [], [], []
@@ -195,11 +196,14 @@ class Simulation:
                  "nodes": {"state": states.tolist(), "reading": fr.sig4(x.x[:, 0]), "residual": fr.sig4(res.r[:, 0]),
                            "p": fr.sig4(sc.p_node), "cusum": fr.sig4(cand.G), "health": fr.sig4(sc.c.min(axis=1)),
                            "soc": fr.sig4(energy.soc), "conc": fr.sig4(conc.c),
-                           "baseline": fr.sig4(res.b[:, 0]), "n_cal": [int(v) for v in pv.n_cal]},
+                           "baseline": fr.sig4(res.b[:, 0]), "n_cal": [int(v) for v in pv.n_cal],
+                           **({"queue": [int(v) for v in dl.queue]} if dl.queue is not None else {}),
+                           **({"mode": [int(v) for v in energy.mode]} if energy.mode is not None else {})},
                  "cusum_h": float(f"{cand.h:.4g}"),
                  "haze": float(f"{haze.level:.4g}"),
                  "fires": fr.fires_list(src),
                  "packets": list(dl.packets), "events": events, "alerts": alerts,
+                 **({"gateways_down": list(dl.down)} if dl.queue is not None else {}),
                  "health": self.health_states()}
         grid = self._plume_grid(src, env)
         if grid is not None:
@@ -247,6 +251,7 @@ class Simulation:
         self.ctx.xy = self.layout.xy.copy()
         self.ctx.landscape = self.landscape
         self.links = self.stage("links", (self.ctx.xy, self.ctx.gateways))
+        self.ctx.links = self.links                        # Phase 8: comms routes, re-routing and relays
 
     def prepare(self) -> None:
         """Setup modules, then reset every tick stage (used by `run` and the headless experiments)."""
@@ -262,6 +267,7 @@ class Simulation:
         if start >= self.clock.n_ticks * self.clock.tick_minutes:
             raise ValueError(f"record.from_day {self.cfg['record']['from_day']} is not inside the run")
         started = False
+        carry: list = []                               # packets of skipped ticks, written with the next frame
         for tick, t in enumerate(self.clock.minutes()):
             self.ctx.tick = tick
             if not started and t >= start and start <= 0:
@@ -277,7 +283,12 @@ class Simulation:
                 writer.header(head)
                 started = True
             if first or tick % every == 0 or frame["events"] or frame["alerts"] or tick == self.clock.n_ticks - 1:
+                if carry:
+                    frame["packets"] = carry + frame["packets"]
+                    carry = []
                 writer.frame(frame)
+            elif frame["packets"]:                     # Phase 8: keep every packet; each carries its own minute
+                carry += [dict(pk, t=t) for pk in frame["packets"]]
             for rec in traces:
                 writer.trace(rec)
         footer = {"frames": writer.n_frames, "traces": writer.n_traces,

@@ -19,6 +19,8 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | The golden experiment takes many minutes | It simulates 5 seeds × 58 days × 2 passes, plus the dial replays. | Add `--jobs 4` on a 4-core machine (about 5 minutes); use `--seeds 11` for a quick check. The four presets together take about 45 minutes with `--jobs 4`. |
 | Golden test reports P0 or P1t outside the report interval | A known sampling effect, documented and checked against the oracle over 20 seeds. | See [../results/validation.md](../results/validation.md); do not tune to make it pass. |
 | Golden tests fail for P2, the ablations or spacing | Known and documented: P2 detection is below the report (haze in calibration windows, `KNOWN_ISSUES.md`); node ablations are defined as module stubs. | See [../results/validation.md](../results/validation.md) and `DECISIONS.md` P7-9, P7-10. |
+| No packets or energy rings on the map | Only recordings made with the real radio and energy models carry them (`gateway_outage`, `cloudy_days`). | Open one of those, or run a scenario with `modules.comms: real` and `modules.energy: real`. |
+| Results tab lacks the energy chart | `results/energy.json` has not been written. | `prahari energy`, then restart the dashboard. |
 | Results tab lacks the spacing or ablation chart | Only `golden` has run; `summary.json` is rebuilt from whichever preset files exist. | Run the `ablation` and `spacing` presets, then restart the dashboard. |
 
 ## Dashboard
@@ -31,7 +33,7 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | Blank page when opening `dist/index.html` directly | Browsers block module scripts on `file://`. | Use `npm run preview` or any static file server (offline `file://` support is planned for Phase 10). |
 | A `.gz` recording fails to load in an old browser | `DecompressionStream` is missing (older Safari or Firefox). | Use a current Chromium, Chrome, Edge or Firefox. |
 | Charts do not appear at first | The chart code loads when its tab opens. | Wait a moment; check the browser console for errors. |
-| Port 5173 or 4173 already in use | A previous dev or preview server is still running. | Stop it (Ctrl-C in its terminal). If you script it, find the process ID first; a pattern-based `pkill` can match and kill your own shell. |
+| Port 5173 or 4173 already in use | A previous dev or preview server is still running. | Stop it (Ctrl-C in its terminal). If you script it, list the processes in one command and kill the exact process ID in another: `pkill -f` or `pgrep -f` with the pattern in the same command line also matches, and kills, your own shell. |
 | `npm install` fails resolving vitest peers | Some npm 10 releases fail on vitest 4.1.x optional peers. | The project pins vitest 5 (DECISIONS Dep-2); run `npm install` from `dashboard/` with the committed lock file. |
 | `npm audit` warnings about echarts or vitest | Older versions carried advisories. | The project uses echarts 6.1 and vitest 5, which report none (Dep-2, Dep-5). |
 | The node inspector is empty | No node is selected. | Click a node on the map (the tab switches to Node automatically). |

@@ -12,6 +12,7 @@ tests using the reference values in SPEC §9.2.
 | Equations | `engine/tests/unit/test_*_phaseN.py` | each model against SPEC reference values and closed-form results | always |
 | Oracle cross-checks | `test_eval_phase4.py`, `test_node_phase5.py`, `test_edge_phase6.py`, `test_ablation_legacy.py` | P0, P1, P1t, M24–M28, the legacy ablation forms, the legacy edge (`confirm`) and the M46 counting agree **exactly** with `reference/prahari_simulation.py` on identical inputs | always |
 | Offline replay | `test_experiments_phase7.py` | the offline edge equals the live edge, offline tuned h and replayed candidates equal the live CUSUM, per-fire wind, pipeline grouping, dial at the design target equals P2, table order | always |
+| Radio and energy | `test_comms_energy_phase8.py` | M39 reference times (acceptance 1), pure-ALOHA success within 3 points of e^(−2G) (acceptance 2), capture, shadowing and relays, delivery, heartbeats, store-and-forward, M41 budgets, M42 half-sine, M43 store, a 0.5 Wh-per-day node lasting 9 ± 0.5 days (acceptance 3), modes, cloudy days, determinism of a Phase 8 scenario | always |
 | Live server | `test_server_phase6.py` | scenarios, a live run streams recording lines in order, module switches, health | when fastapi and httpx are installed |
 | Configuration | `test_config.py` | merge rules, unknown keys, missing source tags | always |
 | Traces | `test_trace.py` | evidence records and explanation sentences | always |

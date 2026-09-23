@@ -37,4 +37,6 @@ def links_dict(links, gateways: list) -> dict:
     return {"modelled": bool(links.modelled),
             "gateway": [ids[g] if g >= 0 else None for g in links.gateway.tolist()],
             "sf": [int(s) if s > 0 else None for s in links.sf.tolist()],
-            "d_m": sig4(links.d_m), "pl_db": sig4(links.pl_db), "prx_dbm": sig4(links.prx_dbm)}
+            "d_m": sig4(links.d_m), "pl_db": sig4(links.pl_db), "prx_dbm": sig4(links.prx_dbm),
+            **({"relay": [int(r) if r >= 0 else None for r in links.relay.tolist()]}          # Phase 8, TS011
+               if links.relay is not None and (links.relay >= 0).any() else {})}

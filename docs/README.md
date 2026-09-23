@@ -39,7 +39,7 @@ docs/
 │   └── 06-testing.md          test layers and how to run them
 ├── journey/                   how it was built
 │   ├── README.md              timeline of phases
-│   ├── phase-0-foundation.md … phase-7-experiments.md
+│   ├── phase-0-foundation.md … phase-8-comms-energy.md
 │   ├── challenges-and-lessons.md
 │   └── decisions-and-tradeoffs.md
 └── results/

@@ -1,3 +1,4 @@
+import { MODE_NAME } from "../comms";
 import { sci } from "../format";
 import { NODE_STATE } from "../types";
 import { useFrame, useSim } from "../store";
@@ -21,11 +22,15 @@ export function NodePanel() {
     ...(v.n_cal ? [["Calibration n / floor p_min", `${v.n_cal[i]} / ${sci(1 / (v.n_cal[i] + 1))}`] as [string, string]] : []),
     ["Health weight", String(v.health[i])],
     ["State of charge", `${Math.round(v.soc[i] * 100)}%`],
+    ...(v.mode ? [["Power mode (M43)", MODE_NAME[v.mode[i]]] as [string, string]] : []),
+    ...(v.queue ? [["Frames waiting (store-and-forward)", String(v.queue[i])] as [string, string]] : []),
   ];
   const L = source.header.links;
   if (L) {
     const ok = L.gateway[i] !== null;
-    rows.push(["Uplink", ok ? `${L.gateway[i]} · SF${L.sf[i]}${L.modelled ? "" : " (stub: perfect link)"}` : "no link closes — needs a relay (Phase 8)"]);
+    const relay = L.relay?.[i];
+    rows.push(["Uplink", ok ? `${L.gateway[i]} · SF${L.sf[i]}${L.modelled ? "" : " (stub: perfect link)"}`
+                            : relay !== null && relay !== undefined ? `via relay node ${relay} (TS011)` : "no link closes — needs a relay"]);
     rows.push(["Distance to gateway", `${Math.round(L.d_m[i])} m`]);
     if (L.modelled) rows.push(["Path loss / received power", `${L.pl_db[i]} dB / ${L.prx_dbm[i]} dBm`]);
   }

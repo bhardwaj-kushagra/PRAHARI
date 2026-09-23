@@ -3,6 +3,8 @@ import { useMapView } from "../mapView";
 import type { FireState, Header } from "../types";
 import { NODE_STATE } from "../types";
 import { useFrame, useSim } from "../store";
+import { hasPhase8 } from "../comms";
+import { PacketLayer, SocLayer } from "./CommsLayers";
 import { CoverageLayer, InterfaceLayer, LikelihoodLayer, LinksLayer, PlumeLayer, PreviewNodes, SatelliteLayer } from "./MapLayers";
 
 const GLYPH_R = 7;
@@ -83,6 +85,7 @@ export function CommandMap() {
   const H = h.map.height_m;
   const k = glyphScale(W);
   const active = h.layouts?.active ?? "grid";
+  const p8 = hasPhase8(frame);
   const previewing = preview !== null && preview !== active && !!h.layouts?.[preview];
   const shownNodes: [number, number][] = previewing
     ? (h.layouts?.[preview!]?.nodes ?? [])
@@ -107,12 +110,19 @@ export function CommandMap() {
         {layers.satellite ? <SatelliteLayer h={h} H={H} /> : null}
         {layers.coverage ? <CoverageLayer h={h} H={H} nodes={shownNodes} /> : null}
         {layers.links && !previewing ? <LinksLayer h={h} H={H} /> : null}
-        {h.gateways.map((g) => (
-          <g key={g.id} transform={`translate(${g.x},${H - g.y}) scale(${k})`}>
-            <rect x={-8} y={-8} width={16} height={16} className="gateway" />
-            <text y={-14} textAnchor="middle" className="map-label">{g.id}</text>
-          </g>
-        ))}
+        {layers.packets && !previewing && p8.comms ? <PacketLayer h={h} H={H} source={source} frame={frame} /> : null}
+        {layers.energy && !previewing && p8.energy ? <SocLayer h={h} H={H} frame={frame} /> : null}
+        {h.gateways.map((g) => {
+          const down = frame.gateways_down?.includes(g.id) ?? false;
+          return (
+            <g key={g.id} transform={`translate(${g.x},${H - g.y}) scale(${k})`} className={down ? "gw-down" : undefined}>
+              <rect x={-8} y={-8} width={16} height={16} className="gateway" />
+              {down ? <path d="M-11,-11L11,11M11,-11L-11,11" className="gw-cross" /> : null}
+              <text y={-14} textAnchor="middle" className="map-label">{down ? `${g.id} · out of service` : g.id}</text>
+              {down ? <title>{`${g.id} out of service: nodes hold candidate frames (store-and-forward) · SIM`}</title> : null}
+            </g>
+          );
+        })}
         {layers.smoke ? <PlumeLayer frame={latestPlume(source, frame.t, 3 * h.record_every * h.tick_minutes)} H={H} /> : null}
         {frame.fires.map((f) => <Fire key={f.id} f={f} H={H} k={k}
                                       windTo={((frame.weather.wind_dir_deg + 180) % 360) * Math.PI / 180} />)}

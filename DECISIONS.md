@@ -528,6 +528,67 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   detection gap on seeds 11–30 comes from which worlds those seeds happened to draw — haze-heavy calibration windows
   in the engine's, and fewer wet-day fires in the report simulation's.
 
+## Phase 8 design choices
+
+- **P8-1. Real radio and energy only where they are asked for.** `comms` and `energy` stay `stub` in
+  `configs/default.yaml`, the golden presets and every earlier scenario; the new `gateway_outage` and `cloudy_days`
+  scenarios (and live mode, through the module switches) run them `real`. Every earlier recording keeps identical
+  frames (checked by comparing all nine), and every result is unchanged. This is the SPEC's own escape-hatch
+  arrangement for an optional phase and keeps legacy mode intact.
+- **P8-2. M38 shadowing and TS011 relays in the links setup module.** `links.shadowing_sd_db` (default 0, keeping
+  Phase 1's links; 6 dB in the Phase 8 scenarios, SPEC ASM) draws a fixed X_σ per node–gateway and node–node pair from
+  a new `links` stream. `Links` gains optional `prx_all`, `sf_all` (every gateway, for re-routing), `relay`,
+  `relay_sf`, `relay_prx`. A node with no direct link uses the strongest neighbour whose node-to-node link closes
+  and which has its own direct link (node-to-node paths use the same forest law, ASM). The header's `links.relay`
+  appears only when some node needs a relay.
+- **P8-3. Comms model (M39, M40, ASM details).** Candidate frames (confirmed) and hourly heartbeats (unconfirmed, a
+  fixed random minute per node) start at a uniform moment in the minute on one of three channels (IN865 default
+  plan); collisions follow pure ALOHA on the same channel and SF with a 6 dB capture rule; lost candidate frames retry
+  up to 3 times after U(1, 10) s. Frames that spill past the minute, later retries and relay second hops are resolved
+  with the next minute's frames; all frames share one collision domain. Heartbeats are not queued during an outage.
+  Loops run over frames (a few per minute), not over nodes (rule 8).
+- **P8-4. Store-and-forward and outages.** `comms.outages` lists gateway outages. A node whose gateway is out
+  re-routes to another gateway if one closes, otherwise keeps candidate frames (up to `queue_max`) and sends them
+  when a route returns — as a burst that can itself collide and retry. Delivered candidates reach the edge in the
+  minute they arrive.
+- **P8-5. Energy model (M41–M43).** Draw per power mode (BME688 scan current, ESP32 1 s per minute at 80 mA and
+  10 µA asleep) plus, per frame sent, 44 mA for its time on air and 11 mA for two 0.1 s Class A receive windows (ASM
+  window length). Harvest on a half-sine from 06:00 to 18:00 that integrates to A η G k (1.5 Wh on a clear day);
+  scripted or random cloudy days scale the day by U(0.1, 0.4); optional per-node canopy spread (ASM). Store 4.556 Wh
+  (two 3,000 F cells, 2.7 → 1.35 V). Modes: ULP below 20%, off below 5%, back on at 10% (ASM hysteresis). A node that
+  is off neither senses (no sensor current) nor transmits; its node-layer arrays keep running (ASM, display only).
+- **P8-6. Pipeline additions (accepted Phase 0/6 file, additive).** The energy stage receives `(t, weather,
+  delivered)` instead of `t` (the stub ignores it); `ctx.links` and `ctx.energy_mode` (new optional `RunContext`
+  fields) connect setup, comms and energy; frames gain `nodes.queue`, `nodes.mode` and `gateways_down` only when the
+  real modules run; packets of skipped minutes are carried into the next written frame with their own minute `t`.
+  Contracts gain optional fields only: `Delivered.queue`, `Delivered.down`, `EnergyState.mode` and the `Links` fields
+  above (rule 3). New streams `links` and `energy` are appended (rule 7).
+- **P8-7. A runner test changed its example.** `test_real_falls_back_to_stub_while_no_real_exists` used `energy`
+  as the module without a real implementation; it now uses `satellite` (no real model until Phase 9).
+- **P8-8. Scenario settings.** `cloudy_days` starts nodes at 30% with canopy spread 0.6 so that three cloudy days
+  visibly take weaker nodes into ULP; these are scenario settings stated in the file, not model parameters.
+  `gateway_outage` reuses `node_mature` (seed, haze, day-31 fire) and places the outage across the fire.
+- **P8-9. Energy chart.** `prahari energy` writes `results/energy.json` from the configuration (no random draws);
+  `report.combine` attaches it to `summary.json`. The chart draws lollipops (a stem from the axis minimum to a dot)
+  because a log axis has no zero for bars to start from. It uses one series hue: a grey second colour for MQ-2 failed
+  the palette validator (ΔE 14.4 against the blue, below the normal-vision floor of 15), and each row is already
+  named on the axis. The footer states that the chart involves no random draws instead of listing seeds.
+- **P8-10. Results.** Acceptance 1: 61.7 ms at SF7 and 1,482.75 ms at SF12 (SPEC 1,482.8). Acceptance 2: pure-ALOHA
+  success 82.4 / 61.5 / 37.8% at G = 0.1 / 0.25 / 0.5 against 81.9 / 60.7 / 36.8%. Acceptance 3: the 0.5 Wh-per-day
+  node stops after 8.66 days and empties after 9.11. Energy: BME688 0.114 / 0.178 / 0.415 Wh per day (ULP / low
+  power / standard), MQ-2 22.9. `gateway_outage`: node 41's candidate waits 23 minutes and the fire is confirmed at
+  14:48; `cloudy_days`: the lowest store falls to 19% and 15 nodes scan in ULP at 02:00 on day 5 (all SIM).
+- **P8-11. Found: the edge clusters by arrival minute.** In `gateway_outage` the delayed frame lands in the same
+  30-minute window as a later one, so the fire is confirmed earlier (14:48) than with a perfect link (15:14, `node_mature`).
+  A deployed edge would use the detection time each frame carries. Changing the accepted Phase 6 cluster stage is
+  proposed, not done (`KNOWN_ISSUES.md`).
+- **P8-12. Files from accepted phases touched.** `comms/pathloss.py` (shadowing, relays, all-gateway SFs),
+  `comms/lorawan.py` and `energy/budget.py` (docstrings; the stub's input name), `core/{pipeline,context,contracts,
+  contracts_world,rng}.py`, `record/world.py` (header relay), `stages.py`, `eval/report.py`, `cli.py`,
+  `configs/default.yaml`, `tests/unit/test_runner.py` (P8-7), `.gitignore`; dashboard `types.ts`, `series.ts`,
+  `results.ts`, `mapView.ts`, `CommandMap.tsx`, `MapTools.tsx`, `NodePanel.tsx`, `NodeInspector.tsx`,
+  `ExperimentCharts.tsx`, `theme.css` (all additive).
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four

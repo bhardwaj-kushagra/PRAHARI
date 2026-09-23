@@ -345,3 +345,33 @@ says so). Evidence: `engine/tests/golden/equivalence_p7_seeds11_30.json`; write-
 
 **Next step:** review Phase 7. Then Phase 8 (communications and energy, optional), 9 (regimes and learning) or 10
 (demo packaging), as the developer prefers.
+
+### 2026-09-23 — Session 12 (Phase 8)
+
+- Phase 7 and its follow-up accepted by the developer ("good").
+- Built Phase 8 — communications and energy (DECISIONS P8-1 … P8-12):
+  - M38 shadowing and TS011 relays in the links setup module (`shadowing_sd_db`, default 0).
+  - Real comms (`comms/lora.py`, `comms/lorawan_real.py`): M39 time on air, M40 ALOHA collisions with capture,
+    retries, relay hops, hourly heartbeats, gateway outages with re-routing and store-and-forward.
+  - Real energy (`energy/power.py`, `energy/budget_real.py`): M41 budget by power mode and airtime, M42 half-sine
+    harvest with cloudy days, M43 supercapacitor with ULP and stop modes.
+  - `prahari energy` → `results/energy.json` (MQ-2 against BME688); scenarios `gateway_outage` and `cloudy_days`.
+  - Dashboard: packet animation and queue badges, state-of-charge ring gauges, gateway out-of-service mark, power
+    mode and SoC chart in the node views, energy chart in Results.
+  - Comms and energy stay stubs by default: every earlier recording keeps identical frames.
+
+**Phase 8 acceptance (details in `DECISIONS.md` P8-10 and `docs/journey/phase-8-comms-energy.md`):**
+
+| # | Test | Result (SIM) |
+| --- | --- | --- |
+| 1 | M39: 61.7 ms at SF7, 1,482.8 ms at SF12 (24 B) | **pass** — 61.7 ms and 1,482.75 ms |
+| 2 | ALOHA success within 3 points of e^(−2G) | **pass** — 82.4 / 61.5 / 37.8% vs 81.9 / 60.7 / 36.8% at G = 0.1 / 0.25 / 0.5 |
+| 3 | A 0.5 Wh-per-day node with no sun lasts 9 ± 0.5 days | **pass** — stops at 5% after 8.66 days, empty after 9.11 |
+| — | Suite | 176 engine tests pass (21 golden skipped unless enabled), 40 dashboard tests; new recordings byte-identical on rerun; browser check without console errors |
+
+**To see it:** `cd dashboard && npm run dev`; open `gateway_outage.prs.jsonl.gz`, day 31 from 14:00 to 14:50 (gateway
+crossed out, queue badge on node 41, burst at 14:30, confirmation at 14:48); open `cloudy_days.prs.jsonl.gz`, day 5
+at 02:00 (amber ULP rings), click a node for its state-of-charge chart; tab *Results* for the energy chart.
+
+**Next step:** review Phase 8; decide on the arrival-time item (KNOWN_ISSUES). Then Phase 9 (regimes, satellite race,
+learning loop, faults) or Phase 10 (demo packaging).

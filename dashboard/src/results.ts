@@ -31,6 +31,14 @@ export interface Summary {
   sources?: Record<string, { seeds: number[] }>;
   seed_sweep?: { seeds: number[]; pipelines: Record<string, PipelineResult> };
   ablation_form?: "stub" | "legacy";
+  energy?: EnergyTable;
+}
+
+/** Phase 8: M41 daily budgets per sensor mode, the M42 harvest and the M43 store (`prahari energy`). */
+export interface EnergyTable {
+  label: string; rows: { sensor: string; mode: string; wh_day: number; autonomy_days: number }[];
+  harvest_wh_day: { clear: number; cloudy: [number, number] }; store_wh: number; frames_per_day: number;
+  toa_ms: number; voltage_v: number; source: string;
 }
 
 // Phase 5: node-layer statistics from the quiet pass (M26 exceedance, M28 replay-tuned candidates).
@@ -151,4 +159,12 @@ export function ablationNote(s: Summary): string {
   return s.ablation_form === "legacy"
     ? "QCC and TTC ablations in the report simulation's legacy forms"
     : "QCC and TTC ablations as module stubs";
+}
+
+export interface EnergyRow { label: string; sensor: string; wh: number; days: number; y: number }
+
+/** Phase 8: energy chart rows, lowest budget first (bars on a log axis). */
+export function energyRows(s: Summary): EnergyRow[] {
+  return (s.energy?.rows ?? []).slice().sort((a, b) => a.wh_day - b.wh_day)
+    .map((r, y) => ({ label: `${r.sensor} ${r.mode}`, sensor: r.sensor, wh: r.wh_day, days: r.autonomy_days, y }));
 }

@@ -223,3 +223,23 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .mini-table td { padding: 1px 8px 1px 0; }
 .alert-item { background: none; border: 0; color: var(--text); padding: 0; cursor: pointer; text-align: left; font: inherit; }
 .alerts li.sel { border-left: 2px solid var(--ember); padding-left: 6px; }
+
+/* Phase 8 — packets (M39–M40) and stored energy (M43) */
+.pk { stroke-linecap: round; }
+.pk-delivered { stroke: var(--pine); }
+.pk-lost { stroke: var(--amber); stroke-dasharray: 4 3; }
+.pk-delivered-key { background: var(--pine); }
+.pk-lost-key { background: repeating-linear-gradient(90deg, var(--amber) 0 4px, transparent 4px 6px); }
+.queue-badge rect { fill: var(--panel); stroke: var(--text-2); stroke-width: 1; }
+.queue-badge text { fill: var(--text); font: 600 10px var(--font-mono); }
+.sw-badge { display: inline-block; width: 12px; height: 10px; border: 1px solid var(--text-2); border-radius: 2px; background: var(--panel); }
+.soc-track { fill: none; stroke: var(--line); stroke-width: 2.5; }
+.soc-arc { fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.soc-m0 { stroke: var(--pine); }
+.soc-m1 { stroke: var(--amber); }
+.soc-m2 { stroke: var(--grey); }
+.soc-key-0 { border-style: solid; border-color: var(--pine); }
+.soc-key-1 { border-style: solid; border-color: var(--amber); }
+.soc-key-2 { border-style: solid; border-color: var(--grey); }
+.gw-down .gateway { stroke-dasharray: 3 2; opacity: 0.6; }
+.gw-cross { stroke: var(--amber); stroke-width: 2.5; stroke-linecap: round; }
