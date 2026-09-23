@@ -154,7 +154,8 @@ class Simulation:
                     "method": "fisher" if st["fisher"] == "real" else "bonferroni (stub)"},
             prior={"lambda": prior.lam, "p_s": prior.p_s, "odds": prior.odds, "day_type": prior.day_type},
             bayes={"bf_bound": bf.bf[j], "posterior_odds": raq.posterior_odds[j], "threshold": raq.threshold,
-                   "quorum": int(raq.quorum), "decision": bool(raq.decide[j])},
+                   "quorum": int(raq.quorum), "decision": bool(raq.decide[j]),
+                   "method": "bayes" if st["raq"] == "real" else "fixed quorum (stub)"},
             window_min=int(self.cfg["params"]["cluster"]["window_min"]))
 
     # -- whole run ---------------------------------------------------------

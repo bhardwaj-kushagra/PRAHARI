@@ -48,9 +48,11 @@ This repository builds a **local simulator and dashboard** for the FIRENET–PRA
 
 ```text
 pip install -e engine[dev]                    # engine
-pytest engine/tests                           # all tests
+pytest engine/tests                           # all engine tests
 prahari run --config configs/scenarios/smoke.yaml --out recordings/smoke.prs.jsonl.gz
-prahari experiment --preset golden            # legacy-mode reproduction
+prahari experiment --preset golden            # legacy-mode reproduction (Phase 4+)
 uvicorn server.app:app --reload               # live server (Phase 6+)
-cd dashboard && npm install && npm run dev    # dashboard
+cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
+cd dashboard && npm test                      # dashboard unit tests (Vitest)
+cd dashboard && npm run build && npm run preview   # static build, no engine server
 ```
