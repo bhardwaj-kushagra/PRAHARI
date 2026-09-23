@@ -51,6 +51,7 @@ class Simulation:
         self._last_cand = np.full(n, -np.inf)
         self._last_conf = np.full(n, -np.inf)
         self._sat_done: set = set()
+        self._haze_prev = 0.0
         self._seq = 0
 
     # -- helpers -----------------------------------------------------------
@@ -130,6 +131,9 @@ class Simulation:
                 self._last_conf[list(cl.members[j])] = t
             if dec.new_alert[j]:
                 alerts.append({"level": dec.levels[j], "cluster": list(cl.members[j]), "trace_id": traces[-1]["trace_id"]})
+        if haze.level > 0 and self._haze_prev == 0:
+            events.append({"type": "haze_start", "level": float(f"{haze.level:.4g}")})
+        self._haze_prev = haze.level
         for fid, ta in sat.alert_t:
             if fid not in self._sat_done and ta <= t:
                 self._sat_done.add(fid)
@@ -150,6 +154,7 @@ class Simulation:
                            "p": fr.sig4(sc.p_node), "cusum": fr.sig4(cand.G), "health": fr.sig4(sc.c.min(axis=1)),
                            "soc": fr.sig4(energy.soc)},
                  "cusum_h": float(f"{cand.h:.4g}"),
+                 "haze": float(f"{haze.level:.4g}"),
                  "fires": fr.fires_list(src),
                  "packets": list(dl.packets), "events": events, "alerts": alerts,
                  "health": self.health_states()}

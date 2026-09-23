@@ -27,7 +27,7 @@ def sig4(a) -> list:
 def weather_dict(env, fuel) -> dict:
     return {"T": float(f"{env.T:.4g}"), "RH": float(f"{env.RH:.4g}"), "wind_ms": float(f"{env.wind_ms:.4g}"),
             "wind_dir_deg": float(f"{env.wind_dir_deg:.4g}"), "rain_mm": float(f"{env.rain_mm:.4g}"),
-            "ffmc": float(f"{fuel.ffmc:.4g}")}
+            "ffmc": float(f"{fuel.ffmc:.4g}"), "dew_c": float(f"{env.dew_c:.4g}")}
 
 
 def fires_list(src) -> list:

@@ -36,10 +36,11 @@ export interface Alert { level: string; cluster: number[]; trace_id: string }
 export interface FireState { id: number; x: number; y: number; area_m2: number; age_min: number; q: number }
 export interface Frame {
   t: number;
-  weather: { T: number; RH: number; wind_ms: number; wind_dir_deg: number; rain_mm: number; ffmc: number };
+  weather: { T: number; RH: number; wind_ms: number; wind_dir_deg: number; rain_mm: number; ffmc: number; dew_c?: number };
   prior: { odds: number; quorum: number; day_type: string };
   nodes: { state: number[]; reading: number[]; residual: number[]; p: number[]; cusum: number[]; health: number[]; soc: number[] };
   cusum_h: number;
+  haze?: number;               // regional haze level H(t), su (Phase 2)
   fires: FireState[];
   packets: { from: number; to: string | null; ok: boolean; sf: number | null }[];
   events: FrameEvent[];

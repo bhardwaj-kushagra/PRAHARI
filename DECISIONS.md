@@ -14,6 +14,9 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 - **E-2.** §2 P10 example comment cited `M17` for the QCC p-value; QCC is **M26** (M17 is the metal-oxide response).
 - **E-3.** §4.2 cusum stub cited "ARL formula (M21)"; M21 is Faults. The ARL formula is **M23**.
 - **E-4.** §4.2 learn stub cited "SBB bound (M31)"; M31 is SCMR. The Sellke–Bayarri–Berger bound is in **M34**.
+- **E-6 (Phase 2).** M7 used 147.2 as the moisture-conversion constant (Van Wagner & Pickett's 1985 FORTRAN). Over
+  the cffdrs reference chain (48 days) that misses by up to 0.12 FFMC, beyond the SPEC's 0.1 tolerance; cffdrs uses
+  250·59.5/101 = 147.27723 and then matches to 0.005. SPEC M7 now shows 147.27723 (SPEC 1.0.2).
 - **E-5.** §4.7 trace example was internally inconsistent (3-node cluster with the 2-node χ² value, BF bound 5200 where M34 gives ≈4200, posterior 0.0099 < 0.01 yet `decision: true`, "dry, busy day" with a wet-day-sized prior). Replaced with consistent values: three p = 6.9e-4 → X = 43.7, dof 6, p_C = 8.6e-8, BF bound 2.6e5, prior odds 1.9e-6, posterior 0.50 ≥ 0.01 → true.
 
 ## Notes carried to later phases
@@ -70,9 +73,40 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   re-centred grid). Dashboard: `CommandMap.tsx` (layers, glyph scaling), `HeaderStrip.tsx`, `NodePanel.tsx`, `App.tsx`,
   `types.ts` (additive), `theme.css`.
 
+## Phase 2 design choices
+
+- **P2-1. M7 verification fixture.** `engine/tests/unit/data/cffdrs_fwi_01.csv` is the cffdrs package's published
+  `fwi_01` test output (48 days, 4 significant figures), copied unchanged with provenance in the folder's README.
+  cffdrs is GPL-2; the file holds numeric outputs only.
+- **P2-2. Weather details (ASM).** ε_T's σ = 0.3 °C is read as the *stationary* sd (innovation 0.3·√(1−0.98²)).
+  Daily means and dew point follow a mean-reverting walk (lag-1 0.8 per day, sd 1 °C) rather than a pure random walk,
+  which would drift without bound over 58-day experiments. Wind persistence 0.995 and direction persistence 0.999 per
+  minute. Rain: one event on a day with probability `rain_prob_day`, lognormal total (median 5 mm), spread over
+  60–240 min. The FFMC stage sums rain over the previous 24 h and converts wind to km/h.
+- **P2-3. Sensor, nuisance and haze follow the oracle.** Parameters match `reference/prahari_simulation.py::background`
+  (cycle amplitude, ±30% day amplitude, drift and ageing, AR(1) 0.95 with daytime factor, 0.05·t₃ tail, roadside split,
+  event shape, haze rate and trapezoid, node gains) so that legacy-mode golden runs stay comparable.
+- **P2-4. Framework scenarios keep stub signals.** `smoke`, `siting_corridor` and `siting_greedy` set `sensor`,
+  `nuisance` and `haze` to `stub` in their scenario files (module states come from config, rule 2). With realistic
+  signals, the Phase 0 detection stubs flood (see PROGRESS) and would bury these scenarios' scripted fires. A trial fix
+  to the TTC stub's warm-up (first-day running statistics) did not reduce the flood materially and was reverted to keep
+  the accepted Phase 0 file unchanged.
+- **P2-5. `signals_3day` instead of a week.** A week-long recording with the stub detectors' candidate flood was 11 MB
+  compressed (65 MB raw, 3 s to parse) because SPEC §4.6 records every event tick. Three days gives 5.6 MB and still
+  shows daily cycles, nuisance spikes and a scripted haze episode.
+- **P2-6. Charts.** ECharts (allowed by rule 13) with tree-shaken imports, loaded only when the Signals tab opens (main
+  bundle stays 173 kB). Single-series charts, titles naming the series, one neutral series hue, text tokens for text,
+  haze as neutral shaded bands; ember/amber/pine stay reserved for node states.
+- **P2-7. Files from accepted phases touched (approved with the Phase 2 plan).** `core/contracts.py` (additive
+  `Weather.dew_c`, `Additive.level`), `record/frames.py` (`dew_c` in the weather dict), `core/pipeline.py` (frame
+  `haze` level, `haze_start` events), stage files `env/weather.py`, `env/ffmc.py`, `sensors/*.py` (real classes added;
+  stubs unchanged), `configs/default.yaml`, the three framework scenario files, `docs/SPEC.md` (E-6), dashboard
+  `types.ts` (additive), `store.ts` (panel name), `App.tsx` (tab), `theme.css`.
+
 ## Dependencies beyond CLAUDE.md rule 13
 
 - **Dep-1.** `@vitejs/plugin-react` (dev): standard React support for Vite.
 - **Dep-2.** `vitest` 5 (dev): dashboard unit tests, named in SPEC §9.1. Version 5 because ≤ 4.1.10 carries advisory GHSA-82fw-gwwq-j7x9 and npm 10.9 fails to resolve 4.1.11's optional peers; `npm audit` reports 0 vulnerabilities.
 - **Dep-3.** `@fontsource/barlow-condensed`, `@fontsource/ibm-plex-sans`, `@fontsource/ibm-plex-mono`: bundle the §6.3 fonts locally for offline use.
 - **Dep-4.** `@types/node`, `typescript` (dev): type checking for `npm run build`. React is pinned to 18.x as SPEC §6.1 requires.
+- **Dep-5 (Phase 2).** `echarts` 6.1 (named in rule 13). Version 6.1 because 5.x carries advisory GHSA-fgmj-fm8m-jvvx (XSS); `npm audit` reports 0 vulnerabilities.

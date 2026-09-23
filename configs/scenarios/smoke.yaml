@@ -3,7 +3,11 @@
 # The fire sits at the same place relative to the (centred) grid as in Phase 0.
 scenario:
   name: smoke
-  description: "Framework check: one day, stubs everywhere, one scripted fire"
+  description: "Framework check: one day, real weather, clean stub signals, one scripted fire"
+modules:                          # framework check: clean stub signals so the stub detectors stay readable
+  sensor: stub
+  nuisance: stub
+  haze: stub
 run:
   seed: 11
   days: 1

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { AlertsPanel } from "./components/AlertsPanel";
 import { CommandMap } from "./components/CommandMap";
 import { Footer } from "./components/Footer";
@@ -10,7 +10,12 @@ import { openFile, RecordingPicker } from "./components/RecordingPicker";
 import { TimeControls } from "./components/TimeControls";
 import { type Panel, useSim } from "./store";
 
-const TABS: [Panel, string][] = [["health", "Health & model card"], ["node", "Node"], ["alerts", "Alerts"]];
+// Charts (ECharts) load only when the Signals tab opens, keeping the map view light.
+const SignalsPanel = lazy(() => import("./components/SignalsPanel").then((m) => ({ default: m.SignalsPanel })));
+
+const TABS: [Panel, string][] = [
+  ["health", "Health & model card"], ["signals", "Signals"], ["node", "Node"], ["alerts", "Alerts"],
+];
 
 function usePlayback() {
   const playing = useSim((s) => s.playing);
@@ -71,7 +76,9 @@ export function App() {
             ))}
           </nav>
           <div className="panel">
-            {panel === "health" ? <ModuleHealth /> : panel === "node" ? <NodePanel /> : <AlertsPanel />}
+            {panel === "health" ? <ModuleHealth /> : panel === "signals"
+              ? <Suspense fallback={<p className="muted">Loading charts…</p>}><SignalsPanel /></Suspense>
+              : panel === "node" ? <NodePanel /> : <AlertsPanel />}
           </div>
         </aside>
       </main>

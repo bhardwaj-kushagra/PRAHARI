@@ -42,14 +42,14 @@ modules:
   landscape: real                 # setup modules (Phase 1) run once before the first tick
   siting: real
   links: real
-  weather: stub
-  ffmc: stub
+  weather: real                   # Phase 2
+  ffmc: real                      # Phase 2, verified against cffdrs
   ignition: stub
   growth: stub
   plume: stub
-  nuisance: stub
-  haze: stub
-  sensor: stub
+  nuisance: real                  # Phase 2
+  haze: real                      # Phase 2
+  sensor: real                    # Phase 2
   faults: stub
   ttc: stub
   qcc: stub
@@ -90,14 +90,34 @@ params:
     sensitivity_dbm: {7: -123, 8: -126, 9: -129, 10: -132, 11: -134.5, 12: -137}
     source: "LIT [3] path loss; DER exponent; VEN SX127x sensitivities at 125 kHz, gains and power"
   weather:
-    T_c: 30.0
+    T_c: 30.0                     # stub: constant weather
     RH_pct: 40.0
     wind_ms: 1.5
     wind_dir_deg: 270.0           # meteorological: wind FROM the west
-    source: "ASM; SPEC §4.2 weather stub"
+    t_mean_c: 30.0                # M5 — T̄ (India pre-monsoon card)
+    t_amp_c: 7.0                  # M5 — A_T
+    dew_point_c: 10.0             # M5/M6 — mean dew point
+    day_phi: 0.8                  # daily means: mean-reverting walk, lag-1 per day
+    day_sd_c: 1.0                 # daily means: stationary sd
+    noise_phi: 0.98               # M5 — ε_T AR(1) per tick
+    noise_sd_c: 0.3               # M5 — ε_T stationary sd
+    wind_median_ms: 1.5           # M5 — lognormal wind at 10 m
+    wind_sigma_log: 0.4
+    wind_phi: 0.995               # wind persistence per tick (log space)
+    prevailing_dir_deg: 250.0     # M5 — prevailing direction (from WSW)
+    dir_phi: 0.999                # direction walk persistence per tick
+    dir_sd_deg: 30.0              # direction walk stationary sd
+    rain_prob_day: 0.02           # M5 — daily rain probability (India card)
+    rain_median_mm: 5.0           # event total, lognormal
+    rain_sigma_log: 1.0
+    rain_duration_min: [60, 240]
+    source: "ASM; SPEC §5.2 M5 defaults and §8.1 India card; persistence and rain-event shape ASM"
   ffmc:
-    constant_ffmc: 85.0
-    source: "ASM; SPEC §4.2 ffmc stub (start-up value LIT [15])"
+    constant_ffmc: 85.0           # stub
+    startup_ffmc: 85.0            # M7 — standard start-up value (validated for Canada, not India)
+    update_minute: 720            # M7 — daily code from noon weather
+    coefficient: 147.27723        # M7 — 250 · 59.5 / 101, as in cffdrs (erratum E-6)
+    source: "LIT [15][16] Van Wagner 1987, cffdrs; start-up value LIT [15]"
   ignition:
     scripted: []                  # list of {t_min, x, y}
     fire_lifetime_min: 180        # fire signal window, as in the report simulation
@@ -113,9 +133,40 @@ params:
     intermittency_sigma: 0.5      # M12 — ε = exp(N(0, σ²) − σ²/2)
     source: "ASM; tuned to ~50 m downwind detection LIT [3]"
   sensor:
-    baseline_su: 0.0
-    noise_sd_su: 0.23             # SPEC §5 units: quiet residual sd ≈ 0.23 su
-    source: "ASM; SPEC §4.2 sensor stub"
+    baseline_su: 0.0              # stub
+    noise_sd_su: 0.23             # stub; SPEC §5 units: quiet residual sd ≈ 0.23 su
+    cycle_amp: [0.2, 0.4]         # M18 — c_i ~ U(0.2, 0.4) after T/RH compensation
+    phase_range: 0.3              # M18 — φ_i ~ U(−0.3, 0.3)
+    day_amp_sd: 0.3               # M18 — A_day varies ±30% day to day
+    day_amp_clip: [0.3, 2.0]
+    raw_extra: 0.7                # M18 — uncompensated channel adds 0.7 A_day sin(·)
+    drift_step_sd: 0.002          # M18 — random-walk drift per minute
+    ageing_sd: 0.5                # M18 — linear ageing over the run
+    ar_phi: 0.95                  # M19
+    sigma_e: 0.05                 # M19
+    het_extra: 0.6                # M19 — daytime noise factor
+    tail_scale: 0.05              # M18 — 0.05 t₃
+    tail_df: 3
+    source: "ASM; SPEC §5.6 M18–M19, matching reference/prahari_simulation.py"
+  nuisance:
+    roadside_frac: 0.5            # M20 — half the nodes are roadside
+    rate_roadside_per_day: 1.0
+    rate_other_per_day: 0.2
+    amp_median: 1.5               # M20 — a ~ Lognormal(ln 1.5, 0.6)
+    amp_sigma_log: 0.6
+    tau_range: [2.0, 10.0]        # M20 — τ ~ U(2, 10) min
+    duration_min: 60
+    source: "ASM; SPEC §5.6 M20, matching reference/prahari_simulation.py"
+  haze:
+    base_rate_per_10d: 1.0        # M20 — 1 episode per 10 days
+    crop_burning_multiplier: 1.0  # India card raises this in crop-burning season
+    duration_range: [180, 720]    # M20 — D ~ U(180, 720) min
+    amp_range: [0.8, 2.5]         # M20
+    ramp_min: 60                  # M20 — 60-minute linear ramps
+    gain_sd: 0.2                  # M18 — g_i ~ N(1, 0.2²)
+    gain_clip: [0.5, 1.5]
+    scripted: []                  # scenario-scripted episodes: {t_min, duration_min, amplitude}
+    source: "ASM; SPEC §5.6 M18/M20, matching reference/prahari_simulation.py"
   ttc:
     slow_tau_min: 720             # M24 — α = 1/720 per minute
     freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3

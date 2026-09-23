@@ -1,7 +1,7 @@
 # PRAHARI-SIM — Product and Software Requirements Specification
 
 **Project:** FIRENET–PRAHARI simulator and demonstration dashboard
-**Version:** 1.0.1 · 23 September 2026 (errata to 1.0 listed in `DECISIONS.md`)
+**Version:** 1.0.2 · 23 September 2026 (errata to 1.0 listed in `DECISIONS.md`)
 **Audience:** the developer, and AI coding agents (Claude Code or similar) working inside this repository
 **Purpose of this document:** define *what* to build, *in what order*, *with which mathematics*, and *how to keep it working at every step*
 
@@ -453,7 +453,7 @@ $$
 **M7 — Fine Fuel Moisture Code** (daily, Van Wagner and Pickett 1985; Van Wagner 1987; `LIT [16]`). Inputs: noon temperature $T$ (°C), humidity $H$ (%), wind $W$ (km/h), 24-hour rain $r_o$ (mm), yesterday's code $F_o$ (start-up value 85).
 
 $$
-m_o = \frac{147.2\,(101 - F_o)}{59.5 + F_o}
+m_o = \frac{147.27723\,(101 - F_o)}{59.5 + F_o}, \qquad 147.27723 = \frac{250 \cdot 59.5}{101}\ \text{(as in cffdrs; erratum E-6)}
 $$
 
 If $r_o > 0.5$, let $r_f = r_o - 0.5$ and
@@ -487,8 +487,10 @@ $$
 Otherwise $m = m_o$. Finally:
 
 $$
-\text{FFMC} = \frac{59.5\,(250 - m)}{147.2 + m}
+\text{FFMC} = \frac{59.5\,(250 - m)}{147.27723 + m}
 $$
+
+> **Verified (Phase 2).** With the constant 147.27723 the daily chain matches the cffdrs reference outputs (`fwi_01`, 48 days) to within 0.005; the earlier transcription's 147.2 missed by up to 0.12 (erratum E-6).
 
 > **Verification required.** These equations are transcribed from memory of the standard formulation. The unit tests for M7 must compare against reference values computed with the official `cffdrs` implementation (R package, or a vetted Python port) for at least ten weather days, to within 0.1 FFMC. If they do not match, fix M7 before relying on it; until then run `ffmc: stub`. The standard start-up values are documented as suitable for Canadian, northern US and Alaskan spring conditions, not elsewhere `LIT [15]`; the India card must note this.
 

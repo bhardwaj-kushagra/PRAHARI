@@ -137,6 +137,13 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .alerts ol { padding-left: 20px; }
 .alerts li { margin-bottom: 10px; }
 
+/* Signals tab (Phase 2) */
+.signals h2 { margin-top: 12px; }
+.mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+.multi-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px; }
+.echart { width: 100%; }
+.chart-foot { font: 12px var(--font-mono); color: var(--text-2); margin-top: 8px; }
+
 /* Time controls */
 .controls { border-top: 1px solid var(--line); padding: 8px 16px; background: var(--panel); }
 .buttons { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }

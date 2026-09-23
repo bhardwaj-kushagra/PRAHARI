@@ -28,9 +28,11 @@ class Weather:
     wind_ms: float           # m/s at 10 m
     wind_dir_deg: float      # meteorological "from" direction, clockwise from north
     rain_mm: float = 0.0
+    dew_c: float = 0.0       # dew point, °C (Phase 2)
 
     def validate(self, n: int) -> None:
         _num("T", self.T, -60, 60)
+        _num("dew_c", self.dew_c, -80, 60)
         _num("RH", self.RH, 0, 100)
         _num("wind_ms", self.wind_ms, 0, 60)
         _num("wind_dir_deg", self.wind_dir_deg, 0, 360)
@@ -115,9 +117,11 @@ class Concentration:
 class Additive:
     """An additive signal component per node (nuisance events, haze)."""
     v: np.ndarray            # (N,) su
+    level: float = 0.0       # regional driver, e.g. haze H(t) before node gains (Phase 2)
 
     def validate(self, n: int) -> None:
         _arr("additive", self.v, (n,), hi=1e6)
+        _num("additive.level", self.level, 0.0, 1e6)
 
     @classmethod
     def neutral(cls, n: int) -> "Additive":

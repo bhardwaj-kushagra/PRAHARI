@@ -3,6 +3,10 @@
 scenario:
   name: siting_corridor
   description: "corridor layout (M1/M4) on the default landscape; fire beside a footpath"
+modules:                          # framework check: clean stub signals so the stub detectors stay readable
+  sensor: stub
+  nuisance: stub
+  haze: stub
 run:
   seed: 11
   days: 1

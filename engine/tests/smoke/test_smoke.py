@@ -75,3 +75,17 @@ def test_header_carries_the_world(smoke_cfg, tmp_path):
     assert len(links["sf"]) == 100 and links["modelled"] is True
     assert {s for s in links["sf"] if s is not None} <= set(range(7, 13))
     assert h["satellite_pixel_m"] == 375.0 and h["detection_radius_m"] == 50.0
+
+
+def test_realistic_signals_day_runs_fast_and_records_weather(tmp_path):
+    """All Phase 2 modules real (signals_3day scenario, one day): valid frames, speed within the Phase 0 budget."""
+    from prahari.core.config import load_config
+    cfg = load_config(SMOKE.parent / "signals_3day.yaml", {"run": {"days": 1}})
+    assert all(cfg["modules"][m] == "real" for m in ("weather", "ffmc", "sensor", "nuisance", "haze"))
+    t0 = time.perf_counter()
+    _, health, rec = run_cfg(cfg, tmp_path / "r.prs.jsonl.gz")
+    assert time.perf_counter() - t0 < 5.0
+    assert not [k for k, v in health.items() if v["state"] == "degraded"]
+    w = rec.frames[-1]["weather"]
+    assert {"T", "RH", "wind_ms", "ffmc", "dew_c"} <= set(w) and w["ffmc"] != 85.0     # FFMC updated at noon
+    assert all("haze" in f for f in rec.frames)
