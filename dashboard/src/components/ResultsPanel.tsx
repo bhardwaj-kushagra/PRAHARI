@@ -16,7 +16,7 @@ function intervalOption(rows: Row[], opts: { title: string; log: boolean; unit: 
     title: { text: opts.title, left: 4, top: 2, textStyle: { color: C.text, fontSize: 13, fontWeight: 500 } },
     legend: { top: 2, right: 8, textStyle: { color: C.text2, fontSize: 11 }, itemWidth: 12, itemHeight: 8,
               data: ["this simulator (SIM)", "per seed", "report (SIM)"] },
-    grid: { left: 150, right: 24, top: 40, bottom: 34 },
+    grid: { left: 150, right: 48, top: 40, bottom: 34 },
     tooltip: {
       trigger: "item", backgroundColor: "#161b1f", borderColor: C.line, textStyle: { color: C.text, fontSize: 12 },
       formatter: (p: { seriesName: string; value: number[]; data: { row?: Row } }) => {
@@ -34,14 +34,15 @@ function intervalOption(rows: Row[], opts: { title: string; log: boolean; unit: 
       axisLabel: { color: C.text2, fontSize: 11, formatter: opts.fmt }, splitLine: { lineStyle: { color: C.line } },
     },
     yAxis: {
-      type: "value", min: -0.6, max: rows.length - 0.4, inverse: true, interval: 1,
-      axisLabel: { color: C.text, fontSize: 12, formatter: (v: number) => rows[Math.round(v)]?.label ?? "" },
+      type: "value", min: -0.6, max: rows.length - 0.4, inverse: true,
+      axisLabel: { color: C.text, fontSize: 12, customValues: rows.map((r) => r.y),
+                   formatter: (v: number) => rows[Math.round(v)]?.label ?? "" },
       splitLine: { show: false }, axisLine: { lineStyle: { color: C.line } }, axisTick: { show: false },
     },
     series: [
       { name: "per seed", type: "scatter", symbol: "rect", symbolSize: [2, 10], data: seeds,
         itemStyle: { color: C.text2, opacity: 0.8 }, z: 2 },
-      { name: "this simulator (SIM)", type: "scatter", symbolSize: 11, data: ours, z: 4,
+      { name: "this simulator (SIM)", type: "scatter", symbolSize: 11, data: ours, z: 4, itemStyle: { color: C.base },
         label: { show: true, position: "right", distance: 8, color: C.text, fontSize: 12,
                  formatter: (p: { data: { row: Row } }) => opts.fmt(p.data.row.mean) },
         markLine: { silent: true, symbol: "none", label: { show: false }, lineStyle: { color: C.base, width: 2, type: "solid" },

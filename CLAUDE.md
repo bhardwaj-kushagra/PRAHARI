@@ -54,7 +54,9 @@ prahari run --config configs/scenarios/siting_greedy.yaml --out recordings/sitin
 prahari run --config configs/scenarios/signals_3day.yaml --out recordings/signals_3day.prs.jsonl.gz     # Phase 2 signals
 prahari run --config configs/scenarios/fires_day.yaml --out recordings/fires_day.prs.jsonl.gz           # Phase 3a fires
 prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/fires_day_gaussian.prs.jsonl.gz   # 3b
-prahari experiment --preset golden            # legacy-mode reproduction (Phase 4+)
+prahari experiment --preset golden            # Phase 4: P0/P1 over seeds 11,22,33,44,55 → results/summary.json (~6 min)
+prahari experiment --preset golden --seeds 11 --pipelines P1   # quicker single-seed check
+PRAHARI_GOLDEN=1 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)
 uvicorn server.app:app --reload               # live server (Phase 6+)
 cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
 cd dashboard && npm test                      # dashboard unit tests (Vitest)

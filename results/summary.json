@@ -1,0 +1,137 @@
+{
+ "label": "SIMULATION",
+ "preset": "golden",
+ "scenario": "golden_legacy",
+ "seeds": [
+  11,
+  22,
+  33,
+  44,
+  55
+ ],
+ "n_nodes": 100,
+ "spacing_m": 70,
+ "days": {
+  "calibration": 14,
+  "tuning": 14,
+  "test": 30
+ },
+ "pipelines": {
+  "P0": {
+   "false_incidents_per_month": {
+    "rate": 340.6,
+    "ci95": [
+     324.6137242852057,
+     357.16986986658685
+    ],
+    "count": 1703,
+    "days": 150.0,
+    "per_seed": [
+     299.0,
+     321.0,
+     388.0,
+     308.0,
+     387.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 314,
+    "n": 324,
+    "rate": 0.9691358024691358,
+    "ci95": [
+     0.9441264985714146,
+     0.9831505766990818
+    ]
+   },
+   "latency_median_min": 8.0
+  },
+  "P1": {
+   "false_incidents_per_month": {
+    "rate": 136.20000000000002,
+    "ci95": [
+     126.16129321313034,
+     146.82503678039558
+    ],
+    "count": 681,
+    "days": 150.0,
+    "per_seed": [
+     139.0,
+     145.0,
+     117.0,
+     140.0,
+     140.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 322,
+    "n": 324,
+    "rate": 0.9938271604938271,
+    "ci95": [
+     0.9777755470738122,
+     0.9983055847898683
+    ]
+   },
+   "latency_median_min": 5.0
+  }
+ },
+ "reference": {
+  "source": "FIRENET\u2013PRAHARI technical report, simulation results (SIM); SPEC \u00a79.3. Reference values only \u2014 not PRAHARI-SIM output.",
+  "seeds": [
+   11,
+   22,
+   33,
+   44,
+   55
+  ],
+  "pipelines": {
+   "P0": {
+    "false_incidents_per_month": 291,
+    "ci95": [
+     277,
+     307
+    ],
+    "confirmed_within_3h": 0.95,
+    "confirmed_ci95": [
+     0.93,
+     0.97
+    ]
+   },
+   "P1": {
+    "false_incidents_per_month": 132,
+    "ci95": [
+     123,
+     143
+    ],
+    "confirmed_within_3h": 0.99,
+    "confirmed_ci95": [
+     0.98,
+     1.0
+    ]
+   },
+   "P1t": {
+    "false_incidents_per_month": 18.6,
+    "ci95": [
+     15.0,
+     22.8
+    ],
+    "confirmed_within_3h": 0.59,
+    "confirmed_ci95": [
+     0.53,
+     0.64
+    ]
+   },
+   "P2": {
+    "false_incidents_per_month": 6.4,
+    "ci95": [
+     4.4,
+     9.0
+    ],
+    "confirmed_within_3h": 0.83,
+    "confirmed_ci95": [
+     0.79,
+     0.87
+    ]
+   }
+  }
+ }
+}

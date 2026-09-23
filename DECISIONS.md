@@ -145,6 +145,66 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `fire/plume.py` (docstring only), `configs/default.yaml` (plume parameters; state unchanged); dashboard
   `ModuleHealth.tsx`, `MapTools.tsx`, `types.ts` (additive).
 
+## Phase 4 design choices
+
+- **P4-1. Baselines follow the oracle line by line.** P0 (M22, `detect/baselines/fixed.py`): threshold μ + 3σ from the
+  first simulated day (population σ), alarms on rising edges with a 30-minute per-node refractory. P1 (M23,
+  `detect/baselines/v1.py`): the report's "v1 as written" — EWMA with the |z| ≥ 3 freeze and no cap, CUSUM with
+  k = 0.5 and h = 8.8 (Siegmund, M23), a hit only when the node's refractory counter is 0 (then set to 30 and
+  decremented the same tick), confirmation by ≥ 2 candidates within R and 30 minutes. Unit tests feed identical arrays
+  to these stages and to the oracle's own functions (loaded from `reference/`) and require exact agreement.
+- **P4-2. v1 hindsight initialisation (LIT, oracle behaviour).** The oracle initialises the EWMA from the mean and
+  variance of the whole first day and then runs the filter over that same day. In a tick loop this needs the future,
+  so the stage buffers day 1, initialises at its end and replays the buffer through the filter. No alarm is possible
+  before `start_min` (end of day 1 in recordings, TEST0 in experiments, as the oracle starts G = 0 at TEST0).
+- **P4-3. Protocol stream.** `"protocol"` is appended at the end of `STREAMS` (rule 7) and is used only by the harness
+  for day types and protocol fires, so every module stream is unchanged.
+- **P4-4. Pipeline split (approved with the plan).** `Simulation.tick()` now calls `step_signals(t)` (weather →
+  sensor, same order) and `step_baselines(x)`; `prepare()` runs the setup modules. The headless harness calls exactly
+  the same code without building frames. Recordings of every earlier scenario are unchanged except for the new
+  `p0_alarm` / `p1_alarm` events.
+- **P4-5. Reference values.** The report's numbers live only in `engine/tests/golden/report_reference.json`
+  (rule 10). The harness copies them into `summary.reference` with the label "FIRENET–PRAHARI report (SIM)" so the
+  Results tab can draw them as hollow markers beside ours; they are never computed or edited by the engine.
+- **P4-6. Golden outcome (SPEC §9.3), recorded as it came out — nothing was tuned.** Five seeds (11, 22, 33, 44, 55),
+  legacy mode, 30 test days each:
+
+  | Pipeline | This simulator | Report | Oracle, same 5 seeds |
+  | --- | --- | --- | --- |
+  | P1 false incidents / month | **136.2** (126.2–146.8) | 132 (123–143) | 132.4 |
+  | P0 false incidents / month | **340.6** (324.6–357.2) | 291 (277–307) | 291.4 |
+  | Confirmed within 3 h | P0 314/324, P1 322/324 | — | — |
+
+  P1 passes. P0 misses the report's interval. The engine's baselines match the oracle exactly on identical inputs
+  (P4-1), so the gap is statistical, not a code difference. False alarms are strongly clustered (haze episodes and
+  heavy-tailed bursts), so the report's interval — an exact Poisson interval of the pooled count — is much narrower
+  than the true seed-to-seed spread. Running the oracle itself over seeds 11–30 gives P0 = 321.9 per month (sd 49.6,
+  standard error of a 20-seed mean 11.1) and P1 = 139.1 (sd 11.0, SE 2.5); the report's 5-seed P0 of 291 is a low
+  draw of the oracle's own distribution. Our engine necessarily uses its own per-module streams (N-c), so it cannot
+  reproduce the oracle's exact draws, only its distribution.
+- **P4-7. Equivalence check (engine vs oracle, seeds 11–30, quiet pass, no fires).** Both implementations were run
+  over the same 20 seeds (per-seed values in `engine/tests/golden/equivalence_seeds11_30.json`):
+
+  | Pipeline | Oracle mean (sd, SE) | Engine mean (sd, SE) | Difference | Welch t, p | Mann–Whitney p |
+  | --- | --- | --- | --- | --- | --- |
+  | P0 | 321.9 (49.6, 11.1) | 310.9 (71.2, 15.9) | −11.0 | −0.57, 0.58 | 0.71 |
+  | P1 | 139.1 (11.0, 2.5) | 141.8 (9.2, 2.1) | +2.7 | 0.84, 0.40 | 0.44 |
+
+  No detectable difference in either pipeline; medians are 321 vs 326 (P0) and 142 vs 138 (P1). Individual seeds
+  differ, as expected with separate streams (golden seed 55: engine 387, oracle 131; seed 11: 299 vs 322).
+  Conclusion: the P0 miss is a 5-seed sampling effect of clustered false alarms, and the engine reproduces the
+  report's model. The golden test keeps the report's intervals as written (SPEC §9.3); P0 is expected to fail it
+  with these seeds and that failure is documented here rather than hidden by tuning or seed picking. A fairer
+  acceptance for a stochastic, overdispersed rate would compare distributions over ≥ 20 seeds, as above — proposed
+  for the developer's decision, not adopted.
+- **P4-8. Map glyphs.** The "Baselines" layer marks P0 alarms with a grey triangle and P1 alarms with a grey ring for
+  30 simulated minutes; grey is reserved for the old approaches and ember for PRAHARI (SPEC §6.3).
+- **P4-9. Files from accepted phases touched (approved with the Phase 4 plan).** `core/pipeline.py` (split, baseline
+  stages, alarm events), `core/rng.py` (+`protocol`), `core/contracts.py` (re-export of `BaselineAlarms`), `cli.py`
+  (`experiment`), `stages.py` (imports), `configs/default.yaml` (baseline states and `evaluation` parameters);
+  dashboard `App.tsx`, `CommandMap.tsx`, `MapTools.tsx`, `mapView.ts`, `types.ts` (additive), `layers.ts`,
+  `store.ts`, `scripts/sync-recordings.mjs`.
+
 ## Dependencies beyond CLAUDE.md rule 13
 
 - **Dep-1.** `@vitejs/plugin-react` (dev): standard React support for Vite.

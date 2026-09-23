@@ -6,8 +6,8 @@
 | 1 | World, network and siting | accepted (2026-09-23) |
 | 2 | Weather, fuel moisture and sensor signals | accepted (2026-09-23) |
 | 3a | Fires and plumes, legacy | accepted (2026-09-23) |
-| 3b | Gaussian plume (optional) | awaiting review |
-| 4 | Baselines and evaluation harness | not started |
+| 3b | Gaussian plume (optional) | accepted (2026-09-23) |
+| 4 | Baselines and evaluation harness | awaiting review |
 | 5 | PRAHARI node layer | not started |
 | 6 | PRAHARI edge layer, trace and live mode | not started |
 | 7 | Experiments and results | not started |
@@ -155,3 +155,35 @@ and the evaluation harness (P0 fixed threshold, P1 v1, M44–M46, the first gold
 
 **Next step:** review and accept Phase 3b, then Phase 4 — baselines (P0 fixed threshold M22, P1 v1 M23) and the
 evaluation harness (M44–M46), with the first golden numbers from the report.
+
+### 2026-09-23 — Session 6 (Phase 4)
+
+- Phase 3b accepted by the developer ("good").
+- Built Phase 4 — baselines and the evaluation harness:
+  - `baseline_p0` (M22 fixed threshold, `detect/baselines/fixed.py`) and `baseline_p1` (M23 "v1 as written",
+    `detect/baselines/v1.py`), each with a stub and an off, running after the sensor in every scenario; their alarms are
+    recorded as `p0_alarm` / `p1_alarm` frame events.
+  - `eval/stats.py` (M44 Wilson, M45 exact Poisson, M46 incident merging and detection) and `eval/experiments.py`
+    (quiet pass + fire pass per seed, protocol fires from the new `protocol` stream).
+  - `prahari experiment --preset golden` → `results/<preset>_seed<N>.json` and `results/summary.json` (committed).
+  - Dashboard: **Results** tab (false incidents per month on a log axis with M45 intervals, per-seed ticks and the
+    report's intervals as hollow diamonds; detection within 3 h with M44 intervals; table; seeds/days footer) and a
+    **Baselines** map layer (P0 ▲, P1 ○ in grey for 30 simulated minutes).
+
+**Phase 4 acceptance:**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1a | P1 false incidents / month within the report's 123–143 (legacy mode, seeds 11, 22, 33, 44, 55) | **pass** — 136.2 (M45 CI 126.2–146.8) |
+| 1b | P0 false incidents / month within the report's 277–307 | **miss** — 340.6 (324.6–357.2); statistical, not a code difference — see below and `DECISIONS.md` P4-6/P4-7 |
+| 2 | M44: 272/328 → 82.9% (78.5–86.6); M45: 32 in 150 days → 6.4/month (4.4–9.0) | pass (`test_eval_phase4.py`) |
+| — | M22, M23, M46 against the oracle's own functions on identical inputs | exact agreement (threshold, EWMA/CUSUM/refractory, confirmation, incident merging, detection) |
+| — | Harness smoke, determinism, full suite | 120 engine passed + 2 golden skipped (run separately), 24 dashboard; recordings byte-identical on rerun |
+
+Why P0 misses: false alarms are clustered (haze episodes, heavy-tailed bursts), so the seed-to-seed spread is far
+wider than the report's pooled Poisson interval. The oracle itself over seeds 11–30 gives P0 321.9 ± 11.1 (mean ± SE)
+per month; the report's 291 is a low 5-seed draw. Running our engine over the same 20 seeds gives P0 310.9 ± 15.9 and
+P1 141.8 ± 2.1 — no detectable difference from the oracle (Welch p 0.58 and 0.40). Nothing was tuned.
+
+**Next step:** review Phase 4. If the P0 explanation is accepted, Phase 5 — the PRAHARI node layer (M24 EWMA with
+the freeze cap, M25–M28 and the P1t tuning), replacing the detection-chain stubs through the registry.
