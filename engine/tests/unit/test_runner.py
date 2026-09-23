@@ -78,3 +78,32 @@ def test_real_falls_back_to_stub_while_no_real_exists(smoke_cfg, tmp_path):
     _, health, rec = run_cfg(cfg, tmp_path / "r.prs.jsonl.gz")
     assert health["qcc"]["requested"] == "real" and health["qcc"]["state"] == "stub"
     assert rec.header["modules"]["qcc"] == "real"
+
+
+# -- Phase 1 setup modules --------------------------------------------------------
+from prahari.world.siting import SitingReal  # noqa: E402
+
+
+class RaisingSiting(SitingReal):
+    def step(self, inputs, ctx):
+        raise RuntimeError("siting failed")
+
+
+def test_failing_real_siting_falls_back_to_the_grid(smoke_cfg, tmp_path, monkeypatch):
+    monkeypatch.setitem(registry._REGISTRY, ("siting", "real"), RaisingSiting)
+    cfg = short(smoke_cfg, days=0.05)
+    cfg["world"]["layout"] = "greedy"
+    sim, health, rec = run_cfg(cfg, tmp_path / "r.prs.jsonl.gz")
+    assert health["siting"]["state"] == "degraded" and health["siting"]["running"] == "stub"
+    assert rec.header["layouts"]["active"] == "grid"
+    assert rec.frames[0]["events"][0] == {"type": "degraded", "module": "siting", "error": "RuntimeError: siting failed"}
+    assert rec.frames[-1]["t"] == sim.clock.n_ticks - 1
+
+
+def test_unbuildable_layout_degrades_instead_of_crashing(smoke_cfg, tmp_path):
+    cfg = short(smoke_cfg, days=0.05)
+    cfg["world"]["layout"] = "corridor"
+    cfg["params"]["siting"]["corridor_classes"] = []          # nothing to follow
+    _, health, rec = run_cfg(cfg, tmp_path / "r.prs.jsonl.gz")
+    assert health["siting"]["state"] == "degraded" and "could not be built" in health["siting"]["last_error"]
+    assert rec.header["layouts"]["active"] == "grid"

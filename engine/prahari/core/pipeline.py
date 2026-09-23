@@ -11,7 +11,9 @@ from prahari.core.context import RunContext
 from prahari.core.rng import make_rngs
 from prahari.core.runner import Slot, expect_len
 from prahari.record import frames as fr
-from prahari.world.geometry import grid_layout, neighbourhood_radius
+from prahari.record import world as rw
+from prahari.world.geometry import neighbourhood_radius
+from prahari.world.siting import check_layout_inside, world_grid
 
 OUTPUT = {
     "weather": C.Weather, "ffmc": C.FuelState, "ignition": C.Fires, "growth": C.Sources,
@@ -21,6 +23,8 @@ OUTPUT = {
     "scmr": C.Scmr, "fisher": C.Fisher, "learn": C.BayesFactors, "raq": C.Raq,
     "escalate": C.Decision, "energy": C.EnergyState, "satellite": C.SatelliteAlerts,
 }
+# Setup modules run once before the first tick (Phase 1): landscape → siting → links.
+SETUP = {"landscape": C.Landscape, "siting": C.Layout, "links": C.Links}
 
 
 class Simulation:
@@ -28,18 +32,21 @@ class Simulation:
         self.cfg = cfg
         run, world = cfg["run"], cfg["world"]
         self.clock = Clock.from_run(run)
-        if world["layout"] != "grid":
-            raise ValueError(f"world.layout '{world['layout']}' is not available until Phase 1; use 'grid'")
-        xy = grid_layout(world["n_nodes"], world["spacing_m"], world["offset_m"])
+        try:
+            xy = world_grid(world)                 # placeholder until the siting module runs in setup()
+        except ValueError:
+            xy = C.Layout.neutral(int(world["n_nodes"])).xy
         self.ctx = RunContext(clock=self.clock, xy=xy, spacing_m=float(world["spacing_m"]),
                               radius_m=neighbourhood_radius(world["spacing_m"], world["radius_factor"]),
                               gateways=list(world["gateways"]))
         rngs = make_rngs(int(run["seed"]))
-        missing = [m for m in OUTPUT if m not in cfg["modules"]]
+        types = {**SETUP, **OUTPUT}
+        missing = [m for m in types if m not in cfg["modules"]]
         if missing:
             raise ValueError(f"modules: missing states for {missing}")
-        self.slots = {name: Slot(name, cfg["modules"][name], cfg["params"].get(name, {}), rngs.get(name), OUTPUT[name])
-                      for name in OUTPUT}
+        self.slots = {name: Slot(name, cfg["modules"][name], cfg["params"].get(name, {}), rngs.get(name), out)
+                      for name, out in types.items()}
+        self.landscape = self.layout = self.links = None
         n = self.ctx.n_nodes
         self._last_cand = np.full(n, -np.inf)
         self._last_conf = np.full(n, -np.inf)
@@ -64,7 +71,12 @@ class Simulation:
                 "tick_minutes": self.clock.tick_minutes, "n_ticks": self.clock.n_ticks,
                 "record_every": int(cfg["record"]["every_k_ticks"]),
                 "map": {"width_m": float(cfg["world"]["width_m"]), "height_m": float(cfg["world"]["height_m"]),
-                        "interfaces": []},
+                        "interfaces": rw.interfaces_list(cfg["world"]["interfaces"]),
+                        "lambda_grid": rw.lambda_grid(self.landscape, cfg["record"]["lambda_cell_m"])},
+                "layouts": rw.layouts_dict(self.layout),
+                "links": rw.links_dict(self.links, self.ctx.gateways),
+                "detection_radius_m": float(cfg["params"]["siting"]["detection_radius_m"]),
+                "satellite_pixel_m": float(cfg["params"]["satellite"]["pixel_m"]),
                 "spacing_m": self.ctx.spacing_m, "radius_m": self.ctx.radius_m,
                 "nodes": [{"id": i, "x": float(x), "y": float(y), "type": "B"} for i, (x, y) in enumerate(xy.tolist())],
                 "gateways": self.ctx.gateways,
@@ -158,10 +170,23 @@ class Simulation:
                    "method": "bayes" if st["raq"] == "real" else "fixed quorum (stub)"},
             window_min=int(self.cfg["params"]["cluster"]["window_min"]))
 
-    # -- whole run ---------------------------------------------------------
+    # -- setup and whole run -----------------------------------------------
+    def setup(self) -> None:
+        """Run the setup modules once, each through its isolation Slot, and place the nodes."""
+        world = self.cfg["world"]
+        for name in SETUP:
+            self.slots[name].reset(self.ctx)
+        self.landscape = self.stage("landscape", world)
+        self.layout = self.stage("siting", (world, self.landscape),
+                                 lambda lay: check_layout_inside(lay, self.landscape))
+        self.ctx.xy = self.layout.xy.copy()
+        self.links = self.stage("links", (self.ctx.xy, self.ctx.gateways))
+
     def run(self, writer) -> dict:
-        for slot in self.slots.values():
-            slot.reset(self.ctx)
+        self.setup()
+        for name, slot in self.slots.items():
+            if name not in SETUP:
+                slot.reset(self.ctx)
         writer.header(self.header())
         every = int(self.cfg["record"]["every_k_ticks"])
         for tick, t in enumerate(self.clock.minutes()):

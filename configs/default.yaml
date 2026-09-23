@@ -16,21 +16,32 @@ scenario:
 
 record:
   every_k_ticks: 5                # plus every tick that has an event or alert
+  lambda_cell_m: 20               # cell size of the ignition-likelihood heat layer in the header
 
 world:
-  layout: grid                    # grid only until Phase 1 (M1)
+  layout: grid                    # grid | corridor | greedy (M1, M4); the siting stub always uses grid
   n_nodes: 100
   spacing_m: 70
-  offset_m: 35                    # first node at (35, 35) inside the map
+  offset_m: null                  # grid origin on both axes; null centres the grid in the map
   radius_factor: 1.6              # M30 — neighbourhood radius R = 1.6 s
-  width_m: 700
-  height_m: 700
+  width_m: 1400                   # landscape larger than the grid so siting and SF choices matter
+  height_m: 1400
   gateways:
-    - {id: g1, x: 350, y: 690}
-  source: "ASM; grid layout and spacing as in the report simulation"
+    - {id: g1, x: 700, y: 1390}
+  # Ignition interfaces (M2): an illustrative Terai-style landscape, x east and y north, metres.
+  interfaces:
+    - {kind: village, closed: true, points: [[90, 110], [330, 80], [400, 260], [300, 380], [120, 340]]}
+    - {kind: path, points: [[390, 250], [520, 380], [640, 470], [780, 540], [930, 660], [1060, 820], [1180, 1010], [1300, 1250]]}
+    - {kind: path, points: [[220, 370], [260, 560], [330, 760], [420, 930], [540, 1080], [640, 1260], [700, 1380]]}
+    - {kind: road, points: [[0, 30], [400, 20], [800, 50], [1400, 90]]}
+    - {kind: power_line, points: [[0, 1130], [450, 1040], [900, 950], [1400, 850]]}
+  source: "ASM; illustrative landscape; grid layout and spacing as in the report simulation"
 
 # Module states: real | stub | off (SPEC §4.2). Phase 0 ships stubs only.
 modules:
+  landscape: real                 # setup modules (Phase 1) run once before the first tick
+  siting: real
+  links: real
   weather: stub
   ffmc: stub
   ignition: stub
@@ -56,6 +67,28 @@ modules:
   satellite: stub
 
 params:
+  landscape:
+    raster_m: 10                  # M2 — distance fields on a 10 m raster
+    lambda0: 1.0e-9               # M3 — λ₀, attempts per m² per minute; rescaled per scenario from Phase 3a
+    weights: {path: 1.0, village: 1.5, road: 1.0, power_line: 0.5}      # M3 — w_k
+    decay_m: {path: 30, village: 150, road: 50, power_line: 20}       # M3 — L_k
+    non_forest: [village]         # closed features excluded from siting and ignition
+    source: "ASM; SPEC §5.1 M3 defaults; human-caused share LIT [17]"
+  siting:
+    detection_radius_m: 50        # M4 — r_d, detection at about 50 m downwind
+    corridor_offset_m: 15         # M1 — lateral offset ±d
+    corridor_classes: [path, village]
+    source: "LIT [3] detection radius; ASM corridor offset and classes"
+  links:
+    ptx_dbm: 14                   # M38 — P_tx
+    gain_tx_dbi: 2
+    gain_rx_dbi: 2
+    margin_db: 3
+    pl_ref_db: 100                # M38 — 100 dB at 200 m in forest at 922 MHz
+    d_ref_m: 200
+    pl_exponent: 6.644            # M38 — n = 20 / (10 log10 2), from 100 dB @ 200 m and 120 dB @ 400 m
+    sensitivity_dbm: {7: -123, 8: -126, 9: -129, 10: -132, 11: -134.5, 12: -137}
+    source: "LIT [3] path loss; DER exponent; VEN SX127x sensitivities at 125 kHz, gains and power"
   weather:
     T_c: 30.0
     RH_pct: 40.0
@@ -111,7 +144,8 @@ params:
     source: "ASM; M35"
   satellite:
     fixed_delay_min: 90
-    source: "ASM; SPEC §4.2 satellite stub"
+    pixel_m: 375                  # VIIRS I-band pixel, for the map overlay
+    source: "ASM; SPEC §4.2 satellite stub; LIT [17] VIIRS 375 m pixel"
   display:
     elevated_p: 0.01              # node shown as elevated below this p-value
     confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation

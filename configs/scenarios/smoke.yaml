@@ -1,5 +1,6 @@
 # Smoke scenario (SPEC §8.2): framework only. One simulated day, 100-node grid,
 # one scripted ignition at 14:00 west of the grid centre with wind from the west.
+# The fire sits at the same place relative to the (centred) grid as in Phase 0.
 scenario:
   name: smoke
   description: "Framework check: one day, stubs everywhere, one scripted fire"
@@ -9,4 +10,4 @@ run:
 params:
   ignition:
     scripted:
-      - {t_min: 840, x: 300, y: 330}
+      - {t_min: 840, x: 650, y: 680}

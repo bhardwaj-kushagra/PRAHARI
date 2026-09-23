@@ -52,9 +52,26 @@ def test_recording_contract(smoke_cfg, tmp_path):
 def test_scripted_fire_is_seen_by_nodes_near_it(smoke_cfg, tmp_path):
     _, _, rec = run_cfg(smoke_cfg, tmp_path / "r.prs.jsonl.gz")
     ign = [e for f in rec.frames for e in f["events"] if e["type"] == "ignition"]
-    assert len(ign) == 1 and ign[0]["x"] == 300.0
+    assert len(ign) == 1 and ign[0]["x"] == 650.0              # moved with the centred grid (Phase 1)
     alerts = [(f["t"], a) for f in rec.frames for a in f["alerts"] if 840 <= f["t"] <= 840 + 180]
     assert alerts, "the stub pipeline should confirm the scripted fire"
     trace = next(t for t in rec.traces if t["trace_id"] == alerts[0][1]["trace_id"])
     assert trace["type"] == "decision" and trace["bayes"]["decision"] is True
     assert trace["explanation"]
+
+
+def test_header_carries_the_world(smoke_cfg, tmp_path):
+    _, _, rec = run_cfg(smoke_cfg, tmp_path / "r.prs.jsonl.gz")
+    h = rec.header
+    kinds = {f["kind"] for f in h["map"]["interfaces"]}
+    assert kinds == {"village", "path", "road", "power_line"}
+    lg = h["map"]["lambda_grid"]
+    assert len(lg["values"]) == lg["nx"] * lg["ny"] == 70 * 70 and max(lg["values"]) == 1.0
+    lay = h["layouts"]
+    assert lay["active"] == "grid" and lay["greedy"]["covered"] >= lay["grid"]["covered"]
+    assert all(len(lay[k]["nodes"]) == 100 for k in ("grid", "corridor", "greedy"))
+    assert [n["x"] for n in h["nodes"][:2]] == [385.0, 385.0]
+    links = h["links"]
+    assert len(links["sf"]) == 100 and links["modelled"] is True
+    assert {s for s in links["sf"] if s is not None} <= set(range(7, 13))
+    assert h["satellite_pixel_m"] == 375.0 and h["detection_radius_m"] == 50.0

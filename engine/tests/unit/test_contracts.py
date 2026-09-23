@@ -61,3 +61,27 @@ def test_all_modules_in_one_state_run_without_degrading(smoke_cfg, tmp_path, sta
     _, health, rec = run_cfg(cfg, tmp_path / "r.prs.jsonl.gz")
     assert not [k for k, v in health.items() if v["state"] == "degraded"]
     assert rec.frames and rec.footer["frames"] == len(rec.frames)
+
+
+def test_setup_modules_have_stubs_and_siting_cannot_be_off():
+    from prahari.core.pipeline import SETUP
+    for name, cls in SETUP.items():
+        assert registry.lookup(name, "stub") is not None and registry.lookup(name, "real") is not None
+        cls.neutral(4).validate(4)
+    assert {n for n in SETUP if not registry.off_allowed(n)} == {"siting"}
+
+
+def test_world_contracts_reject_bad_output():
+    with pytest.raises(C.ContractError, match="unknown layout"):
+        C.Layout(name="spiral", xy=np.zeros((2, 2))).validate(2)
+    with pytest.raises(C.ContractError, match="shape"):
+        C.Layout(name="grid", xy=np.zeros((3, 2))).validate(2)
+    with pytest.raises(C.ContractError, match="sf"):
+        C.Links(gateway=np.zeros(1, int), d_m=np.ones(1), pl_db=np.ones(1), prx_dbm=np.ones(1),
+                sf=np.array([6])).validate(1)
+    with pytest.raises(C.ContractError, match="coincide"):
+        C.Links(gateway=np.zeros(1, int), d_m=np.ones(1), pl_db=np.ones(1), prx_dbm=np.ones(1),
+                sf=np.array([0])).validate(1)
+    with pytest.raises(C.ContractError, match="positive intensity"):
+        C.Landscape(cell_m=10, x0=5, y0=5, lam=np.zeros((2, 2)), forest=np.ones((2, 2), bool),
+                    width_m=20, height_m=20).validate(0)
