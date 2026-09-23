@@ -17,6 +17,9 @@ scenario:
 record:
   every_k_ticks: 5                # plus every tick that has an event or alert
   lambda_cell_m: 20               # cell size of the ignition-likelihood heat layer in the header
+  plume_every_ticks: 5            # SPEC §5.5 — plume grid for the heat overlay every 5 ticks while fires burn
+  plume_cell_m: 10
+  plume_margin_m: 300             # grid covers the fires' bounding box ± this margin
 
 world:
   layout: grid                    # grid | corridor | greedy (M1, M4); the siting stub always uses grid
@@ -44,7 +47,7 @@ modules:
   links: real
   weather: real                   # Phase 2
   ffmc: real                      # Phase 2, verified against cffdrs
-  ignition: stub
+  ignition: real                  # Phase 3a (scripted + Poisson; expected_fires 0 = scripted only)
   growth: stub
   plume: stub
   nuisance: real                  # Phase 2
@@ -121,7 +124,17 @@ params:
   ignition:
     scripted: []                  # list of {t_min, x, y}
     fire_lifetime_min: 180        # fire signal window, as in the report simulation
-    source: "ASM; report simulation"
+    expected_fires: 0.0           # Poisson sustained fires per run at the reference FFMC (0 = scripted only)
+    ps_reference_ffmc: 90.0       # FFMC used to scale λ₀ (DER)
+    ps_a: -21.0                   # M8 — logistic intercept (shape only; refit for Indian fuels)
+    ps_b: 0.25                    # M8 — logistic slope
+    activity_night: 0.2           # M3 — a(t) at night
+    activity_day: 1.0             # M3 — a(t) from 09:00 to 18:00
+    activity_ramp_up_h: [6.0, 9.0]
+    activity_ramp_down_h: [18.0, 21.0]
+    market_days: []               # day indices (0 = first day) with ×market_multiplier activity
+    market_multiplier: 1.5
+    source: "ASM; M3 activity and M8 shape (form LIT [10]); λ₀ DER from expected_fires; lifetime from report simulation"
   growth:
     q_ref: 8.7259                 # M12 — Q_ref = 2.5 su × exp(50/40), so C = 2.5 su at 50 m downwind
     qmax_lognormal_sigma: 0.5     # M9

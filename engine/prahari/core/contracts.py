@@ -67,6 +67,8 @@ class Fire:
 class Fires:
     active: tuple = ()       # tuple[Fire, ...]
     new: tuple = ()          # ids ignited this tick
+    new_causes: tuple = ()   # "scripted" or "poisson", parallel to `new` (Phase 3a)
+    attempts: int = 0        # ignition attempts so far, sustained or not (Phase 3a)
 
     def validate(self, n: int) -> None:
         for f in self.active:

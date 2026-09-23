@@ -117,9 +117,10 @@ class Simulation:
         sat = self.stage("satellite", fires)
 
         events, alerts, traces = [], [], []
-        for fid in fires.new:
+        causes = fires.new_causes if len(fires.new_causes) == len(fires.new) else ("scripted",) * len(fires.new)
+        for fid, cause in zip(fires.new, causes):
             f = next(f for f in fires.active if f.id == fid)
-            events.append({"type": "ignition", "fire": int(fid), "x": f.x, "y": f.y})
+            events.append({"type": "ignition", "fire": int(fid), "x": f.x, "y": f.y, "cause": cause})
         for i, p in zip(cand.nodes, cand.p):
             rec = tr.candidate_record(t, i, p, cand.G[i], cand.h, float(sc.c[i].min()))
             traces.append(rec)
@@ -152,13 +153,29 @@ class Simulation:
                  "prior": {"odds": float(f"{prior.odds:.4g}"), "quorum": int(raq.quorum), "day_type": prior.day_type},
                  "nodes": {"state": states.tolist(), "reading": fr.sig4(x.x[:, 0]), "residual": fr.sig4(res.r[:, 0]),
                            "p": fr.sig4(sc.p_node), "cusum": fr.sig4(cand.G), "health": fr.sig4(sc.c.min(axis=1)),
-                           "soc": fr.sig4(energy.soc)},
+                           "soc": fr.sig4(energy.soc), "conc": fr.sig4(conc.c)},
                  "cusum_h": float(f"{cand.h:.4g}"),
                  "haze": float(f"{haze.level:.4g}"),
                  "fires": fr.fires_list(src),
                  "packets": list(dl.packets), "events": events, "alerts": alerts,
                  "health": self.health_states()}
+        grid = self._plume_grid(src, env)
+        if grid is not None:
+            frame["plume"] = grid
         return frame, traces
+
+    def _plume_grid(self, src, env):
+        """Display-only plume grid every `record.plume_every_ticks` while fires burn; never breaks the run."""
+        rec = self.cfg["record"]
+        stage = self.slots["plume"].stage
+        if not src.ids or self.ctx.tick % int(rec["plume_every_ticks"]) or not hasattr(stage, "field"):
+            return None
+        try:
+            w = self.cfg["world"]
+            return fr.plume_grid(lambda pts: stage.field(pts, src, env), src.x, src.y, float(w["width_m"]),
+                                 float(w["height_m"]), float(rec["plume_cell_m"]), float(rec["plume_margin_m"]))
+        except Exception:                                  # noqa: BLE001 — display only
+            return None
 
     def _decision_trace(self, t, j, cl, scmr, fisher, bf, prior, raq, dec, cand, sc) -> dict:
         self._seq += 1
@@ -185,6 +202,7 @@ class Simulation:
         self.layout = self.stage("siting", (world, self.landscape),
                                  lambda lay: check_layout_inside(lay, self.landscape))
         self.ctx.xy = self.layout.xy.copy()
+        self.ctx.landscape = self.landscape
         self.links = self.stage("links", (self.ctx.xy, self.ctx.gateways))
 
     def run(self, writer) -> dict:

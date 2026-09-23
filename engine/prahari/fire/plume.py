@@ -56,6 +56,13 @@ class PlumeStub(Stage):
         eps = np.exp(self.rng.normal(0.0, s, c.shape) - s * s / 2.0)       # M12 — ε mean-one intermittency
         return Concentration(c=(c * eps).sum(axis=0))                      # multiple fires add linearly
 
+    def field(self, points, src, env):
+        """Mean concentration at arbitrary points (no intermittency), for the dashboard plume grid (SPEC §5.5)."""
+        if not src.ids:
+            return np.zeros(len(points))
+        return plume_at_nodes(np.asarray(points, dtype=float), src.x, src.y, src.age_min, src.q_max, src.tau_g,
+                              env.wind_ms, env.wind_dir_deg, self.params["decay_length_m"]).sum(axis=0)
+
 
 @register("plume", kind="off")
 class PlumeOff(Stage):
@@ -63,3 +70,6 @@ class PlumeOff(Stage):
 
     def step(self, inputs, ctx) -> Concentration:
         return Concentration(c=np.zeros(ctx.n_nodes))
+
+    def field(self, points, src, env):
+        return np.zeros(len(points))

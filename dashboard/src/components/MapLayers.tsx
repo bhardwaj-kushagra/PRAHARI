@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { glyphScale, lambdaToRGBA, pixelCaption, sfColour, svgPoints } from "../layers";
-import type { Header, LayoutName } from "../types";
+import { decodePlume, glyphScale, lambdaToRGBA, pixelCaption, plumeToRGBA, sfColour, svgPoints } from "../layers";
+import type { Frame, Header, LayoutName } from "../types";
 
 interface LayerProps { h: Header; H: number }
 
@@ -123,5 +123,25 @@ export function PreviewNodes({ h, H, name }: LayerProps & { name: LayoutName }) 
     <g className="preview" aria-label={`${name} layout preview`}>
       {nodes.map(([x, y], i) => <circle key={i} cx={x} cy={H - y} r={5 * k} className="preview-node" strokeWidth={1.5 * k} />)}
     </g>
+  );
+}
+
+/** Smoke concentration (active plume model, SPEC §5.5) as a one-hue heat image from the recorded grid. */
+export function PlumeLayer({ frame, H }: { frame: Frame | null; H: number }) {
+  const g = frame?.plume;
+  const href = useMemo(() => {
+    if (!g || typeof document === "undefined") return null;
+    const canvas = document.createElement("canvas");
+    canvas.width = g.nx;
+    canvas.height = g.ny;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.putImageData(new ImageData(plumeToRGBA(decodePlume(g), g.nx, g.ny), g.nx, g.ny), 0, 0);
+    return canvas.toDataURL();
+  }, [g]);
+  if (!g || !href) return null;
+  return (
+    <image href={href} x={g.x0} y={H - g.y0 - g.ny * g.cell_m} width={g.nx * g.cell_m} height={g.ny * g.cell_m}
+           preserveAspectRatio="none" className="plume" aria-label={`smoke concentration, max ${g.max} su`} />
   );
 }

@@ -4,8 +4,8 @@
 | --- | --- | --- |
 | 0 | Foundation and replay shell | accepted (2026-09-23) |
 | 1 | World, network and siting | accepted (2026-09-23) |
-| 2 | Weather, fuel moisture and sensor signals | awaiting review |
-| 3a | Fires and plumes, legacy | not started |
+| 2 | Weather, fuel moisture and sensor signals | accepted (2026-09-23) |
+| 3a | Fires and plumes, legacy | awaiting review |
 | 3b | Gaussian plume (optional) | not started |
 | 4 | Baselines and evaluation harness | not started |
 | 5 | PRAHARI node layer | not started |
@@ -102,3 +102,30 @@ lights the whole network. This is the report's P1 "v1 as written" failure. Real 
 
 **Next step:** review and accept Phase 2, then Phase 3a — fires and plumes, legacy (M8 scripted and Poisson
 ignitions, M9, M12, M13, M16) and the map's fire and plume overlay.
+
+### 2026-09-23 — Session 4 (Phase 3a)
+
+- Phase 2 accepted by the developer ("good").
+- Built Phase 3a — fires and plumes (legacy):
+  - `ignition` is now `real`: scripted fires plus Poisson attempts drawn by thinning from the M3 likelihood map with a
+    day/night activity profile, each sustained with M8 p_s(FFMC). `expected_fires: 0` (the default) keeps existing
+    scenarios scripted-only. The legacy source (M9) and plume (M12, M13, M16) remain the stub/default models as SPEC §5
+    prescribes; their upgrades are M10 (optional) and M11 (Phase 3b).
+  - Recordings now carry a coarse plume grid (active plume model, 10 m, float16) every 5 ticks while fires burn, and the
+    fire signal at every node (`nodes.conc`).
+  - Dashboard: smoke overlay (log-scaled, one slate hue), nodes that glow with the smoke signal they receive, fire
+    markers with a local wind arrow, legends.
+  - New scenario and recording `fires_day` (4 expected Poisson fires plus one scripted, real weather, clean signals).
+
+**Phase 3a acceptance (all pass, `engine/tests/unit/test_fires_phase3a.py`):**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | 50 m straight downwind, full growth, before intermittency: 2.5 ± 0.1 su | 2.5 su through the growth and plume stages, and on the recorded grid |
+| 2 | 50 m straight upwind: 0.25 ± 0.02 su | 0.25 su |
+| 3 | Arrival delay = distance / wind speed | first non-zero tick = ⌊d/(60u)⌋ + 1 for three distance/speed pairs |
+| — | M8 and Poisson ignition | p_s(84) = 0.5; sustained count within Poisson 95% bounds of the expected value; none in the village; clustered near interfaces; time of day follows a(t); wet fuel suppresses fires |
+| — | Full suite, determinism | 101 engine + 20 dashboard tests; recordings byte-identical on rerun |
+
+**Next step:** review and accept Phase 3a. Then Phase 3b (optional Gaussian plume, M11/M14/M15) or Phase 4 — baselines
+and the evaluation harness (P0 fixed threshold, P1 v1, M44–M46, the first golden numbers).

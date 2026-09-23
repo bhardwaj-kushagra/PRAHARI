@@ -38,6 +38,9 @@ export function MapTools() {
         <Layer k="likelihood" on={layers.likelihood} toggle={toggleLayer} label="Ignition likelihood">
           <span className="sw-grad" /> low → high (M3, relative)
         </Layer>
+        <Layer k="smoke" on={layers.smoke} toggle={toggleLayer} label="Smoke">
+          <span className="sw-smoke" /> 0.05 → 2.5 su (plume model, log scale)
+        </Layer>
         <Layer k="links" on={layers.links} toggle={toggleLayer} label="Radio links">
           {[7, 8, 9, 10, 11, 12].map((sf) => (
             <span key={sf} className="sf-key"><span className="sw-line" style={{ background: SF_RAMP[sf] }} />SF{sf}</span>

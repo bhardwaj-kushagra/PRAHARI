@@ -1,0 +1,18 @@
+# Fires scenario (Phase 3a): one dry day with Poisson ignitions drawn from the M3 likelihood map (M8 thinning),
+# plus one scripted fire beside the north-east footpath at 14:00. Real weather and FFMC; clean stub signals so the
+# Phase 0 stub detectors stay readable (see DECISIONS P2-4). Plume grid recorded for the smoke overlay.
+scenario:
+  name: fires_day
+  description: "Poisson ignitions near paths and the village, plus a scripted fire; smoke plumes follow the wind"
+modules:
+  sensor: stub
+  nuisance: stub
+  haze: stub
+run:
+  seed: 11
+  days: 1
+params:
+  ignition:
+    expected_fires: 4.0
+    scripted:
+      - {t_min: 840, x: 600, y: 445}

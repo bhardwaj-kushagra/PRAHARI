@@ -103,6 +103,29 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   stubs unchanged), `configs/default.yaml`, the three framework scenario files, `docs/SPEC.md` (E-6), dashboard
   `types.ts` (additive), `store.ts` (panel name), `App.tsx` (tab), `theme.css`.
 
+## Phase 3a design choices
+
+- **P3a-1. Legacy models stay stubs.** SPEC §5 makes the legacy form of a model its stub and default: `growth` (M9) and
+  `plume` (M12, M13, M16) keep running as `stub`. The Phase 3a acceptance values are tested through those stages.
+- **P3a-2. Activity profile (ASM).** a(t) = 0.2 at night, 1.0 from 09:00 to 18:00, smoothstep ramps over 06–09 and
+  18–21, ×1.5 on `market_days`.
+- **P3a-3. λ₀ scaling (DER, approximate).** λ₀ = expected_fires / (Σ_t a(t) Δt · ΣS·A_cell · p_s(ps_reference_ffmc)),
+  with the reference FFMC 90. Actual FFMC varies through a run, so the realised expectation differs when fuel is much
+  wetter or drier than the reference; the test checks the count at the reference FFMC.
+- **P3a-4. Thinning envelope.** Candidates are drawn uniformly over the map at λ₀·a_max·S_max (S scaled to max 1) and
+  accepted with a(t)/a_max · S(x), as SPEC §5.3 describes; accepted attempts are counted in `Fires.attempts`.
+- **P3a-5. Plume grid.** Every 5 ticks while fires burn, the running plume model's mean field (no intermittency) is
+  evaluated on a 10 m grid over the fires' bounding box ± 300 m, stored as base64 little-endian float16 in frame key
+  `plume` (row 0 = south). It is display-only: a failure drops the grid, never the run.
+- **P3a-6. Smoke colour.** One cool slate hue (159, 179, 200) with alpha on a log scale from 0.05 to 2.5 su, keeping
+  warm white (likelihood), blue (links) and ember/amber/pine (node states) distinct. Nodes glow in text white with
+  opacity ∝ min(conc / 2.5, 1).
+- **P3a-7. Files from accepted phases touched (approved with the Phase 3a plan).** `core/context.py` (+`landscape`),
+  `core/contracts.py` (+`Fires.new_causes`, `Fires.attempts`), `core/pipeline.py` (context landscape, ignition cause,
+  `nodes.conc`, plume grid), `fire/ignition.py` and `fire/plume.py` (real class and `field` added; stubs unchanged),
+  `record/frames.py` (grid encode/decode), `configs/default.yaml`; dashboard `CommandMap.tsx`, `MapLayers.tsx`,
+  `MapTools.tsx`, `mapView.ts`, `layers.ts`, `types.ts` (additive), `theme.css`.
+
 ## Dependencies beyond CLAUDE.md rule 13
 
 - **Dep-1.** `@vitejs/plugin-react` (dev): standard React support for Vite.

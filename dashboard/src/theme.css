@@ -113,6 +113,13 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .sw-disk { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: rgba(232, 227, 218, 0.12); border: 1px solid rgba(232, 227, 218, 0.3); }
 .sf-key { display: inline-flex; align-items: center; gap: 3px; }
 
+/* Fires and smoke (Phase 3a) */
+.plume { pointer-events: none; }
+.glow { fill: rgba(232, 227, 218, 0.55); }
+.fire-wind { stroke: var(--text); stroke-opacity: 0.85; }
+.sw-smoke { display: inline-block; width: 44px; height: 10px; border: 1px solid var(--line);
+            background: linear-gradient(90deg, rgba(159, 179, 200, 0), rgba(159, 179, 200, 0.75)); }
+
 /* Side panel */
 .picker { display: flex; gap: 12px; align-items: center; padding: 10px 14px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .picker select { background: var(--bg); border: 1px solid var(--line); padding: 4px 6px; border-radius: 3px; max-width: 260px; }

@@ -17,6 +17,7 @@ class RunContext:
     gateways: list = field(default_factory=list)
     t: int = 0                       # minutes since start
     tick: int = 0
+    landscape: object = None         # Landscape from the setup modules (Phase 3a: ignition needs λ)
 
     @property
     def n_nodes(self) -> int:

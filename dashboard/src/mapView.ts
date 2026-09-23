@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import type { LayoutName } from "./types";
 
-export type LayerKey = "interfaces" | "likelihood" | "links" | "coverage" | "satellite";
+export type LayerKey = "interfaces" | "likelihood" | "smoke" | "links" | "coverage" | "satellite";
 
 interface MapView {
   layers: Record<LayerKey, boolean>;
@@ -12,7 +12,7 @@ interface MapView {
 
 /** Map display state, separate from playback state. */
 export const useMapView = create<MapView>((set) => ({
-  layers: { interfaces: true, likelihood: true, links: false, coverage: false, satellite: false },
+  layers: { interfaces: true, likelihood: true, smoke: true, links: false, coverage: false, satellite: false },
   preview: null,
   toggleLayer: (k) => set((s) => ({ layers: { ...s.layers, [k]: !s.layers[k] } })),
   setPreview: (preview) => set({ preview }),

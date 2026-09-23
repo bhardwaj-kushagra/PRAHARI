@@ -1,9 +1,9 @@
-import { glyphScale } from "../layers";
+import { glowOpacity, glyphScale, latestPlume } from "../layers";
 import { useMapView } from "../mapView";
 import type { FireState, Header } from "../types";
 import { NODE_STATE } from "../types";
 import { useFrame, useSim } from "../store";
-import { CoverageLayer, InterfaceLayer, LikelihoodLayer, LinksLayer, PreviewNodes, SatelliteLayer } from "./MapLayers";
+import { CoverageLayer, InterfaceLayer, LikelihoodLayer, LinksLayer, PlumeLayer, PreviewNodes, SatelliteLayer } from "./MapLayers";
 
 const GLYPH_R = 7;
 
@@ -20,13 +20,18 @@ function NodeGlyph({ state, selected }: { state: number; selected: boolean }) {
   }
 }
 
-function Fire({ f, H, k }: { f: FireState; H: number; k: number }) {
+function Fire({ f, H, k, windTo }: { f: FireState; H: number; k: number; windTo: number }) {
   const r = Math.max(6 * k, Math.sqrt(f.area_m2 / Math.PI));
+  const dx = Math.sin(windTo) * 28 * k;
+  const dy = -Math.cos(windTo) * 28 * k;           // local wind arrow: the plume drifts this way (M12/M16)
   return (
     <g transform={`translate(${f.x},${H - f.y})`} className="fire">
+      <title>fire {f.id} · {Math.round(f.age_min)} min · {Math.round(f.area_m2)} m² (SIM)</title>
       <circle r={r} className="fire-perimeter" />
+      <line x1={r * Math.sin(windTo)} y1={-r * Math.cos(windTo)} x2={r * Math.sin(windTo) + dx} y2={-r * Math.cos(windTo) + dy}
+            className="fire-wind" strokeWidth={2 * k} markerEnd="url(#arrow)" />
       <path d="M0,-9L7,0L0,9L-7,0Z" className="fire-core" transform={`scale(${k})`} />
-      <text y={-r - 6 * k} className="map-label" textAnchor="middle" style={{ fontSize: 13 * k }}>fire {f.id} · {Math.round(f.age_min)} min</text>
+      <text y={-r - 6 * k} className="map-label" textAnchor="middle" style={{ fontSize: 13 * k }}>F{f.id}</text>
     </g>
   );
 }
@@ -91,7 +96,9 @@ export function CommandMap() {
             <text y={-14} textAnchor="middle" className="map-label">{g.id}</text>
           </g>
         ))}
-        {frame.fires.map((f) => <Fire key={f.id} f={f} H={H} k={k} />)}
+        {layers.smoke ? <PlumeLayer frame={latestPlume(source, frame.t, 3 * h.record_every * h.tick_minutes)} H={H} /> : null}
+        {frame.fires.map((f) => <Fire key={f.id} f={f} H={H} k={k}
+                                      windTo={((frame.weather.wind_dir_deg + 180) % 360) * Math.PI / 180} />)}
         <g className={previewing ? "sim-nodes dimmed" : "sim-nodes"}>
         {h.nodes.map((n) => (
           <g key={n.id} transform={`translate(${n.x},${H - n.y}) scale(${k})`} className="node"
@@ -99,6 +106,8 @@ export function CommandMap() {
              aria-label={`node ${n.id}, ${NODE_STATE[frame.nodes.state[n.id]]}`}
              onKeyDown={(e) => { if (e.key === "Enter") selectNode(n.id); }}>
             <circle r={GLYPH_R + 4} className="hit" />
+            {glowOpacity(frame.nodes.conc?.[n.id]) > 0
+              ? <circle r={GLYPH_R + 6} className="glow" opacity={glowOpacity(frame.nodes.conc?.[n.id])} /> : null}
             <NodeGlyph state={frame.nodes.state[n.id]} selected={selected === n.id} />
           </g>
         ))}
@@ -116,6 +125,8 @@ export function CommandMap() {
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><path d="M-5,-5L5,5M5,-5L-5,5" className="glyph-fault" /></svg>fault</span>
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="5" className="glyph-lowpower" /></svg>low power</span>
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><rect x="-6" y="-6" width="12" height="12" className="gateway" /></svg>gateway</span>
+        <span><svg width="18" height="18" viewBox="-9 -9 18 18"><circle r="8" className="glow" opacity="0.6" /><circle r="4" className="glyph-normal" /></svg>glow = smoke signal at the node</span>
+        <span><svg width="16" height="16" viewBox="-8 -8 16 16"><path d="M0,-7L5,0L0,7L-5,0Z" className="fire-core" /></svg>fire (arrow: wind)</span>
       </figcaption>
     </figure>
   );

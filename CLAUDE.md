@@ -52,6 +52,7 @@ pytest engine/tests                           # all engine tests
 prahari run --config configs/scenarios/smoke.yaml --out recordings/smoke.prs.jsonl.gz
 prahari run --config configs/scenarios/siting_greedy.yaml --out recordings/siting_greedy.prs.jsonl.gz   # also siting_corridor
 prahari run --config configs/scenarios/signals_3day.yaml --out recordings/signals_3day.prs.jsonl.gz     # Phase 2 signals
+prahari run --config configs/scenarios/fires_day.yaml --out recordings/fires_day.prs.jsonl.gz           # Phase 3a fires
 prahari experiment --preset golden            # legacy-mode reproduction (Phase 4+)
 uvicorn server.app:app --reload               # live server (Phase 6+)
 cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
