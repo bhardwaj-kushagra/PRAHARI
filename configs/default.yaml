@@ -1,0 +1,119 @@
+# PRAHARI-SIM default configuration (SPEC §4.3).
+# This file is also the schema: regime and scenario files may only override keys defined here.
+# Every parameter block carries `source`: a provenance tag (LIT, VEN, DER, ASM, TGT) plus reference.
+
+regime: null                      # name of configs/regimes/<name>.yaml, or null
+
+run:
+  seed: 11
+  start: "2026-04-15T00:00"
+  days: 1
+  tick_minutes: 1
+
+scenario:
+  name: default
+  description: "Default configuration"
+
+record:
+  every_k_ticks: 5                # plus every tick that has an event or alert
+
+world:
+  layout: grid                    # grid only until Phase 1 (M1)
+  n_nodes: 100
+  spacing_m: 70
+  offset_m: 35                    # first node at (35, 35) inside the map
+  radius_factor: 1.6              # M30 — neighbourhood radius R = 1.6 s
+  width_m: 700
+  height_m: 700
+  gateways:
+    - {id: g1, x: 350, y: 690}
+  source: "ASM; grid layout and spacing as in the report simulation"
+
+# Module states: real | stub | off (SPEC §4.2). Phase 0 ships stubs only.
+modules:
+  weather: stub
+  ffmc: stub
+  ignition: stub
+  growth: stub
+  plume: stub
+  nuisance: stub
+  haze: stub
+  sensor: stub
+  faults: stub
+  ttc: stub
+  qcc: stub
+  score: stub
+  cusum: stub
+  comms: stub
+  srp: stub
+  cluster: stub
+  scmr: stub
+  fisher: stub
+  learn: stub
+  raq: stub
+  escalate: stub
+  energy: stub
+  satellite: stub
+
+params:
+  weather:
+    T_c: 30.0
+    RH_pct: 40.0
+    wind_ms: 1.5
+    wind_dir_deg: 270.0           # meteorological: wind FROM the west
+    source: "ASM; SPEC §4.2 weather stub"
+  ffmc:
+    constant_ffmc: 85.0
+    source: "ASM; SPEC §4.2 ffmc stub (start-up value LIT [15])"
+  ignition:
+    scripted: []                  # list of {t_min, x, y}
+    fire_lifetime_min: 180        # fire signal window, as in the report simulation
+    source: "ASM; report simulation"
+  growth:
+    q_ref: 8.7259                 # M12 — Q_ref = 2.5 su × exp(50/40), so C = 2.5 su at 50 m downwind
+    qmax_lognormal_sigma: 0.5     # M9
+    tau_g_min: 10.0               # M9
+    area_15min_m2: 20.0           # M37 fallback area A_15
+    source: "DER q_ref from M12 target 2.5 su at 50 m (LIT [3]); ASM tau_g, sigma, A_15"
+  plume:
+    decay_length_m: 40.0          # M12 — L
+    intermittency_sigma: 0.5      # M12 — ε = exp(N(0, σ²) − σ²/2)
+    source: "ASM; tuned to ~50 m downwind detection LIT [3]"
+  sensor:
+    baseline_su: 0.0
+    noise_sd_su: 0.23             # SPEC §5 units: quiet residual sd ≈ 0.23 su
+    source: "ASM; SPEC §4.2 sensor stub"
+  ttc:
+    slow_tau_min: 720             # M24 — α = 1/720 per minute
+    freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3
+    initial_sd_su: 0.23
+    source: "ASM; M24 v1 as written"
+  cusum:
+    k: 0.5                        # M23 — reference value on the z scale (stub = v1 CUSUM)
+    arl_min: 43200                # M23 — in-control ARL of 30 days
+    refractory_min: 30            # M28
+    warmup_min: 60                # stub only: CUSUM held at 0 while the TTC baseline warms up
+    single_sample_h: 6.9          # off mode: −ln(1e-3)
+    source: "TGT ARL 30 d; ASM k and refractory (report simulation)"
+  cluster:
+    window_min: 30                # M30 — W
+    source: "ASM; report simulation"
+  srp:
+    prior_odds: 1.0e-4            # M33 legacy — dry, busy day
+    day_type: dry_busy
+    source: "TGT; M33 legacy day-type prior"
+  raq:
+    fixed_quorum: 2               # M34 legacy — dry, busy day
+    cost_ratio: 0.01              # M34 — C_FA / C_miss
+    source: "TGT; M34"
+  escalate:
+    clear_min: 120                # M35 — cleared after 120 min without candidates
+    source: "ASM; M35"
+  satellite:
+    fixed_delay_min: 90
+    source: "ASM; SPEC §4.2 satellite stub"
+  display:
+    elevated_p: 0.01              # node shown as elevated below this p-value
+    confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation
+    low_power_soc: 0.05           # M43 — below 5% the node shows as low power
+    source: "ASM; dashboard display thresholds"
