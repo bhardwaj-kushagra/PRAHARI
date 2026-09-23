@@ -113,7 +113,7 @@ export function NodeInspector() {
       <EChart option={opts.G} height={150} testId="chart-node-cusum" />
       <EChart option={opts.health} height={90} />
       <p className="chart-foot">
-        SIMULATION · seed {h.seed} · {daysLabel(h.days)} · every {h.record_every}th tick plus event ticks · the floor
+        SIMULATION · seed {h.seed} · {daysLabel(h.days, h.record_from_min)} · every {h.record_every}th tick plus event ticks · the floor
         steps with each 4-hour calibration bin · all values SIM
       </p>
     </div>

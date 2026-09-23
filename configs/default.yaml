@@ -25,6 +25,7 @@ record:
   plume_every_ticks: 5            # SPEC §5.5 — plume grid for the heat overlay every 5 ticks while fires burn
   plume_cell_m: 10
   plume_margin_m: 300             # grid covers the fires' bounding box ± this margin
+  from_day: 0                     # warm start: simulate from day 0, write frames and traces from this day on
 
 world:
   layout: grid                    # grid | corridor | greedy (M1, M4); the siting stub always uses grid

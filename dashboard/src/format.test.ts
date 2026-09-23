@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sci, simClock } from "./format";
+import { daysLabel, sci, simClock } from "./format";
 
 describe("format", () => {
   it("formats the simulated clock", () => {
@@ -14,5 +14,9 @@ describe("format", () => {
     expect(sci(0.5)).toBe("0.5");
     expect(sci(1e-4)).toBe("1e-4");
     expect(sci(0)).toBe("0");
+  });
+  it("labels warm-start recordings with the first recorded day", () => {
+    expect(daysLabel(1)).toBe("1 simulated day");
+    expect(daysLabel(31, 28 * 1440)).toBe("31 simulated days, recorded from day 29");
   });
 });

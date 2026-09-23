@@ -238,12 +238,26 @@ class Simulation:
 
     def run(self, writer) -> dict:
         self.prepare()
-        writer.header(self.header())
         every = int(self.cfg["record"]["every_k_ticks"])
+        start = int(round(float(self.cfg["record"]["from_day"]) * 1440))    # warm start: record from this minute
+        if start >= self.clock.n_ticks * self.clock.tick_minutes:
+            raise ValueError(f"record.from_day {self.cfg['record']['from_day']} is not inside the run")
+        started = False
         for tick, t in enumerate(self.clock.minutes()):
             self.ctx.tick = tick
+            if not started and t >= start and start <= 0:
+                writer.header(self.header())
+                started = True
             frame, traces = self.tick(t)
-            if tick % every == 0 or frame["events"] or frame["alerts"] or tick == self.clock.n_ticks - 1:
+            if t < start:
+                continue
+            first = not started
+            if first:                                  # warm start: the model card shows the state (e.g. tuned h)
+                head = self.header()                   # after the first recorded tick
+                head["record_from_min"] = t
+                writer.header(head)
+                started = True
+            if first or tick % every == 0 or frame["events"] or frame["alerts"] or tick == self.clock.n_ticks - 1:
                 writer.frame(frame)
             for rec in traces:
                 writer.trace(rec)

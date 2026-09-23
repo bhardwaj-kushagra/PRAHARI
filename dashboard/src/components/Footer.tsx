@@ -8,7 +8,7 @@ export function Footer() {
   const h = source.header;
   return (
     <footer className="foot" data-testid="footer">
-      SIMULATION · seed {h.seed} · {daysLabel(h.days)} · scenario {h.scenario} · {source.frameCount} frames ·
+      SIMULATION · seed {h.seed} · {daysLabel(h.days, h.record_from_min)} · scenario {h.scenario} · {source.frameCount} frames ·
       recording {source.name} · every value shown is simulator output (SIM)
     </footer>
   );

@@ -4,7 +4,7 @@ This repository builds a **local simulator and dashboard** for the FIRENET–PRA
 
 ## Before writing any code in a session
 
-1. Read `PROGRESS.md` (which phase we are in), `KNOWN_ISSUES.md` (what is parked) and `DECISIONS.md`.
+1. Read `PROGRESS.md` (which phase we are in), `KNOWN_ISSUES.md` (what is parked) and `DECISIONS.md`; `docs/README.md` maps the documentation you will update.
 2. Read `docs/SPEC.md` §2 (principles) and §4 (framework) if you have not this session, then **only** the current phase's section in §7 and the §5 equations it lists.
 3. State in a few bullets what you will build, which files you will touch, and which acceptance tests will prove it. Wait for "go" unless told to proceed.
 
@@ -36,12 +36,14 @@ This repository builds a **local simulator and dashboard** for the FIRENET–PRA
     Anything else needs a line in `DECISIONS.md` first.
 14. **Small files.** Keep modules under about 300 lines, with maths in pure functions (arrays in, arrays out) and no hidden global state.
 15. **Label simulation.** Every dashboard view shows the SIMULATION badge. Every chart footer states seeds and simulated days.
+16. **Document the journey.** Every phase writes `docs/journey/phase-N-<name>.md` (goal, what was built, how it works, challenges, decisions with pros and cons, how each issue was resolved or parked, acceptance results, what to demo), adds a row to `docs/journey/README.md`, and updates every page in `docs/guide/`, `docs/architecture/` and `docs/results/` that the phase changes. Problems are documented, not hidden: an issue stays in the journey with its resolution or its `KNOWN_ISSUES.md` entry. Write in the project's own words; quote numbers only from simulator outputs and label them SIM.
 
 ## At the end of every session
 
 - Update `PROGRESS.md`: what was done, test status, the next step.
 - Add any deviation, new dependency or tuning choice to `DECISIONS.md`.
 - Add any parked module to `KNOWN_ISSUES.md`.
+- Update the documentation (rule 16): the phase's journey page, the timeline, and any affected guide, architecture or results page; check that relative links resolve.
 - Tell the developer exactly what to open to see the change (a command and a dashboard view).
 
 ## Useful commands (keep this list up to date)
@@ -55,6 +57,7 @@ prahari run --config configs/scenarios/signals_3day.yaml --out recordings/signal
 prahari run --config configs/scenarios/fires_day.yaml --out recordings/fires_day.prs.jsonl.gz           # Phase 3a fires
 prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/fires_day_gaussian.prs.jsonl.gz   # 3b
 prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz           # Phase 5 node layer
+prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz       # 31 d, recorded from day 29 (~70 s)
 prahari experiment --preset golden            # P0/P1/P1t + node metrics over seeds 11,22,33,44,55 → results/summary.json (~8 min)
 prahari experiment --preset golden --seeds 11 --pipelines P1   # quicker single-seed check
 PRAHARI_GOLDEN=1 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)

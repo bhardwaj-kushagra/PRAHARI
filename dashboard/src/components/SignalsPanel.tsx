@@ -114,7 +114,7 @@ export function SignalsPanel() {
         ))}
       </div>
       <p className="chart-foot">
-        SIMULATION · seed {h.seed} · {daysLabel(h.days)} · every {h.record_every}th tick plus event ticks · all values SIM
+        SIMULATION · seed {h.seed} · {daysLabel(h.days, h.record_from_min)} · every {h.record_every}th tick plus event ticks · all values SIM
       </p>
     </div>
   );

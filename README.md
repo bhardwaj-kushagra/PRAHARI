@@ -2,6 +2,12 @@
 
 Simulator and dashboard for the FIRENET–PRAHARI wildfire-detection system, built phase by phase with an AI coding agent.
 
+## Documentation
+
+Start at [`docs/README.md`](docs/README.md): an overview of the project, background and glossary, setup and
+troubleshooting, the architecture, the phase-by-phase build journey (with its challenges and decisions), and the
+validation of results.
+
 ## What's here
 
 | File | Purpose |

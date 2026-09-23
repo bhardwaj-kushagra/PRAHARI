@@ -224,3 +224,17 @@ def test_failing_qcc_degrades_to_stub(smoke_cfg, tmp_path, monkeypatch):
     assert health["qcc"]["state"] == "degraded" and health["qcc"]["running"] == "stub"
     assert health["ttc"]["state"] == "real" and health["cusum"]["state"] == "real"
     assert rec.frames[-1]["t"] == 71 and "n_cal" in rec.frames[-1]["nodes"]
+
+
+# -- Warm start (record.from_day): simulate from day 0, record from a later day ------------------------
+def test_warm_start_records_from_the_given_day(smoke_cfg, tmp_path):
+    import hashlib
+    cfg = dict(smoke_cfg, run=dict(smoke_cfg["run"], days=0.1), record=dict(smoke_cfg["record"], from_day=0.05))
+    _, _, rec = run_cfg(cfg, tmp_path / "a.prs.jsonl.gz")
+    run_cfg(cfg, tmp_path / "b.prs.jsonl.gz")
+    assert rec.header["record_from_min"] == 72 and rec.frames[0]["t"] == 72
+    assert all(f["t"] >= 72 for f in rec.frames) and all(tr["t"] >= 72 for tr in rec.traces)
+    sha = [hashlib.sha256((tmp_path / n).read_bytes()).hexdigest() for n in ("a.prs.jsonl.gz", "b.prs.jsonl.gz")]
+    assert sha[0] == sha[1]
+    _, _, cold = run_cfg(dict(cfg, record=dict(cfg["record"], from_day=0)), tmp_path / "c.prs.jsonl.gz")
+    assert "record_from_min" not in cold.header and cold.frames[0]["t"] == 0

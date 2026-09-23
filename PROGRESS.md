@@ -230,3 +230,25 @@ table.
 
 **Next step:** review Phase 5. Then Phase 6 — the PRAHARI edge layer (M30 clustering, M31 SCMR, M32 Fisher, M33
 legacy prior, M34 legacy quorum then the Bayes form, M35 escalation), the evidence trace and live mode.
+
+### 2026-09-23 — Session 8 (Phase 5 follow-ups and documentation)
+
+- The developer confirmed the Phase 5 plan and left the follow-ups to the agent's judgement:
+  - **Seed-22 common-mode weakness:** deferred, not changed — logged in `KNOWN_ISSUES.md` (improvement backlog) with
+    a proposal to revisit after Phase 7; the default keeps reproducing the report's method.
+  - **E-7:** applied; SPEC 1.0.3 says one-sided z ≥ 3 for M28's common-mode rule.
+  - **Single-node fire in `node_3day`:** fixed in the demo, not the model — `record.from_day` (warm start) and the new
+    scenario `node_mature` (31 days, days 29–31 recorded). With mature calibration and tuned h (226.6) the day-31
+    fire gives candidates at nodes 41 (+67 min) and 31 (+108 min) and is confirmed at +134 min (SIM). Cold
+    recordings are byte-identical to before (DECISIONS P5-14).
+- **Documentation set** in `docs/` (DECISIONS Doc-1): `README.md` index; `guide/` (overview, background, glossary,
+  setup, troubleshooting, demo walkthrough); `architecture/` (system, engine, models, data contracts, dashboard,
+  testing); `journey/` (timeline, one page per phase 0–5, challenges and lessons, decisions and trade-offs);
+  `results/validation.md`. CLAUDE.md rule 16 and SPEC §7 make documentation part of every phase.
+- Tests: 134 engine passed (5 golden skipped; golden run separately), 29 dashboard.
+
+**To see it:** open `docs/README.md` on GitHub (Mermaid diagrams render there). Dashboard: `npm run dev`, choose
+`node_mature.prs.jsonl.gz`, go to day 31 13:00–15:30, click node 41; the footer reads "31 simulated days, recorded
+from day 29".
+
+**Next step:** Phase 6 — the PRAHARI edge layer (M30–M35), the evidence trace and live mode; plan first, then "go".

@@ -31,6 +31,7 @@ export interface Header {
   links?: LinkTable;
   detection_radius_m?: number;
   satellite_pixel_m?: number;
+  record_from_min?: number;    // warm start: frames begin at this minute (Phase 5 follow-up)
 }
 export interface FrameEvent { type: string; node?: number; fire?: number; module?: string; error?: string; trace_id?: string; x?: number; y?: number; cause?: string; members?: number[] }
 // Plume grid (Phase 3a): float16 little-endian, base64; row 0 is the southern row.

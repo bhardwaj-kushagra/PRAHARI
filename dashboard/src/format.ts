@@ -19,6 +19,7 @@ export function sci(v: number, digits = 2): string {
   return s.includes(".") ? s.replace(/0+$/, "").replace(/\.$/, "") : s;
 }
 
-export function daysLabel(days: number): string {
-  return `${days} simulated day${days === 1 ? "" : "s"}`;
+export function daysLabel(days: number, fromMin?: number): string {
+  const base = `${days} simulated day${days === 1 ? "" : "s"}`;
+  return fromMin ? `${base}, recorded from day ${Math.floor(fromMin / 1440) + 1}` : base;
 }

@@ -1,7 +1,7 @@
 # PRAHARI-SIM — Product and Software Requirements Specification
 
 **Project:** FIRENET–PRAHARI simulator and demonstration dashboard
-**Version:** 1.0.2 · 23 September 2026 (errata to 1.0 listed in `DECISIONS.md`)
+**Version:** 1.0.3 · 23 September 2026 (errata to 1.0 listed in `DECISIONS.md`)
 **Audience:** the developer, and AI coding agents (Claude Code or similar) working inside this repository
 **Purpose of this document:** define *what* to build, *in what order*, *with which mathematics*, and *how to keep it working at every step*
 
@@ -663,7 +663,7 @@ $$
 G_t = \max\left(0,\ G_{t-1} - \ln p^{node}_t - k\right), \qquad k = 1.5, \qquad \text{candidate when } G_t > h,\ \text{then } G \leftarrow 0,\ \text{30-minute refractory}
 $$
 
-Tune $h$ by bisection on the tuning days (default 14) so that node-local false candidates equal the target rate $r$ (default 1 per node per 30 days). **Exclude common-mode periods from the count:** minutes when at least 25% of nodes have $|z| \ge 3$, padded by ±60 minutes. Those are the edge's job (SCMR).
+Tune $h$ by bisection on the tuning days (default 14) so that node-local false candidates equal the target rate $r$ (default 1 per node per 30 days). **Exclude common-mode periods from the count:** minutes when at least 25% of nodes have a slow-baseline $z \ge 3$ (one-sided, as in the report simulation; erratum E-7), padded by ±60 minutes. Those are the edge's job (SCMR).
 
 **M29 — Health weight** $c_i \in [0,1]$ (advanced; stub = 1):
 
@@ -949,6 +949,8 @@ Each phase ends with a runnable dashboard and passing tests. Phases 0–6 are th
 ```
 
 A **session** below means one focused working session of an agent (roughly 1–3 hours). Timeboxes are ceilings. On hitting one, apply the escape hatch.
+
+**Documentation is part of every phase.** Besides code, tests and a runnable dashboard, each phase delivers its page in `docs/journey/` (goal, what was built, challenges, decisions with their trade-offs, how issues were resolved or parked, acceptance results, what to demo), updates the journey timeline, and revises any page under `docs/guide/`, `docs/architecture/` or `docs/results/` that the phase changes (added in SPEC 1.0.3; see `docs/README.md`).
 
 ### Phase 0 — Foundation and replay shell
 

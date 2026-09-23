@@ -14,10 +14,13 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 - **E-2.** §2 P10 example comment cited `M17` for the QCC p-value; QCC is **M26** (M17 is the metal-oxide response).
 - **E-3.** §4.2 cusum stub cited "ARL formula (M21)"; M21 is Faults. The ARL formula is **M23**.
 - **E-4.** §4.2 learn stub cited "SBB bound (M31)"; M31 is SCMR. The Sellke–Bayarri–Berger bound is in **M34**.
+- **E-5.** §4.7 trace example was internally inconsistent (3-node cluster with the 2-node χ² value, BF bound 5200 where M34 gives ≈4200, posterior 0.0099 < 0.01 yet `decision: true`, "dry, busy day" with a wet-day-sized prior). Replaced with consistent values: three p = 6.9e-4 → X = 43.7, dof 6, p_C = 8.6e-8, BF bound 2.6e5, prior odds 1.9e-6, posterior 0.50 ≥ 0.01 → true.
 - **E-6 (Phase 2).** M7 used 147.2 as the moisture-conversion constant (Van Wagner & Pickett's 1985 FORTRAN). Over
   the cffdrs reference chain (48 days) that misses by up to 0.12 FFMC, beyond the SPEC's 0.1 tolerance; cffdrs uses
   250·59.5/101 = 147.27723 and then matches to 0.005. SPEC M7 now shows 147.27723 (SPEC 1.0.2).
-- **E-5.** §4.7 trace example was internally inconsistent (3-node cluster with the 2-node χ² value, BF bound 5200 where M34 gives ≈4200, posterior 0.0099 < 0.01 yet `decision: true`, "dry, busy day" with a wet-day-sized prior). Replaced with consistent values: three p = 6.9e-4 → X = 43.7, dof 6, p_C = 8.6e-8, BF bound 2.6e5, prior odds 1.9e-6, posterior 0.50 ≥ 0.01 → true.
+- **E-7 (Phase 5).** M28's common-mode exclusion said "|z| ≥ 3"; the report simulation counts nodes with a
+  slow-baseline z ≥ 3 (one-sided: smoke only raises readings), and the engine follows it. SPEC M28 now says so
+  (SPEC 1.0.3, which also adds the per-phase documentation deliverable to §7).
 
 ## Notes carried to later phases
 
@@ -226,8 +229,8 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   end of the tuning window, so the 60 minutes after it are not available. Only candidates in the last hour of tuning
   that precede a common-mode episode starting in the first hour of testing are affected. Evaluation statistics use
   the full hindsight mask, as the report does.
-- **P5-5. Proposed erratum E-7 (not applied).** SPEC M28 says "|z| ≥ 3"; the report simulation uses the one-sided
-  z ≥ 3 (smoke only raises readings). The engine follows the simulation (`cm_z`); SPEC text to be aligned on approval.
+- **P5-5. Erratum E-7 (applied in SPEC 1.0.3 after the developer's go-ahead).** SPEC M28 said "|z| ≥ 3"; the report simulation uses the one-sided
+  z ≥ 3 (smoke only raises readings). The engine follows the simulation (`cm_z`); SPEC text aligned.
 - **P5-6. `h_default` (DER, SPEC §10 fallback).** Until the tuning window has been seen (every demo recording), the
   node CUSUM uses 218.7 — the mean tuned h of the report simulation on seeds 11–55 (238.1, 230.3, 204.8, 232.1,
   188.0). P1t uses 400: the simulation's bisection ends at its cap on all five seeds.
@@ -266,6 +269,16 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   (sd 6.8, SE 1.5); difference −1.2, Welch t −0.55, p 0.58; Mann–Whitney p 0.66. No detectable difference; both
   bisections end at or near the 400 cap on almost every seed. The golden test keeps the report's interval as written
   and is expected to miss with these five seeds; nothing was tuned.
+- **P5-14. Warm-start recordings (follow-up, developer's call delegated).** Every demo recording was a young
+  network (≤ 3 days of calibration, `h_default`), so in `node_3day` only one node raised a candidate at the fire and
+  the stub quorum of two never confirmed it. The report's operating point assumes 14 calibration and 14 tuning days.
+  `record.from_day` (ASM, default 0) simulates from day 0 but writes frames and traces only from that day; the
+  header gains `record_from_min` and its model card is taken after the first recorded tick, so it shows the tuned h.
+  New scenario `node_mature` (31 days, recorded from day 29): QCC sets of 3,360 per bin, tuned h 226.6, P1t at its
+  cap; the day-31 fire gives candidates at nodes 41 (+67 min) and 31 (+108 min) and is confirmed at +134 min by the
+  stub quorum. No model parameter changed (rule 10). Cold recordings (`from_day: 0`) are byte-identical to before.
+  Pros: the demo shows the system at its designed operating point. Cons: about 65 s to generate instead of 7 s.
+  `node_3day` stays as the young-network view (the floor falling day by day).
 - **P5-12. Dashboard.** Node tab: the existing readout gains "Calibration n / floor p_min"; below it the lazy-loaded
   Node Inspector (SPEC View 2) stacks reading with the slow baseline, fast residual, p-value on a log axis with the
   falling floor 1/(n+1), CUSUM G with h and the node's candidates (ember = the map's candidate state), and the health
@@ -277,6 +290,16 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `configs/experiments/golden.yaml`, the five framework scenarios (pins) and `signals_3day.yaml` (comment),
   `tests/unit/test_runner.py` (example module), `tests/golden/test_golden_baselines.py` (P1t, node acceptance);
   dashboard `App.tsx`, `NodePanel.tsx`, `ResultsPanel.tsx`, `results.ts`, `series.ts`, `types.ts` (additive).
+
+## Documentation
+
+- **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four
+  groups: `guide/` (overview, background, glossary, setup, troubleshooting, demo walkthrough), `architecture/`
+  (system, engine, models, data contracts, dashboard, testing), `journey/` (one page per phase with its challenges,
+  decisions, trade-offs and resolutions, plus cross-cutting lessons and a decision register) and `results/`
+  (validation). Written in the project's own words from the code, tests, outputs and these logs; numbers are quoted
+  from simulator outputs and labelled SIM. CLAUDE.md rule 16 and SPEC 1.0.3 §7 make it a deliverable of every phase.
+  `DECISIONS.md`, `PROGRESS.md` and `KNOWN_ISSUES.md` stay the terse logs of record; the docs explain them.
 
 ## Dependencies beyond CLAUDE.md rule 13
 
