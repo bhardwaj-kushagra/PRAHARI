@@ -497,25 +497,22 @@ developer to schedule or leave.
 **Next step:** none required. Tag `v1.0.0` marks the locked release; any later change should keep `scripts/check_all.sh`
 passing and log output changes in `DECISIONS.md`.
 
-### 2026-09-24 — Session 17 (release 1.0: second audit)
 
-- The developer asked for a second audit for extra certainty. Details: `docs/journey/release-1.0-audit.md` ("Second
-  audit"), `DECISIONS.md` R1-12 and R1-13.
-- **Fixed (B1):** a reproduced race in which a slow recording load could overwrite a newer choice (presenter keys, the
-  picker, the mechanism switches, and a live stream over an opened recording). One "latest load wins" token now guards
-  every load.
-- **Improved (B2):** the readable part of a truncated `.gz` opens as an incomplete recording; files that are not
-  recordings get a clear message.
-- **Passed with nothing to fix:**
-  - a fresh clone in a spaced path, installed only from the locks (full `check_all.sh`, all 20 recordings
-    byte-identical, launcher);
-  - Python 3.12 and 3.13 (tests pass, recordings identical);
-  - hash-seed, time-zone and locale variations;
-  - `--jobs 1` against `--jobs 2`, and concurrent writers to the same file;
-  - the live server under 10 parallel runs and 20 dropped clients, with no thread leak;
-  - bad files, 150 random presenter key presses, and long playback with flat memory.
-- **Gate:** `check_all.sh` all passed (222 engine tests, 58 dashboard tests, recordings byte-identical); 60-page sweep
-  with 0 failures; rehearsal 170.1 s with 0 errors. No engine file changed.
+### 2026-09-24 — Session 17 (public-site branches)
 
-**Next step:** none required; the release stays locked at 1.0.0.
+- Developer decision: publish the dashboard as a view-only website at `https://dashboard.firenet.live` without
+  changing `main`. See `DECISIONS.md` Site-1.
+- Created from `318fe4d`:
+  - `site-dev`: the draft website;
+  - `site-live`: what Cloudflare Pages publishes.
+- Tag `v1.0.0`: created locally, but the working environment could not push it. The developer creates it on GitHub,
+  on `318fe4d`.
+- Site work (live-engine panel hidden, hosting headers, site rules and docs) is on `site-dev` only.
+- `main` gains only this entry and Site-1. No code, recording or result changed here, so the release 1.0 test status
+  stands.
 
+**To see it:** the `site-dev` branch (`docs/site/README.md`), then `https://dashboard.firenet.live` once the developer
+has set up Cloudflare Pages and the `dashboard` CNAME at name.com.
+
+**Next step:** science work continues on `main` as before. Site work continues on `site-dev`; the first open item
+there is the mobile layout.

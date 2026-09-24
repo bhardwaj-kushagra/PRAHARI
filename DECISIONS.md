@@ -760,6 +760,17 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     `package.json`, `package-lock.json`;
   - `README.md`.
 
+## Public site (branch model)
+
+- **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The
+  view-only dashboard at `https://dashboard.firenet.live` (Cloudflare Pages) is built from `site-live`, which changes
+  only by promotion from the draft branch `site-dev`; both started from the locked release `v1.0.0` (`318fe4d`).
+  `main` stays the simulator: science, experiments and results, under this repository's `CLAUDE.md`, and never
+  receives site changes. The site branches carry their own `CLAUDE.md` (dashboard-only work, no fabricated results,
+  SIMULATION labels kept) and may change accepted dashboard files, which `main`'s rule 4 forbids here. Science updates
+  reach the site one way only: `main` (or a release tag) is merged into `site-dev`. The site's own log and hosting
+  settings are in `docs/site/` on the site branches.
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four
