@@ -8,6 +8,7 @@ from prahari.core.contract_checks import ContractError
 
 @dataclass(frozen=True)
 class BaselineAlarms:
+    """A baseline detector this minute: its per-node candidates and its alarms as (node, cluster members) pairs."""
     candidates: tuple = ()      # node ids raising a node-level candidate this tick
     alarms: tuple = ()          # (node, members) network alarms this tick; members is a sorted tuple of node ids
 

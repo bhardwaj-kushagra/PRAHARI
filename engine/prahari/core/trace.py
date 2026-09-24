@@ -16,12 +16,14 @@ RULE_LEGACY = ("day-type quorum of {quorum} {verdict} (legacy RAQ, the M34 rule'
 
 
 def candidate_record(t: int, node: int, p: float, G: float, h: float, health: float) -> dict:
+    """Evidence trace of one node candidate (SPEC §4.7)."""
     return {"trace_id": f"c-{node}-{t}", "t": t, "type": "candidate", "node": int(node),
             "p": float(p), "cusum": float(G), "h": float(h), "health": float(health)}
 
 
 def decision_record(t: int, seq: int, level: str, members, p_nodes, G, h: float, health,
                     scmr: dict, fisher: dict, prior: dict, bayes: dict, window_min: int, extra: dict | None = None) -> dict:
+    """Evidence trace of one edge decision: members, SCMR, Fisher, prior, Bayes rule, level and explanation."""
     per_node = [{"node": int(i), "p_channels": [float(p)], "health": [float(health[i])],
                  "cusum": float(G[i]), "h": float(h)} for i, p in zip(members, p_nodes)]
     ratio = scmr["ratio"]

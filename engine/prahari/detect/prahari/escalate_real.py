@@ -26,6 +26,7 @@ RANK = {lv: k for k, lv in enumerate(LEVELS)}
 
 
 class Incident:
+    """One tracked incident of the M35 ladder: its nodes, level, last update and size history."""
     def __init__(self, iid: int, t: int):
         self.id, self.t_last, self.level = iid, t, "WATCH"
         self.nodes: set = set()
@@ -97,6 +98,7 @@ class EscalateReal(Stage):
         return False
 
     def confirmed_since(self, t_from: float) -> np.ndarray:
+        """Nodes whose last confirmation is later than t_from (for the confirmed display state)."""
         return self._last_conf > t_from
 
     def snapshot(self) -> dict:

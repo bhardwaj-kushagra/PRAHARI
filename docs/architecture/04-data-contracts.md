@@ -65,7 +65,9 @@ Two kinds, linked from events and alerts by `trace_id`:
 
 ### Footer
 
-`frames`, `traces`, and each module's final health (requested, state, running, errors, last error, degraded at).
+`frames`, `traces`, and each module's final health (requested, state, running, errors, last error, degraded at). The engine always writes it as the last line, and the whole file is written atomically (release 1.0). A replayed
+recording without a footer is therefore incomplete (cut off in a copy); the dashboard opens the frames it has and
+says so in its footer bar.
 
 ## Live stream (Phase 6)
 

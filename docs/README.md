@@ -40,6 +40,7 @@ docs/
 ├── journey/                   how it was built
 │   ├── README.md              timeline of phases
 │   ├── phase-0-foundation.md … phase-10-demo.md
+│   ├── release-1.0-audit.md   the final audit: findings, fixes, proof that outputs did not change
 │   ├── challenges-and-lessons.md
 │   └── decisions-and-tradeoffs.md
 └── results/

@@ -21,7 +21,8 @@ export function RaceTimeline() {
     ...(race.candidate !== null ? [{ t: race.candidate, label: `first node candidate · +${fmtMin(d.toCandidate!)}`, cls: "rk-candidate", above: false }] : []),
     ...(race.confirmed !== null ? [{ t: race.confirmed, label: `PRAHARI confirmed · +${fmtMin(d.toConfirm!)}`, cls: "rk-prahari", above: true }] : []),
     ...(race.overpass !== null ? [{ t: race.overpass, label: `${race.platform} overpass`, cls: "rk-overpass", above: false }] : []),
-    ...(race.satellite !== null ? [{ t: race.satellite, label: `satellite alert · +${fmtMin(d.toSatellite!)}`, cls: "rk-satellite", above: true }] : []),
+    ...(race.satellite !== null ? [{ t: race.satellite, cls: "rk-satellite", above: true,
+      label: race.satelliteModel === "stub" ? "satellite alert (stub: fixed delay)" : `satellite alert · +${fmtMin(d.toSatellite!)}` }] : []),
   ];
   const t0 = race.ignition;
   const t1 = Math.max(...marks.map((m) => m.t), t0 + 60) + 30;
@@ -49,7 +50,7 @@ export function RaceTimeline() {
       </div>
       <svg viewBox={`0 0 ${W} 134`} role="img" aria-label={d.headline}>
         <line x1={x(t0)} x2={x(t1)} y1={Y} y2={Y} className="race-axis" />
-        {race.confirmed !== null && race.satellite !== null ? (
+        {race.confirmed !== null && race.satellite !== null && race.satelliteModel === "M37" ? (
           <line x1={x(race.confirmed)} x2={x(race.satellite)} y1={Y} y2={Y} className="race-lead" />
         ) : null}
         {race.missed.map((t) => (

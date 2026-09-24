@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect } from "react";
 import { AlertsPanel } from "./components/AlertsPanel";
 import { CommandMap } from "./components/CommandMap";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Footer } from "./components/Footer";
 import { HeaderStrip } from "./components/HeaderStrip";
 import { MapTools } from "./components/MapTools";
@@ -70,30 +71,37 @@ export function App() {
   useKeys();
   const panel = useSim((s) => s.panel);
   const setPanel = useSim((s) => s.setPanel);
+  const rec = useSim((s) => s.source?.name ?? "");
+  const loading = <p className="muted">Loading charts…</p>;
   return (
     <div className="app">
-      <div className="top"><HeaderStrip /><PresenterOverlay /></div>
+      <div className="top"><ErrorBoundary name="header" resetKey={rec}><HeaderStrip /></ErrorBoundary><PresenterOverlay /></div>
       <main className="body">
-        <section className="left"><MapTools /><CommandMap /><RaceTimeline /></section>
+        <section className="left">
+          <ErrorBoundary name="map" resetKey={rec}><MapTools /><CommandMap /></ErrorBoundary>
+          <ErrorBoundary name="race timeline" resetKey={rec}><RaceTimeline /></ErrorBoundary>
+        </section>
         <aside className="right">
-          <RecordingPicker />
-          <LivePanel />
+          <ErrorBoundary name="recording picker"><RecordingPicker /><LivePanel /></ErrorBoundary>
           <nav className="tabs" role="tablist">
             {TABS.map(([id, label]) => (
               <button key={id} role="tab" aria-selected={panel === id} className={panel === id ? "on" : ""} onClick={() => setPanel(id)}>{label}</button>
             ))}
           </nav>
           <div className="panel">
-            {panel === "health" ? <ModuleHealth /> : panel === "signals"
-              ? <Suspense fallback={<p className="muted">Loading charts…</p>}><SignalsPanel /></Suspense>
-              : panel === "results" ? <Suspense fallback={<p className="muted">Loading charts…</p>}><ResultsPanel /></Suspense>
-              : panel === "node" ? (
-                <><NodePanel /><Suspense fallback={<p className="muted">Loading charts…</p>}><NodeInspector /></Suspense></>
-              ) : <AlertsPanel />}
+            {/* One boundary per tab: a failing view says so; the other tabs, the map and the keys keep working. */}
+            <ErrorBoundary name={TABS.find(([id]) => id === panel)?.[1] ?? panel} resetKey={`${rec}|${panel}`}>
+              {panel === "health" ? <ModuleHealth /> : panel === "signals"
+                ? <Suspense fallback={loading}><SignalsPanel /></Suspense>
+                : panel === "results" ? <Suspense fallback={loading}><ResultsPanel /></Suspense>
+                : panel === "node" ? (
+                  <><NodePanel /><Suspense fallback={loading}><NodeInspector /></Suspense></>
+                ) : <AlertsPanel />}
+            </ErrorBoundary>
           </div>
         </aside>
       </main>
-      <TimeControls />
+      <ErrorBoundary name="time controls" resetKey={rec}><TimeControls /></ErrorBoundary>
       <Footer />
     </div>
   );

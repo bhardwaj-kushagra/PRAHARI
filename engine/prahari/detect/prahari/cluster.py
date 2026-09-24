@@ -35,6 +35,7 @@ class ClusterStub(Stage):
         return Clusters(members=(members,), p=(tuple(best[i] for i in members),))
 
     def recent_nodes(self) -> set:
+        """Nodes with a candidate still inside the cluster window."""
         return {i for _, i, _ in self._recent}
 
     def snapshot(self) -> dict:

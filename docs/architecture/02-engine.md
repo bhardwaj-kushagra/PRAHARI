@@ -142,6 +142,27 @@ node layer costs about 0.3 ms per tick (SIM timing on the development machine).
 - **Defaults.** All of these stay `stub`, off or `legacy` by default and in the golden presets, so every earlier
   result and recording keeps identical frames.
 
+## Robustness (release 1.0)
+
+- **Configuration values.** Besides unknown keys, wrong types and missing `source` tags, the loader rejects values
+  the simulator cannot run with, naming the key (`check_values`):
+  - `run.days` ≤ 0, `run.tick_minutes` < 1;
+  - `world.n_nodes` < 1, `world.spacing_m` ≤ 0;
+  - an unknown layout, or a grid layout with a non-square node count;
+  - a warm start outside the run, and `record.every_k_ticks` < 1.
+
+  It also names unreadable files and invalid YAML with their line.
+- **Atomic outputs.** Recordings, health files and every results JSON are written through `record.writer.write_atomic`: a
+  temporary file in the same folder, then a rename. An interruption or a full disk leaves the previous file intact.
+  The bytes written are unchanged.
+- **The CLI never ends in a traceback.**
+  - Configuration problems exit with 2, file problems with 1, and Ctrl-C with 130, each with one line on stderr.
+  - `--seeds` and `--jobs` are checked by the argument parser.
+  - Presets and the energy configuration are found from any folder.
+- **Stage documentation convention.** Every registered stage class documents itself through class attributes read by
+  the model card: `equation` (M-numbers), `tag` (provenance) and `description`. Its module docstring explains the
+  model. Framework code, contracts, the evaluation code and the server carry docstrings.
+
 ## Live mode (Phase 6)
 
 `server/live.py` runs a `Simulation` in a background thread through a `LiveWriter`, which has the same methods as the

@@ -29,6 +29,8 @@ SETUP = {"landscape": C.Landscape, "siting": C.Layout, "links": C.Links}
 
 
 class Simulation:
+    """One simulation run: builds every module from the configuration (through the registry), runs the setup
+    stages, then steps the tick loop and hands header, frames, traces and footer to a writer."""
     def __init__(self, cfg: dict):
         self.cfg = cfg
         run, world = cfg["run"], cfg["world"]
@@ -57,9 +59,11 @@ class Simulation:
 
     # -- helpers -----------------------------------------------------------
     def stage(self, name: str, inputs, check=None):
+        """Run module `name` on `inputs` through its isolation slot (optionally with an output check)."""
         return self.slots[name].run(inputs, self.ctx, check)
 
     def header(self) -> dict:
+        """The recording header: run identity, world, layouts, links, modules, model card and regime."""
         cfg, xy = self.cfg, self.ctx.xy
         card = []
         for name, slot in self.slots.items():
@@ -98,6 +102,7 @@ class Simulation:
         self.cfg["modules"][name] = state
 
     def health_states(self) -> dict:
+        """Current health record of every module."""
         return {k: v.health.status() for k, v in self.slots.items()}
 
     # -- one tick ----------------------------------------------------------
@@ -144,6 +149,7 @@ class Simulation:
         return dl, prior, cl, scmr, fisher, bf, raq, dec
 
     def tick(self, t: int):
+        """Advance one tick at minute t; returns the frame dictionary and the evidence traces raised this tick."""
         env, fuel, fires, src, conc, haze, x = self.step_signals(t)
         base0, base1, base1t = self.step_baselines(x)
         res, pv, sc, cand = self.step_node(x)
@@ -271,6 +277,7 @@ class Simulation:
                 slot.reset(self.ctx)
 
     def run(self, writer) -> dict:
+        """Run every tick, write the recording through `writer`, and return the modules' health."""
         self.prepare()
         every = int(self.cfg["record"]["every_k_ticks"])
         start = int(round(float(self.cfg["record"]["from_day"]) * 1440))    # warm start: record from this minute

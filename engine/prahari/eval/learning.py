@@ -27,6 +27,7 @@ from prahari.detect.prahari.learn_real import fit_logistic, ln_lr_hat, window_fe
 from prahari.eval.experiments import protocol_config, protocol_fires, run_pass, run_seed
 from prahari.eval.offline import ScoreRecorder, edge_stages
 from prahari.eval.stats import detect, incidents, wilson
+from prahari.record.writer import write_text_atomic
 
 COLS = ("t", "anchor", "X", "size", "ratio", "passed", "odds", "p_cluster")
 
@@ -84,6 +85,7 @@ def seed_windows(cfg: dict, seed: int) -> dict:
 
 
 def features(w: dict, rho_clip) -> np.ndarray:
+    """M36 feature matrix of a set of cluster windows (c̄ = 1 when no health weights were recorded)."""
     return window_features(w["X"], w["size"], w["ratio"], None, rho_clip)
 
 
@@ -102,6 +104,7 @@ def training_set(train: list, K: int, rho_clip) -> tuple[np.ndarray, np.ndarray]
 
 
 def f_rows(w: dict, keep) -> dict:
+    """The rows of a window table selected by a boolean mask."""
     return {k: (v[keep] if isinstance(v, np.ndarray) else [m for m, ok in zip(v, keep) if ok]) for k, v in w.items()}
 
 
@@ -161,6 +164,8 @@ def legacy_point(test: list, cfg: dict) -> dict:
 
 
 def learning_curve(train: list, test: list, cfg: dict) -> dict:
+    """Fit the M36 model for each K on the training seeds and compare every rule at the fixed false-alarm budget
+    on the held-out seeds; also reports the legacy quorum on the same runs."""
     ev, lp, ex = cfg["params"]["evaluation"], cfg["params"]["learn"], cfg["experiment"]
     rho_clip = tuple(lp["rho_clip"])
     days = sum(ev["test_days"] for _ in test)
@@ -242,7 +247,7 @@ def run_learning(cfg: dict, out_dir, jobs: int = 1) -> dict:
         if pool:
             pool.close()
     for K, model in curve.pop("models").items():
-        (out / f"learning_model_k{K}.json").write_text(json.dumps(model, indent=1), encoding="utf-8")
-    (out / "learning.json").write_text(json.dumps(curve, indent=1), encoding="utf-8")
+        write_text_atomic(out / f"learning_model_k{K}.json", json.dumps(model, indent=1))
+    write_text_atomic(out / "learning.json", json.dumps(curve, indent=1))
     combine(out)
     return curve

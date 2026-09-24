@@ -50,6 +50,7 @@ def distances(xy, gw_xy) -> np.ndarray:
 
 
 def gateway_xy(gateways: list) -> np.ndarray:
+    """Gateway positions as an (n, 2) array."""
     return np.array([[g["x"], g["y"]] for g in gateways], dtype=float).reshape(-1, 2)
 
 

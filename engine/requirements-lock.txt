@@ -1,0 +1,14 @@
+# PRAHARI-SIM 1.0.0 — the exact Python packages this release was tested with (Python 3.11).
+# Reproducible install:  pip install -r engine/requirements-lock.txt -e "engine[dev,server]"
+# The engine needs only numpy, scipy and PyYAML; pytest and httpx run the tests; fastapi, uvicorn and websockets
+# serve the optional live mode. Recordings and results were produced with these versions (byte-identical reruns).
+fastapi==0.141.1
+httpx==0.28.1
+numpy==2.4.6
+pydantic==2.13.5
+pytest==9.1.1
+PyYAML==6.0.1
+scipy==1.17.1
+starlette==1.7.0
+uvicorn==0.53.0
+websockets==17.1

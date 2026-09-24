@@ -18,6 +18,7 @@ from prahari.core.rng import make_rngs
 from prahari.eval.node_metrics import NodeObserver, summarise_node
 from prahari.eval.offline import ScoreRecorder, edge_alarms, edge_stages, replay_candidates, tuned_h
 from prahari.eval.stats import detect, incidents, per_month, wilson
+from prahari.record.writer import write_text_atomic
 
 PIPELINE_STAGES = {"P0": "baseline_p0", "P1": "baseline_p1", "P1t": "baseline_p1t"}
 # PRAHARI and its ablations (SPEC §9.3): module states that differ from the configuration's.
@@ -118,6 +119,8 @@ def _row(quiet, fire_lat, dist, R, ev, test0, t_total, state) -> dict:
 
 
 def run_seed(base_cfg: dict, seed: int, pipelines, node_metrics: bool = False, dial=()) -> dict:
+    """The M46 protocol for one seed: quiet and fire passes, baselines stepped live, PRAHARI variants replayed
+    offline, optional node metrics and operating dial; returns the seed's rows."""
     cfg0, ev, test0, t_total = protocol_config(base_cfg, seed)
     out = {"seed": seed, "test_days": ev["test_days"], "pipelines": {}}
     fires = None
@@ -194,6 +197,7 @@ def _pool(rows: list, days: float, ev: dict) -> dict:
 
 
 def summarise(per_seed: list, preset: str, cfg: dict) -> dict:
+    """Pool the per-seed rows of a preset into the summary (M44, M45) with the report's reference values."""
     ev = cfg["params"]["evaluation"]
     days = sum(s["test_days"] for s in per_seed)
     pipes = {name: _pool([s["pipelines"][name] for s in per_seed], days, ev) for name in per_seed[0]["pipelines"]}
@@ -243,13 +247,13 @@ def run_experiment(cfg: dict, preset: str, seeds, pipelines, out_dir: str | Path
             c["world"]["spacing_m"] = sp
             per_seed = run_all(c)
             for res in per_seed:
-                (out / f"{preset}_{int(sp)}m_seed{res['seed']}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+                write_text_atomic(out / f"{preset}_{int(sp)}m_seed{res['seed']}.json", json.dumps(res, indent=1))
             summary["by_spacing"][str(int(sp))] = summarise(per_seed, preset, c)
     else:
         per_seed = run_all(cfg)
         for res in per_seed:
-            (out / f"{preset}_seed{res['seed']}.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
+            write_text_atomic(out / f"{preset}_seed{res['seed']}.json", json.dumps(res, indent=1))
         summary = summarise(per_seed, preset, cfg)
-    (out / f"{preset}.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    write_text_atomic(out / f"{preset}.json", json.dumps(summary, indent=1))
     combine(out, preset)
     return summary

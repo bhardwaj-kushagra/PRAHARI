@@ -9,15 +9,46 @@ from pathlib import Path
 
 from prahari.core.config import ConfigError, load_config
 from prahari.core.pipeline import Simulation
-from prahari.record.writer import RecordingWriter
+from prahari.record.writer import RecordingWriter, write_text_atomic
+
+
+REPO = Path(__file__).resolve().parents[2]                  # engine/prahari/cli.py → repository root
+
+
+def _in_repo(path: Path) -> Path:
+    """A relative configuration path as given (from the current folder), or else under the repository root."""
+    return path if path.is_absolute() or path.exists() or not (REPO / path).exists() else REPO / path
+
+
+def _seed_list(text: str) -> list[int]:
+    """`--seeds 11,22,33` → [11, 22, 33]; anything else is an argument error, not a traceback."""
+    try:
+        seeds = [int(v) for v in text.split(",") if v.strip()]
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"seeds must be whole numbers separated by commas, got {text!r}") from None
+    if not seeds:
+        raise argparse.ArgumentTypeError("give at least one seed")
+    return seeds
+
+
+def _positive_int(text: str) -> int:
+    try:
+        v = int(text)
+    except ValueError:
+        v = 0
+    if v < 1:
+        raise argparse.ArgumentTypeError(f"must be a whole number ≥ 1, got {text!r}")
+    return v
 
 
 def health_path(out: Path) -> Path:
+    """`recordings/x.prs.jsonl.gz` → `recordings/x.health.json` (per-module state and timings of a run)."""
     name = out.name.split(".prs")[0] if ".prs" in out.name else out.stem
     return out.with_name(f"{name}.health.json")
 
 
 def run(config: str, out: str, seed: int | None = None, days: float | None = None) -> dict:
+    """`prahari run`: simulate one scenario and write its recording and health file; returns the run summary."""
     overrides: dict = {"run": {}}
     if seed is not None:
         overrides["run"]["seed"] = seed
@@ -31,13 +62,17 @@ def run(config: str, out: str, seed: int | None = None, days: float | None = Non
     elapsed = time.perf_counter() - t0
     summary = {"recording": str(out), "seconds": round(elapsed, 3), "frames": writer.n_frames,
                "traces": writer.n_traces, "modules": health}
-    health_path(Path(out)).write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    write_text_atomic(health_path(Path(out)), json.dumps(summary, indent=2))
     return summary
 
 
 def experiment(args) -> int:
+    """`prahari experiment`: the M46 protocol for a preset (or the Phase 9 learning preset) → results/*.json."""
     from prahari.eval.experiments import run_experiment
-    path = Path(args.config) if args.config else Path("configs") / "experiments" / f"{args.preset}.yaml"
+    path = Path(args.config) if args.config else _in_repo(Path("configs") / "experiments" / f"{args.preset}.yaml")
+    if not args.config and not path.is_file():
+        known = sorted(p.stem for p in (REPO / "configs" / "experiments").glob("*.yaml"))
+        raise ConfigError(f"unknown preset {args.preset!r}; presets: {', '.join(known)}")
     try:
         cfg = load_config(path)
     except ConfigError as exc:
@@ -45,7 +80,7 @@ def experiment(args) -> int:
         return 2
     if cfg["experiment"]["train_seeds"]:                  # Phase 9: learning curve and calibration maturity
         return learning(cfg, args)
-    seeds = [int(v) for v in args.seeds.split(",")] if args.seeds else cfg["experiment"]["seeds"]
+    seeds = args.seeds if args.seeds else cfg["experiment"]["seeds"]
     pipes = args.pipelines.split(",") if args.pipelines else cfg["experiment"]["pipelines"]
     t0 = time.perf_counter()
     ex = cfg["experiment"]
@@ -97,8 +132,8 @@ def energy(args) -> int:
     from prahari.eval.report import combine
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    table = energy_table(load_config(args.config))
-    (out / "energy.json").write_text(json.dumps(table, indent=1), encoding="utf-8")
+    table = energy_table(load_config(_in_repo(Path(args.config))))
+    write_text_atomic(out / "energy.json", json.dumps(table, indent=1))
     combine(out)
     for r in table["rows"]:
         print(f"{r['sensor']} {r['mode']}: {r['wh_day']:.3f} Wh/day, {r['autonomy_days']:.1f} days on a full store — SIMULATION")
@@ -108,6 +143,8 @@ def energy(args) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Entry point of the `prahari` command. Errors end in one line on stderr and a non-zero exit, never a traceback:
+    2 for a configuration problem, 1 for a file problem, 130 when interrupted (nothing is written then)."""
     ap = argparse.ArgumentParser(prog="prahari", description="PRAHARI-SIM engine (all output is SIMULATION)")
     sub = ap.add_subparsers(dest="cmd", required=True)
     r = sub.add_parser("run", help="run one scenario and write a recording")
@@ -119,22 +156,32 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("--preset", default="golden", help="configs/experiments/<preset>.yaml")
     e.add_argument("--config", default=None, help="explicit experiment YAML (overrides --preset)")
     e.add_argument("--pipelines", default=None, help="comma list, e.g. P0,P1 (default from the preset)")
-    e.add_argument("--seeds", default=None, help="comma list, e.g. 11,22,33 (default from the preset)")
+    e.add_argument("--seeds", default=None, type=_seed_list, help="comma list, e.g. 11,22,33 (default from the preset)")
     e.add_argument("--out", default="results", help="output directory")
-    e.add_argument("--jobs", type=int, default=1, help="seeds run in parallel processes")
+    e.add_argument("--jobs", type=_positive_int, default=1, help="seeds run in parallel processes")
     g = sub.add_parser("energy", help="M41–M43 energy comparison (MQ-2 against BME688) → results/energy.json")
     g.add_argument("--config", default="configs/default.yaml", help="configuration to read the energy parameters from")
     g.add_argument("--out", default="results", help="output directory")
     args = ap.parse_args(argv)
+    try:
+        return _dispatch(args)
+    except ConfigError as exc:
+        print(f"config error: {exc}", file=sys.stderr)
+        return 2
+    except OSError as exc:
+        print(f"file error: {exc.strerror or exc}{f': {exc.filename}' if exc.filename else ''}", file=sys.stderr)
+        return 1
+    except KeyboardInterrupt:
+        print("interrupted — nothing was written for the unfinished run", file=sys.stderr)
+        return 130
+
+
+def _dispatch(args) -> int:
     if args.cmd == "experiment":
         return experiment(args)
     if args.cmd == "energy":
         return energy(args)
-    try:
-        s = run(args.config, args.out, args.seed, args.days)
-    except ConfigError as exc:
-        print(f"config error: {exc}", file=sys.stderr)
-        return 2
+    s = run(args.config, args.out, args.seed, args.days)
     degraded = [k for k, v in s["modules"].items() if v["state"] == "degraded"]
     print(f"wrote {s['recording']}: {s['frames']} frames, {s['traces']} traces in {s['seconds']} s"
           + (f"; DEGRADED: {', '.join(degraded)}" if degraded else ""))

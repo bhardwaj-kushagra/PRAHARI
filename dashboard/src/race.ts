@@ -10,6 +10,9 @@ export interface Race {
   fire: number; x: number; y: number; ignition: number;
   candidate: number | null; confirmed: number | null;
   overpass: number | null; platform: string | null; satellite: number | null; missed: number[];
+  /** "M37" when the recording carries the satellite model's plan; "stub" when the alert is the stub's fixed delay
+   *  after ignition — then no race is claimed (release 1.0). */
+  satelliteModel: "M37" | "stub" | null;
 }
 
 export function fireIds(source: FrameSource): number[] {
@@ -29,14 +32,16 @@ export function raceFor(source: FrameSource, fire: number): Race | null {
       if (e.fire !== fire && !(race && e.type === "candidate")) continue;
       if (e.type === "ignition" && !race) {
         race = { fire, x: e.x ?? 0, y: e.y ?? 0, ignition: f.t, candidate: null, confirmed: null,
-                 overpass: null, platform: null, satellite: null, missed: [] };
+                 overpass: null, platform: null, satellite: null, missed: [], satelliteModel: null };
       } else if (race && e.type === "satellite_plan") {
         race.overpass = e.overpass_t ?? null;
         race.platform = e.platform ?? null;
         race.satellite = e.alert_t == null ? null : Math.round(e.alert_t);   // the minute the alert event fires
         race.missed = e.missed ?? [];
+        race.satelliteModel = "M37";
       } else if (race && e.type === "satellite_alert" && race.satellite === null) {
         race.satellite = f.t;                                   // stub: fixed delay, no forecast
+        race.satelliteModel = "stub";
       } else if (race && e.type === "candidate" && e.node !== undefined && race.candidate === null && near(e.node)) {
         race.candidate = f.t;
       }
@@ -52,8 +57,11 @@ export function raceFor(source: FrameSource, fire: number): Race | null {
 export function raceDeltas(r: Race): { toCandidate: number | null; toConfirm: number | null; toSatellite: number | null;
                                        lead: number | null; headline: string } {
   const d = (a: number | null) => (a === null ? null : Math.round(a - r.ignition));
-  const lead = r.confirmed !== null && r.satellite !== null ? Math.round(r.satellite - r.confirmed) : null;
-  const headline = lead === null
+  const lead = r.confirmed !== null && r.satellite !== null && r.satelliteModel === "M37"
+    ? Math.round(r.satellite - r.confirmed) : null;
+  const headline = r.satelliteModel === "stub"
+    ? "Satellite side not modelled in this recording (stub: fixed delay) — see satellite_race for the M37 race"
+    : lead === null
     ? (r.confirmed === null ? "PRAHARI did not confirm this fire in the recording" : "No satellite alert within the forecast")
     : lead >= 0 ? `PRAHARI confirmed ${fmtMin(lead)} before the satellite alert`
                 : `The satellite alert came ${fmtMin(-lead)} before PRAHARI confirmed`;

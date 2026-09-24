@@ -9,6 +9,7 @@ from pathlib import Path
 
 @dataclass
 class Recording:
+    """A recording read back from disk: header, frames, traces and footer."""
     header: dict
     frames: list = field(default_factory=list)
     traces: list = field(default_factory=list)
@@ -16,6 +17,7 @@ class Recording:
 
 
 def read_recording(path: str | Path) -> Recording:
+    """Read a .prs.jsonl(.gz) recording (used by tests and the evaluation tools)."""
     path = Path(path)
     raw = path.read_bytes()
     text = (gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw).decode("utf-8")

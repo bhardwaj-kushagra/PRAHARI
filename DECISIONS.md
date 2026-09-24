@@ -691,6 +691,67 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   configuration (DER). Files from accepted phases touched: `dashboard/src/App.tsx` (the top strip and overlay),
   `RecordingPicker.tsx` (`?presenter`), `theme.css`.
 
+## Release 1.0 (final audit and hardening)
+
+- **R1-1. Outputs are the asset; the audit changes none of them.** Before any change the SHA-256 of every recording
+  and results file and the golden-suite outcome (5 of 21, the documented pattern) were recorded. After the changes
+  every recording regenerates byte for byte (after the header refresh of R1-11), `prahari energy` and the learning
+  preset reproduce their JSON exactly,
+  and the golden suite gives the same outcome. No model, parameter or default changed.
+- **R1-2. Two dashboard defects fixed.**
+  - (a) At 1280 × 720 the map collapsed to zero height when a recording shows the extra Phase 8 layer rows. The map
+    now keeps 360 px and the left column scrolls.
+  - (b) The race timeline claimed a race ("The satellite alert came 44 min before PRAHARI confirmed") in recordings
+    whose satellite module is the stub, a fixed 90-minute delay that is not the M37 model. It now labels the stub
+    and claims nothing. The recordings are unchanged; `satellite_race` and the other Phase 9 scenarios, which run
+    M37, are unaffected.
+- **R1-3. Error boundaries.** Each view is wrapped so one failing view cannot blank the page on stage. The notice
+  shows the error (nothing is hidden) and resets on a new recording or tab.
+- **R1-4. Incomplete recordings open.** A last line cut off mid-write is skipped and the recording is marked
+  incomplete; any other malformed line is still an error. The engine never writes such a file (atomic writes, R1-5);
+  this covers interrupted copies.
+- **R1-5. Atomic writes.** `write_atomic` (temporary file, then `os.replace`) for recordings, health files and results
+  JSON. The bytes are identical; a failed write keeps the previous file.
+- **R1-6. Configuration value checks and CLI errors.**
+  - `check_values` rejects impossible run and world values with the key named. Every shipped configuration passes.
+    A grid with a non-square node count, which used to degrade the siting module at run time, is now a
+    configuration error.
+  - The CLI turns configuration, file and interrupt errors into one line with exit codes 2, 1 and 130.
+  - Presets resolve from any folder; `--seeds` and `--jobs` are validated.
+  - The live server rejects a negative speed and non-positive days (422).
+- **R1-7. Dependency lock.**
+  - `engine/requirements-lock.txt` records the exact Python packages the release was tested with.
+  - `pyproject.toml` keeps its lower bounds and adds upper bounds below the next major version of each package.
+    These are not tested, so they are excluded rather than trusted.
+  - `package.json` gains `engines: node >= 20`, and `npm ci` installs the existing lock.
+  - Version 1.0.0 in both manifests.
+- **R1-8. `scripts/check_all.sh`** wraps the existing checks (tests with warnings as errors, type check, build, doc
+  links, byte-for-byte regeneration of every recording) so the release can be re-verified at any time. It adds no
+  tool.
+- **R1-9. Documentation.**
+  - Docstrings for the framework, contracts, evaluation code, CLI and server (about 100).
+  - The stage-class convention (the `equation`, `tag` and `description` attributes on the model card) documented
+    instead of adding a hundred redundant class docstrings.
+  - The root README rewritten for the finished project.
+  - `core/pipeline.py` is 314 lines after docstrings, slightly over rule 14's guide of about 300. It is accepted
+    code, so it is not split (rule 4).
+- **R1-11. Stale recording headers refreshed.**
+  - The first full release check found 16 committed recordings whose header differed from what the code produces:
+    the model-card `source` text of `learn`, and in the two lightning recordings also `srp`. Both texts were extended
+    by Phase 9 configuration edits after those recordings were last regenerated.
+  - Proof it was not the audit: regenerating `smoke` from the pre-audit commit (`1e87162`) gives the same bytes as the
+    audited code.
+  - The 16 recordings were regenerated. Each was compared with its predecessor: only that header text differs, and every
+    frame and trace line is identical.
+- **R1-10. Files from accepted phases touched** (all narrow, listed for review):
+  - engine: `core/{config,contracts,contracts_edge,contracts_world,contracts_baselines,clock,context,health,runner,
+    registry,rng,trace,pipeline}.py`, `record/{writer,frames,reader,world}.py`, `cli.py`, `eval/{experiments,report,
+    learning,node_metrics,energy_table}.py`, several stage modules (docstrings only), `server/{app,live}.py`,
+    `pyproject.toml`;
+  - dashboard: `App.tsx`, `Footer.tsx`, `RaceTimeline.tsx`, `race.ts`, `sources/parseRecording.ts`, `theme.css`,
+    `package.json`, `package-lock.json`;
+  - `README.md`.
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four

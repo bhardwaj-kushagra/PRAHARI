@@ -40,4 +40,13 @@ describe("race timeline (acceptance 1: correct deltas on a scripted fire)", () =
     expect(raceDeltas(raceFor(none, 4)!).headline).toBe("PRAHARI did not confirm this fire in the recording");
     expect(fmtMin(125)).toBe("2 h 05 min");
   });
+  it("claims no race when the satellite side is the stub's fixed delay (release 1.0)", () => {
+    const stub = source([frame(0, [{ type: "ignition", fire: 5, x: 0, y: 0 }]),
+                         frame(90, [{ type: "satellite_alert", fire: 5 }]),
+                         frame(134, [], [{ level: "CONFIRMED", cluster: [0], trace_id: "d" }])]);
+    const r = raceFor(stub, 5)!;
+    const d = raceDeltas(r);
+    expect([r.satelliteModel, r.satellite, d.lead]).toEqual(["stub", 90, null]);
+    expect(d.headline).toMatch(/^Satellite side not modelled in this recording \(stub: fixed delay\)/);
+  });
 });

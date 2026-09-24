@@ -7,11 +7,14 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import ClassVar
 
+import numpy as np
+
 from prahari.core.contract_checks import ContractError, _num, _same_len
 
 
 @dataclass(frozen=True)
 class Clusters:
+    """M30 clusters of recent candidates: members, their p-values, anchors and network-wide counts."""
     members: tuple = ()      # tuple of sorted node-id tuples, one per cluster
     p: tuple = ()            # matching tuples of node p-values
     anchor: tuple = ()       # Phase 6: per cluster, the triggering node (legacy form) or −1 (M30 components)
@@ -34,6 +37,7 @@ class Clusters:
 
 @dataclass(frozen=True)
 class Scmr:
+    """M31 spatial common-mode rejection per cluster: local and network rates, their ratio, pass or hold."""
     f_loc: tuple = ()
     f_net: tuple = ()
     ratio: tuple = ()
@@ -51,6 +55,7 @@ class Scmr:
 
 @dataclass(frozen=True)
 class Fisher:
+    """M32 Fisher combination per cluster: statistic X, degrees of freedom and combined p-value."""
     X: tuple = ()
     dof: tuple = ()
     p_cluster: tuple = ()
@@ -67,6 +72,7 @@ class Fisher:
 
 @dataclass(frozen=True)
 class BayesFactors:
+    """M34 bound or M36 fitted likelihood ratio per cluster."""
     bf: tuple = ()
 
     def validate(self, n: int) -> None:
@@ -80,6 +86,7 @@ class BayesFactors:
 
 @dataclass(frozen=True)
 class Prior:
+    """M33 prior of the minute: odds, day type, the lightning flag and (integral form) the rate map."""
     odds: float
     day_type: str = "dry_busy"   # or "wet_quiet"
     lam: float = 0.0             # M33 integral term, 0 when not modelled
@@ -100,6 +107,7 @@ class Prior:
 
 @dataclass(frozen=True)
 class Raq:
+    """M34 decision per cluster: posterior odds against the cost ratio, or the legacy quorum."""
     quorum: int                  # agreeing nodes needed on the current prior
     threshold: float             # C_FA / C_miss
     posterior_odds: tuple = ()
@@ -121,6 +129,7 @@ class Raq:
 
 @dataclass(frozen=True)
 class Decision:
+    """M35 escalation per cluster: level, new alerts and incident ids."""
     OPTIONAL: ClassVar[tuple] = ("incident",)
     levels: tuple = ()           # per cluster: WATCH, CANDIDATE, CONFIRMED, ESCALATED
     new_alert: tuple = ()        # per cluster: True when this tick raises a new alert

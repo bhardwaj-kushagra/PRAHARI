@@ -1,9 +1,12 @@
 {
   "name": "prahari-dashboard",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "PRAHARI-SIM replay dashboard (all values are SIMULATION output)",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "sync-recordings": "node scripts/sync-recordings.mjs",
     "predev": "npm run sync-recordings",

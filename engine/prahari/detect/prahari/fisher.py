@@ -9,6 +9,7 @@ from prahari.core.registry import Stage, register
 
 
 def bonferroni(p) -> float:
+    """Stub combination of a cluster's p-values: min(1, k · min p)."""
     return min(1.0, len(p) * min(p))
 
 

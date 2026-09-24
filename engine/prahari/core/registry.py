@@ -33,6 +33,7 @@ class Stage:
 
     @property
     def rng(self) -> np.random.Generator:
+        """The module's own random generator (rule 7); a stage without one must not draw random numbers."""
         if self._rng is None:
             raise RuntimeError(f"stage '{self.name}' has no RNG stream; add one to core/rng.py STREAMS")
         return self._rng
@@ -49,6 +50,7 @@ class Stage:
 
 
 def register(name: str, kind: str) -> Callable[[type], type]:
+    """Class decorator: register a stage implementation under a module name and kind (real, stub or off)."""
     if kind not in KINDS:
         raise ValueError(f"kind must be one of {KINDS}, got {kind!r}")
 
@@ -65,19 +67,23 @@ def register(name: str, kind: str) -> Callable[[type], type]:
 
 
 def lookup(name: str, kind: str) -> type | None:
+    """The class registered for (name, kind), or None."""
     return _REGISTRY.get((name, kind))
 
 
 def names() -> list[str]:
+    """All registered module names, sorted."""
     return sorted({n for n, _ in _REGISTRY})
 
 
 def off_allowed(name: str) -> bool:
+    """Whether the module may be switched off (it has an `off` implementation)."""
     return (name, "off") in _REGISTRY
 
 
 @dataclass
 class Built:
+    """Result of `build`: the requested state, the implementation that will run, and its effective state."""
     requested: str               # state asked for in the configuration
     stage: Stage                 # the implementation that will run
     effective: str               # real, stub or off

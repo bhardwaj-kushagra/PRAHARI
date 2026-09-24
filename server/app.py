@@ -13,7 +13,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from prahari.core import registry
 from prahari.core.config import ConfigError, load_config
@@ -29,13 +29,16 @@ STATE: dict = {"run": None, "id": 0, "scenario": None}
 
 
 class RunRequest(BaseModel):
+    """Body of POST /run: a scenario name from configs/scenarios, optional seed and days, and the pace
+    (×60 = one simulated minute per second; 0 = as fast as the machine allows)."""
     scenario: str
     seed: int | None = None
-    days: float | None = None
-    speed: float = 60.0
+    days: float | None = Field(default=None, gt=0)
+    speed: float = Field(default=60.0, ge=0)
 
 
 class ModuleRequest(BaseModel):
+    """Body of POST /modules: switch one mechanism of the running engine to real, stub or off."""
     module: str
     state: str
 
@@ -46,6 +49,7 @@ def _dumps(msg: dict) -> str:
 
 @app.get("/scenarios")
 def scenarios() -> list[dict]:
+    """GET /scenarios — the scenarios the live engine can run."""
     out = []
     for path in sorted(SCENARIOS.glob("*.yaml")):
         try:
@@ -59,6 +63,7 @@ def scenarios() -> list[dict]:
 
 @app.post("/run")
 def run(req: RunRequest) -> dict:
+    """POST /run — start a scenario (stopping any running one); 404 for an unknown name, 400 for a bad configuration."""
     path = SCENARIOS / f"{req.scenario}.yaml"
     if not path.is_file() or path.parent != SCENARIOS:
         raise HTTPException(404, f"unknown scenario {req.scenario!r}")
@@ -78,6 +83,7 @@ def run(req: RunRequest) -> dict:
 
 @app.get("/health")
 def health() -> dict:
+    """GET /health — whether a run is live, its minute, its error if any, and every module's health."""
     r = STATE["run"]
     if r is None:
         return {"running": False, "label": "SIMULATION"}
@@ -87,6 +93,7 @@ def health() -> dict:
 
 @app.post("/modules")
 def modules(req: ModuleRequest) -> dict:
+    """POST /modules — switch a mechanism of the running engine; applied at the next recorded frame."""
     r = STATE["run"]
     if r is None or r.done:
         raise HTTPException(409, "no live run")
