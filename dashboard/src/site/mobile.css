@@ -1,0 +1,46 @@
+/* Public site only: narrow screens (tablets and phones). The desktop layout is a fixed full-window grid (theme.css),
+   which squeezes the map and pushes the side panel off screen on a phone. Here the page scrolls instead: header,
+   map, side panel stacked, with the time controls pinned to the bottom so Play is always in reach.
+   Overrides only; nothing above 1000 px wide changes. Every selector starts with :root because theme.css is loaded
+   after this file and would otherwise win the tie. */
+
+@media (max-width: 1000px) {
+  :root, :root body, :root #root { height: auto; }
+  :root .app { display: block; height: auto; min-height: 100%; }   /* plain stacking: no row is squeezed to fit the window */
+  :root .picker, :root .tabs { flex: none; }
+  /* minmax(0, 1fr): a wide table or select can no longer stretch the page past the screen */
+  :root .body { grid-template-columns: minmax(0, 1fr); }
+  :root .left { overflow: visible; }
+  :root .map { min-height: 0; }
+  :root .map > svg { flex: none; height: auto; }          /* the map itself (not the legend icons): height follows its proportions */
+  :root .right { min-width: 0; }
+  :root .panel { overflow-x: auto; overflow-y: visible; min-height: 50vh; }
+  :root .strip-stats { flex: 1 1 100%; min-width: 0; }
+  :root .controls { position: sticky; bottom: 0; z-index: 10; box-shadow: 0 -6px 12px rgba(0, 0, 0, 0.35); }
+  :root .tabs { overflow-x: auto; scrollbar-width: thin; }
+  :root .tabs button { flex: none; white-space: nowrap; }
+  :root .picker select { flex: 1 1 160px; min-width: 0; max-width: 100%; }
+  :root .mark-legend { flex-wrap: wrap; }
+  :root .foot { overflow-wrap: anywhere; }
+}
+
+@media (max-width: 640px) {
+  :root .site-bar { padding: 5px 10px; font-size: 12px; }
+  :root .site-bar-url { display: none; }
+  :root .strip { gap: 8px; padding: 8px 10px; }
+  :root .strip-stats { gap: 6px 16px; }
+  :root .strip-stats dd { font-size: 13px; }
+  :root .left { padding: 6px; }
+  :root .layer, :root .layout-toggle button { font-size: 12px; }
+  :root .picker { padding: 8px 10px; gap: 8px; }
+  :root .panel { padding: 8px 10px 12px; }
+  :root .mini-grid, :root .multi-grid { grid-template-columns: 1fr; }
+  :root .controls { padding: 6px 10px; }
+  :root .speeds { margin-left: 0; }
+  :root .buttons button { padding: 6px 10px; }           /* larger touch targets */
+  :root .clock { font-size: 13px; }
+  :root .presenter { padding: 6px 10px; gap: 6px; }
+  :root .presenter-line { font-size: 15px; flex-direction: column; gap: 2px; }
+  :root .presenter-keys { display: none; }                /* keyboard shortcuts mean nothing on a touch screen */
+  :root .foot { padding: 6px 10px; font-size: 11px; }
+}

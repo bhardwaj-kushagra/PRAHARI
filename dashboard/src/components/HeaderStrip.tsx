@@ -1,6 +1,7 @@
 import { sci, simClock } from "../format";
 import { pct } from "../layers";
 import { useFrame, useSim } from "../store";
+import { SiteBrand } from "../site/SiteBar";
 import { SimBadge } from "./SimBadge";
 
 export function HeaderStrip() {
@@ -11,7 +12,7 @@ export function HeaderStrip() {
   return (
     <header className="strip">
       <div className="brand">
-        <span className="brand-name">PRAHARI-SIM</span>
+        <SiteBrand />{/* site: FIRENET name (dashboard/src/site/SiteBar.tsx) */}
         <SimBadge />
       </div>
       {h && frame ? (
