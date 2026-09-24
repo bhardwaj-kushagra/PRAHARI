@@ -50,6 +50,8 @@ This repository builds a **local simulator and dashboard** for the FIRENET–PRA
 
 ```text
 pip install -e "engine[dev,server]"          # engine (+ optional live server: fastapi, uvicorn, websockets)
+pip install -r engine/requirements-lock.txt -e "engine[dev,server]"   # release 1.0: the exact tested versions (dashboard: npm ci)
+scripts/check_all.sh [--quick]                # release check: tests, typecheck, build, doc links, recordings byte-identical
 pytest engine/tests                           # all engine tests
 prahari run --config configs/scenarios/smoke.yaml --out recordings/smoke.prs.jsonl.gz
 prahari run --config configs/scenarios/siting_greedy.yaml --out recordings/siting_greedy.prs.jsonl.gz   # also siting_corridor

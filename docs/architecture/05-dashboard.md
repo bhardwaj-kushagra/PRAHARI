@@ -47,6 +47,18 @@ flowchart LR
 
 Chart panels are loaded lazily when their tab opens, so the map view stays light.
 
+### Robustness (release 1.0)
+
+- **Error boundaries** (`ErrorBoundary.tsx`) wrap the header, the map, the race timeline, the recording picker, each
+  tab's panel and the time controls. A view that throws shows a short notice with the error and a retry button. It
+  resets when the recording or tab changes. The other views, the keys and presenter mode keep working.
+- **Layout.** The map keeps at least 360 px of height; on small screens (for example 1280 × 720) the left column
+  scrolls instead of squeezing the map away.
+- **Incomplete recordings.** A final line cut off mid-write is skipped, and the footer marks the recording as
+  incomplete; any other malformed line is still refused with its line number.
+- **Race timeline honesty.** When a recording's satellite side is the stub (a fixed delay after ignition, not M37),
+  the marker is labelled as the stub and no race is claimed in the headline.
+
 ## Pure helpers (unit-tested with Vitest)
 
 | File | What it computes |

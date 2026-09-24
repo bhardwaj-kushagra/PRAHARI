@@ -455,3 +455,45 @@ the demo laptop and any items from `KNOWN_ISSUES.md` the developer wants before 
 common-mode backlog, the P2 legacy detection gap, the M29 small-offset limit, the pre-abstain candidate) for the
 developer to schedule or leave.
 
+### 2026-09-24 — Session 16 (release 1.0: final audit and hardening)
+
+- Developer request: audit, fix, document and harden the code so this version can be locked; no revamps, features or
+  removals. Details: `docs/journey/release-1.0-audit.md`, `DECISIONS.md` R1-1 … R1-11.
+- Baseline recorded first (hashes of every recording and result, golden outcome 5 of 21, package versions).
+- **Fixed (dashboard):**
+  - the map collapsing at 1280 × 720;
+  - the race timeline claiming a race against the satellite stub.
+- **Hardened:**
+  - error boundaries around every view;
+  - atomic writes of recordings and results;
+  - configuration value checks;
+  - one-line CLI errors with exit codes 2, 1 and 130;
+  - presets found from any folder;
+  - incomplete recordings open with a note;
+  - live-server request validation.
+- **Documented:** about 100 docstrings; README for the finished project; architecture, guide and troubleshooting
+  pages.
+- **Locked:**
+  - `engine/requirements-lock.txt`;
+  - upper version bounds;
+  - `engines: node >= 20`;
+  - version 1.0.0;
+  - `scripts/check_all.sh`.
+- **Refreshed:** 16 recordings whose header model-card `source` text was stale from Phase 9. Frames and traces are
+  identical; the pre-audit code gives the same bytes.
+
+**Release gate:**
+- **Engine:** 222 tests pass, with warnings as errors (21 golden skipped unless enabled).
+- **Dashboard:** 56 tests pass; `tsc` and build clean.
+- **Outputs:** all 20 recordings regenerate byte for byte; `energy.json`, `learning.json` and the K = 100 model reproduce
+  exactly; the golden suite gives the same 5 pass and 16 miss.
+- **Browser:** 60-page sweep with 0 console errors; the forced-failure check behaves as designed; presenter rehearsal
+  170.1 s, 0 external requests, 0 errors.
+- **Fuzz:** 34 configurations with no exception and no non-finite value.
+
+**To see it:** `scripts/check_all.sh` (all checks), `scripts/demo.sh` (the demo), and the Phase 9 or 10 recordings at
+1280 × 720 (the map stays visible).
+
+**Next step:** none required. Tag `v1.0.0` marks the locked release; any later change should keep `scripts/check_all.sh`
+passing and log output changes in `DECISIONS.md`.
+

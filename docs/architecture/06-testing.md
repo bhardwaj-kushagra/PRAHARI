@@ -14,6 +14,7 @@ tests using the reference values in SPEC §9.2.
 | Offline replay | `test_experiments_phase7.py` | the offline edge equals the live edge, offline tuned h and replayed candidates equal the live CUSUM, per-fire wind, pipeline grouping, dial at the design target equals P2, table order | always |
 | Radio and energy | `test_comms_energy_phase8.py` | M39 reference times (acceptance 1), pure-ALOHA success within 3 points of e^(−2G) (acceptance 2), capture, shadowing and relays, delivery, heartbeats, store-and-forward, M41 budgets, M42 half-sine, M43 store, a 0.5 Wh-per-day node lasting 9 ± 0.5 days (acceptance 3), modes, cloudy days, determinism of a Phase 8 scenario | always |
 | Phase 9 | `test_phase9_edge_time.py`, `test_phase9_satellite.py`, `test_phase9_faults.py`, `test_phase9_regimes.py`, `test_phase9_learning.py` | clustering by detection minute; M37 overpass times, threshold, miss and delay, and the race deltas; M21 faults and M29 health weights (acceptance 3: a stuck sensor's weight below 0.1 within 90 minutes); lightning strikes, the storm hold and the SCMR relaxation, the M33 integral prior, regime composition; the M36 IRLS fit, the likelihood ratio, the switch at K ≥ k_min, training sets and the fixed-budget operating point, the M26 floor (SPEC §9.2) | always |
+| Release hardening | `test_release_hardening.py`; dashboard `errorBoundary.test.ts`, the parser and race tests | atomic writes keep the previous file on failure and leave recording bytes unchanged; impossible configuration values are clear errors; every shipped configuration loads; CLI errors are one line with the documented exit codes; contract type hints resolve; the live server rejects negative speed and days; the error boundary resets on a new recording or tab; a cut-off last line opens as an incomplete recording; a stub satellite claims no race | always |
 | Live server | `test_server_phase6.py` | scenarios, a live run streams recording lines in order, module switches, health | when fastapi and httpx are installed |
 | Configuration | `test_config.py` | merge rules, unknown keys, missing source tags | always |
 | Traces | `test_trace.py` | evidence records and explanation sentences | always |
@@ -24,6 +25,16 @@ tests using the reference values in SPEC §9.2.
 | Storyboard | `dashboard/src/presenter.test.ts`; a timed Playwright rehearsal during development | the storyboard is valid, names existing recordings and fits in 180 s; the rehearsal presses 1–9 against the launcher's server with all non-local requests blocked, holds each step for its planned time, and checks load times, the S/R variants and console errors (Phase 10 acceptance) | `npm test`; the rehearsal before a demo |
 
 ## Running them
+
+`scripts/check_all.sh` runs the whole release check in one command: the engine tests with warnings as errors, the
+dashboard type check, unit tests and build, the documentation link check, and every scenario regenerated and
+compared byte for byte with `recordings/` (`--quick` skips the last). The release 1.0 audit also ran two
+development-time sweeps, kept out of the repository because they use Playwright:
+
+- a configuration fuzz: every scenario, all-real, all-stub, all-off, odd node counts, layouts and seeds with many fires;
+- a browser sweep: every recording at three screen sizes, every tab.
+
+Both are described in [../journey/release-1.0-audit.md](../journey/release-1.0-audit.md).
 
 ```bash
 pytest engine/tests -q                      # engine: about 1 minute

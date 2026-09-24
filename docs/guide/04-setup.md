@@ -6,7 +6,7 @@
 | --- | --- | --- |
 | Python | 3.11 (3.11 or newer required) | engine; NumPy, SciPy, PyYAML, pytest |
 | Node.js | 22 (20 or newer recommended) | dashboard; npm 10 |
-| Disk | about 400 MB with `node_modules` | recordings in the repo take about 17 MB |
+| Disk | about 400 MB with `node_modules` | recordings in the repo take about 50 MB |
 | Browser | Chromium, Chrome, Edge or Firefox (recent) | the dashboard uses `DecompressionStream` to read `.gz` recordings |
 | Network | only for `pip install` and `npm install` | the dashboard itself runs offline |
 
@@ -24,15 +24,21 @@ From the repository root:
 
 ```bash
 python3 -m venv .venv && source .venv/bin/activate      # optional but recommended
-pip install -e "engine[dev,server]"                     # quotes matter in zsh; "server" is only for live mode
-cd dashboard && npm install && cd ..
+pip install -r engine/requirements-lock.txt -e "engine[dev,server]"   # the exact versions release 1.0 was tested with
+cd dashboard && npm ci && cd ..                          # installs exactly package-lock.json
 ```
+
+`engine/requirements-lock.txt` and `dashboard/package-lock.json` pin the versions every committed recording and result
+was produced with. `pip install -e "engine[dev,server]"` and `npm install` also work: `pyproject.toml` accepts any
+version below the next major release of each package. Use the lock for a reproducible install.
 
 Check the installation:
 
 ```bash
 pytest engine/tests -q            # about 1 minute; golden tests are skipped unless PRAHARI_GOLDEN=1
 cd dashboard && npm test && cd ..
+scripts/check_all.sh --quick      # everything above plus type check, build and doc links (about 3 minutes)
+scripts/check_all.sh              # … and every recording regenerated and compared byte for byte (10–15 minutes)
 ```
 
 ## Look at the demo (no engine needed)
