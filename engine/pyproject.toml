@@ -12,6 +12,7 @@ dependencies = ["numpy>=1.24,<3", "scipy>=1.10,<2", "pyyaml>=6.0,<7"]   # upper 
 [project.optional-dependencies]
 dev = ["pytest>=7,<10", "httpx>=0.27,<1"]
 server = ["fastapi>=0.110,<1", "uvicorn>=0.29,<1", "websockets>=12,<18"]
+paper = ["matplotlib>=3.8,<4"]         # research track only: figures of docs/research (DECISIONS R2-5, Dep-7)
 
 [project.scripts]
 prahari = "prahari.cli:main"

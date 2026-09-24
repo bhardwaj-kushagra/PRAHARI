@@ -71,7 +71,7 @@ def test_impossible_values_are_config_errors(over, words):
 
 
 def test_every_shipped_configuration_still_loads():
-    paths = [p for p in (REPO / "configs").rglob("*.yaml") if p.parent.name != "regimes"]
+    paths = [p for p in (REPO / "configs").rglob("*.yaml") if p.parent.name not in ("regimes", "research")]
     assert len(paths) >= 26
     for p in paths:
         load_config(p)

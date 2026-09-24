@@ -78,4 +78,10 @@ cd dashboard && npm test                      # dashboard unit tests (Vitest)
 cd dashboard && npm run build && npm run preview   # static build, no engine server
 scripts/demo.sh [--build]                     # Phase 10: serve dashboard/dist on :8765 in presenter mode (Windows: scripts\demo.cmd)
 prahari run --config configs/scenarios/wet_morning_haze.yaml --out recordings/wet_morning_haze.prs.jsonl.gz   # storyboard steps 3–4; also __scmr-stub, __raq-stub
+pip install -e "engine[paper]"                 # research track: matplotlib for the paper figures (DECISIONS R2-5)
+python -m prahari.research run selection --jobs 4   # protocol R1 (docs/research/protocol.md): seeds 901–920 (~1 h)
+python -m prahari.research run test --jobs 4        # seeds 1001–1100 (~3–4 h; resumes: existing seed files are kept)
+python -m prahari.research sweep --jobs 4           # sensitivity sweeps on seeds 1001–1010 (~2–3 h)
+python -m prahari.research analyse                  # → results/research/r1_{selection,test,sweeps,analysis}.json
+python -m prahari.research figures                  # → docs/research/figures/ (from the r1_*.json files only)
 ```

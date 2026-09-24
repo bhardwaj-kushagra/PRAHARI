@@ -775,6 +775,12 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 - **R2-4. Physical experiments are out of scope** for this paper, at the developer's request. Quiet logging, burns and
   negative controls become a separate later study. The simulator itself may become a separate tool paper; see
   `docs/research/paper-plan.md` §10.
+- **R2-6. Accepted files touched (narrow):**
+  - `core/rng.py`: the `research` stream (R2-3);
+  - `pyproject.toml`: the `paper` extra;
+  - `tests/unit/test_release_hardening.py`: `configs/research/` joins `regimes/` among the folders that are not full
+    simulation configurations (`r1.yaml` is the protocol's settings, read as plain YAML);
+  - `CLAUDE.md`: the command list.
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 
