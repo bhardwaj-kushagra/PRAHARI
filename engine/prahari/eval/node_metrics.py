@@ -29,6 +29,7 @@ class NodeObserver:
         self.cands.extend((t, int(i)) for i in cand.nodes)
 
     def summary(self, sim, ev: dict) -> dict:
+        """Node-layer metrics of one seed (QCC exceedance, false candidates, tuned h) for the report."""
         cp = sim.cfg["params"]["cusum"]
         cm = cm_mask(self.frac, float(cp["cm_frac"]), int(cp["cm_pad_min"]))   # M28 — with hindsight, as the report
         n, days = sim.ctx.n_nodes, float(ev["test_days"])

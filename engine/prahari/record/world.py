@@ -7,6 +7,7 @@ from prahari.record.frames import sig4
 
 
 def interfaces_list(features: list) -> list:
+    """Map interfaces (paths, village, road, power line) for the recording header."""
     return [{"kind": f["kind"], "closed": bool(f.get("closed", False)),
              "points": [[float(x), float(y)] for x, y in f["points"]]} for f in features]
 
@@ -24,6 +25,7 @@ def lambda_grid(land, cell_out_m: float) -> dict:
 
 
 def layouts_dict(layout) -> dict:
+    """The active layout and all three candidate layouts with their covered likelihood (M1, M4)."""
     out = {"active": layout.name, "corridor_spacing_m": float(f"{layout.corridor_spacing_m:.4g}")}
     for k, alt in layout.alternatives.items():
         cov = float(alt["covered"])
@@ -33,6 +35,7 @@ def layouts_dict(layout) -> dict:
 
 
 def links_dict(links, gateways: list) -> dict:
+    """Per-node radio links for the header (M38): gateway, SF, distance, path loss, received power, relay."""
     ids = [g["id"] for g in gateways]
     return {"modelled": bool(links.modelled),
             "gateway": [ids[g] if g >= 0 else None for g in links.gateway.tolist()],

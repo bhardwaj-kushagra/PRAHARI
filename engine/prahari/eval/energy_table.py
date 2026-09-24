@@ -10,6 +10,8 @@ ROWS = (("BME688", "ULP", "bme688", "ulp"), ("BME688", "low power", "bme688", "l
 
 
 def energy_table(cfg: dict) -> dict:
+    """M41–M43 comparison from the configuration (no random draws): daily budget per sensor mode, days on a
+    full store, clear and cloudy harvest."""
     p, c = cfg["params"]["energy"], cfg["params"]["comms"]
     frames = 1440 / float(c["heartbeat_min"])                         # hourly heartbeats; candidates are rare
     toa = time_on_air(int(c["payload_b"]), 7, float(c["bw_hz"]), int(c["cr"]))

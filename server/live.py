@@ -17,6 +17,7 @@ class _Stopped(Exception):
 
 
 class LiveWriter:
+    """Writer for live mode: same methods as the file writer, but lines are kept for WebSocket clients."""
     def __init__(self, run: "LiveRun"):
         self.run = run
         self.n_frames = 0
@@ -57,13 +58,16 @@ class LiveRun:
         self.thread = threading.Thread(target=self._main, daemon=True)
 
     def start(self) -> "LiveRun":
+        """Start the run in a background thread; returns self."""
         self.thread.start()
         return self
 
     def stop(self) -> None:
+        """Ask the run to stop at the next tick."""
         self.stop_flag.set()
 
     def switch(self, module: str, state: str) -> None:
+        """Queue a module switch, applied before the next recorded frame."""
         with self.lock:
             self.pending.append((module, state))
 
@@ -72,6 +76,7 @@ class LiveRun:
             self.messages.append(msg)
 
     def since(self, i: int) -> list[dict]:
+        """Recording lines from index i on (for a WebSocket client catching up)."""
         with self.lock:
             return self.messages[i:]
 
@@ -105,4 +110,5 @@ class LiveRun:
             self.done = True
 
     def health(self) -> dict:
+        """Health of every module of the running simulation."""
         return {k: v.health.public() for k, v in self.sim.slots.items()}

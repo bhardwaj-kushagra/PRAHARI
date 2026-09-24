@@ -9,7 +9,9 @@ export function Footer() {
   return (
     <footer className="foot" data-testid="footer">
       SIMULATION · seed {h.seed} · {daysLabel(h.days, h.record_from_min)} · scenario {h.scenario} · {source.frameCount} frames ·
-      recording {source.name} · every value shown is simulator output (SIM)
+      recording {source.name}{source.kind === "recording" && !source.footer
+        ? <b className="foot-warn"> · incomplete recording (no footer: the run or copy did not finish)</b> : null} ·
+      every value shown is simulator output (SIM)
     </footer>
   );
 }

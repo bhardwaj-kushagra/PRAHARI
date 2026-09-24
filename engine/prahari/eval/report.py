@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from prahari.record.writer import write_text_atomic
+
 ORDER = ("P0", "P1", "P1t", "P2", "P2-QCC", "P2-TTC", "P2-SCMR", "P2-RAQ")
 LABELS = {"P0": "P0 fixed threshold", "P1": "P1 v1 as written", "P1t": "P1t v1 replay-tuned", "P2": "P2 PRAHARI",
           "P2-QCC": "P2 minus QCC", "P2-TTC": "P2 minus TTC", "P2-SCMR": "P2 minus SCMR", "P2-RAQ": "P2 minus RAQ"}
@@ -33,6 +35,7 @@ def table(pipes: dict, reference: dict | None) -> list[dict]:
 
 
 def combine(out_dir: str | Path, primary: str | None = None) -> dict:
+    """Merge the preset summaries found in `out_dir` (golden first) into results/summary.json for the dashboard."""
     out = Path(out_dir)
     golden = _load(out, "golden")
     base = golden if golden is not None else (_load(out, primary) if primary else None)
@@ -67,5 +70,5 @@ def combine(out_dir: str | Path, primary: str | None = None) -> dict:
         sources["learning"] = {"seeds": learning["train_seeds"] + learning["test_seeds"]}
     summary["sources"] = sources
     summary["table"] = table(summary["pipelines"], summary.get("reference"))
-    (out / "summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")
+    write_text_atomic(out / "summary.json", json.dumps(summary, indent=1))
     return summary

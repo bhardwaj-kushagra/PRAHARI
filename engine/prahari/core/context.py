@@ -10,6 +10,8 @@ from prahari.core.clock import Clock
 
 @dataclass
 class RunContext:
+    """Shared, read-mostly state of one run: geometry, clock, setup products and the few per-tick values stages
+    pass on (for example the slow z for M28, the storm flag for M31). Stages read it; the pipeline writes it."""
     clock: Clock
     xy: np.ndarray                   # (N, 2) node positions, m
     spacing_m: float
@@ -26,10 +28,12 @@ class RunContext:
 
     @property
     def n_nodes(self) -> int:
+        """Number of nodes in the network."""
         return int(self.xy.shape[0])
 
     @property
     def tick_minutes(self) -> int:
+        """Length of one tick in minutes."""
         return self.clock.tick_minutes
 
     @property

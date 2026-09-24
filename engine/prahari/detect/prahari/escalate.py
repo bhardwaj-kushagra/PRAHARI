@@ -36,6 +36,7 @@ class EscalateStub(Stage):
         return Decision(levels=tuple(levels), new_alert=tuple(new))
 
     def confirmed_since(self, t_from: float) -> np.ndarray:
+        """Nodes whose last confirmation is later than t_from (for the confirmed display state)."""
         return self._last_conf > t_from
 
 

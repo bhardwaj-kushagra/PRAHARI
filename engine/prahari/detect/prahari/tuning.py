@@ -65,6 +65,7 @@ class TuningBuffer:
         self.frac = None
 
     def add(self, t: int, s, frac: float) -> None:
+        """Store minute t's node evidence and elevated share if it falls in the tuning window (or its padding)."""
         if not self.f0 <= t < self.t1:
             return
         if self.frac is None:
@@ -75,6 +76,7 @@ class TuningBuffer:
             self.S[(t - self.t0) // self.tick] = s
 
     def ready(self, t: int) -> bool:
+        """True once the tuning window has ended and been filled."""
         return self.S is not None and t >= self.t1
 
     def mask(self, thr: float):

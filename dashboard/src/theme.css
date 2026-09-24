@@ -41,12 +41,12 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 
 /* Body: map 60%, side panel 40% (SPEC §6.3 layout) */
 .body { display: grid; grid-template-columns: 60% 40%; min-height: 0; }
-.left { min-height: 0; padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+.left { min-height: 0; padding: 8px; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; }  /* scrolls on small screens */
 .right { min-height: 0; border-left: 1px solid var(--line); display: flex; flex-direction: column; background: var(--panel); }
 .panel { overflow: auto; padding: 8px 14px 14px; flex: 1; }
 
 /* Map */
-.map { margin: 0; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.map { margin: 0; flex: 1; display: flex; flex-direction: column; min-height: 360px; }  /* never squeezed away (release 1.0) */
 .map svg { flex: 1; width: 100%; min-height: 0; }
 .map-empty { margin: auto; color: var(--text-2); }
 .forest { fill: var(--forest); stroke: var(--line); }
@@ -272,3 +272,9 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .presenter-step { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-2); white-space: nowrap; }
 .presenter-note { color: var(--amber); }
 .presenter-keys { margin-left: auto !important; white-space: nowrap; }
+
+/* Release 1.0 — a view that failed (ErrorBoundary): a short notice in place of the view */
+.view-error { margin: 8px; padding: 10px 12px; border: 1px solid var(--line); border-left: 3px solid var(--amber);
+  border-radius: 4px; background: var(--panel); display: flex; flex-direction: column; gap: 6px; }
+.view-error button { align-self: flex-start; }
+.foot-warn { color: var(--amber); font-weight: 600; }

@@ -24,6 +24,7 @@ CONTRACT_VERSION = "prahari.frame/1"
 
 @dataclass(frozen=True)
 class Weather:
+    """M5–M6 weather of one minute: temperature, humidity, wind, rain."""
     T: float                 # °C
     RH: float                # %
     wind_ms: float           # m/s at 10 m
@@ -46,6 +47,7 @@ class Weather:
 
 @dataclass(frozen=True)
 class FuelState:
+    """M7 fuel moisture: the FFMC of the day."""
     ffmc: float
 
     def validate(self, n: int) -> None:
@@ -58,6 +60,7 @@ class FuelState:
 
 @dataclass(frozen=True)
 class Fire:
+    """One fire: id, position (x, y) and ignition minute t0."""
     id: int
     x: float
     y: float
@@ -66,6 +69,7 @@ class Fire:
 
 @dataclass(frozen=True)
 class Fires:
+    """Fires of one minute: the active ones, the ids ignited now, their causes and the ignition attempts."""
     active: tuple = ()       # tuple[Fire, ...]
     new: tuple = ()          # ids ignited this tick
     new_causes: tuple = ()   # "scripted" or "poisson", parallel to `new` (Phase 3a)
@@ -106,6 +110,7 @@ class Sources:
 
 @dataclass(frozen=True)
 class Concentration:
+    """M11–M16 fire signal at every node (sensor units before the sensor model)."""
     c: np.ndarray            # (N,) su at each node
 
     def validate(self, n: int) -> None:
@@ -133,6 +138,7 @@ class Additive:
 
 @dataclass(frozen=True)
 class Readings:
+    """M17–M21 node readings: compensated and raw channels, injected faults, and missing data (dropouts)."""
     x: np.ndarray            # (N, C) compensated channels, su
     x_raw: np.ndarray        # (N, C) uncompensated channels (fixed-threshold baseline)
     fault: np.ndarray | None = None   # (N,) bool, True where a fault is injected
@@ -152,6 +158,7 @@ class Readings:
 
 @dataclass(frozen=True)
 class Residuals:
+    """M24–M25 two-timescale residuals: the fast residual r, the slow z and the slow baseline b."""
     r: np.ndarray            # (N, C) detection residual
     z: np.ndarray            # (N, C) residual scaled by the slow-baseline spread
     b: np.ndarray            # (N, C) slow baseline
@@ -169,6 +176,7 @@ class Residuals:
 
 @dataclass(frozen=True)
 class PValues:
+    """M26 per-node, per-channel p-values (and the signed z of the legacy ablation)."""
     p: np.ndarray            # (N, C) in (0, 1]
     n_cal: np.ndarray        # (N,) calibration-set size (0 for the Gaussian stub)
     z: np.ndarray | None = None   # (N, C) signed statistic of a Gaussian-form QCC (legacy ablation, P7-12)
@@ -185,6 +193,7 @@ class PValues:
 
 @dataclass(frozen=True)
 class Scores:
+    """M27–M29 node evidence: score s, combined p-value p_node, health weights c (and the legacy signed z)."""
     s: np.ndarray            # (N,) node score S_t (M27), >= 0
     p_node: np.ndarray       # (N,) node-level p-value
     c: np.ndarray            # (N, C) health weights in [0, 1] (M29)
@@ -202,6 +211,7 @@ class Scores:
 
 @dataclass(frozen=True)
 class Candidates:
+    """M28 node candidates of one minute: nodes, their p-values, the CUSUM values G and threshold h."""
     nodes: tuple             # node ids raising a candidate this tick
     p: tuple                 # node p-value at the candidate, same order
     G: np.ndarray            # (N,) CUSUM statistic after this tick
@@ -224,6 +234,8 @@ class Candidates:
 
 @dataclass(frozen=True)
 class Delivered:
+    """M38–M40 candidates that reached the edge this minute (nodes, p-values, detection minutes), the uplink packets,
+    frames queued at each node and gateways out of service."""
     nodes: tuple             # candidate frames delivered to the edge this tick
     p: tuple
     packets: tuple = ()      # dicts for the dashboard: {"from", "to", "ok", "sf"} (+ Phase 8: "kind", "retry",
@@ -242,6 +254,7 @@ class Delivered:
 
 @dataclass(frozen=True)
 class EnergyState:
+    """M41–M43 state of charge and power mode of every node."""
     soc: np.ndarray              # (N,) state of charge in [0, 1]
     mode: np.ndarray | None = None   # (N,) 0 standard, 1 ULP, 2 off (M43, Phase 8)
 
@@ -257,6 +270,7 @@ class EnergyState:
 
 @dataclass(frozen=True)
 class SatelliteAlerts:
+    """M37 satellite alert minutes per fire, and the overpass plans drawn this minute."""
     alert_t: tuple = ()          # tuple of (fire_id, alert time in minutes)
     plan: tuple = ()             # dicts for fires first seen this minute: overpass, platform, alert time (M37, Phase 9)
 

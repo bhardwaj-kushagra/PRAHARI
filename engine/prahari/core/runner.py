@@ -17,6 +17,9 @@ from prahari.core.health import ModuleHealth
 
 
 class Slot:
+    """One module in the pipeline with its fallback chain (real → stub → off). Every call goes through `run`, which
+    isolates failures: an exception or invalid output switches the slot to the next implementation for the rest
+    of the run and marks it degraded (CLAUDE.md rule 5)."""
     def __init__(self, name: str, state: str, params: dict, rng, out_type: type):
         self.name = name
         self.out_type = out_type
@@ -35,6 +38,7 @@ class Slot:
 
     @property
     def stage(self):
+        """The implementation currently in use."""
         return self.chain[self.pos] if self.pos < len(self.chain) else None
 
     def reset(self, ctx) -> None:
@@ -55,6 +59,7 @@ class Slot:
         h.running = nxt.kind if nxt is not None else ("hold" if self.last is not None else "neutral")
 
     def run(self, inputs: Any, ctx, check: Callable[[Any], None] | None = None) -> Any:
+        """Call the current implementation on `inputs`, validate its output, and fall back on failure."""
         n = ctx.n_nodes
         while self.stage is not None:
             impl = self.stage

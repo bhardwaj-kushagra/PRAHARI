@@ -27,6 +27,12 @@ export function parseRecording(text: string): Recording {
     try {
       obj = JSON.parse(lines[i]);
     } catch {
+      // Release 1.0: a final line cut off mid-write (an interrupted copy or run) is skipped, so the frames before it
+      // still open; the missing footer marks the recording as incomplete. Any other bad line is still an error.
+      if (i === lines.length - 1 && i > 1) {
+        console.warn(`recording: last line ${i + 1} is incomplete and was skipped`);
+        break;
+      }
       throw new RecordingError(`line ${i + 1} is not JSON`);
     }
     if ("trace" in obj) traces.push(obj.trace as Trace);

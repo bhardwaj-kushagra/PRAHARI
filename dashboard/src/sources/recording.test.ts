@@ -40,6 +40,15 @@ describe("parseRecording", () => {
     const bad = [JSON.stringify({ header }), JSON.stringify(frame(5)), JSON.stringify(frame(0))].join("\n");
     expect(() => parseRecording(bad)).toThrow(/out of order/);
   });
+
+  it("opens a recording whose last line was cut off, and rejects any other bad line (release 1.0)", () => {
+    const ok = [JSON.stringify({ header }), JSON.stringify(frame(0)), JSON.stringify(frame(5)), '{"t":10,"nod'].join("\n");
+    const r = parseRecording(ok);
+    expect([r.frames.length, r.footer]).toEqual([2, null]);
+    const middle = [JSON.stringify({ header }), '{"t":0,', JSON.stringify(frame(5))].join("\n");
+    expect(() => parseRecording(middle)).toThrow(/line 2 is not JSON/);
+    expect(() => parseRecording([JSON.stringify({ header }), '{"t":0,'].join("\n"))).toThrow(/line 2 is not JSON/);
+  });
 });
 
 describe("decodeRecordingBytes", () => {

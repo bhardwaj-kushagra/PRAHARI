@@ -111,6 +111,7 @@ class ClusterReal(Stage):
         return Clusters(members=tuple(members), p=tuple(ps), anchor=tuple(anchors), n_recent=tuple(n_recent))
 
     def recent_nodes(self) -> set:
+        """Nodes whose candidate was raised within the window of the latest detection minute."""
         w = int(self.params["window_min"])
         latest = max((r[0] for r in self._recent), default=0)
         return {i for td, i, _ in self._recent if td >= latest - w}

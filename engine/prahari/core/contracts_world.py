@@ -56,6 +56,7 @@ class Landscape:
 
 @dataclass(frozen=True)
 class Layout:
+    """M1/M4 node positions of the active layout and the covered likelihood of every layout."""
     name: str                                # the layout the run simulates
     xy: np.ndarray                           # (N, 2) node positions, m
     covered: float = -1.0                    # M4 objective as a fraction of total λ; −1 when not computed

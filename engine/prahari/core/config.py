@@ -25,6 +25,12 @@ def _read(path: Path) -> dict:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
     except FileNotFoundError:
         raise ConfigError(f"config file not found: {path}") from None
+    except OSError as exc:                                  # a directory, no permission, …
+        raise ConfigError(f"cannot read {path}: {exc.strerror or exc}") from None
+    except yaml.YAMLError as exc:
+        where = getattr(exc, "problem_mark", None)
+        at = f" (line {where.line + 1})" if where is not None else ""
+        raise ConfigError(f"{path}: not valid YAML{at}") from None
     if data is None:
         return {}
     if not isinstance(data, dict):
@@ -59,6 +65,7 @@ def merge(base: dict, override: dict, where: str, path: str = "") -> dict:
 
 
 def check_sources(cfg: dict) -> None:
+    """Every parameter block (and `world`) must carry a `source` starting with a provenance tag (rule 9)."""
     for section in SOURCED_SECTIONS:
         blocks = cfg.get(section, {})
         if section == "world":
@@ -75,9 +82,43 @@ def check_sources(cfg: dict) -> None:
 
 
 def check_modules(cfg: dict) -> None:
+    """Every module state must be real, stub or off (rule 2)."""
     for name, state in cfg.get("modules", {}).items():
         if state not in ("real", "stub", "off"):
             raise ConfigError(f"modules.{name}: must be real, stub or off, got {state!r}")
+
+
+LAYOUTS = ("grid", "corridor", "greedy")
+
+
+def _number(cfg: dict, key: str, lo: float, strict: bool = True, integer: bool = False):
+    section, name = key.split(".")
+    v = cfg.get(section, {}).get(name)
+    if v is None:
+        return None
+    if isinstance(v, bool) or not isinstance(v, (int, float)) or (integer and float(v) != int(v)):
+        raise ConfigError(f"{key}: expects a {'whole ' if integer else ''}number, got {v!r}")
+    if (v <= lo) if strict else (v < lo):
+        raise ConfigError(f"{key}: must be {'>' if strict else '≥'} {lo:g}, got {v!r}")
+    return v
+
+
+def check_values(cfg: dict) -> None:
+    """Reject run and world values the simulator cannot run with, with a message naming the key (release 1.0).
+    Checks only: no default changes, and every shipped configuration passes."""
+    days = _number(cfg, "run.days", 0.0)
+    _number(cfg, "run.tick_minutes", 1, strict=False, integer=True)
+    n = _number(cfg, "world.n_nodes", 1, strict=False, integer=True)
+    _number(cfg, "world.spacing_m", 0.0)
+    _number(cfg, "record.every_k_ticks", 1, strict=False, integer=True)
+    layout = cfg.get("world", {}).get("layout")
+    if layout is not None and layout not in LAYOUTS:
+        raise ConfigError(f"world.layout: must be one of {LAYOUTS}, got {layout!r}")
+    if layout == "grid" and n is not None and round(int(n) ** 0.5) ** 2 != int(n):   # M1 — a square grid
+        raise ConfigError(f"world.n_nodes: the grid layout needs a square number of nodes, got {n}")
+    start = _number(cfg, "record.from_day", 0.0, strict=False)
+    if days is not None and start is not None and start >= days:
+        raise ConfigError(f"record.from_day: {start:g} is not inside the run of {days:g} days")
 
 
 def find_default(path: Path) -> Path:
@@ -92,6 +133,8 @@ def find_default(path: Path) -> Path:
 def load_config(path: str | Path, overrides: dict | None = None) -> dict:
     """Compose default.yaml, then the regime card named by the scenario, then the scenario."""
     path = Path(path).resolve()
+    if not path.is_file():
+        raise ConfigError(f"config file not found: {path}")
     default_path = find_default(path)
     cfg = _read(default_path)
     check_sources(cfg)
@@ -106,4 +149,5 @@ def load_config(path: str | Path, overrides: dict | None = None) -> dict:
         cfg = merge(cfg, overrides, "overrides")
     check_sources(cfg)
     check_modules(cfg)
+    check_values(cfg)
     return cfg
