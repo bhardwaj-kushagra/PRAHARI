@@ -16,6 +16,7 @@ Everything the simulator produces is **simulation output (SIM)**, not field data
 | See how the pieces fit together | [architecture/01-system.md](architecture/01-system.md) |
 | Follow the build story, phase by phase | [journey/README.md](journey/README.md) |
 | Check the numbers and how they were validated | [results/validation.md](results/validation.md) |
+| Plan a research paper from the simulator | [research/paper-plan.md](research/paper-plan.md) |
 
 ## Map of the folder
 
@@ -43,8 +44,10 @@ docs/
 │   ├── release-1.0-audit.md   the final audit: findings, fixes, proof that outputs did not change
 │   ├── challenges-and-lessons.md
 │   └── decisions-and-tradeoffs.md
-└── results/
-    └── validation.md          golden numbers, equivalence checks, acceptance results
+├── results/
+│   └── validation.md          golden numbers, equivalence checks, acceptance results
+└── research/
+    └── paper-plan.md          can the simulator support a paper: verdict, novelty, experiments, data, framing
 ```
 
 ## How these documents relate to the logs

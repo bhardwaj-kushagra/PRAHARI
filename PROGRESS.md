@@ -519,3 +519,21 @@ passing and log output changes in `DECISIONS.md`.
 
 **Next step:** none required; the release stays locked at 1.0.0.
 
+
+### 2026-09-24 — Session 18 (research-paper feasibility analysis)
+
+- The developer asked whether the simulator's results can support a conference paper, and how to proceed. The
+  analysis and roadmap are in `docs/research/paper-plan.md`:
+  - the verdict;
+  - what holds already (SIM);
+  - the novelty claims and the experiment that proves each;
+  - reviewer objections and their fixes;
+  - the technical additions;
+  - the data collection plan (V1–V8, public datasets);
+  - the paper outline;
+  - integrity rules and a timeline.
+- Documentation only: no code, configuration, recording or results file changed.
+
+**Next step:** the developer chooses the venue and deadline and gives the go-ahead. The work then starts with the
+pre-registered protocol (`docs/research/protocol.md`) and Phase A (additive research package; `check_all.sh` must stay
+byte-identical).
