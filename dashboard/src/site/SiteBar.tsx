@@ -1,4 +1,6 @@
+import { goTo, usePresenter } from "../components/PresenterOverlay";
 import { FIRENET_WORDS, TEAM, TEAM_LOGO } from "./brand";
+import { orderedSteps } from "./PresenterTouch";
 import "./site.css";
 import "./mobile.css";
 
@@ -17,14 +19,25 @@ export function SiteBar() {
           ))}
         </span>
       </p>
-      <a className="site-bar-team" href={TEAM.url} target="_blank" rel="noopener noreferrer"
-         title={`${TEAM.name}: ${TEAM.label} (opens in a new tab)`}>
+      <TourButton />
+      <p className="site-bar-team">
         <span className="muted">a project by</span>
         <img src={TEAM_LOGO} alt="" width={22} height={22} />
         <b>{TEAM.name}</b>
-        <span className="site-bar-url">{TEAM.label} ↗</span>
-      </a>
+      </p>
     </div>
+  );
+}
+
+/** Starts the storyboard (presenter mode) at step 1, so visitors without keys 1–9 can follow it; hidden during it. */
+function TourButton() {
+  const board = usePresenter((s) => s.board);
+  const step = usePresenter((s) => s.step);
+  if (!board || step) return null;
+  return (
+    <button className="site-tour" data-testid="site-tour" onClick={() => void goTo(orderedSteps(board)[0])}>
+      ▶ Guided tour <span className="muted">· {board.steps.length} steps</span>
+    </button>
   );
 }
 

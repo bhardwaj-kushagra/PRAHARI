@@ -16,6 +16,7 @@ Kept here so a merge from `main` can be resolved quickly (take `main`'s file, re
 | `dashboard/src/App.tsx` | Imports `SiteBar`; renders it first inside `.top` | S3 |
 | `dashboard/src/components/HeaderStrip.tsx` | Imports `SiteBrand`; it replaces the `PRAHARI-SIM` name span | S3 |
 | `dashboard/index.html` | Title, description, link-preview (Open Graph) tags, icons | S3 |
+| `dashboard/src/components/PresenterOverlay.tsx` | `goTo` exported; renders `<PresenterTouch />` inside the caption strip while a step is shown | S4 |
 
 ## 2026-09-24 — S1: branches and first site build
 
@@ -147,5 +148,53 @@ Kept here so a merge from `main` can be resolved quickly (take `main`'s file, re
 1. The Health & model card table is very long on a phone; a compact card per module would read better.
 2. The race timeline's labels are tiny at phone width.
 3. Presenter mode's keys 1–9 have no touch equivalent (for example, next and previous buttons).
+
+**Promoted:** yes, by the developer.
+
+## 2026-09-24 — S4: team website removed for now; second mobile round
+
+**Done:**
+- **AgniWare website left out (developer request).** The team name and logo stay; the link and every mention of
+  `www.agniware.tech` are gone:
+  - the bar's credit is plain text, not a link;
+  - `TEAM` in `brand.ts` holds only the name;
+  - the link-preview image was redrawn without the address.
+
+  A test now fails if `agniware.tech` or a link comes back into the bar, the brand file, its styles or `index.html`.
+  **To restore it later:** add the address to `TEAM`, turn the credit in `SiteBar.tsx` back into a link, redraw the
+  preview card, and change that test.
+- **Guided tour for visitors without a keyboard.**
+  - A "▶ Guided tour · 9 steps" button in the bar starts the storyboard at step 1.
+  - While a step is shown, the caption strip has Previous, Next and ✕ (end) buttons (`dashboard/src/site/PresenterTouch.tsx`).
+    The steps and keys 1–9 are unchanged.
+  - Wiring needed two small edits to `PresenterOverlay.tsx`, listed in the table above.
+- **Mobile round 2** (`mobile.css`, style overrides only):
+  - Tablets and phones:
+    - the tour caption and its buttons stay pinned to the top of the screen while the page scrolls (the `.top` wrapper
+      uses `display: contents` so the caption can stick to the page);
+    - the race timeline keeps readable labels and scrolls sideways on its own instead of shrinking.
+  - Phones:
+    - the Health & model card becomes one card per module. The column names come from the column position, so
+      `ModuleHealth.tsx` is unchanged;
+    - the map's layer switches sit in one row that scrolls sideways (the map now starts about 150 px higher);
+    - the timeline legend in the pinned controls is a single line.
+
+**Checks:**
+- `tsc` clean; Vitest 64 passed:
+  - `brand.test.ts`: the website test replaces the https test;
+  - new `presenterTouch.test.ts`: Previous and Next walk the storyboard in key order and stop at both ends.
+- Build clean.
+- Headless Chromium at 1280 × 720, 820 × 1180 and 390 × 844:
+  - no link and no `agniware.tech` in the page;
+  - Guided tour → Next → Next reaches step 3/9, and ✕ ends the tour;
+  - after scrolling, the caption is at the top of the screen on tablet and phone;
+  - the health rows are cards on the phone only;
+  - no sideways scroll, 0 console errors, 0 requests to other hosts.
+- Presenter at 1600 × 1000 and phone presenter still pass the S3 checks.
+
+**Known limits:**
+- On desktop the tour buttons take their own row under the caption, about 45 px, and only while a tour runs. The left
+  column scrolls, so the map stays usable.
+- Keys 1–9 remain the fast path for a live talk.
 
 **Promoted:** not yet.
