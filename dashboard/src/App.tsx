@@ -12,6 +12,7 @@ import { NodePanel } from "./components/NodePanel";
 import { LivePanel } from "./components/LivePanel";
 import { openFile, RecordingPicker } from "./components/RecordingPicker";
 import { TimeControls } from "./components/TimeControls";
+import { SiteBar } from "./site/SiteBar";
 import { LIVE_ENGINE } from "./site/siteConfig";
 import { type Panel, useSim } from "./store";
 
@@ -76,7 +77,7 @@ export function App() {
   const loading = <p className="muted">Loading charts…</p>;
   return (
     <div className="app">
-      <div className="top"><ErrorBoundary name="header" resetKey={rec}><HeaderStrip /></ErrorBoundary><PresenterOverlay /></div>
+      <div className="top"><SiteBar />{/* site: FIRENET / AgniWare bar */}<ErrorBoundary name="header" resetKey={rec}><HeaderStrip /></ErrorBoundary><PresenterOverlay /></div>
       <main className="body">
         <section className="left">
           <ErrorBoundary name="map" resetKey={rec}><MapTools /><CommandMap /></ErrorBoundary>

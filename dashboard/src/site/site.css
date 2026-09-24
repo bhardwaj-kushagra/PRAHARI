@@ -1,0 +1,18 @@
+/* Public site only (site branches; see docs/site/README.md): the FIRENET / AgniWare bar and the header name.
+   Uses the theme's tokens from theme.css, so it follows the same dark control-room look. */
+
+.site-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; flex-wrap: wrap;
+  padding: 5px 16px; background: var(--bg); border-bottom: 1px solid var(--line); font-size: 13px; }
+.site-bar p { margin: 0; }
+.site-bar-name { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; color: var(--text-2); }
+.site-bar-firenet { font: 600 15px/1 var(--font-head); letter-spacing: 0.12em; color: var(--ember); }
+.site-bar-expansion b { color: var(--text); font-weight: 600; }
+.site-bar-team { display: inline-flex; align-items: center; gap: 7px; color: var(--text); text-decoration: none;
+  border-radius: 3px; padding: 2px 4px; }
+.site-bar-team:hover b, .site-bar-team:focus-visible b { text-decoration: underline; }
+.site-bar-team:focus-visible { outline: 1px solid var(--text-2); }
+.site-bar-team img { display: block; }
+.site-bar-url { color: var(--text-2); font-family: var(--font-mono); font-size: 12px; }
+
+.site-brand { display: inline-flex; flex-direction: column; gap: 3px; }
+.site-brand-sub { font: 500 12px/1 var(--font-head); letter-spacing: 0.14em; color: var(--text-2); }

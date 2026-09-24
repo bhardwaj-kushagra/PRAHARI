@@ -13,6 +13,9 @@ Kept here so a merge from `main` can be resolved quickly (take `main`'s file, re
 | `CLAUDE.md` | Replaced by the site rules | S1 |
 | `dashboard/src/App.tsx` | Imports `LIVE_ENGINE`; renders `<LivePanel />` only when it is true | S1 |
 | `dashboard/src/components/MechanismSwitches.tsx` | Imports `LIVE_ENGINE`; the disabled-switch tooltip mentions live mode only when it is true | S1 |
+| `dashboard/src/App.tsx` | Imports `SiteBar`; renders it first inside `.top` | S3 |
+| `dashboard/src/components/HeaderStrip.tsx` | Imports `SiteBrand`; it replaces the `PRAHARI-SIM` name span | S3 |
+| `dashboard/index.html` | Title, description, link-preview (Open Graph) tags, icons | S3 |
 
 ## 2026-09-24 — S1: branches and first site build
 
@@ -88,4 +91,61 @@ Kept here so a merge from `main` can be resolved quickly (take `main`'s file, re
 - The public address could not be fetched from the working environment (its network policy blocks the host), so the
   developer checks it in a browser.
 
-**Promoted:** not yet. The next pull request `site-dev → site-live` carries this merge.
+**Promoted:** yes, by the developer (the site runs the second-audit build).
+
+## 2026-09-24 — S3: FIRENET and AgniWare branding, page title, first mobile layout
+
+**Done:**
+- **Branding.**
+  - A thin bar above the header (`dashboard/src/site/SiteBar.tsx`, `site.css`) spells out FIRENET: **F**ire
+    **I**dentification and **Re**sponse **N**etwork for **E**arly **T**racking.
+  - The same bar credits the team: "a project by" the AgniWare logo, AgniWare, and a link to `https://www.agniware.tech`
+    that opens in a new tab.
+  - The header's name is now FIRENET, with PRAHARI-SIM beneath it. The SIMULATION badge and every footer are unchanged.
+  - The names and the link live in `dashboard/src/site/brand.ts`.
+- **Logo.**
+  - The developer supplied the AgniWare logo as a JPEG on white. Its white background was removed so it sits on the
+    dark theme, and it was cropped and saved as PNGs in `dashboard/public/brand/` (32, 96, 180, 192 and 512 px).
+  - The site serves these copies itself; no request goes to another host.
+  - The conversion used Pillow in a throw-away environment outside the repository, so Pillow is not a dependency of
+    the site.
+- **Page title and link previews** (`dashboard/index.html`):
+  - title `FIRENET · PRAHARI-SIM · SIMULATION`, plus a description;
+  - Open Graph and Twitter tags;
+  - a 1200 × 630 preview image, `brand/og-image.png`: the FIRENET name, its expansion, the logo, the team and a
+    SIMULATION badge, with no result numbers. It was drawn in the dashboard's own fonts and colours and captured with
+    headless Chromium;
+  - a favicon and an Apple touch icon.
+- **Mobile layout** (`dashboard/src/site/mobile.css`, style overrides only; nothing changes above 1000 px wide):
+  - At 1000 px and below the page scrolls instead of fitting one window. Header, map and side panel are stacked, and
+    the time controls stay pinned to the bottom of the screen.
+  - A wide table can no longer stretch the page sideways: the single column is `minmax(0, 1fr)`, and the side panel
+    scrolls sideways on its own.
+  - At 640 px and below: tighter spacing, larger buttons, one chart per row in Signals, and the presenter's keyboard
+    hints are hidden.
+
+**Challenges and how they were resolved:**
+- **The first overrides did nothing.** `theme.css` is loaded after the site's style sheets, so on equal selectors it
+  won. Every mobile selector now starts with `:root`, which outranks theme.css without `!important`.
+- **The panels overlapped at tablet width.** The page grid still divided the window height into fixed rows, so the
+  side panel's tabs were squeezed to one pixel and covered. On narrow screens the page now stacks in plain block
+  layout.
+- **Giant legend icons on phones.** A height rule meant for the map also matched the small icons in its legend. It
+  now applies only to the map itself (`.map > svg`).
+
+**Checks:**
+- `tsc` clean; Vitest 63 passed (60 plus 3 in `brand.test.ts`: the highlighted letters spell FIRENET, the team link is
+  https, and the page title, description and preview image are present); build clean.
+- Headless Chromium at five sizes: 1280 × 720, presenter 1600 × 1000, tablet 820 × 1180, phone 390 × 844, and phone
+  presenter. At every size: 0 console errors, 0 requests to other hosts, no sideways scroll, the logo loads, and the
+  title is correct.
+- Also tested: Play, and switching to Signals and back.
+- At 1280 × 720 the map keeps the same height as before (301 px); the new bar is absorbed by the scrolling left
+  column.
+
+**Open items (mobile, next round):**
+1. The Health & model card table is very long on a phone; a compact card per module would read better.
+2. The race timeline's labels are tiny at phone width.
+3. Presenter mode's keys 1–9 have no touch equivalent (for example, next and previous buttons).
+
+**Promoted:** not yet.

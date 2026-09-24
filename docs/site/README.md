@@ -41,6 +41,9 @@ merged into `main`.
 | --- | --- | --- |
 | Live-engine panel hidden | `dashboard/src/site/siteConfig.ts`; one guard in `App.tsx`, one tooltip in `MechanismSwitches.tsx` | It needs a FastAPI server on the viewer's own machine, so on the web it could only say "not connected". `VITE_LIVE_ENGINE=1` brings it back for local work. |
 | Unlisted, caching | `dashboard/public/_headers` | Asks search engines not to index the site; long caching for hashed assets, one hour for recordings. Only Cloudflare reads this file. |
+| FIRENET and AgniWare branding | `dashboard/src/site/` (`brand.ts`, `SiteBar.tsx`, `site.css`); `dashboard/public/brand/`; one line in `App.tsx`, one in `HeaderStrip.tsx` | Names the system and the team, and links to www.agniware.tech. The logo is bundled with the site. |
+| Page title and link previews | `dashboard/index.html`, `dashboard/public/brand/og-image.png` | A shared link shows the FIRENET card rather than a bare address. |
+| Mobile layout | `dashboard/src/site/mobile.css` | Below 1000 px the page scrolls and stacks, and Play stays pinned at the bottom. Nothing changes on larger screens. |
 | Node version | `.node-version` | Makes Cloudflare's build use Node 22, the version the dashboard is tested with. |
 | Working rules | `CLAUDE.md` | Site rules instead of the simulator rules; see the file. |
 | Documentation | `docs/site/` | This page and the log. |
