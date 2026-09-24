@@ -1,0 +1,614 @@
+{
+ "label": "SIMULATION",
+ "preset": "golden",
+ "scenario": "golden_legacy",
+ "seeds": [
+  11,
+  22,
+  33,
+  44,
+  55
+ ],
+ "n_nodes": 100,
+ "spacing_m": 70,
+ "days": {
+  "calibration": 14,
+  "tuning": 14,
+  "test": 30
+ },
+ "pipelines": {
+  "P0": {
+   "false_incidents_per_month": {
+    "rate": 340.6,
+    "ci95": [
+     324.6137242852057,
+     357.16986986658685
+    ],
+    "count": 1703,
+    "days": 150.0,
+    "per_seed": [
+     299.0,
+     321.0,
+     388.0,
+     308.0,
+     387.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 317,
+    "n": 324,
+    "rate": 0.9783950617283951,
+    "ci95": [
+     0.9560824579033369,
+     0.9894961385896037
+    ]
+   },
+   "latency_median_min": 8.0
+  },
+  "P1": {
+   "false_incidents_per_month": {
+    "rate": 136.20000000000002,
+    "ci95": [
+     126.16129321313034,
+     146.82503678039558
+    ],
+    "count": 681,
+    "days": 150.0,
+    "per_seed": [
+     139.0,
+     145.0,
+     117.0,
+     140.0,
+     140.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 318,
+    "n": 324,
+    "rate": 0.9814814814814815,
+    "ci95": [
+     0.9601931401072158,
+     0.9914859634598729
+    ]
+   },
+   "latency_median_min": 4.0
+  },
+  "P1t": {
+   "false_incidents_per_month": {
+    "rate": 14.4,
+    "ci95": [
+     11.267113138037669,
+     18.13441680893159
+    ],
+    "count": 72,
+    "days": 150.0,
+    "per_seed": [
+     14.0,
+     12.0,
+     16.0,
+     19.0,
+     11.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 198,
+    "n": 324,
+    "rate": 0.6111111111111112,
+    "ci95": [
+     0.5570218770301604,
+     0.6625963776391679
+    ]
+   },
+   "latency_median_min": 83.5
+  },
+  "P2": {
+   "false_incidents_per_month": {
+    "rate": 3.4000000000000004,
+    "ci95": [
+     1.9806252939214588,
+     5.443729363181323
+    ],
+    "count": 17,
+    "days": 150.0,
+    "per_seed": [
+     5.0,
+     5.0,
+     2.0,
+     0.0,
+     5.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 231,
+    "n": 324,
+    "rate": 0.7129629629629629,
+    "ci95": [
+     0.6614343582201778,
+     0.7595006298960343
+    ]
+   },
+   "latency_median_min": 62.0,
+   "single_node_within_3h": {
+    "k": 316,
+    "n": 324,
+    "rate": 0.9753086419753086,
+    "ci95": [
+     0.9520414121586815,
+     0.987436677260111
+    ]
+   },
+   "h_per_seed": [
+    226.583,
+    400.0,
+    210.723,
+    214.595,
+    207.14
+   ]
+  },
+  "P2-SCMR": {
+   "false_incidents_per_month": {
+    "rate": 5.0,
+    "ci95": [
+     3.2357363695658656,
+     7.380986339506073
+    ],
+    "count": 25,
+    "days": 150.0,
+    "per_seed": [
+     7.0,
+     3.0,
+     4.0,
+     0.0,
+     11.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 232,
+    "n": 324,
+    "rate": 0.7160493827160493,
+    "ci95": [
+     0.6646412249256508,
+     0.7623942702647094
+    ]
+   },
+   "latency_median_min": 62.0,
+   "single_node_within_3h": {
+    "k": 316,
+    "n": 324,
+    "rate": 0.9753086419753086,
+    "ci95": [
+     0.9520414121586815,
+     0.987436677260111
+    ]
+   },
+   "h_per_seed": [
+    226.583,
+    400.0,
+    210.723,
+    214.595,
+    207.14
+   ]
+  },
+  "P2-RAQ": {
+   "false_incidents_per_month": {
+    "rate": 5.4,
+    "ci95": [
+     3.558634026352955,
+     7.856716489032427
+    ],
+    "count": 27,
+    "days": 150.0,
+    "per_seed": [
+     5.0,
+     6.0,
+     5.0,
+     0.0,
+     11.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 250,
+    "n": 324,
+    "rate": 0.7716049382716049,
+    "ci95": [
+     0.7228682181496129,
+     0.8139764043754113
+    ]
+   },
+   "latency_median_min": 59.5,
+   "single_node_within_3h": {
+    "k": 316,
+    "n": 324,
+    "rate": 0.9753086419753086,
+    "ci95": [
+     0.9520414121586815,
+     0.987436677260111
+    ]
+   },
+   "h_per_seed": [
+    226.583,
+    400.0,
+    210.723,
+    214.595,
+    207.14
+   ]
+  }
+ },
+ "node": {
+  "per_seed": [
+   {
+    "seed": 11,
+    "exceed": 0.00883587962962963,
+    "p_min": 0.0002975304968759298,
+    "cand_per_node_30d": 5.04,
+    "local_cand_per_node_30d": 0.7,
+    "cm_time_frac_test": 0.024328703703703703,
+    "h": 226.583,
+    "h_tuned": true,
+    "h_at_cap": false,
+    "p1t_h": 400.0,
+    "p1t_at_cap": true,
+    "states": {
+     "ttc": "real",
+     "qcc": "real",
+     "score": "stub",
+     "cusum": "real",
+     "baseline_p1t": "real"
+    }
+   },
+   {
+    "seed": 22,
+    "exceed": 0.015759259259259258,
+    "p_min": 0.0002975304968759298,
+    "cand_per_node_30d": 3.29,
+    "local_cand_per_node_30d": 0.03,
+    "cm_time_frac_test": 0.022199074074074072,
+    "h": 400.0,
+    "h_tuned": true,
+    "h_at_cap": true,
+    "p1t_h": 400.0,
+    "p1t_at_cap": true,
+    "states": {
+     "ttc": "real",
+     "qcc": "real",
+     "score": "stub",
+     "cusum": "real",
+     "baseline_p1t": "real"
+    }
+   },
+   {
+    "seed": 33,
+    "exceed": 0.010304629629629629,
+    "p_min": 0.0002975304968759298,
+    "cand_per_node_30d": 4.09,
+    "local_cand_per_node_30d": 1.02,
+    "cm_time_frac_test": 0.008240740740740741,
+    "h": 210.723,
+    "h_tuned": true,
+    "h_at_cap": false,
+    "p1t_h": 400.0,
+    "p1t_at_cap": true,
+    "states": {
+     "ttc": "real",
+     "qcc": "real",
+     "score": "stub",
+     "cusum": "real",
+     "baseline_p1t": "real"
+    }
+   },
+   {
+    "seed": 44,
+    "exceed": 0.006144675925925926,
+    "p_min": 0.0002975304968759298,
+    "cand_per_node_30d": 0.83,
+    "local_cand_per_node_30d": 0.83,
+    "cm_time_frac_test": 0.0,
+    "h": 214.595,
+    "h_tuned": true,
+    "h_at_cap": false,
+    "p1t_h": 400.0,
+    "p1t_at_cap": true,
+    "states": {
+     "ttc": "real",
+     "qcc": "real",
+     "score": "stub",
+     "cusum": "real",
+     "baseline_p1t": "real"
+    }
+   },
+   {
+    "seed": 55,
+    "exceed": 0.013938425925925925,
+    "p_min": 0.0002975304968759298,
+    "cand_per_node_30d": 9.46,
+    "local_cand_per_node_30d": 0.69,
+    "cm_time_frac_test": 0.03321759259259259,
+    "h": 207.14,
+    "h_tuned": true,
+    "h_at_cap": false,
+    "p1t_h": 400.0,
+    "p1t_at_cap": true,
+    "states": {
+     "ttc": "real",
+     "qcc": "real",
+     "score": "stub",
+     "cusum": "real",
+     "baseline_p1t": "real"
+    }
+   }
+  ],
+  "exceed_mean": 0.010996574074074074,
+  "local_cand_mean": 0.654,
+  "local_cand_median": 0.7,
+  "h_mean": 251.80820000000003,
+  "targets": {
+   "exceed_p": 0.01,
+   "exceed": [
+    0.008,
+    0.02
+   ],
+   "local_cand_per_node_30d": [
+    0.5,
+    1.5
+   ]
+  },
+  "pass": {
+   "exceed": true,
+   "local_cand": true
+  }
+ },
+ "dial": [
+  {
+   "target_per_node_30d": 0.5,
+   "h_per_seed": [
+    262.37622451782227,
+    400.0,
+    234.8913974761963,
+    247.4656867980957,
+    241.02081108093262
+   ],
+   "false_incidents_per_month": {
+    "rate": 4.0,
+    "ci95": [
+     2.443303917080789,
+     6.17767558053492
+    ],
+    "count": 20,
+    "days": 150.0,
+    "per_seed": [
+     5.0,
+     5.0,
+     3.0,
+     1.0,
+     6.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 222,
+    "n": 324,
+    "rate": 0.6851851851851852,
+    "ci95": [
+     0.632692996105972,
+     0.7333374283429083
+    ]
+   },
+   "latency_median_min": 67.0
+  },
+  {
+   "target_per_node_30d": 1.0,
+   "h_per_seed": [
+    226.58270454406738,
+    400.0,
+    210.7227325439453,
+    214.5951442718506,
+    207.1398754119873
+   ],
+   "false_incidents_per_month": {
+    "rate": 3.4000000000000004,
+    "ci95": [
+     1.9806252939214588,
+     5.443729363181323
+    ],
+    "count": 17,
+    "days": 150.0,
+    "per_seed": [
+     5.0,
+     5.0,
+     2.0,
+     0.0,
+     5.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 231,
+    "n": 324,
+    "rate": 0.7129629629629629,
+    "ci95": [
+     0.6614343582201778,
+     0.7595006298960343
+    ]
+   },
+   "latency_median_min": 62.0
+  },
+  {
+   "target_per_node_30d": 2.142857,
+   "h_per_seed": [
+    167.85341262817383,
+    296.17334175109863,
+    171.40426635742188,
+    177.63426208496094,
+    177.58854293823242
+   ],
+   "false_incidents_per_month": {
+    "rate": 7.6000000000000005,
+    "ci95": [
+     5.37821232903923,
+     10.431593783851923
+    ],
+    "count": 38,
+    "days": 150.0,
+    "per_seed": [
+     14.0,
+     5.0,
+     5.0,
+     6.0,
+     8.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 267,
+    "n": 324,
+    "rate": 0.8240740740740741,
+    "ci95": [
+     0.7788854607139618,
+     0.8616677820715786
+    ]
+   },
+   "latency_median_min": 55.0
+  },
+  {
+   "target_per_node_30d": 4.285714,
+   "h_per_seed": [
+    131.13636589050293,
+    222.76820373535156,
+    143.74723052978516,
+    147.31941986083984,
+    148.26275825500488
+   ],
+   "false_incidents_per_month": {
+    "rate": 14.200000000000001,
+    "ci95": [
+     11.090317810899805,
+     17.911367821420125
+    ],
+    "count": 71,
+    "days": 150.0,
+    "per_seed": [
+     25.0,
+     7.0,
+     7.0,
+     21.0,
+     11.0
+    ]
+   },
+   "confirmed_within_3h": {
+    "k": 280,
+    "n": 324,
+    "rate": 0.8641975308641975,
+    "ci95": [
+     0.8226013528918148,
+     0.8972584818576494
+    ]
+   },
+   "latency_median_min": 46.0
+  }
+ ],
+ "reference": {
+  "source": "FIRENET\u2013PRAHARI technical report, simulation results (SIM); SPEC \u00a79.3. Reference values only \u2014 not PRAHARI-SIM output.",
+  "seeds": [
+   11,
+   22,
+   33,
+   44,
+   55
+  ],
+  "pipelines": {
+   "P0": {
+    "false_incidents_per_month": 291,
+    "ci95": [
+     277,
+     307
+    ],
+    "confirmed_within_3h": 0.95,
+    "confirmed_ci95": [
+     0.93,
+     0.97
+    ]
+   },
+   "P1": {
+    "false_incidents_per_month": 132,
+    "ci95": [
+     123,
+     143
+    ],
+    "confirmed_within_3h": 0.99,
+    "confirmed_ci95": [
+     0.98,
+     1.0
+    ]
+   },
+   "P1t": {
+    "false_incidents_per_month": 18.6,
+    "ci95": [
+     15.0,
+     22.8
+    ],
+    "confirmed_within_3h": 0.59,
+    "confirmed_ci95": [
+     0.53,
+     0.64
+    ]
+   },
+   "P2": {
+    "false_incidents_per_month": 6.4,
+    "ci95": [
+     4.4,
+     9.0
+    ],
+    "confirmed_within_3h": 0.83,
+    "confirmed_ci95": [
+     0.79,
+     0.87
+    ]
+   },
+   "P2-QCC": {
+    "false_incidents_per_month": 17.4,
+    "ci95": [
+     13.9,
+     21.5
+    ],
+    "confirmed_within_3h": 0.78,
+    "confirmed_ci95": null
+   },
+   "P2-TTC": {
+    "false_incidents_per_month": 11.8,
+    "ci95": [
+     9.0,
+     15.2
+    ],
+    "confirmed_within_3h": 0.66,
+    "confirmed_ci95": null
+   },
+   "P2-SCMR": {
+    "false_incidents_per_month": 12.0,
+    "ci95": [
+     9.2,
+     15.4
+    ],
+    "confirmed_within_3h": 0.84,
+    "confirmed_ci95": null
+   },
+   "P2-RAQ": {
+    "false_incidents_per_month": 10.0,
+    "ci95": [
+     7.4,
+     13.2
+    ],
+    "confirmed_within_3h": 0.88,
+    "confirmed_ci95": null
+   }
+  },
+  "spacing": {
+   "seeds": [
+    11,
+    22,
+    33
+   ],
+   "confirmed_within_3h": {
+    "70": 0.85,
+    "100": 0.56,
+    "150": 0.13
+   }
+  }
+ }
+}

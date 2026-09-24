@@ -1,0 +1,21 @@
+# Siting scenario (Phase 1): the same landscape and fire as its sibling, simulated on the corridor layout.
+# One simulated day; one scripted ignition at 14:00 beside the north-east footpath, wind from the west.
+scenario:
+  name: siting_corridor
+  description: "corridor layout (M1/M4) on the default landscape; fire beside a footpath"
+modules:                          # framework check: clean stub signals so the stub detectors stay readable
+  sensor: stub
+  nuisance: stub
+  haze: stub
+  ttc: stub                       # Phase 5: framework scenarios keep the stub node layer (v1 behaviour)
+  qcc: stub
+  cusum: stub
+run:
+  seed: 11
+  days: 1
+world:
+  layout: corridor
+params:
+  ignition:
+    scripted:
+      - {t_min: 840, x: 600, y: 445}

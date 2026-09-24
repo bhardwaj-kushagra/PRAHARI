@@ -1,0 +1,42 @@
+{
+ "label": "SIMULATION",
+ "what": "M41 daily budget per sensor mode; M42 harvest; M43 store",
+ "rows": [
+  {
+   "sensor": "BME688",
+   "mode": "ULP",
+   "wh_day": 0.1136,
+   "autonomy_days": 40.1
+  },
+  {
+   "sensor": "BME688",
+   "mode": "low power",
+   "wh_day": 0.1778,
+   "autonomy_days": 25.63
+  },
+  {
+   "sensor": "BME688",
+   "mode": "standard",
+   "wh_day": 0.4154,
+   "autonomy_days": 10.97
+  },
+  {
+   "sensor": "MQ-2",
+   "mode": "heater on",
+   "wh_day": 22.9065,
+   "autonomy_days": 0.2
+  }
+ ],
+ "harvest_wh_day": {
+  "clear": 1.5,
+  "cloudy": [
+   0.15,
+   0.6
+  ]
+ },
+ "store_wh": 4.556,
+ "frames_per_day": 24.0,
+ "toa_ms": 61.7,
+ "voltage_v": 3.3,
+ "source": "configs/default.yaml (params.energy, params.comms)"
+}

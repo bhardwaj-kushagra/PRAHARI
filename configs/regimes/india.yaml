@@ -1,0 +1,24 @@
+# Regime Card — India, Terai and dry deciduous forest, pre-monsoon (SPEC §8.1). Human-caused fires dominate (over 95%,
+# LIT [17]): paths and villages weigh most. Crop-burning season triples the regional haze rate. IN865 radio plan.
+regime_card:
+  name: india
+  label: "India — Terai and dry deciduous (pre-monsoon)"
+  radio_plan: IN865
+  alert_format: fsi_kml
+  lightning: false
+  source: "SPEC §8.1 India card; LIT [17] ignition share; ASM fuel model shape (form LIT [10])"
+params:
+  weather:
+    t_mean_c: 30.0
+    t_amp_c: 7.0
+    dew_point_c: 10.0
+    wind_median_ms: 1.5
+    prevailing_dir_deg: 250.0
+    rain_prob_day: 0.02
+  landscape:
+    weights: {path: 1.0, village: 1.5, road: 1.0, power_line: 0.5}
+    decay_m: {path: 30, village: 150, road: 50, power_line: 20}
+  haze:
+    crop_burning_multiplier: 3.0
+  comms:
+    channels: 3                   # IN865: three default uplink channels

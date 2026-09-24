@@ -1,0 +1,22 @@
+# Three cloudy days (SPEC §7 Phase 8): six days with the real energy (M41–M43) and radio (M38–M40) models. Days 2–4
+# are cloudy (harvest × U(0.1, 0.4)); nodes start part-charged and sit under uneven canopy, so the store falls through
+# the cloudy spell, weaker nodes drop to ULP scanning below 20%, and all recover when the sun returns on day 5.
+# The starting charge and canopy spread are scenario settings chosen to make the spell visible (DECISIONS P8).
+scenario:
+  name: cloudy_days
+  description: "Three cloudy days: state of charge falls, weak nodes switch to ULP scanning, then recover"
+run:
+  seed: 11
+  days: 6
+record:
+  every_k_ticks: 10
+modules:
+  comms: real
+  energy: real
+params:
+  links:
+    shadowing_sd_db: 6.0
+  energy:
+    cloudy_days: [2, 3, 4]
+    initial_soc: 0.30
+    canopy_spread: 0.6

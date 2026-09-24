@@ -1,0 +1,31 @@
+# Gateway outage (SPEC §8.2, Phase 8): the mature network of `node_mature` (31 days, days 29–31 recorded) with the
+# real radio (M38 with 6 dB shadowing, M39, M40, TS011 relays) and energy (M41–M43) models. Gateway g1 goes down on
+# day 31 from 12:30 to 14:30, across the 13:00 fire: candidate frames wait at their nodes (store-and-forward) and
+# reach the edge in a burst when the gateway returns, so the confirmation comes later but still comes.
+scenario:
+  name: gateway_outage
+  description: "Gateway down 12:30–14:30 on day 31 during a fire: store-and-forward, then the edge decides"
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+modules:
+  comms: real
+  energy: real
+params:
+  links:
+    shadowing_sd_db: 6.0          # M38 — X_σ (SPEC ASM); some nodes then need a TS011 relay
+  comms:
+    outages:
+      - {gateway: g1, t_min: 43950, duration_min: 120}     # day 31, 12:30–14:30
+  haze:
+    scripted:
+      - {t_min: 42360, duration_min: 480, amplitude: 1.6}  # day 30, as node_mature
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}
+  ignition:
+    scripted:
+      - {t_min: 43980, x: 600, y: 445}                     # day 31, 13:00, as node_mature

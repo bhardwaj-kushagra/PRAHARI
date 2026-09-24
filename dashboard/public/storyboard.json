@@ -1,0 +1,62 @@
+{
+  "title": "PRAHARI-SIM conference storyboard (SPEC §11) — edit captions and bookmarks here; no rebuild needed",
+  "steps": [
+    {
+      "key": 1, "title": "The forest and the satellite pixel", "recording": "satellite_race.prs.jsonl.gz",
+      "day": 31, "time": "13:50", "speed": 60, "play": false, "panel": "health",
+      "layers": { "satellite": true, "baselines": false, "smoke": true, "interfaces": true },
+      "seconds": 15,
+      "caption": "A Terai-style forest with nodes 70 m apart. One VIIRS pixel (375 m) covers about 29 of our node cells."
+    },
+    {
+      "key": 2, "title": "Fixed thresholds", "recording": "node_mature.prs.jsonl.gz",
+      "day": 29, "time": "06:00", "speed": 600, "play": true, "panel": "health",
+      "layers": { "satellite": false, "baselines": true },
+      "seconds": 20,
+      "caption": "Cheap sensors with fixed thresholds: alarms all day long — and there is no fire."
+    },
+    {
+      "key": 3, "title": "Haze on a wet morning", "recording": "wet_morning_haze.prs.jsonl.gz",
+      "day": 30, "time": "10:00", "speed": 600, "play": true, "panel": "alerts",
+      "layers": { "baselines": false },
+      "seconds": 20,
+      "caption": "Haze lifts every node at once. PRAHARI holds what is common to the whole network (SCMR)."
+    },
+    {
+      "key": 4, "title": "The same haze with SCMR off", "recording": "wet_morning_haze__scmr-stub.prs.jsonl.gz",
+      "day": 30, "time": "10:00", "speed": 600, "play": true, "panel": "alerts",
+      "layers": { "baselines": false },
+      "seconds": 15,
+      "caption": "Switch that mechanism off, and here is what you get. (S toggles SCMR, R toggles RAQ.)"
+    },
+    {
+      "key": 5, "title": "A fire on a dry, busy afternoon", "recording": "satellite_race.prs.jsonl.gz",
+      "day": 31, "time": "14:00", "speed": 600, "play": true, "panel": "alerts",
+      "layers": { "satellite": false, "baselines": false, "smoke": true },
+      "seconds": 20,
+      "caption": "A fire starts by the path. Smoke drifts downwind; two nodes raise candidates, then the edge confirms."
+    },
+    {
+      "key": 6, "title": "Every alarm explains itself", "recording": "satellite_race.prs.jsonl.gz",
+      "day": 31, "time": "15:15", "speed": 60, "play": false, "panel": "alerts",
+      "seconds": 25,
+      "caption": "Why this alarm: the SCMR ratio, Fisher's combined p-value, the prior, and the posterior against the threshold."
+    },
+    {
+      "key": 7, "title": "The satellite race", "recording": "satellite_race.prs.jsonl.gz",
+      "day": 31, "time": "23:25", "speed": 60, "play": false, "scroll": "race-timeline",
+      "seconds": 15,
+      "caption": "PRAHARI confirmed this fire hours before the satellite alert — no overpass could see it until the evening."
+    },
+    {
+      "key": 8, "title": "Results", "panel": "results",
+      "seconds": 25,
+      "caption": "Over the full protocol: far fewer false alarms than fixed thresholds — and removing any mechanism makes it worse."
+    },
+    {
+      "key": 9, "title": "Everything here is simulated", "panel": "health",
+      "seconds": 15,
+      "caption": "Every model, equation, assumption and source tag is listed. All numbers are simulation output (SIM)."
+    }
+  ]
+}

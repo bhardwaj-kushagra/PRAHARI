@@ -1,0 +1,21 @@
+# Storyboard scenario (Phase 10, SPEC §11 steps 3–4): the mature network of `node_mature` (same seed, calibration,
+# tuning and haze), with day 30 set to a wet, quiet day, so the prior asks for 3 agreeing nodes. Only day 30 is
+# recorded: the haze rises from 10:00. Variants with SCMR or RAQ as stubs back the dashboard's S and R keys.
+scenario:
+  name: wet_morning_haze__raq-stub
+  description: "wet_morning_haze with RAQ off (stub: a fixed quorum of 2 whatever the day) — the R key"
+modules:
+  raq: stub
+run:
+  seed: 11
+  days: 30
+record:
+  every_k_ticks: 10
+  from_day: 29
+params:
+  haze:
+    scripted:
+      - {t_min: 42360, duration_min: 480, amplitude: 1.6}  # day 30, 10:00–18:00 plus ramps (as node_mature)
+  srp:
+    day_type_overrides:
+      - {day: 30, type: wet_quiet}

@@ -1,0 +1,99 @@
+# 3. Glossary
+
+Alphabetical. "M-number" refers to an equation in [`SPEC.md`](../SPEC.md) §5; the
+[models page](../architecture/03-models.md) says where each lives in the code.
+
+| Term | Meaning |
+| --- | --- |
+| **Ablation** | A PRAHARI variant with one mechanism replaced by its stub (P2-QCC, P2-TTC, P2-SCMR, P2-RAQ), run to show what that mechanism contributes. |
+| **Abstain** | A node whose health weight has fallen below 0.1 adds no evidence; the map draws it as a fault ("this sensor abstains", M29, Phase 9). |
+| **ALOHA (pure)** | Radios transmit whenever they have data; two frames that overlap in time on the same channel and SF are lost. Success probability e^(−2G) at offered load G (M40). |
+| **Anchor** | In the legacy edge form, the new candidate around which a cluster is formed. |
+| **ARL (average run length)** | Average time a quiet detector runs before a false alarm. P1's h ≈ 8.8 targets 30 days under textbook assumptions (M23). |
+| **ASM, DER, LIT, TGT, VEN** | Provenance tags on every parameter: ASM assumption, DER derived by calculation, LIT literature, TGT design target, VEN vendor datasheet. |
+| **Bayes factor (BF)** | How much more likely the data are under "fire" than "no fire". PRAHARI uses an upper bound computed from a p-value (M34). |
+| **Calibration days** | The first 14 days of a run, used to build each node's QCC reference set (M26, M46). |
+| **Candidate** | A node whose CUSUM crossed its threshold h. Shown as a pulsing ember dot on the map. Not yet an alarm. |
+| **Capture effect** | A frame at least 6 dB stronger than an overlapping one is still received (M40, assumed). |
+| **cffdrs** | The Canadian Forest Fire Danger Rating System software; its published test outputs verify M7. |
+| **Cluster** | Candidate nodes within R of each other in the last 30 minutes (M30). |
+| **Common mode** | An event that raises many nodes at once (haze, weather). Excluded from threshold tuning (M28) and rejected by SCMR (M31). |
+| **Confirmed / confirmation** | A cluster that passed the edge decision: SCMR and the RAQ rule (legacy: 2 agreeing nodes within R on dry, busy days, 3 on wet, quiet days; M31, M34). |
+| **Conformal p-value** | A p-value computed by ranking a new score among past scores; valid without assuming a distribution (M26). |
+| **Contract** | A data class that one stage passes to the next (for example `Residuals`, `PValues`); fields may only be added. |
+| **Controlled burn** | A deliberately lit, supervised fire used to collect labelled evidence; in the simulator, a scripted protocol fire in a training seed (M36). |
+| **CUSUM** | Cumulative-sum detector: G ← max(0, G + score − k); a candidate when G > h (M23, M28). |
+| **Degraded** | A module whose real version failed (exception or invalid output) and now runs its stub; shown in the health table. |
+| **Dropout** | A fault in which a node sends no data for a while; the simulator holds its last value and marks it missing (M21). |
+| **Edge layer** | Decisions made at the gateway over many nodes (M30–M35). |
+| **EWMA** | Exponentially weighted moving average; the slow baseline of M23/M24. |
+| **Exceedance** | Share of p-values at or below a level; for a calibrated p-value at 1% it should be about 1% (Phase 5 acceptance 1). |
+| **False-alarm budget** | The fixed rate of false incidents (3 per month in the learning preset) at which two decision rules are compared. |
+| **FFMC** | Fine Fuel Moisture Code, a daily index of litter dryness (M7). |
+| **Fisher's method** | Combining k p-values via X = −2 Σ ln p, chi-square with 2k degrees of freedom (M32). |
+| **Floor (p_min)** | The smallest possible conformal p-value, 1/(n + 1) for a calibration set of size n. |
+| **Frame** | One recorded snapshot of the simulation at a tick: weather, node values, events, alerts, health. |
+| **Freeze cap** | M24's rule that a frozen slow baseline resumes (with clipped updates) after 180 minutes. |
+| **Golden test / golden numbers** | Reproduction of the report's published results in legacy mode (SPEC §9.3). |
+| **h** | CUSUM threshold. P1 uses 8.8; PRAHARI tunes it by replay (M28); `h_default` is used before tuning. |
+| **Haze** | Regional smoke or pollution raising all nodes together for hours (M20). |
+| **Health weight (c)** | A 0–1 weight discounting a suspect node: 0 when its data are stale or stuck, falling as it disagrees with its neighbours (M29; the stub uses 1). |
+| **Heartbeat** | An hourly status frame from every node (unconfirmed, no retry); the main radio load in quiet times. |
+| **Incident** (escalation) | A tracked group of clusters in one place, with a level that only rises until it clears after 120 min without candidates (M35). Not the same as an M46 counting incident. |
+| **Incident** | Alarms merged within 60 minutes and 2R into one event for counting (M46). |
+| **Isolation / Slot** | The wrapper that runs every stage and falls back to its stub, then off, then the last good output, if it fails. |
+| **k** | CUSUM allowance subtracted each step: 0.5 on the z scale (P1), 1.5 on the −ln p scale (PRAHARI). |
+| **Learning curve** | Detection performance against the number of controlled burns K the likelihood ratio was fitted on (M36). |
+| **Legacy ablation** | A node-layer ablation built the way the report's simulation built it (for example, the CUSUM run on a median/MAD-scaled residual instead of conformal p-values), as opposed to swapping in the module's stub. |
+| **Legacy form** (edge) | The report simulation's edge decision: around each new candidate, count agreeing neighbours, test SCMR against the network, apply the day-type quorum (DECISIONS N-b, P6-2). |
+| **Legacy mode** | The model choices that reproduce the report (M9, M12, M17 linear, legacy prior and quorum). |
+| **Lightning storm** | A scripted disc in which strikes fall as a Poisson process and may start fires (M3 λ_light); while flagged, SCMR needs a ratio of 1.5 instead of 3. |
+| **Live mode** | The dashboard streaming frames from the optional FastAPI server instead of a file; mechanism switches then reconfigure the running engine. |
+| **Logistic regression (IRLS)** | A model of P(fire) from features, fitted by repeated weighted least squares; L2 keeps its weights small when data are few. |
+| **LoRaWAN, SF** | Long-range low-power radio network; SF (spreading factor 7–12) trades rate for range (M38–M40). |
+| **Maturity** | The growth of QCC calibration sets, which lowers the floor and strengthens evidence over the first weeks. |
+| **Model card** | The table in the dashboard listing each module, its equation, tag, state and notes. |
+| **MOX sensor** | Metal-oxide gas sensor; cheap, sensitive to smoke and to temperature and humidity (M17). |
+| **Node layer** | Per-node processing: TTC, QCC, score, CUSUM (M24–M29). |
+| **Nuisance event** | A short spike not caused by fire (vehicle, cooking) (M20). |
+| **Off** | A module state that switches the module out entirely (not allowed for weather, growth, sensor, siting). |
+| **Offline replay** | Phase 7 harness technique: record each minute's node evidence and candidates once, then feed them through edge variants or re-tuned thresholds without simulating the world again. |
+| **Offset fault** | A permanent step in a node's reading (±0.5–1.5 su, M21). |
+| **Operating dial** | The trade-off between false incidents and time to confirm, traced by re-tuning the node threshold h for several false-candidate targets (1 per 60, 30, 14 and 7 days per node). |
+| **Oracle** | `reference/prahari_simulation.py`, the report's original simulation, used to check the engine. |
+| **Overdispersion** | More seed-to-seed variation than a Poisson model predicts, because false alarms cluster. |
+| **Overpass** | A satellite passing over the area at a fixed local time (Terra 10:30 and 22:30, Aqua and VIIRS 13:30 and 01:30). |
+| **P0, P1, P1t, P2** | Pipelines: fixed threshold; v1 as written; v1 replay-tuned; PRAHARI. |
+| **Per-fire wind** | Legacy fire-injection option (`plume.wind: per_fire`): each protocol fire has its own constant random wind, as in the report's simulation. |
+| **Preset (experiment)** | A YAML file in `configs/experiments/` naming pipelines, seeds and options for `prahari experiment` (golden, ablation, spacing, seeds20). |
+| **Prior / prior odds** | Chance of a fire before looking at sensors, from activity and dryness (M33). |
+| **QCC** | Quantile-calibrated conformal p-values (M26). |
+| **Quiet pass / fire pass** | The two runs per seed in an experiment: without fires (false alarms) and with scripted fires (detection). |
+| **R** | Neighbourhood radius, 1.6 × node spacing (112 m at 70 m spacing). |
+| **Race timeline** | The strip under the map comparing ignition, first node candidate, PRAHARI confirmation, the satellite overpass and its alert (View 4). |
+| **RAQ** | Risk-adaptive quorum: the Bayes decision that sets how many nodes must agree today (M34). |
+| **Real / stub / off** | The three states of every module, chosen in YAML configuration. |
+| **Recording** | A gzipped JSON-lines file (`*.prs.jsonl.gz`): header, frames, traces, footer. |
+| **Refractory** | 30 minutes after a candidate during which the node cannot raise another. |
+| **Regime Card** | A configuration file for one fire regime (India, Canada, USA, Australia): weather, interface weights, haze, radio plan, lightning. |
+| **Replay tuning** | Finding h by rerunning the CUSUM over stored tuning-day scores (M28). |
+| **Reverse swap (2 × 2)** | A diagnostic that runs every combination of two backgrounds (engine, report simulation) and two fire sets through one chain, to separate the effect of the background from the effect of the fires. |
+| **SCMR** | Spatial common-mode rejection: a cluster must be ≥ 3× more active than the network (M31). |
+| **Seed** | The master random number; the same seed gives a byte-identical recording. |
+| **Shadowing (X_σ)** | Random extra path loss per link from terrain and trees, N(0, 6²) dB in the Phase 8 scenarios (M38). |
+| **SIM** | Label on every simulated value; nothing here is field data. |
+| **SRP** | The prior module (M33). |
+| **Stage** | One replaceable step of the model (for example `qcc`), registered with its real, stub and off versions. |
+| **State of charge (SoC)** | Stored energy as a share of the supercapacitor's usable 4.56 Wh (M43). |
+| **Store-and-forward** | When a node's gateway is out, it keeps candidate frames and sends them when the gateway returns. |
+| **Stuck-at fault** | A sensor whose reading freezes; caught by its flat rolling variance (M21, M29). |
+| **su (sensor units)** | The simulator's unit for sensor output; 2.5 su is a fully grown fire 50 m downwind. |
+| **Time on air** | How long one LoRa frame occupies the channel: 61.7 ms at SF7, 1,482.8 ms at SF12 for 24 bytes (M39). |
+| **Trace (evidence trace)** | A record explaining a candidate or a decision: p-values, CUSUM, SCMR, Fisher, prior, rule used. |
+| **TS011 relay** | LoRa Alliance relay specification: a node with no direct gateway link sends through a neighbour that has one. |
+| **TTC** | Two-timescale conditioning: slow baseline plus fast lagged residual (M24, M25). |
+| **Tuning days** | Days 15–28 of a run, used to tune h (M28). |
+| **ULP mode** | Ultra-low-power BME688 scanning (0.09 mA) that a node falls back to below 20% state of charge; below 5% it stops. |
+| **Variant recording** | A recording of the same scenario and seed with one module switched, named `<scenario>__<module>-<state>`; used by the mechanism switches in replay. |
+| **Warm start** | Simulating from day 0 but recording from a later day (`record.from_day`), to show a mature network. |
+| **z-score** | (reading − baseline) / spread. |

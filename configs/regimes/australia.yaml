@@ -1,0 +1,24 @@
+# Regime Card — Australia, dry eucalypt forest in summer (SPEC §8.1: AU915). Hot and dry with strong winds;
+# lightning allowed; roads and power lines weigh strongly.
+regime_card:
+  name: australia
+  label: "Australia — dry eucalypt summer"
+  radio_plan: AU915
+  alert_format: aus_warnings
+  lightning: true
+  source: "SPEC §8.1 (AU915); ASM weather and weights (illustrative)"
+params:
+  weather:
+    t_mean_c: 32.0
+    t_amp_c: 12.0
+    dew_point_c: 4.0
+    wind_median_ms: 4.0
+    prevailing_dir_deg: 300.0
+    rain_prob_day: 0.01
+  landscape:
+    weights: {path: 1.0, village: 1.0, road: 1.2, power_line: 1.5}
+    decay_m: {path: 30, village: 150, road: 60, power_line: 40}
+  haze:
+    crop_burning_multiplier: 1.0
+  comms:
+    channels: 8                   # AU915: one 8-channel sub-band

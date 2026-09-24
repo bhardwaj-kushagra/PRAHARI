@@ -1,0 +1,18 @@
+# Node-layer scenario (Phase 5): the signals_3day world — same seed, weather, nuisance and haze episode on day 2 —
+# plus one scripted fire on day 3 at 13:00 beside the north-east footpath. The real node layer (TTC, QCC, CUSUM with
+# h_default until tuned) raises candidates at the fire; the edge layer is still the stub (fixed quorum).
+scenario:
+  name: node_3day
+  description: "Three days of realistic signals with a haze episode (day 2) and a fire (day 3): node evidence M24–M28"
+run:
+  seed: 11
+  days: 3
+record:
+  every_k_ticks: 10
+params:
+  haze:
+    scripted:
+      - {t_min: 2040, duration_min: 480, amplitude: 1.6}   # day 2, 10:00–18:00 plus ramps
+  ignition:
+    scripted:
+      - {t_min: 3660, x: 600, y: 445}                      # day 3, 13:00

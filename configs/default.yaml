@@ -1,0 +1,456 @@
+# PRAHARI-SIM default configuration (SPEC §4.3).
+# This file is also the schema: regime and scenario files may only override keys defined here.
+# Every parameter block carries `source`: a provenance tag (LIT, VEN, DER, ASM, TGT) plus reference.
+
+regime: null                      # name of configs/regimes/<name>.yaml, or null
+regime_card:                      # Phase 9 — identity of the Regime Card in use (SPEC §8.1); the defaults are India-like
+  name: none                      # no card: configs/default.yaml alone
+  label: "Default (India-like, no card)"
+  radio_plan: IN865
+  alert_format: none
+  lightning: false
+  source: "ASM; SPEC §8.1"
+
+experiment:                       # `prahari experiment` (Phase 4)
+  pipelines: [P0, P1]
+  seeds: [11]
+  node_metrics: false            # Phase 5: also step the node layer in the quiet pass (M26/M28 acceptance)
+  dial: []                        # Phase 7: operating dial — re-tuned M28 targets (node-local false candidates per node per 30 d)
+  spacings: []                    # Phase 7: node spacings to sweep (m); empty = world.spacing_m only
+  ablation_form: stub             # P2-QCC / P2-TTC as module stubs (SPEC switches); legacy = the report simulation's variants
+  train_seeds: []                 # Phase 9 learning preset: seeds whose protocol fires are the controlled burns (M36)
+  ks: []                          # Phase 9: numbers of burns K for the learning curve
+  fa_budget_per_month: 3.0        # Phase 9: false-alarm budget at which rules are compared (TGT, near P2's golden rate)
+  maturity_seeds: []              # Phase 9: seeds for the calibration-maturity curve (M26)
+  maturity_cal_days: []           # Phase 9: days of quiet calibration data to sweep
+  maturity_test_days: 10          # Phase 9: test days per maturity run
+
+run:
+  seed: 11
+  start: "2026-04-15T00:00"
+  days: 1
+  tick_minutes: 1
+
+scenario:
+  name: default
+  description: "Default configuration"
+
+record:
+  every_k_ticks: 5                # plus every tick that has an event or alert
+  lambda_cell_m: 20               # cell size of the ignition-likelihood heat layer in the header
+  plume_every_ticks: 5            # SPEC §5.5 — plume grid for the heat overlay every 5 ticks while fires burn
+  plume_cell_m: 10
+  plume_margin_m: 300             # grid covers the fires' bounding box ± this margin
+  from_day: 0                     # warm start: simulate from day 0, write frames and traces from this day on
+
+world:
+  layout: grid                    # grid | corridor | greedy (M1, M4); the siting stub always uses grid
+  n_nodes: 100
+  spacing_m: 70
+  offset_m: null                  # grid origin on both axes; null centres the grid in the map
+  radius_factor: 1.6              # M30 — neighbourhood radius R = 1.6 s
+  width_m: 1400                   # landscape larger than the grid so siting and SF choices matter
+  height_m: 1400
+  gateways:
+    - {id: g1, x: 700, y: 1390}
+  # Ignition interfaces (M2): an illustrative Terai-style landscape, x east and y north, metres.
+  interfaces:
+    - {kind: village, closed: true, points: [[90, 110], [330, 80], [400, 260], [300, 380], [120, 340]]}
+    - {kind: path, points: [[390, 250], [520, 380], [640, 470], [780, 540], [930, 660], [1060, 820], [1180, 1010], [1300, 1250]]}
+    - {kind: path, points: [[220, 370], [260, 560], [330, 760], [420, 930], [540, 1080], [640, 1260], [700, 1380]]}
+    - {kind: road, points: [[0, 30], [400, 20], [800, 50], [1400, 90]]}
+    - {kind: power_line, points: [[0, 1130], [450, 1040], [900, 950], [1400, 850]]}
+  source: "ASM; illustrative landscape; grid layout and spacing as in the report simulation"
+
+# Module states: real | stub | off (SPEC §4.2). Phase 0 ships stubs only.
+modules:
+  landscape: real                 # setup modules (Phase 1) run once before the first tick
+  siting: real
+  links: real
+  weather: real                   # Phase 2
+  ffmc: real                      # Phase 2, verified against cffdrs
+  ignition: real                  # Phase 3a (scripted + Poisson; expected_fires 0 = scripted only)
+  growth: stub
+  plume: stub                     # legacy M12 (reproduces the report); `real` = Gaussian M11 (Phase 3b, advanced)
+  nuisance: real                  # Phase 2
+  haze: real                      # Phase 2
+  sensor: real                    # Phase 2
+  faults: stub
+  ttc: real                       # Phase 5 — M24 with the freeze cap, M25 fast residual
+  qcc: real                       # Phase 5 — M26 conformal p-values
+  score: stub                     # M27 with one channel and c = 1 is exactly the stub; M29 is advanced
+  cusum: real                     # Phase 5 — M28, replay-tuned h
+  comms: stub
+  srp: real                       # Phase 6 — M33 legacy day-type prior
+  cluster: real                   # Phase 6 — M30 (legacy form: around each new candidate, as the report)
+  scmr: real                      # Phase 6 — M31
+  fisher: real                    # Phase 6 — M32
+  learn: stub                     # the M34 Sellke–Bayarri–Berger bound; the real M36 fit is Phase 9
+  raq: real                       # Phase 6 — M34 (legacy quorum by default; Bayes form selectable)
+  escalate: real                  # Phase 6 — M35
+  energy: stub
+  satellite: stub
+  baseline_p0: real               # Phase 4 — P0 fixed threshold (M22)
+  baseline_p1: real               # Phase 4 — P1 v1 as written (M23)
+  baseline_p1t: real              # Phase 5 — P1t, v1 with h replay-tuned by M28
+
+params:
+  landscape:
+    raster_m: 10                  # M2 — distance fields on a 10 m raster
+    lambda0: 1.0e-9               # M3 — λ₀, attempts per m² per minute; rescaled per scenario from Phase 3a
+    weights: {path: 1.0, village: 1.5, road: 1.0, power_line: 0.5}      # M3 — w_k
+    decay_m: {path: 30, village: 150, road: 50, power_line: 20}       # M3 — L_k
+    non_forest: [village]         # closed features excluded from siting and ignition
+    source: "ASM; SPEC §5.1 M3 defaults; human-caused share LIT [17]"
+  siting:
+    detection_radius_m: 50        # M4 — r_d, detection at about 50 m downwind
+    corridor_offset_m: 15         # M1 — lateral offset ±d
+    corridor_classes: [path, village]
+    source: "LIT [3] detection radius; ASM corridor offset and classes"
+  links:
+    ptx_dbm: 14                   # M38 — P_tx
+    gain_tx_dbi: 2
+    gain_rx_dbi: 2
+    margin_db: 3
+    pl_ref_db: 100                # M38 — 100 dB at 200 m in forest at 922 MHz
+    d_ref_m: 200
+    pl_exponent: 6.644            # M38 — n = 20 / (10 log10 2), from 100 dB @ 200 m and 120 dB @ 400 m
+    sensitivity_dbm: {7: -123, 8: -126, 9: -129, 10: -132, 11: -134.5, 12: -137}
+    shadowing_sd_db: 0.0          # M38 — X_σ; 0 keeps Phase 1 links; Phase 8 scenarios use 6 dB (SPEC ASM)
+    source: "LIT [3] path loss; DER exponent; VEN SX127x sensitivities at 125 kHz, gains and power; ASM shadowing σ"
+  weather:
+    T_c: 30.0                     # stub: constant weather
+    RH_pct: 40.0
+    wind_ms: 1.5
+    wind_dir_deg: 270.0           # meteorological: wind FROM the west
+    t_mean_c: 30.0                # M5 — T̄ (India pre-monsoon card)
+    t_amp_c: 7.0                  # M5 — A_T
+    dew_point_c: 10.0             # M5/M6 — mean dew point
+    day_phi: 0.8                  # daily means: mean-reverting walk, lag-1 per day
+    day_sd_c: 1.0                 # daily means: stationary sd
+    noise_phi: 0.98               # M5 — ε_T AR(1) per tick
+    noise_sd_c: 0.3               # M5 — ε_T stationary sd
+    wind_median_ms: 1.5           # M5 — lognormal wind at 10 m
+    wind_sigma_log: 0.4
+    wind_phi: 0.995               # wind persistence per tick (log space)
+    prevailing_dir_deg: 250.0     # M5 — prevailing direction (from WSW)
+    dir_phi: 0.999                # direction walk persistence per tick
+    dir_sd_deg: 30.0              # direction walk stationary sd
+    rain_prob_day: 0.02           # M5 — daily rain probability (India card)
+    rain_median_mm: 5.0           # event total, lognormal
+    rain_sigma_log: 1.0
+    rain_duration_min: [60, 240]
+    source: "ASM; SPEC §5.2 M5 defaults and §8.1 India card; persistence and rain-event shape ASM"
+  ffmc:
+    constant_ffmc: 85.0           # stub
+    startup_ffmc: 85.0            # M7 — standard start-up value (validated for Canada, not India)
+    update_minute: 720            # M7 — daily code from noon weather
+    coefficient: 147.27723        # M7 — 250 · 59.5 / 101, as in cffdrs (erratum E-6)
+    source: "LIT [15][16] Van Wagner 1987, cffdrs; start-up value LIT [15]"
+  ignition:
+    scripted: []                  # list of {t_min, x, y}
+    fire_lifetime_min: 180        # fire signal window, as in the report simulation
+    expected_fires: 0.0           # Poisson sustained fires per run at the reference FFMC (0 = scripted only)
+    ps_reference_ffmc: 90.0       # FFMC used to scale λ₀ (DER)
+    ps_a: -21.0                   # M8 — logistic intercept (shape only; refit for Indian fuels)
+    ps_b: 0.25                    # M8 — logistic slope
+    activity_night: 0.2           # M3 — a(t) at night
+    activity_day: 1.0             # M3 — a(t) from 09:00 to 18:00
+    activity_ramp_up_h: [6.0, 9.0]
+    activity_ramp_down_h: [18.0, 21.0]
+    market_days: []               # day indices (0 = first day) with ×market_multiplier activity
+    market_multiplier: 1.5
+    storms: []                    # M3 λ_light — lightning storms: {t_min, duration_min, x, y, radius_m, strikes_per_min}
+    strike_ignition_prob: 0.3     # ASM — a strike starts a fire with this probability × p_s(FFMC)
+    storm_hold_min: 180           # ASM — the lightning flag lasts this long after a storm (its fires are still found)
+    source: "ASM; M3 activity and M8 shape (form LIT [10]); λ₀ DER from expected_fires; lifetime from report simulation; lightning storms and strike probability ASM"
+  growth:
+    q_ref: 8.7259                 # M12 — Q_ref = 2.5 su × exp(50/40), so C = 2.5 su at 50 m downwind
+    qmax_lognormal_sigma: 0.5     # M9
+    tau_g_min: 10.0               # M9
+    area_15min_m2: 20.0           # M37 fallback area A_15
+    source: "DER q_ref from M12 target 2.5 su at 50 m (LIT [3]); ASM tau_g, sigma, A_15"
+  plume:
+    decay_length_m: 40.0          # M12 — L
+    intermittency_sigma: 0.5      # M12 — ε = exp(N(0, σ²) − σ²/2); also applied to the Gaussian plume
+    wind: weather                 # legacy stub: weather = the simulated wind; per_fire = the report's fire injection
+    per_fire_speed_m_min: [30.0, 120.0]   # per_fire: each fire's own speed ~ U(30, 120) m/min, direction ~ U(0, 2π)
+    receptor_height_m: 2.5        # M11 — z, trunk mount (LIT [3])
+    source_height_m: 0.5          # M11 — H, plume rise ignored for small fires
+    stability_day: C              # M14 — class by day
+    stability_night: E            # M14 — class at night
+    day_hours: [6.0, 18.0]
+    canopy_alpha: 0.4             # M15 — u_c = α_c u10
+    canopy_floor_ms: 0.5          # M15 — floor
+    upwind_floor: 0.1             # M11/M13 — upwind nodes see ~10% (LIT [3])
+    calibration_target_su: 2.5    # calibrate_q — legacy value 50 m downwind at full growth
+    calibration_distance_m: 50.0
+    calibration_class: C
+    calibration_wind_ms: 1.5      # reference 10 m wind (median of the India card)
+    source: "ASM; L tuned to ~50 m downwind detection LIT [3]; Briggs σ LIT; receptor height and upwind floor LIT [3]; Q calibrated DER; per_fire LIT reference/prahari_simulation.py inject_fires"
+  sensor:
+    baseline_su: 0.0              # stub
+    noise_sd_su: 0.23             # stub; SPEC §5 units: quiet residual sd ≈ 0.23 su
+    cycle_amp: [0.2, 0.4]         # M18 — c_i ~ U(0.2, 0.4) after T/RH compensation
+    phase_range: 0.3              # M18 — φ_i ~ U(−0.3, 0.3)
+    day_amp_sd: 0.3               # M18 — A_day varies ±30% day to day
+    day_amp_clip: [0.3, 2.0]
+    raw_extra: 0.7                # M18 — uncompensated channel adds 0.7 A_day sin(·)
+    drift_step_sd: 0.002          # M18 — random-walk drift per minute
+    ageing_sd: 0.5                # M18 — linear ageing over the run
+    ar_phi: 0.95                  # M19
+    sigma_e: 0.05                 # M19
+    het_extra: 0.6                # M19 — daytime noise factor
+    tail_scale: 0.05              # M18 — 0.05 t₃
+    tail_df: 3
+    source: "ASM; SPEC §5.6 M18–M19, matching reference/prahari_simulation.py"
+  nuisance:
+    roadside_frac: 0.5            # M20 — half the nodes are roadside
+    rate_roadside_per_day: 1.0
+    rate_other_per_day: 0.2
+    amp_median: 1.5               # M20 — a ~ Lognormal(ln 1.5, 0.6)
+    amp_sigma_log: 0.6
+    tau_range: [2.0, 10.0]        # M20 — τ ~ U(2, 10) min
+    duration_min: 60
+    source: "ASM; SPEC §5.6 M20, matching reference/prahari_simulation.py"
+  haze:
+    base_rate_per_10d: 1.0        # M20 — 1 episode per 10 days
+    crop_burning_multiplier: 1.0  # India card raises this in crop-burning season
+    duration_range: [180, 720]    # M20 — D ~ U(180, 720) min
+    amp_range: [0.8, 2.5]         # M20
+    ramp_min: 60                  # M20 — 60-minute linear ramps
+    gain_sd: 0.2                  # M18 — g_i ~ N(1, 0.2²)
+    gain_clip: [0.5, 1.5]
+    scripted: []                  # scenario-scripted episodes: {t_min, duration_min, amplitude}
+    source: "ASM; SPEC §5.6 M18/M20, matching reference/prahari_simulation.py"
+  faults:                         # Phase 9 — M21 (real); the stub injects nothing
+    rate_per_node_30d: {stuck: 0.05, offset: 0.1, spike: 0.1, dropout: 0.2}   # M21 — SPEC defaults
+    stuck_duration_min: [360, 4320]   # ASM — a stuck sensor stays stuck 6 h to 3 days
+    offset_su: [0.5, 1.5]         # M21 — offset jump ±U(0.5, 1.5) su (permanent)
+    spike_samples: [5, 20]        # M21 — spike burst length
+    spike_su: 5.0                 # M21 — ±5 su
+    dropout_min: [10, 600]        # M21 — missing data 10–600 min
+    scripted: []                  # {node, kind, t_min, duration_min?, value_su?}
+    source: "ASM; SPEC §5.6 M21 rates and effects; stuck duration assumed"
+  score:                          # Phase 9 — M27 with M29 health weights (real); the stub is c = 1
+    fresh_min: 5                  # M29 — data within the last 5 minutes
+    stuck_window_min: 60          # M29 — rolling 60-minute variance …
+    stuck_frac: 0.01              # M29 — … above 1% of the node's median variance
+    stuck_floor: 1.0e-9           # ASM — su²; a flat window is stuck however quiet the node's history
+    variance_history_h: 24        # ASM — hourly variances kept for the node's median
+    consensus_min: 1440           # M29 — neighbour consensus over the last day
+    consensus_every_min: 10       # ASM — the day-smoothed consensus is refreshed every 10 minutes
+    source: "ASM; SPEC §5.8 M29"
+  ttc:
+    slow_tau_min: 720             # M24 — α = 1/720 per minute
+    freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3
+    initial_sd_su: 0.23
+    freeze_cap_min: 180           # M24 — resume with a winsorised residual after 180 frozen minutes (real)
+    init_min: 1440                # real: first day sets b and s², then the filter replays it (report simulation)
+    var_floor: 1.0e-4             # real: s² floor at initialisation (report simulation)
+    fast_lag0_min: 60             # M25 — fast residual against the mean of x over t−180 … t−61
+    fast_lag1_min: 180
+    detect_on: fast               # fast = M25 residual; slow = capped slow z (legacy "minus two-timescale" ablation)
+    source: "LIT M24/M25 and the report simulation (reference/prahari_simulation.py); ASM stub warm-up; LIT detect_on slow = scores() C_slow"
+  qcc:
+    bins: 6                       # M26 — six 4-hour time-of-day bins
+    cal_days: 14                  # M26 — calibration days (M46 protocol)
+    window: frozen                # frozen = report simulation; sliding = SPEC maturity window (advanced)
+    window_days: 28               # M26 — sliding window maximum
+    form: conformal               # conformal = M26; robust_z = median/MAD z of r (legacy "minus conformal" ablation)
+    source: "LIT M26 and the report simulation; ASM sliding option; LIT form robust_z = gauss_z()"
+  cusum:
+    k: 0.5                        # M23 — reference value on the z scale (stub = v1 CUSUM)
+    arl_min: 43200                # M23 — in-control ARL of 30 days
+    refractory_min: 30            # M28
+    warmup_min: 60                # stub only: CUSUM held at 0 while the TTC baseline warms up
+    single_sample_h: 6.9          # off mode: −ln(1e-3)
+    k_node: 1.5                   # M28 — real: reference value on the −ln p scale
+    statistic: neglogp            # neglogp = M28; z = signed z from qcc robust_z (legacy "minus conformal" ablation)
+    k_z: 0.5                      # legacy ablation: reference value on the z scale (report simulation KS G_fast)
+    start_min: 180                # real: CUSUM starts once the M25 window is full (experiments: test period)
+    tune_start_min: 20160         # M28 — tuning days 15–28 (M46 protocol: 14 d calibration, 14 d tuning)
+    tune_end_min: 40320
+    target_per_node_30d: 1.0      # M28 — target r: 1 node-local false candidate per node per 30 days
+    h_default: 218.7              # SPEC §10 fallback until tuned: mean tuned h of the report simulation, seeds 11–55
+    h_lo: 0.5                     # M28 — bisection bracket and iterations (report simulation)
+    h_hi: 400.0
+    bisect_iters: 18
+    cm_z: 3.0                     # M28 — common mode: ≥ 25% of nodes with slow z ≥ 3, padded ±60 min
+    cm_frac: 0.25
+    cm_pad_min: 60
+    source: "TGT ARL 30 d and r = 1/30 d; LIT M28 and the report simulation; DER h_default (oracle mean tuned h); LIT statistic z, k_z (KS)"
+  cluster:
+    window_min: 30                # M30 — W
+    form: legacy                  # legacy = around each new candidate (report simulation); components = M30 graph
+    source: "ASM; report simulation (window); LIT M30 and the report simulation (form)"
+  scmr:
+    ratio_min: 3.0                # M31 — ρ ≥ 3
+    ratio_min_lightning: 1.5      # M31 — relaxed while the prior carries a lightning-storm flag (ASM, untested hypothesis)
+    source: "LIT M31 and the report simulation; ASM lightning relaxation (SPEC M31)"
+  fisher:
+    rate_per_node_30d: 1.0        # M32 — candidate p-value p_i ≈ r·ΔT with r = 1 per node per 30 d …
+    window_min: 30                # … and ΔT = W = 30 min → 6.9e-4
+    source: "DER M32 from the M28 target rate and the M30 window"
+  learn:                          # Phase 9 — M36 fitted likelihood ratio (real); the stub is the M34 SBB bound
+    k_min: 10                     # M36 step 5 — use the fit once it has seen ≥ 10 controlled burns
+    l2: 1.0                       # M36 — L2 penalty on the standardised weights (ASM)
+    rho_clip: [1.0e-3, 1.0e+3]    # M36 — ln ρ_C taken on a clipped ratio (ASM)
+    model_file: null              # fitted model (JSON) from `prahari experiment --preset learning`; null = bound
+    source: "LIT M36 (SPEC §5.10); ASM penalty and clip"
+  srp:
+    prior_odds: 1.0e-4            # stub: M33 legacy — dry, busy day
+    day_type: dry_busy            # stub
+    p_dry: 0.5                    # real: P(dry, busy day), as the report simulation
+    odds_dry: 1.0e-4              # M33 legacy — dry, busy day
+    odds_wet: 1.0e-6              # M33 legacy — wet, quiet day
+    day_type_overrides: []        # scenario or harness: [{day: 31, type: dry_busy}] (1-based days)
+    form: legacy                  # legacy = day type (default); integral = M33 as written, per cluster (Phase 9)
+    fires_per_30d: 1.0            # integral: sustained fires the map expects in 30 days (scales λ, as ignition λ₀)
+    window_min: 30                # integral: Δt
+    ps_a: -21.0                   # integral: M8, as params.ignition
+    ps_b: 0.25
+    ps_reference_ffmc: 90.0
+    activity_night: 0.2           # integral: M3 a(t), as params.ignition
+    activity_day: 1.0
+    activity_ramp_up_h: [6.0, 9.0]
+    activity_ramp_down_h: [18.0, 21.0]
+    source: "TGT M33 legacy day-type prior; LIT P(dry) 0.5 from the report simulation; ASM integral scale (fires_per_30d); M3/M8 shapes as ignition"
+  raq:
+    fixed_quorum: 2               # stub: M34 legacy — dry, busy day
+    cost_ratio: 0.01              # M34 — C_FA / C_miss
+    form: legacy                  # real: legacy = day-type quorum (report); bayes = BF bound × prior odds ≥ cost ratio
+    quorum_dry: 2                 # M34 legacy consequence — dry, busy day
+    quorum_wet: 3                 # M34 legacy consequence — wet, quiet day
+    rate_per_node_30d: 1.0        # M32 candidate p-value, for the Bayes reverse view of the quorum
+    window_min: 30
+    source: "TGT M34 cost ratio and legacy quorums; LIT SBB bound"
+  escalate:
+    clear_min: 120                # M35 — cleared after 120 min without candidates
+    growth_min: 30                # M35 — escalate when an incident grows by ≥ 2 nodes within 30 min …
+    growth_nodes: 2
+    escalate_km: 1.0              # M35 — … or another confirmed incident lies within 1 km
+    source: "ASM; M35"
+  satellite:
+    fixed_delay_min: 90
+    pixel_m: 375                  # VIIRS I-band pixel, for the map overlay
+    passes:                       # M37 — overpass local times (IST)
+      - {platform: Terra, sensor: MODIS, time: "10:30"}
+      - {platform: Terra, sensor: MODIS, time: "22:30"}
+      - {platform: Aqua, sensor: MODIS, time: "13:30"}
+      - {platform: Aqua, sensor: MODIS, time: "01:30"}
+      - {platform: VIIRS, sensor: VIIRS, time: "13:30"}
+      - {platform: VIIRS, sensor: VIIRS, time: "01:30"}
+    delay_min: {MODIS: [40.0, 60.0], VIIRS: [60.0, 90.0]}   # M37 — processing delay after the overpass
+    a_det_m2: 500.0               # M37 — detection threshold (illustrative)
+    p_miss: 0.2                   # M37 — missed for cloud or canopy (illustrative)
+    area_15min_m2: 20.0           # M37 — A_15 of the fallback area law (as growth.area_15min_m2)
+    horizon_days: 3               # overpasses searched beyond the run
+    source: "ASM; SPEC §4.2 satellite stub; LIT [17] VIIRS 375 m pixel, overpass times and processing delays; ASM A_det, p_miss (illustrative)"
+  baseline_p0:
+    init_min: 1440                # M22 — first day of raw data sets the threshold
+    n_sigma: 3.0                  # M22 — μ + 3σ
+    refractory_min: 30            # M22 — rising edges 30 min apart count as alarms
+    start_min: 1440               # first minute alarms may be raised (experiments: start of the test period)
+    source: "TGT; M22 as in the abstract-era design and the report simulation"
+  baseline_p1:
+    init_min: 1440                # first day initialises the EWMA (report simulation)
+    slow_tau_min: 720             # M24 — α = 1/720
+    freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3, no cap (v1 as written)
+    var_floor: 1.0e-4
+    k: 0.5                        # M23
+    h: 8.8                        # M23 — Siegmund ARL 43,200 gives 8.815; 8.8 as written in the report
+    refractory_min: 30
+    window_min: 30                # M23 — confirmation window
+    quorum: 2                     # M23 — two or more candidates within R
+    start_min: 1440
+    source: "TGT; M23 v1 as written, parameters as in the report simulation (DER h)"
+  baseline_p1t:
+    init_min: 1440
+    slow_tau_min: 720             # M24
+    freeze_z: 3.0
+    freeze_cap_min: 180           # M24 — with the cap (report simulation's P1t uses the lock-up fix)
+    var_floor: 1.0e-4
+    k: 0.5                        # M23
+    refractory_min: 30
+    window_min: 30
+    quorum: 2
+    start_min: 1440
+    tune_start_min: 20160         # M28 tuning, as for the node CUSUM
+    tune_end_min: 40320
+    target_per_node_30d: 1.0
+    h_default: 400.0              # DER — the report simulation's bisection ends at its 400 cap on seeds 11–55
+    h_lo: 0.5
+    h_hi: 400.0
+    bisect_iters: 18
+    cm_z: 3.0
+    cm_frac: 0.25
+    cm_pad_min: 60
+    source: "LIT SPEC §5.7 P1t = P1 with h tuned by M28; parameters as in the report simulation (DER h_default)"
+  evaluation:
+    calibration_days: 14          # M46 — test protocol
+    tuning_days: 14
+    test_days: 30
+    merge_min: 60                 # M46 — incident merging
+    merge_radius_factor: 2.0      # M46 — within 2R
+    detect_radius_m: 150.0        # M46 — detection radius
+    detect_window_min: 180        # M46 — within 3 hours
+    slot_min: 360                 # M46 — fires at 6-hour slots
+    slot_start_min: 120
+    slot_end_margin_min: 400
+    slot_jitter_min: 60
+    dry_day_prob: 0.5
+    fire_prob_dry: 0.8            # M46 — probability 0.8 on dry days
+    fire_prob_wet: 0.2            # M46 — 0.2 on wet days
+    month_days: 30
+    exceed_p: 0.01                # Phase 5 acceptance 1 — QCC exceedance at nominal 1% …
+    exceed_target: [0.008, 0.020] # … within 0.8–2.0% on held-out quiet data
+    local_cand_target: [0.5, 1.5] # Phase 5 acceptance 2 — 1 ± 0.5 node-local false candidates per node per 30 d
+    source: "LIT FIRENET–PRAHARI report protocol (M46), as in reference/prahari_simulation.py; TGT SPEC §7 Phase 5 acceptance"
+  comms:                          # Phase 8 — real LoRa uplinks (M38–M40); the stub is a perfect link
+    payload_b: 24                 # M39 — frame payload, bytes
+    bw_hz: 125000                 # M39 — bandwidth
+    cr: 1                         # M39 — coding rate 4/5
+    channels: 3                   # M40 — uplink channels (IN865 default plan)
+    capture_db: 6.0               # M40 — capture effect: a frame 6 dB stronger survives an overlap
+    retries: 3                    # M40 — confirmed (candidate) uplinks retry up to 3 times
+    backoff_s: [1.0, 10.0]        # M40 — random back-off U(1, 10) s
+    heartbeat_min: 60             # M40 — heartbeat frames hourly (unconfirmed)
+    relay_delay_s: 1.0            # TS011 — relay forwarding delay
+    queue_max: 64                 # store-and-forward — frames a node can hold during an outage
+    outages: []                   # gateway outages: {gateway, t_min, duration_min}
+    source: "VEN Semtech time on air, IN865 plan and TS011 [42]; ASM capture, back-off, relay delay, queue size; SPEC M40"
+  energy:                         # Phase 8 — node energy (M41–M43); the stub is an infinite supply
+    voltage_v: 3.3                # M41
+    sensor_kind: bme688           # bme688 | mq2 (comparison: heater 950 mW)
+    bme688_mode: standard         # scan mode above 20% SoC: standard | lp (ULP below 20%)
+    bme688_ma: {ulp: 0.09, lp: 0.9, standard: 3.9}   # M41 — VEN [33]
+    mq2_heater_mw: 950.0          # M41 — VEN [34]
+    mcu_active_ma: 80.0           # M41 — ESP32 active, 1 s per minute (VEN, typical)
+    mcu_active_s_per_min: 1.0
+    mcu_sleep_ma: 0.010           # M41 — ESP32 deep sleep 10 µA
+    tx_ma: 44.0                   # M41 — LoRa transmit at 14 dBm, for each frame's time on air
+    rx_ma: 11.0                   # M41 — LoRa receive, Class A windows
+    rx_window_s: 0.1              # ASM — each of the two Class A receive windows
+    panel_kw: 0.001               # M42 — A η: 1 W panel equivalent
+    irradiance_kwh_m2_day: 5.0    # M42 — G_day, pre-monsoon India
+    canopy_k: 0.3                 # M42 — k_canopy
+    canopy_spread: 0.0            # ASM — per-node shade k_canopy × U(1 − s, 1 + s); 0 = uniform
+    cloudy_factor: [0.1, 0.4]     # M42 — a cloudy day scales harvest by U(0.1, 0.4)
+    cloudy_days: []               # scripted cloudy days (day numbers from 1)
+    cloudy_day_prob: 0.0          # ASM — random cloudy days
+    capacitance_f: 3000.0         # M43 — two 3,000 F, 2.7 V cells
+    v_max: 2.7
+    v_min: 1.35
+    cells: 2
+    initial_soc: 1.0              # ASM — full at the start of a run
+    ulp_below: 0.20               # M43 — ULP scanning below 20%
+    stop_below: 0.05              # M43 — stops below 5%
+    resume_at: 0.10               # ASM — hysteresis: restarts at 10%
+    source: "VEN [33] [34] currents and typical ESP32/SX127x figures; ASM panel, canopy, windows, hysteresis; DER M43 store"
+  display:
+    elevated_p: 0.01              # node shown as elevated below this p-value
+    confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation
+    low_power_soc: 0.05           # M43 — below 5% the node shows as low power
+    abstain_c: 0.1                # M29 — below this health weight the node shows as faulty (abstains)
+    source: "ASM; dashboard display thresholds"

@@ -1,0 +1,20 @@
+# Seed sweep (Phase 7): the golden pipelines over seeds 11–30, for comparing distributions with the report simulation
+# (overdispersed false alarms make five seeds a noisy sample; DECISIONS P4-7, P6-11).
+scenario:
+  name: seeds20_legacy
+  description: "Golden pipelines over 20 seeds (11–30)"
+experiment:
+  pipelines: [P0, P1, P1t, P2, P2-SCMR, P2-RAQ]   # edge ablations replayed offline (cheap)
+  seeds: [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
+  node_metrics: true
+modules:
+  ignition: stub                  # scripted by the protocol in the fire pass
+  growth: stub                    # M9 legacy
+  plume: stub                     # M12 legacy
+  sensor: real
+  nuisance: real
+  haze: real
+  faults: stub
+params:
+  plume:
+    wind: per_fire                # the report simulation's fire injection: constant random wind per fire (P7-1)

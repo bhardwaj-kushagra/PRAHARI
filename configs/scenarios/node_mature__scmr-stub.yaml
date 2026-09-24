@@ -1,0 +1,23 @@
+# Mechanism-switch variant of node_mature (Phase 6, SPEC View 5): identical seed, world, haze and fire, with spatial
+# common-mode rejection (M31) switched to its stub. In replay, the dashboard's SCMR switch opens this recording.
+scenario:
+  name: node_mature__scmr-stub
+  description: "node_mature with SCMR off (stub): watch the haze on day 30 raise false alarms"
+modules:
+  scmr: stub
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+params:
+  haze:
+    scripted:
+      - {t_min: 42360, duration_min: 480, amplitude: 1.6}  # day 30, 10:00–18:00 plus ramps
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}
+  ignition:
+    scripted:
+      - {t_min: 43980, x: 600, y: 445}                     # day 31, 13:00

@@ -1,0 +1,20 @@
+# Smoke scenario (SPEC §8.2): framework only. One simulated day, 100-node grid,
+# one scripted ignition at 14:00 west of the grid centre with wind from the west.
+# The fire sits at the same place relative to the (centred) grid as in Phase 0.
+scenario:
+  name: smoke
+  description: "Framework check: one day, real weather, clean stub signals, one scripted fire"
+modules:                          # framework check: clean stub signals so the stub detectors stay readable
+  sensor: stub
+  nuisance: stub
+  haze: stub
+  ttc: stub                       # Phase 5: framework scenarios keep the stub node layer (v1 behaviour)
+  qcc: stub
+  cusum: stub
+run:
+  seed: 11
+  days: 1
+params:
+  ignition:
+    scripted:
+      - {t_min: 840, x: 650, y: 680}

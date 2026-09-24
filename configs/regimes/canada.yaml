@@ -1,0 +1,24 @@
+# Regime Card — Canada, boreal forest in summer (SPEC §8.1: lightning enabled, native FFMC). Lightning starts a large
+# share of fires, so human interfaces weigh less; cooler, windier, more rain than the India card. US915 radio plan.
+regime_card:
+  name: canada
+  label: "Canada — boreal summer (lightning)"
+  radio_plan: US915
+  alert_format: cwfis
+  lightning: true
+  source: "SPEC §8.1 (lightning, native FFMC); ASM weather and weights (illustrative)"
+params:
+  weather:
+    t_mean_c: 24.0
+    t_amp_c: 9.0
+    dew_point_c: 6.0
+    wind_median_ms: 2.5
+    prevailing_dir_deg: 270.0
+    rain_prob_day: 0.05
+  landscape:
+    weights: {path: 0.6, village: 0.8, road: 0.8, power_line: 0.5}
+    decay_m: {path: 30, village: 150, road: 50, power_line: 20}
+  haze:
+    crop_burning_multiplier: 1.0
+  comms:
+    channels: 8                   # US915: one 8-channel sub-band

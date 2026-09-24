@@ -1,0 +1,136 @@
+# 6. Demo walkthrough
+
+Two routes through the dashboard. Every value on screen is simulator output, and the SIMULATION badge stays visible
+throughout.
+
+- **The conference storyboard (3 minutes, Phase 10):** SPEC §11 driven by single keys in presenter mode.
+- **The extended route (5–8 minutes):** for a longer talk or questions afterwards.
+
+## The conference storyboard (presenter mode)
+
+Start it with `scripts/demo.sh` (Windows: double-click `scripts\demo.cmd`). This serves the static build on
+`http://localhost:8765/?presenter=1` with no engine and no internet, and opens step 1. Press F for full screen. The
+caption strip under the header shows the step and its line; captions and bookmarks are in
+`dashboard/public/storyboard.json` and can be edited without a rebuild. The checklist for the day is
+[`DEMO_CHECKLIST.md`](../../DEMO_CHECKLIST.md).
+
+| Key | Step | Recording, time | What the audience sees |
+| --- | --- | --- | --- |
+| 1 | The forest and the satellite pixel | `satellite_race`, day 31 13:50 | nodes along the footpaths near the village; one 375 m satellite pixel over about 29 node cells |
+| 2 | Fixed thresholds | `node_mature`, day 29 from 06:00 at ×600 | baseline alarms popping all over the map on a day with no fire |
+| 3 | Haze on a wet morning | `wet_morning_haze`, day 30 from 10:00 at ×600 | many nodes turn amber; the Mechanisms counter stays low because SCMR holds the common-mode clusters |
+| 4 | SCMR off | `wet_morning_haze__scmr-stub`, same time | the same haze, and the false-alarm counter climbs (6 against 2 by the end of the step, SIM) |
+| 5 | A fire on a dry, busy afternoon | `satellite_race`, day 31 from 14:00 at ×600 | smoke drifts, two nodes pulse, the edge confirms |
+| 6 | Every alarm explains itself | same, 15:15 | the "Why this alarm" panel: SCMR ratio, Fisher p, prior, posterior against the threshold |
+| 7 | The satellite race | same, 23:25 | the race timeline: confirmation hours before the satellite alert |
+| 8 | Results | the Results tab | false incidents per pipeline; scroll to the ablation chart |
+| 9 | Everything here is simulated | the model card | every model, equation, source tag and state |
+
+Other keys: Space plays and pauses, S and R switch SCMR and RAQ (on `wet_morning_haze`, and SCMR on `node_mature`),
+Esc hides the caption, and ← → step one frame. A timed rehearsal took 170 seconds (Phase 10 acceptance).
+
+## The extended route
+
+### Setup (before the audience arrives)
+
+```bash
+cd dashboard && npm run build && npm run preview     # open http://localhost:4173
+```
+
+Pre-open the recordings you will use: `node_mature`, `signals_3day`, `siting_greedy`, `fires_day`.
+
+### The route
+
+**1. The place (30 s) — `siting_greedy`.**
+Turn on *Interfaces* and *Ignition likelihood*. "Fires here start near people: footpaths, the village, the road and
+the power line." Use the *Layout* buttons: grid 24%, corridor 49%, greedy 83% of ignition likelihood within 50 m of a
+node (SIM). "Where you put a hundred cheap nodes matters more than how many you have." Optionally turn on
+*Satellite pixels*: one 375 m pixel covers about 29 node cells.
+
+**2. The problem (45 s) — `signals_3day`.**
+Open the *Signals* tab: daily temperature and humidity cycles, fuel dryness (FFMC), and the grey haze band on day 2.
+Click a node: its reading drifts, cycles and spikes, with no fire at all. Turn on the *Baselines* layer and scrub
+through day 2: grey triangles (fixed threshold, P0) and grey rings (v1, P1) cover the map. "This is what the older
+approaches do: they cry wolf." The *Results* tab gives the numbers: P0 ≈ 341 and P1 ≈ 136 false incidents per month
+(SIM).
+
+**3. PRAHARI's node layer (60 s) — `node_mature`.**
+"This network has run for 28 days: 14 to calibrate, 14 to tune its thresholds. We are watching days 29 to 31."
+Scrub to day 31, 13:00, when the fire starts beside the north-east footpath. Watch nodes near it glow with smoke and
+then pulse as candidates. Click node 41 or 31 and open the *Node* tab:
+
+- *Reading and slow baseline*: the baseline stays calm while the reading jumps.
+- *Detection residual*: the fast residual isolates the jump.
+- *QCC p-value*: it drops to its floor, 1/3361 (the node has 3,360 calibration values in this 4-hour bin).
+- *Node CUSUM*: the evidence climbs and crosses h (about 227, tuned on the network's own quiet days); the ember dot
+  marks the candidate.
+
+The fire is confirmed when a second nearby node agrees, about two hours after ignition in this run (SIM). A satellite
+would need an overpass plus processing time and a much bigger fire.
+
+**3b. Why this alarm (45 s) — *Alerts* tab, still on `node_mature`.**
+The latest alert opens "Why this alarm": the escalation ladder lit at CONFIRMED; the SCMR gauge (the fire's
+neighbourhood is 11× more active than the network, well above 3); Fisher combining the two nodes' evidence; today's
+prior ("dry, busy day — 2 agreeing nodes needed"); the Bayes bar (posterior odds 0.42 against a 0.01 threshold).
+"Every number here comes from the recorded trace; nothing on this panel is free text."
+
+**3c. Switch SCMR off (30 s).** Scrub to day 30 around 14:00 (the haze day). The counter reads 3 false alarms. Press
+*SCMR* in the Mechanisms row: the same run with SCMR off loads at the same moment and the counter jumps to 15.
+"Haze is everywhere at once; a fire is local. That one rule removes most of the haze alarms."
+
+**4. Honesty (30 s) — *Results* tab.**
+The node-layer table shows the two calibration checks: about 1.1% of quiet p-values fall below 1% (target 0.8–2.0%)
+and about 0.65 local false candidates per node per 30 days (target 0.5–1.5). "Where our numbers miss the report's
+intervals, we show that too, and we checked against the original simulation over 20 seeds." See
+[../results/validation.md](../results/validation.md).
+
+**4b. What each mechanism buys (40 s) — *Results* tab, lower charts.**
+The ablation chart: take away QCC, TTC, SCMR or RAQ and false incidents rise every time (SIM). The operating dial:
+the design point confirms in about an hour at a few false incidents a month; asking for faster confirmation moves
+along the curve and costs more false alarms. The spacing chart: at 70 m most fires reach two nodes; at 150 m almost
+none do. Every footer names the seeds and simulated days.
+
+**4c. Engineering depth (optional, 60 s) — Phase 8 recordings.**
+Open `gateway_outage.prs.jsonl.gz`, day 31. At 14:07 node 41's candidate cannot reach g1 (crossed out on the map); a
+badge shows the frame waiting at the node. At 14:30 the gateway returns and the frame goes out; the edge still dates
+it 14:07, so it does not pair with node 31's later candidate, and the fire is confirmed at 15:14 — as with a perfect
+link. "The radio link can fail; the node keeps the evidence and the edge still decides." Then open
+`cloudy_days.prs.jsonl.gz` at day 5, 02:00: amber rings are nodes that dropped to ultra-low-power scanning after three
+cloudy days; by day 5 afternoon every ring is green again. The *Results* tab's energy chart says why the design uses the
+BME688: about 0.42 Wh a day in standard mode against 22.9 Wh for an MQ-2 heater, which would empty the store in
+about five hours (SIM).
+
+**4d. The satellite race, broken sensors and learning (optional, 90 s) — Phase 9 recordings.**
+Open `satellite_race.prs.jsonl.gz`, day 31, and scrub from 14:00. The strip under the map fills in: first node
+candidate at 14:55, PRAHARI confirmation at 15:14, then nothing from space until Terra passes at 22:30 and its alert
+arrives at 23:20. "About eight hours before the satellite alert — and at 14:00 no satellite is overhead at all" (SIM;
+the overpass model is illustrative). Then open `sensor_fault.prs.jsonl.gz`, day 31 from 09:00: node 55 sticks at a
+high reading, and at 09:59 it turns into a fault glyph — its health weight has fallen below 0.1 and it abstains. The
+13:00 fire is still confirmed by its healthy neighbours. Use the *Regime* selector to show the same system under the
+Canada, USA and Australia cards (`lightning_storm`: eight fires from one storm). In *Results*, the learning curve:
+with the conservative bound the edge confirms 49% of fires at 3 false incidents a month; fitted on ten controlled
+burns it confirms 68%, on a hundred 71% (SIM). The maturity chart: each quiet day lowers the p-value floor, and node
+candidates come sooner.
+
+**5. Robustness (optional, 20 s) — *Health & model card* tab.**
+Every module, its equation, its source tag and its state. "If any real model fails during a run, its simple stub
+takes over and the demo keeps going."
+
+## Likely questions
+
+| Question | Short answer |
+| --- | --- |
+| Is this real data? | No. Everything is simulation, labelled SIM. The models are calibrated to literature, datasheets or stated assumptions, and each parameter carries its tag. |
+| Why not just use satellites? | They see fires only after overpass and processing, and only once fires are hot and large. Early fires under canopy are too small. The race timeline shows it: `satellite_race` is confirmed about 8 h before the satellite alert (SIM; illustrative overpass model). |
+| What if the radio link fails? | `gateway_outage`: frames wait at the node (store-and-forward) and the fire is still confirmed when the gateway returns (SIM). |
+| Why not a cheaper MQ-2 sensor? | The energy chart: its heater needs about 55 times the energy of a BME688 in standard mode (SIM). |
+| Why these node spacings? | The spacing chart: a fire's smoke reaches two nodes reliably only when they are about 70 m apart (SIM). |
+| What does each mechanism contribute? | The ablation chart: removing any of QCC, TTC, SCMR or RAQ raises false incidents (SIM). |
+| Why not a threshold on each sensor? | Daily cycles, drift and haze cross any fixed line. The P0 row in Results shows the cost. |
+| What stops haze triggering PRAHARI? | Two things: common-mode periods are excluded when thresholds are tuned, and spatial common-mode rejection needs a cluster to be at least 3× more active than the network. Switch SCMR off and watch the difference (3 vs 15 alarms on the haze day, SIM). |
+| How do you know the p-values are right? | They are conformal: ranked against each node's own quiet history, so on quiet data about 1% fall below 1%. We measure that (1.10%, SIM). |
+| Why did detection take about two hours in the demo? | The node needs sustained evidence to cross a threshold set for one false candidate per node per month, and a second node must agree. The operating curve (Phase 7) shows the trade-off. |
+| What happens if a node fails? | Its health weight drops and it abstains: a stuck sensor within about an hour, a silent one within 5 minutes (`sensor_fault`, SIM). Module-level failures fall back to stubs. |
+| How long did it take to build? | See [../journey/README.md](../journey/README.md): phases 0–9 so far, each ending with a working dashboard. |
+| Does it get better with data? | Yes: the learning curve (M36). Fitted on ten controlled burns, the edge's likelihood ratio confirms 68% of held-out fires instead of 49% at the same false-alarm budget (SIM). |
+| Does it work outside India? | The Regime Cards change weather, ignition sources, haze and radio plan; lightning (Canada, Australia) starts several fires at once and SCMR relaxes while a storm is flagged. |

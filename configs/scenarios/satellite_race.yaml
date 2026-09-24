@@ -1,0 +1,27 @@
+# Satellite race (SPEC §8.2, Phase 9): the mature network of `node_mature` (calibrated and tuned over 28 days) with a
+# fire at 14:00 on day 31 beside the north-east footpath, against the satellite baseline (M37): overpasses at fixed
+# local times, detection once the burned area passes 500 m² (unless missed for cloud or canopy), then the processing
+# delay. The race timeline (View 4) shows ignition, the first node candidate, PRAHARI's confirmation, the overpass that
+# sees the fire and the satellite alert. Day 32 is simulated so the night overpasses fall inside the recording.
+regime: india
+scenario:
+  name: satellite_race
+  description: "A 14:00 fire on day 31 against the next satellite overpass: who raises the alert first?"
+run:
+  seed: 11
+  days: 32
+record:
+  every_k_ticks: 10
+  from_day: 28
+modules:
+  satellite: real
+params:
+  haze:
+    scripted:
+      - {t_min: 42360, duration_min: 480, amplitude: 1.6}  # day 30, as node_mature
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}
+  ignition:
+    scripted:
+      - {t_min: 44040, x: 600, y: 445}                     # day 31, 14:00
