@@ -1,19 +1,21 @@
 import { useEffect, useState } from "react";
 import { cardLine, filterByRegime, regimeOptions, type RecordingMeta } from "../regimes";
 import { RecordingSource } from "../sources/RecordingSource";
-import { useSim } from "../store";
+import { beginLoad, isLatestLoad, useSim } from "../store";
 
 const BASE = `${import.meta.env.BASE_URL}recordings/`;
 
 async function openWith(load: () => Promise<RecordingSource>) {
   const { setLoading, setSource, setError } = useSim.getState();
+  const token = beginLoad();                     // a later choice wins even if this file is slower to arrive
   setLoading(true);
   try {
-    setSource(await load());
+    const src = await load();
+    if (isLatestLoad(token)) setSource(src);
   } catch (e) {
-    setError(e instanceof Error ? e.message : String(e));
+    if (isLatestLoad(token)) setError(e instanceof Error ? e.message : String(e));
   } finally {
-    setLoading(false);
+    if (isLatestLoad(token)) setLoading(false);
   }
 }
 

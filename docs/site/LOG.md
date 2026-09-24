@@ -19,8 +19,8 @@ Kept here so a merge from `main` can be resolved quickly (take `main`'s file, re
 **Done:**
 
 - `main` at `318fe4d` is the locked release 1.0. `site-dev` and `site-live` were created from it.
-- The tag `v1.0.0` was created locally but could not be pushed from the working environment (its git proxy accepts
-  branch pushes only). The developer creates it on GitHub (a release named `v1.0.0` on `318fe4d`).
+- The tag `v1.0.0` could not be pushed from the working environment (its git proxy accepts branch pushes only), so
+  the developer created it on GitHub as a release. See S2 for where it landed.
 - Live-engine panel hidden behind `dashboard/src/site/siteConfig.ts` (`VITE_LIVE_ENGINE=1` shows it again), with unit
   tests in `siteConfig.test.ts`.
 - `dashboard/public/_headers`: `X-Robots-Tag: noindex, nofollow`, `nosniff`, a referrer policy, a one-year cache for
@@ -58,4 +58,34 @@ Kept here so a merge from `main` can be resolved quickly (take `main`'s file, re
 1. Mobile layout (see the phone check above).
 2. Page title and description for link previews when the address is shared.
 
-**Promoted:** not yet. The first promotion is the pull request `site-dev → site-live` after these commits.
+**Promoted:** yes, in pull request #4 (`site-live` at `b491c03`). The site is live at `https://dashboard.firenet.live`
+(Cloudflare Pages project `firenet-dashboard`, custom domain active with SSL).
+
+## 2026-09-24 — S2: verification and the second audit
+
+**Checked on GitHub:**
+- `site-live` (`b491c03`) has exactly the same content as `site-dev` at `1973f84`.
+- The ruleset on `site-live` is active: pull request required, deletions restricted, force pushes blocked.
+- The site-branch note (Site-1) is merged into `main` (pull request #5).
+
+**Found:** `main` had moved on before the release was created.
+- The second audit (pull request #3) was merged into `main` in the meantime, so the tag `v1.0.0` points to `578f1c8`,
+  not `318fe4d`.
+- The second audit fixes two dashboard problems:
+  - a slower recording load no longer overwrites a newer one ("latest load wins");
+  - a damaged `.gz` recording opens its readable part.
+- The site, built from `318fe4d`, lacked both fixes.
+
+**Done:**
+- Merged the tag `v1.0.0` into `site-dev`, following the documented science-update path. One conflict, in the import
+  lines of `MechanismSwitches.tsx`; both sides were kept.
+- The two shared-file edits in the table above are unchanged.
+
+**Checks:**
+- `tsc` clean; Vitest 60 passed (the 58 of `v1.0.0` plus the 2 site tests); build clean.
+- Headless Chromium at desktop, presenter and phone sizes: no live-engine panel, 0 console errors, 0 requests to other
+  hosts.
+- The public address could not be fetched from the working environment (its network policy blocks the host), so the
+  developer checks it in a browser.
+
+**Promoted:** not yet. The next pull request `site-dev → site-live` carries this merge.

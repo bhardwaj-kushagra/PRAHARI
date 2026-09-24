@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { runCounters, SWITCHES, variantName } from "../edge";
 import { RecordingSource } from "../sources/RecordingSource";
-import { useSim } from "../store";
 import { LIVE_ENGINE } from "../site/siteConfig";
+import { beginLoad, isLatestLoad, useSim } from "../store";
 import type { Frame } from "../types";
 import { useLive } from "./LivePanel";
 
@@ -37,7 +37,9 @@ export function MechanismSwitches() {
         await fetch(`${server}/modules`, { method: "POST", headers: { "Content-Type": "application/json" },
                                            body: JSON.stringify({ module, state: to }) });
       } else {
-        useSim.getState().updateSource(await RecordingSource.fromUrl(BASE + variantName(source.name, module, to)));
+        const token = beginLoad();
+        const src = await RecordingSource.fromUrl(BASE + variantName(source.name, module, to));
+        if (isLatestLoad(token)) useSim.getState().updateSource(src);
       }
     } finally {
       setBusy(false);

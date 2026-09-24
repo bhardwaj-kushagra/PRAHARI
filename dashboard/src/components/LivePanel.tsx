@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { create } from "zustand";
 import { connectLive } from "../sources/LiveSource";
-import { useSim } from "../store";
+import { beginLoad, isLatestLoad, useSim } from "../store";
 
 interface LiveState { server: string; status: string; stop: (() => void) | null; setServer: (s: string) => void }
 
@@ -46,7 +46,10 @@ export function LivePanel() {
       return;
     }
     let first = true;
-    const close = connectLive(server, (view, buf) => {
+    const token = beginLoad();                   // opening a recording (or a presenter step) ends this live view
+    let close: () => void = () => undefined;
+    close = connectLive(server, (view, buf) => {
+      if (!isLatestLoad(token)) { close(); useLive.setState({ stop: null }); say("live view closed — another recording is open"); return; }
       const sim = useSim.getState();
       if (first) { sim.setSource(view); first = false; } else sim.updateSource(view);
       say(`live · ${buf.header?.scenario} · t = ${buf.frames[buf.frames.length - 1].t} min`);
