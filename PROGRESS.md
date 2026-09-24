@@ -12,8 +12,8 @@
 | 6 | PRAHARI edge layer, trace and live mode | accepted (2026-09-23) |
 | 7 | Experiments and results | accepted (2026-09-23) |
 | 8 | Communications and energy (optional) | accepted (2026-09-24) |
-| 9 | Regimes, satellite race, learning loop and faults (optional) | awaiting review |
-| 10 | Demo hardening | not started |
+| 9 | Regimes, satellite race, learning loop and faults (optional) | accepted (2026-09-24) |
+| 10 | Demo hardening | awaiting review |
 
 Statuses: not started · in progress · awaiting review · accepted.
 
@@ -414,4 +414,32 @@ before acceptance (P9-13).
 - Open the *Results* tab for the learning and maturity charts.
 
 **Next step:** review Phase 9. Then Phase 10 (demo hardening).
+
+### 2026-09-24 — Session 14 (Phase 10)
+
+- Phase 9 accepted by the developer (approval of the Phase 10 plan).
+- Built Phase 10 — demo hardening (DECISIONS P10-1 … P10-6):
+  - Storyboard recordings: new `wet_morning_haze` (day 30 wet, quiet; `node_mature`'s haze) with `__scmr-stub` and
+    `__raq-stub` variants; the other §11 steps reuse `satellite_race` and `node_mature` (mapped in
+    `dashboard/public/storyboard.json` and the journey page).
+  - Presenter mode (§6.4): keys 1–9, Space, S, R, F, Esc; the caption strip under the header; captions and bookmarks in
+    `storyboard.json`, editable without a rebuild; `?presenter=1` opens step 1.
+  - Launchers: `scripts/demo.sh`, `scripts/demo.ps1`, `scripts/demo.cmd` — serve `dashboard/dist` with Python's
+    standard-library server on port 8765 and open presenter mode; `npx vite preview` as a fallback.
+  - `DEMO_CHECKLIST.md`.
+
+**Phase 10 acceptance:**
+
+| # | Test | Result |
+| --- | --- | --- |
+| 1 | Airplane mode: the static build plays all storyboard steps | **pass** — rehearsal through the launcher's server with all non-local requests blocked: 0 external requests; all nine steps load (≤ 0.4 s each); S and R open the right variants |
+| 2 | A full rehearsal takes 3 minutes or less | **pass** — 170.1 s (170 s planned) |
+| 3 | No console errors | **pass** |
+| — | Suite | 204 engine tests pass (21 golden skipped unless enabled), 53 dashboard tests; build clean; `wet_morning_haze` byte-identical on rerun; docs link check clean |
+
+**To see it:** run `scripts/demo.sh` (Windows: double-click `scripts\demo.cmd`). The browser opens on step 1; press F for
+full screen, then 1–9. Read `DEMO_CHECKLIST.md` before the talk.
+
+**Next step:** review Phase 10. All phases of SPEC §7 are then complete; what remains is the developer's rehearsal on
+the demo laptop and any items from `KNOWN_ISSUES.md` the developer wants before the conference.
 

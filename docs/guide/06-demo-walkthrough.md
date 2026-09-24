@@ -1,10 +1,37 @@
 # 6. Demo walkthrough
 
-A route through the dashboard for a 3–5 minute explanation, as of Phase 6. The final conference storyboard is in
-SPEC §11 and will be completed in Phase 10. Every value on screen is simulator output, and the SIMULATION badge stays
-visible throughout.
+Two routes through the dashboard. Every value on screen is simulator output, and the SIMULATION badge stays visible
+throughout.
 
-## Setup (before the audience arrives)
+- **The conference storyboard (3 minutes, Phase 10):** SPEC §11 driven by single keys in presenter mode.
+- **The extended route (5–8 minutes):** for a longer talk or questions afterwards.
+
+## The conference storyboard (presenter mode)
+
+Start it with `scripts/demo.sh` (Windows: double-click `scripts\demo.cmd`). This serves the static build on
+`http://localhost:8765/?presenter=1` with no engine and no internet, and opens step 1. Press F for full screen. The
+caption strip under the header shows the step and its line; captions and bookmarks are in
+`dashboard/public/storyboard.json` and can be edited without a rebuild. The checklist for the day is
+[`DEMO_CHECKLIST.md`](../../DEMO_CHECKLIST.md).
+
+| Key | Step | Recording, time | What the audience sees |
+| --- | --- | --- | --- |
+| 1 | The forest and the satellite pixel | `satellite_race`, day 31 13:50 | nodes along the footpaths near the village; one 375 m satellite pixel over about 29 node cells |
+| 2 | Fixed thresholds | `node_mature`, day 29 from 06:00 at ×600 | baseline alarms popping all over the map on a day with no fire |
+| 3 | Haze on a wet morning | `wet_morning_haze`, day 30 from 10:00 at ×600 | many nodes turn amber; the Mechanisms counter stays low because SCMR holds the common-mode clusters |
+| 4 | SCMR off | `wet_morning_haze__scmr-stub`, same time | the same haze, and the false-alarm counter climbs (6 against 2 by the end of the step, SIM) |
+| 5 | A fire on a dry, busy afternoon | `satellite_race`, day 31 from 14:00 at ×600 | smoke drifts, two nodes pulse, the edge confirms |
+| 6 | Every alarm explains itself | same, 15:15 | the "Why this alarm" panel: SCMR ratio, Fisher p, prior, posterior against the threshold |
+| 7 | The satellite race | same, 23:25 | the race timeline: confirmation hours before the satellite alert |
+| 8 | Results | the Results tab | false incidents per pipeline; scroll to the ablation chart |
+| 9 | Everything here is simulated | the model card | every model, equation, source tag and state |
+
+Other keys: Space plays and pauses, S and R switch SCMR and RAQ (on `wet_morning_haze`, and SCMR on `node_mature`),
+Esc hides the caption, and ← → step one frame. A timed rehearsal took 170 seconds (Phase 10 acceptance).
+
+## The extended route
+
+### Setup (before the audience arrives)
 
 ```bash
 cd dashboard && npm run build && npm run preview     # open http://localhost:4173
@@ -12,7 +39,7 @@ cd dashboard && npm run build && npm run preview     # open http://localhost:417
 
 Pre-open the recordings you will use: `node_mature`, `signals_3day`, `siting_greedy`, `fires_day`.
 
-## The route
+### The route
 
 **1. The place (30 s) — `siting_greedy`.**
 Turn on *Interfaces* and *Ignition likelihood*. "Fires here start near people: footpaths, the village, the road and

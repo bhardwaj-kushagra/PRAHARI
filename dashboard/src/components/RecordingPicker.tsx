@@ -36,7 +36,9 @@ export function RecordingPicker() {
       .then((j: { recordings: string[]; meta?: Record<string, RecordingMeta> }) => {
         setList(j.recordings);
         setMeta(j.meta ?? {});
-        const want = new URLSearchParams(location.search).get("rec") ?? j.recordings.find((n) => n.startsWith("smoke")) ?? j.recordings[0];
+        const q = new URLSearchParams(location.search);
+        // Presenter mode (Phase 10) opens storyboard step 1 itself; otherwise start with the smoke recording.
+        const want = q.get("rec") ?? (q.has("presenter") ? null : j.recordings.find((n) => n.startsWith("smoke")) ?? j.recordings[0]);
         if (want && !useSim.getState().source) openWith(() => RecordingSource.fromUrl(BASE + want));
       })
       .catch(() => setList([]));

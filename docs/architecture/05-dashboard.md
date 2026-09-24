@@ -18,6 +18,9 @@ flowchart LR
 
 - `scripts/sync-recordings.mjs` runs before `dev` and `build`, copies recordings and the results summary into
   `public/` and writes `index.json` for the recording picker.
+- `public/storyboard.json` (Phase 10) is copied to `dist/` as is and fetched at run time, so the presenter's captions
+  and bookmarks can be edited on the demo laptop without a rebuild. The launchers in `scripts/` serve `dist/` over
+  HTTP on localhost, since browsers refuse module scripts and `fetch()` from `file://`.
 - `sources/FrameSource.ts` is the interface every data source implements (`header`, `frameCount`, `frameAt`,
   `span`); `RecordingSource.ts` implements it from a file, decompressing with the browser's `DecompressionStream`.
   `LiveSource.ts` (Phase 6) buffers the WebSocket lines and hands the store a fresh `LiveView` (a `RecordingSource`
@@ -39,6 +42,7 @@ flowchart LR
 | Alerts | `AlertsPanel.tsx`, `MechanismSwitches.tsx`, `WhyPanel.tsx` | mechanism switches with live counters (View 5); "Why this alarm" (View 3): escalation ladder, SCMR gauge, Fisher evidence, prior, Bayes bar, explanation; clickable alert list |
 | Live engine | `LivePanel.tsx` | server URL, scenario, speed, start/stop, status (optional; replay needs none of it) |
 | Results | `ResultsPanel.tsx`, `ExperimentCharts.tsx` | false incidents per month for P0–P2 (log axis, M45 intervals, per-seed ticks, report intervals), detection within 3 h (M44), the ablation chart (P2 and each mechanism removed, with its confirmation rate), the operating dial (false incidents against median time to confirm), node spacing (confirmed and single-node within 3 h at 70/100/150 m), the table, the node-layer calibration table, the energy chart (Wh per day per sensor mode on a log axis as lollipops — bars cannot start from zero on a log axis — against the clear-day harvest line and the cloudy-day band), and, from Phase 9 (`LearningCharts.tsx`), the M36 learning curve (confirmation rate at the fixed false-alarm budget and median minutes to confirm against K, as two small multiples, the bound as a dashed reference, hollow points where K < k_min) and the M26 maturity curve (p_min on a log axis and median minutes to the first node candidate against days of calibration data); every chart footer names its seeds and simulated days, or states that it involves no random draws |
+| Presenter strip | `PresenterOverlay.tsx` | Phase 10 (SPEC §6.4): under the header while a storyboard step is active — step number and title, the line to say, a note after S/R or a load problem, and the keys; keys 1–9 apply a step from `storyboard.json` (recording from a per-session cache, bookmark, speed, layers, tab, play or hold, scroll), S and R open the SCMR/RAQ replay variants keeping the clock, F toggles full screen, Esc hides the strip; `?presenter` opens step 1 |
 | Footer | `Footer.tsx` | seed, simulated days (and first recorded day for warm starts), frames, SIM |
 
 Chart panels are loaded lazily when their tab opens, so the map view stays light.
@@ -54,6 +58,7 @@ Chart panels are loaded lazily when their tab opens, so the map view stays light
 | `race.ts` | Phase 9: fire ids, the race for one fire from events and alerts (candidates and confirmations within 150 m), the deltas and headline |
 | `regimes.ts` | Phase 9: regimes present among the bundled recordings, filtering by regime, the card summary line |
 | `learning.ts` | Phase 9: learning-curve points in K order, the "monotone within noise" check (acceptance 2) |
+| `presenter.ts` | Phase 10: the storyboard types, bookmark minutes from day and time, storyboard validation, planned rehearsal seconds, key → action mapping |
 | `comms.ts` | Phase 8: recent packets over a window (with carried minutes), packet outcome, gauge arcs, whether a recording has the radio and energy models |
 | `edge.ts` | replay-variant names, live counters (M46 rule), log-scale positions, the escalation ladder |
 | `sources/LiveSource.ts` | applying streamed lines, WebSocket URL |

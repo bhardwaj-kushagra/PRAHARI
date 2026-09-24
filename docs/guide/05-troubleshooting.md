@@ -56,8 +56,21 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | A switch in replay is greyed out | No pre-recorded variant exists for that module. | Use live mode, or record the variant (`<scenario>__<module>-stub.yaml`). |
 | After switching QCC live, candidates stop for a while | Switching rebuilds the module; QCC restarts its calibration. | Expected (DECISIONS P6-8). |
 
+## Presenter mode and launchers
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Pressing 1–9 does nothing | The focus is in a text box or a select, or `storyboard.json` failed to load. | Click the map first; check the caption strip for a `storyboard.json:` message. |
+| The caption says "no SCMR variant of this recording" | S and R need pre-recorded variants; only `wet_morning_haze` (and `node_mature` for SCMR) have them. | Press 3 or 4 first, or record a variant (`<scenario>__scmr-stub.yaml`). |
+| A caption or bookmark is wrong | `storyboard.json` has an old value. | Edit `dashboard/dist/storyboard.json` (this build) or `dashboard/public/storyboard.json` (kept); reload the page — no rebuild. |
+| `scripts/demo.sh: Permission denied` | The execute bit was lost in a copy. | `sh scripts/demo.sh`, or `chmod +x scripts/demo.sh`. |
+| `OSError: [Errno 98] Address already in use` | A launcher is already serving port 8765. | Use it, or `PORT=9000 scripts/demo.sh`. |
+| PowerShell refuses to run `demo.ps1` | The execution policy blocks scripts. | Double-click `scripts\demo.cmd`, which bypasses the policy for this script only. |
+
 ## Before a demo
 
+Follow `DEMO_CHECKLIST.md` in the repository root. In short:
+
 1. `pytest engine/tests -q` and `cd dashboard && npm test` pass.
-2. `npm run build && npm run preview`, then open each recording you plan to show.
+2. `scripts/demo.sh --build`, then press 1–9 once through.
 3. Turn off Wi-Fi and reload: everything should still work.

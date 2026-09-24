@@ -43,6 +43,8 @@ The decisions that most shape the project, with the alternatives considered. Ids
 | Fault glyph from the health weight (the system's view), not the injected fault | draw injected faults | shows what an operator sees; honest about undetected faults | a small offset shows no glyph | P9-6 |
 | Satellite plan drawn once at ignition and published as an event | compute the race in the dashboard | deterministic; no look-ahead in replay | the plan cannot react to later fire behaviour | P9-3 |
 | Learning rules compared at a fixed false-alarm budget on held-out seeds; K counts burns, quiet data fixed | compare at each rule's own threshold | the curve shows learning, not a moved threshold | the budget threshold is set on the evaluation seeds' quiet runs | P9-10, P9-11 |
+| Storyboard as an editable JSON file; steps reuse validated recordings; one new wet-day haze scenario | a hard-coded demo script; copies named as in §11 | captions change on the laptop without a rebuild; no duplicate recordings; S and R both show a difference | names differ from §11 (mapped in the file) | P10-1, P10-2, P10-4 |
+| Launchers serve `dist/` with Python's built-in server | a single-file `file://` build; a bundled server | no new dependency; the build stays as it is | needs Python or Node on the laptop | P10-3 |
 
 ## Process
 

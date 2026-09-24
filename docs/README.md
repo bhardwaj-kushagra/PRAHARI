@@ -29,7 +29,7 @@ docs/
 │   ├── 03-glossary.md         every term and acronym used in the code and dashboard
 │   ├── 04-setup.md            prerequisites, installation, every command
 │   ├── 05-troubleshooting.md  symptoms → causes → fixes
-│   └── 06-demo-walkthrough.md click path, talking points, likely questions
+│   └── 06-demo-walkthrough.md presenter-mode storyboard, click path, talking points, likely questions
 ├── architecture/              for a developer
 │   ├── 01-system.md           components and data flow
 │   ├── 02-engine.md           registry, stages, isolation, configuration, randomness, tick loop, harness
@@ -39,7 +39,7 @@ docs/
 │   └── 06-testing.md          test layers and how to run them
 ├── journey/                   how it was built
 │   ├── README.md              timeline of phases
-│   ├── phase-0-foundation.md … phase-9-regimes-learning.md
+│   ├── phase-0-foundation.md … phase-10-demo.md
 │   ├── challenges-and-lessons.md
 │   └── decisions-and-tradeoffs.md
 └── results/
@@ -57,3 +57,6 @@ The repository root keeps three short logs of record, written as the work happen
 The pages here explain those entries in full sentences and link back to their ids. When the two disagree, the logs
 and the code win; please fix the page. From Phase 6 onwards every phase updates these pages as part of its work
 (`CLAUDE.md` rule 16, SPEC §7).
+
+For the conference itself, [`DEMO_CHECKLIST.md`](../DEMO_CHECKLIST.md) in the repository root is the one page to
+follow (Phase 10).

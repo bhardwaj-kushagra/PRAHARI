@@ -106,6 +106,14 @@ Written beside each recording by `prahari run`: seconds, frame and trace counts,
 | `energy` | Phase 8, from `results/energy.json` (`prahari energy`): M41 `rows` (sensor, mode, `wh_day`, `autonomy_days`), M42 `harvest_wh_day` (clear, cloudy range), M43 `store_wh`, `frames_per_day`, `toa_ms` |
 | `reference` | the report's values, copied from `engine/tests/golden/report_reference.json`, labelled as such |
 
+## Storyboard: `dashboard/public/storyboard.json` (Phase 10)
+
+`title` and `steps[]`, one per key. Each step: `key` (1–9), `title`, `recording` (a file in `recordings/`; omitted =
+keep the open one), a bookmark as `day` (1-based) and `time` (`HH:MM`) or `t` (minutes since the start), `speed`,
+`play`, `panel` (`health`, `signals`, `node`, `alerts`, `results`), `layers` (map layers to set), `scroll` (a
+`data-testid` to bring into view), `seconds` (planned speaking time) and `caption` (the line on screen). Checked on load
+and by `presenter.test.ts`: keys unique, times well formed, recordings present, total planned time ≤ 180 s.
+
 ## Configuration files
 
 `configs/default.yaml` (every key), `configs/regimes/*.yaml` (Regime Cards, Phase 9: merged between the defaults and

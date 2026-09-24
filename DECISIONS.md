@@ -665,6 +665,32 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `theme.css`, `scripts/sync-recordings.mjs` (all additive). Every earlier recording was regenerated for the header's
   `regime` block.
 
+## Phase 10 design choices
+
+- **P10-1. Storyboard steps reuse validated recordings.** SPEC §11 names `dry_afternoon_ignition`, `quiet_week` and
+  `wet_morning_haze`. Steps 1 and 5–7 use `satellite_race` (the mature network, a dry, busy day 31, a 14:00 fire, the
+  M37 satellite); step 2 uses `node_mature`'s day 29 (no fire; 220 P0 and 1,083 P1 alarms that day, SIM) instead of a
+  week-long recording. The mapping lives in `dashboard/public/storyboard.json` and the Phase 10 journey page. Copies
+  under the §11 names would duplicate 3–4 MB files without showing anything new.
+- **P10-2. `wet_morning_haze` is the one new storyboard scenario.** `node_mature`'s world, calibration and haze, with day
+  30 set to wet and quiet (quorum 3) and only that day recorded. On `node_mature`'s dry haze day the RAQ stub (fixed
+  quorum 2) and the real RAQ decide alike, so the R key would show nothing. Results (SIM): 2 haze alerts with SCMR
+  (158 of 174 decisions held), 6 with SCMR off, 3 with RAQ off. `__scmr-stub` and `__raq-stub` variants back S and R.
+- **P10-3. Launchers serve `dist/` with Python's standard-library server.** Browsers refuse module scripts and `fetch()`
+  from `file://`, so a double-clickable `index.html` would need a different, single-file bundling set-up. Python is
+  already needed for the engine; `npx vite preview` is the fallback. No new dependency. The server sends recordings as
+  `application/gzip` without `Content-Encoding`; the dashboard detects gzip by its magic number either way.
+- **P10-4. Presenter mode reads its storyboard at run time.** `storyboard.json` in `public/` (copied to `dist/`) can be
+  edited on the demo laptop without a rebuild; it is validated on load (problems shown in the caption strip) and by a
+  Vitest test (valid keys, existing recordings, ≤ 180 planned seconds). `?presenter` makes the page open step 1 and
+  stops the recording picker's default load from racing it.
+- **P10-5. The caption strip sits in the layout flow.** A floating overlay covered the time controls and the race
+  timeline's footer (rule 15); under the header it covers nothing.
+- **P10-6. Captions carry no result values.** They say what to look at; the numbers come from recordings and
+  `results/summary.json` (rule 10). The only figure, 29 node cells per VIIRS pixel, is (375 m / 70 m)² from
+  configuration (DER). Files from accepted phases touched: `dashboard/src/App.tsx` (the top strip and overlay),
+  `RecordingPicker.tsx` (`?presenter`), `theme.css`.
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four

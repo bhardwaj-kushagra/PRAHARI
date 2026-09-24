@@ -262,3 +262,13 @@ h2 { font: 600 20px/1.2 var(--font-head); letter-spacing: 0.02em; margin: 4px 0 
 .rk-overpass .rk-dot { fill: none; stroke: var(--text-2); stroke-width: 2; }
 .rk-satellite .rk-dot { fill: var(--text-2); }
 .rk-missed { stroke: var(--text-2); stroke-width: 1.5; }
+
+/* Phase 10 — presenter mode (SPEC §6.4): the caption strip under the header, in the layout flow so it never covers
+   the map, the charts' footers or the time controls */
+.presenter { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; padding: 8px 16px;
+  background: var(--panel); border-bottom: 1px solid var(--line); border-left: 4px solid var(--ember); }
+.presenter p { margin: 0; }
+.presenter-line { font-size: 18px; line-height: 1.35; display: flex; align-items: baseline; gap: 14px; flex: 1 1 60%; }
+.presenter-step { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-2); white-space: nowrap; }
+.presenter-note { color: var(--amber); }
+.presenter-keys { margin-left: auto !important; white-space: nowrap; }

@@ -74,4 +74,6 @@ uvicorn server.app:app --reload               # live server (Phase 6); dashboard
 cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
 cd dashboard && npm test                      # dashboard unit tests (Vitest)
 cd dashboard && npm run build && npm run preview   # static build, no engine server
+scripts/demo.sh [--build]                     # Phase 10: serve dashboard/dist on :8765 in presenter mode (Windows: scripts\demo.cmd)
+prahari run --config configs/scenarios/wet_morning_haze.yaml --out recordings/wet_morning_haze.prs.jsonl.gz   # storyboard steps 3–4; also __scmr-stub, __raq-stub
 ```

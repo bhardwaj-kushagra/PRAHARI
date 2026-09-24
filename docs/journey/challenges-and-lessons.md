@@ -142,5 +142,7 @@ found the stuck-sensor weight recovering after 13 hours (the reference variance 
 | A week-long recording was 11 MB compressed | three-day scenarios; later, the real node layer cut event volume |
 | A pattern-based `pkill` killed the shell running it (Phase 2, and again in Phase 8 with `pgrep -f`) | list processes in one command, then kill the exact process ID in another |
 | Bars cannot be drawn on a log axis (the energy chart was empty) | lollipop stems from the axis minimum (Phase 8) |
-| Browsers block module scripts from `file://` | serve the static build (`npm run preview`); offline `file://` planned for Phase 10 |
+| Browsers block module scripts from `file://` | serve the static build (`npm run preview`, or the Phase 10 launchers) |
 | Chart polish: default legend colours, misaligned axis labels, clipped labels | explicit series colours, custom axis values, wider margins |
+| A floating caption covered the play buttons and a chart footer (Phase 10) | put the caption in the layout flow, under the header |
+| `file://` blocks module scripts and `fetch()` | the launchers serve `dist/` on localhost (Phase 10) |

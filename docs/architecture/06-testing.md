@@ -21,6 +21,7 @@ tests using the reference values in SPEC §9.2.
 | Golden | `engine/tests/golden/` | legacy-mode results against the report's intervals (false incidents for all eight pipelines, detection for P0–P2), ablation and spacing rates (report value inside our interval), node-layer acceptance | only with `PRAHARI_GOLDEN=1` (about 25 minutes on one core; `PRAHARI_JOBS=4` parallelises seeds) |
 | Dashboard | `dashboard/src/**/*.test.ts` (Vitest) | recording parser, helpers for layers, series, results and formatting; race timeline, regime filter and learning-curve checks (Phase 9) | always |
 | Browser check | a Playwright script run during development | the static build loads each view, charts render, no console errors | at the end of each phase |
+| Storyboard | `dashboard/src/presenter.test.ts`; a timed Playwright rehearsal during development | the storyboard is valid, names existing recordings and fits in 180 s; the rehearsal presses 1–9 against the launcher's server with all non-local requests blocked, holds each step for its planned time, and checks load times, the S/R variants and console errors (Phase 10 acceptance) | `npm test`; the rehearsal before a demo |
 
 ## Running them
 

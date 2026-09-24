@@ -1,6 +1,6 @@
 # Results and validation
 
-All numbers below are **simulation output (SIM)** from the files named, as of Phase 9. They change only when the
+All numbers below are **simulation output (SIM)** from the files named, as of Phase 10. They change only when the
 engine or configuration changes; regenerate them with the commands at the end.
 
 ## 1. Golden reproduction (legacy mode)
@@ -233,6 +233,18 @@ Scenario outcomes (seed 11, days 29–31 recorded unless noted):
 - Integral prior (`srp.form: integral`, not used by any scenario): two-node clusters get prior odds of 3.9e-5 to 1.1e-4,
   close to the legacy 1e-4 on a dry, busy day.
 
+## 8. Demo hardening (Phase 10)
+
+| Acceptance | Result | Source |
+| --- | --- | --- |
+| 1. Airplane mode: the static build plays all storyboard steps | pass — served by `scripts/demo.sh`, every non-local request blocked: 0 external requests; all nine steps reached their recording, time and tab (≤ 0.4 s each); S and R opened the SCMR and RAQ variants | development-time Playwright rehearsal |
+| 2. A full rehearsal takes ≤ 3 minutes | pass — 170.1 s (170 s planned in `storyboard.json`) | same; `presenter.test.ts` checks the plan |
+| 3. No console errors | pass | same |
+
+Storyboard recordings (SIM): `wet_morning_haze` (day 30 wet and quiet; `node_mature`'s haze) gives 2 haze alerts with
+SCMR (158 of 174 decisions held), 6 with SCMR off (`__scmr-stub`) and 3 with RAQ off (`__raq-stub`, a fixed quorum
+of 2). It is byte-identical on rerun.
+
 ## Reproduce
 
 ```bash
@@ -249,6 +261,8 @@ prahari experiment --preset learning --jobs 4      # section 7 (learning curve a
 prahari run --config configs/scenarios/satellite_race.yaml --out recordings/satellite_race.prs.jsonl.gz   # section 7
 prahari run --config configs/scenarios/sensor_fault.yaml --out recordings/sensor_fault.prs.jsonl.gz       # section 7
 prahari run --config configs/scenarios/lightning_storm.yaml --out recordings/lightning_storm.prs.jsonl.gz # section 7 (and __no-relax)
+prahari run --config configs/scenarios/wet_morning_haze.yaml --out recordings/wet_morning_haze.prs.jsonl.gz   # section 8 (and __scmr-stub, __raq-stub)
+scripts/demo.sh                                    # section 8: serve the static build in presenter mode
 ```
 
 The report simulation's side of the 20-seed comparisons was run with short scripts that call

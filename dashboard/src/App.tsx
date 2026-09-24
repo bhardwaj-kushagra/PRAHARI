@@ -6,6 +6,7 @@ import { HeaderStrip } from "./components/HeaderStrip";
 import { MapTools } from "./components/MapTools";
 import { RaceTimeline } from "./components/RaceTimeline";
 import { ModuleHealth } from "./components/ModuleHealth";
+import { PresenterOverlay } from "./components/PresenterOverlay";
 import { NodePanel } from "./components/NodePanel";
 import { LivePanel } from "./components/LivePanel";
 import { openFile, RecordingPicker } from "./components/RecordingPicker";
@@ -71,7 +72,7 @@ export function App() {
   const setPanel = useSim((s) => s.setPanel);
   return (
     <div className="app">
-      <HeaderStrip />
+      <div className="top"><HeaderStrip /><PresenterOverlay /></div>
       <main className="body">
         <section className="left"><MapTools /><CommandMap /><RaceTimeline /></section>
         <aside className="right">

@@ -51,6 +51,18 @@ cd dashboard && npm run build && npm run preview       # http://localhost:4173
 Pick a recording from the list at the top right, or drag any `*.prs.jsonl.gz` file onto the page. A direct link also
 works: `http://localhost:5173/?rec=node_mature.prs.jsonl.gz`.
 
+For the conference (Phase 10), one command serves the static build and opens it in presenter mode, with no engine and
+no internet:
+
+```bash
+scripts/demo.sh              # macOS and Linux: serves dashboard/dist on http://localhost:8765/?presenter=1
+scripts/demo.sh --build      # rebuild first (after new recordings or results)
+scripts\demo.cmd             # Windows: double-click, or powershell -File scripts\demo.ps1 [-Build] [-Port 9000]
+```
+
+Then press 1–9 for the storyboard steps (see [06-demo-walkthrough.md](06-demo-walkthrough.md) and
+`DEMO_CHECKLIST.md`).
+
 ## Generate recordings
 
 Each command simulates a scenario and writes a recording plus a `*.health.json` with per-module state and timings.
@@ -67,6 +79,7 @@ Each command simulates a scenario and writes a recording plus a `*.health.json` 
 | `prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz` | the same with SCMR off — the replay variant behind the SCMR switch | ~70 s |
 | `prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz` | Phase 8: the mature network with the real radio and energy models; gateway g1 down 12:30–14:30 on day 31 across the fire (store-and-forward) | ~65 s |
 | `prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz` | Phase 8: six days, days 2–4 cloudy; state of charge falls, weak nodes switch to ULP scanning, all recover | ~15 s |
+| `prahari run --config configs/scenarios/wet_morning_haze.yaml --out recordings/wet_morning_haze.prs.jsonl.gz` | Phase 10 storyboard steps 3–4: `node_mature`'s haze on a wet, quiet day 30 (quorum 3); also `wet_morning_haze__scmr-stub` and `__raq-stub` for the S and R keys | ~50 s |
 | `prahari run --config configs/scenarios/satellite_race.yaml --out recordings/satellite_race.prs.jsonl.gz` | Phase 9 (India card): the mature network against the satellite (M37) — a 14:00 fire on day 31 and the race timeline | ~55 s |
 | `prahari run --config configs/scenarios/sensor_fault.yaml --out recordings/sensor_fault.prs.jsonl.gz` | Phase 9 (India card): random and scripted faults (M21) — node 55 stuck, node 23 dropped out, node 77 offset; health weights (M29) and "this sensor abstains"; the day-31 fire is still confirmed | ~65 s |
 | `prahari run --config configs/scenarios/lightning_storm.yaml --out recordings/lightning_storm.prs.jsonl.gz` | Phase 9 (Canada card): a storm starts several fires at once; SCMR relaxed while the storm is flagged (also `lightning_storm__no-relax`) | ~55 s |
@@ -116,7 +129,9 @@ dashboard's **Results** tab reads `summary.json`. Run `golden` first: it is the 
 | `engine/tests/` | unit, smoke and golden tests |
 | `configs/` | `default.yaml`, scenarios, experiment presets |
 | `recordings/` | committed demo recordings |
-| `results/` | committed preset summaries (`golden.json`, `ablation.json`, `spacing.json`, `seeds20.json`), the energy comparison `energy.json`, and the combined `summary.json` |
+| `results/` | committed preset summaries (`golden.json`, `ablation.json`, `spacing.json`, `seeds20.json`), the energy comparison `energy.json`, the learning curve `learning.json` with the K = 100 model, and the combined `summary.json` |
+| `scripts/` | demo launchers (`demo.sh`, `demo.ps1`, `demo.cmd`) |
+| `DEMO_CHECKLIST.md` | the conference checklist: the day before, at the venue, on stage, fallbacks |
 | `dashboard/` | the React dashboard |
 | `server/` | optional live server (FastAPI) |
 | `reference/` | the report's original simulation (read-only oracle) |
