@@ -12,16 +12,20 @@ branches are in the site branches' [CLAUDE.md](../../CLAUDE.md).
 ## Branch model
 
 ```text
-main ──●── v1.0.0 ──●──●──●──►   simulator: engine, science, experiments, results (main's own CLAUDE.md)
-              │
-              └──► site-dev ──●──●──●──●──►   draft of the website; all site work lands here
-                               │        │      (Cloudflare builds a preview of every push)
-                     promote   ▼        ▼
-                   site-live ──●────────●──►   production: Cloudflare publishes it at dashboard.firenet.live
+main ──●── 318fe4d ──●── v1.0.0 ──●──●──►   simulator: engine, science, experiments, results (main's own CLAUDE.md)
+              │               │
+              │               │ merge main or a tag (science updates, one way only)
+              ▼               ▼
+site-dev ─────●───────●───────●──●──●──►   draft of the website; all site work lands here
+                      │             │      (Cloudflare builds a preview of every push)
+                      │ promote     │ promote (pull request)
+                      ▼             ▼
+site-live ────────────●─────────────●──►   production: Cloudflare publishes it at dashboard.firenet.live
 ```
 
 - **`main`** is the simulator. Science work continues there under the original rules. It never receives site changes.
-- **`site-dev`** started from the locked release `v1.0.0` (commit `318fe4d`). All site work happens here, either
+- **`site-dev`** started from `318fe4d` (release 1.0 before the second audit) and has since merged the tag `v1.0.0`
+  (`578f1c8`, release 1.0 with the second audit). All site work happens here, either
   directly or on a feature branch merged into it. Each push gets a Cloudflare preview address, so a change can be
   checked on real hosting (and on a phone) before anyone else sees it.
 - **`site-live`** is what the public sees. It changes only through a promotion pull request `site-dev → site-live`,
@@ -41,7 +45,8 @@ merged into `main`.
 | Working rules | `CLAUDE.md` | Site rules instead of the simulator rules; see the file. |
 | Documentation | `docs/site/` | This page and the log. |
 
-Everything else (engine, configurations, recordings, results, the rest of the dashboard) is identical to `v1.0.0`.
+Everything else (engine, configurations, recordings, results, the rest of the dashboard) is identical to the tag
+`v1.0.0`.
 
 ## Hosting settings (Cloudflare Pages)
 
