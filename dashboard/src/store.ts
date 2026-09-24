@@ -80,6 +80,14 @@ export const useSim = create<State>((set, get) => ({
   setPanel: (panel) => set({ panel }),
 }));
 
+// Release 1.0 (second audit): every source load takes a token, and only the latest request may set the source.
+// A slow load (presenter key, recording picker, mechanism switch, live stream) can never overwrite a newer choice.
+let loadSeq = 0;
+/** Start a source load; returns its token. */
+export function beginLoad(): number { return ++loadSeq; }
+/** True while no newer load has started since the one holding `token`. */
+export function isLatestLoad(token: number): boolean { return token === loadSeq; }
+
 /** Current frame for the store's simulated time. */
 export function useFrame() {
   const source = useSim((s) => s.source);

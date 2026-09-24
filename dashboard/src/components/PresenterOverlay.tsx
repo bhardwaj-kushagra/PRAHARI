@@ -4,7 +4,7 @@ import { variantName } from "../edge";
 import { useMapView } from "../mapView";
 import { keyAction, type Step, type Storyboard, stepMinute, storyboardProblems } from "../presenter";
 import { RecordingSource } from "../sources/RecordingSource";
-import { useSim } from "../store";
+import { beginLoad, isLatestLoad, useSim } from "../store";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -30,14 +30,18 @@ function load(name: string): Promise<RecordingSource> {
 /** SPEC §6.4 — apply a storyboard step: recording, bookmark, speed, layers, tab, then play or hold. */
 async function goTo(step: Step) {
   const sim = useSim.getState();
+  const token = beginLoad();                     // keys pressed in quick succession: only the last step is applied
   usePresenter.setState({ step, note: null });
   try {
     if (step.recording && sim.source?.name !== step.recording) {
       sim.setLoading(true);
-      sim.setSource(await load(step.recording));
-      sim.setLoading(false);
+      const src = await load(step.recording);
+      if (!isLatestLoad(token)) return;
+      sim.setSource(src);
     }
+    sim.setLoading(false);
   } catch (e) {
+    if (!isLatestLoad(token)) return;
     sim.setError(e instanceof Error ? e.message : String(e));
     usePresenter.setState({ note: `could not open ${step.recording}` });
     return;
@@ -69,7 +73,10 @@ async function flip(module: "scmr" | "raq") {
     return;
   }
   const playing = useSim.getState().playing;
-  useSim.getState().updateSource(await load(name));
+  const token = beginLoad();
+  const src = await load(name);
+  if (!isLatestLoad(token)) return;
+  useSim.getState().updateSource(src);
   usePresenter.setState({ note: `${module.toUpperCase()} ${to === "real" ? "on" : "off"}` });
   if (playing && !useSim.getState().playing) useSim.getState().togglePlay();
 }

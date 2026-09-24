@@ -103,3 +103,48 @@ PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden   # the golden patter
 
 Install with `pip install -r engine/requirements-lock.txt -e "engine[dev,server]"` and `npm ci` to use the exact
 versions this release was verified with.
+
+## Second audit (same day, requested for extra certainty)
+
+A second pass with the same rules (baseline hashes first, no model or output changes), aimed at what the first pass
+did not cover: a fresh install, the environment, concurrency, and presenter use under pressure.
+
+| # | Class | Finding | Outcome |
+| --- | --- | --- | --- |
+| B1 | defect | **A race when loading recordings.** Pressing a step key and then another before the first recording had arrived could end with the first recording on screen under the second step's caption; reproduced in the browser (key 3, then 5, with the haze recording slowed). The recording picker and the mechanism switches had the same pattern. A live stream also kept replacing a recording opened during a live run | One "latest load wins" token in the store: every load (presenter step, S/R, picker, switches, live stream) takes a token and applies its result only if nothing newer has started; a live stream stops when anything else is opened. The reproduction now ends on the right recording every time; 150 random key presses end exactly on the last step |
+| B2 | robustness | A `.gz` recording cut off in a copy was refused with the misleading message "Failed to fetch" | The readable part is decompressed and opens as an incomplete recording; a file with nothing readable says "the .gz file is damaged or incomplete". Files that are not recordings now say "not a PRAHARI recording" |
+
+Checks that found nothing to fix:
+
+- **Fresh clone and locked install.** A clone into a folder whose path contains spaces, a clean Python 3.11 venv
+  installed only from `requirements-lock.txt`, `npm ci`, then `scripts/check_all.sh`: all checks pass and all 20
+  recordings regenerate byte for byte. The demo launcher also serves correctly from that path.
+- **Newer Python.** Python 3.12 and 3.13, installed from the same lock: 222 engine tests pass and `smoke` and
+  `satellite_race` regenerate byte for byte.
+- **Environment.** `PYTHONHASHSEED` (0 and 12345), `TZ` (UTC, Asia/Kolkata, America/Los_Angeles) and locale (`C`,
+  `C.UTF-8`) all give the same bytes.
+- **Parallel runs.** `prahari experiment` with `--jobs 1` and `--jobs 2` writes identical results files, and the seed-11
+  numbers equal the committed golden run. Three `prahari run` processes writing the same output at once leave one
+  complete, correct file and no temporary files.
+- **Live server.**
+  - 10 simultaneous `/run` requests all succeed.
+  - 20 WebSocket clients that disconnect mid-stream do not disturb a reader that receives all 514 lines and the footer.
+  - A switch mid-run works; the thread count stays at 8 after 11 runs.
+  - Opening a recording during a live run keeps the recording and closes the stream.
+- **Dashboard under pressure.**
+  - Seven files that are not valid recordings (random bytes, an image, an empty file, JSON that is not a recording, a
+    future schema, a damaged `.gz`, a truncated `.gz`) each give a message while the app keeps running.
+  - The smoke recording played to its end at ×600, and `satellite_race` for two minutes, with memory flat at 148 MB
+    and no errors.
+
+Verification after the second audit:
+
+- `scripts/check_all.sh`: 222 engine tests, 58 dashboard tests (56 plus 2 new), build and doc links clean; all 20
+  recordings regenerate byte for byte.
+- Browser sweep: 60 page loads with 0 failures.
+- Presenter rehearsal: 170.1 s, 0 external requests, 0 errors, S/R variants correct.
+- Race reproduction: passes on the final build.
+
+No engine file changed in the second audit, so the golden pattern and the results files are those verified in the
+first.
+

@@ -56,6 +56,12 @@ Chart panels are loaded lazily when their tab opens, so the map view stays light
   scrolls instead of squeezing the map away.
 - **Incomplete recordings.** A final line cut off mid-write is skipped, and the footer marks the recording as
   incomplete; any other malformed line is still refused with its line number.
+- **Latest load wins** (second audit). Every source load takes a token from the store (`beginLoad`) and applies its
+  result only if no newer load has started (`isLatestLoad`). This covers presenter steps, S/R, the recording picker,
+  the mechanism switches and the live stream, so fast key presses or a slow file can never leave the wrong recording
+  on screen. A live stream closes when another recording is opened.
+- **Damaged `.gz` files** (second audit). The readable part of a truncated `.gz` is kept and opens as an incomplete
+  recording; a file with nothing readable, or one that is not a recording, is refused with a message naming why.
 - **Race timeline honesty.** When a recording's satellite side is the stub (a fixed delay after ignition, not M37),
   the marker is labelled as the stub and no race is claimed in the headline.
 
