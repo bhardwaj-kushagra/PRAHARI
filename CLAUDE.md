@@ -1,81 +1,73 @@
-# CLAUDE.md — PRAHARI-SIM agent rules
+# CLAUDE.md — PRAHARI public site (branches `site-dev` and `site-live`)
 
-This repository builds a **local simulator and dashboard** for the FIRENET–PRAHARI wildfire-detection system, for a conference demonstration. The full specification is `docs/SPEC.md`. These rules are **non-negotiable**. If a request conflicts with them, stop and say so.
+This branch carries the **public, view-only website** of the PRAHARI-SIM dashboard, served at
+`https://dashboard.firenet.live` by Cloudflare Pages. It is **not** where the simulator is developed. The simulator,
+its science, experiments and results live on `main`, under `main`'s own `CLAUDE.md`. The branch model, the hosting
+settings and the release steps are in `docs/site/README.md`; the site's log of changes and decisions is
+`docs/site/LOG.md`.
+
+## Branches
+
+| Branch | Purpose | Who writes to it |
+| --- | --- | --- |
+| `main` | Simulator: engine, science, experiments, results, laptop demo | Science work only; never site changes |
+| `site-dev` | Draft of the website; all site work happens here (or on a feature branch merged into it) | Site work |
+| `site-live` | What Cloudflare publishes; always a copy of a tested `site-dev` commit | Only a promotion pull request `site-dev → site-live` |
+
+Never commit directly to `site-live`. Never merge a site branch into `main`.
 
 ## Before writing any code in a session
 
-1. Read `PROGRESS.md` (which phase we are in), `KNOWN_ISSUES.md` (what is parked) and `DECISIONS.md`; `docs/README.md` maps the documentation you will update.
-2. Read `docs/SPEC.md` §2 (principles) and §4 (framework) if you have not this session, then **only** the current phase's section in §7 and the §5 equations it lists.
-3. State in a few bullets what you will build, which files you will touch, and which acceptance tests will prove it. Wait for "go" unless told to proceed.
+1. Read `docs/site/README.md` and the latest entries of `docs/site/LOG.md`.
+2. State in a few bullets what you will change, which files you will touch and how you will check it. Wait for "go"
+   unless told to proceed.
 
 ## The rules
 
-1. **Stubs are sacred.** Every stage has a `stub` implementation registered under the same name as its `real` one. Never delete, weaken or bypass a stub. New real implementations replace stubs *through the registry*, not by editing callers.
-2. **Module states come from config.** Each module is `real`, `stub` or `off` in `configs/*.yaml`. Never hard-code which implementation runs.
-3. **Contracts are additive.** Data classes in `engine/prahari/core/contracts.py` may gain fields with defaults. Never rename or remove a field from an accepted phase without bumping the contract version, updating every consumer and its tests in the same change, and logging it in `DECISIONS.md`.
-4. **No rewrites of accepted phases.** Do not restructure, rename, reformat or "clean up" files from phases marked accepted in `PROGRESS.md`. If a change there is truly needed, propose it and wait for approval.
-5. **Failures degrade; they never crash.** Every stage call goes through the runner's isolation wrapper. A real module that raises or returns invalid output (NaN, wrong shape, out of range) switches to its stub for the rest of the run and is marked `degraded`.
-6. **Escape hatch — never get stuck.** If a module fails its acceptance tests after about three focused attempts, or its timebox in `docs/SPEC.md` §7 runs out:
-   - set it to `stub` in `configs/default.yaml`,
-   - write the symptoms, what you tried and your best diagnosis in `KNOWN_ISSUES.md`,
-   - confirm the full test suite and the dashboard still run,
-   - move on to the next item.
+1. **Dashboard only.** Site work changes `dashboard/`, `docs/site/`, this file and hosting files (`.node-version`,
+   `dashboard/public/_headers`). It never edits `engine/`, `configs/`, `server/`, `reference/`, `recordings/` or
+   `results/` by hand. New recordings, results or engine behaviour reach the site **only** by merging `main` into
+   `site-dev`.
+2. **Add, don't rewrite.** Put site-only behaviour in new files (`dashboard/src/site/`, separate style sheets), and
+   keep edits to existing dashboard files to small, clearly marked switches. Every edit to a file that also exists on
+   `main` is a possible merge conflict later; list such edits in `docs/site/LOG.md`. Unlike `main`'s rule 4, the
+   dashboard's accepted phases **may** be changed here when the site needs it, but prefer the smallest change.
+3. **No fabricated results.** Every number and chart comes from the recordings and results files produced on `main`.
+   Never type a result value into the site, never edit a recording, never tune anything to make a chart look better.
+4. **Label simulation.** Every view keeps the SIMULATION badge, and every chart footer keeps its seeds and simulated
+   days. On a public site this matters more than on stage.
+5. **Static and offline.** The site is static files only: no server, no database, no analytics scripts, no requests to
+   third-party hosts (fonts stay bundled). The optional live engine stays hidden (`dashboard/src/site/siteConfig.ts`).
+6. **Works on the hosting limits.** Cloudflare Pages: at most 20 000 files, each at most 25 MiB. Check new recordings
+   against this before promoting.
+7. **Minimal dependencies.** React, TypeScript, Vite, ECharts, zustand, as on `main`. Anything else needs a line in
+   `docs/site/LOG.md` first.
+8. **Tests with every change.** `npx tsc --noEmit`, `npx vitest run` and `npm run build` (in `dashboard/`) must pass,
+   and the built site must open with no console errors, before any promotion.
+9. **Escape hatch.** If a site change fights you for about three focused attempts, revert it on `site-dev`, write the
+   symptoms in `docs/site/LOG.md` and move on. `site-live` keeps serving the last good version meanwhile.
+10. **Document it.** Each session adds a dated entry to `docs/site/LOG.md`: what changed, which shared files were
+    touched, check results, and whether it has been promoted. Write in the project's own words.
 
-   Parking a module is always better than blocking the project.
-7. **Determinism.** All randomness comes from the master seed via `numpy.random.SeedSequence`, one spawned generator per module (`core/rng.py`). New modules append their stream name at the **end** of the list. Never use Python's `random` or an unseeded NumPy call.
-8. **Vectorise over nodes.** Per-node state lives in NumPy arrays. No Python loops over nodes inside the tick loop.
-9. **Cite the maths.** Every formula in code carries a comment with its equation number, for example `# M26 — QCC p-value`. Every parameter lives in configuration with a `source` tag (`LIT`, `VEN`, `DER`, `ASM`, `TGT`).
-10. **No fabricated results.** Charts and numbers come from simulator output files. Never hard-code result values outside `tests/golden/`. Never tune a model to improve a chart without recording why in `DECISIONS.md`.
-11. **Replay first.** The dashboard must always work from recordings with no server running. Live mode is optional and must never be required.
-12. **Tests with every change.** Write or update the unit tests for the equations you implement, using the reference values in `docs/SPEC.md` §9.2. Run the whole suite before finishing. Golden tests (§9.3) run in legacy mode only.
-13. **Minimal dependencies.**
-    - Engine: NumPy, SciPy, PyYAML, Pydantic (optional), pytest.
-    - Server: FastAPI, Uvicorn.
-    - Dashboard: React, TypeScript, Vite, ECharts, zustand.
+## Merging `main` into `site-dev` (science updates)
 
-    Anything else needs a line in `DECISIONS.md` first.
-14. **Small files.** Keep modules under about 300 lines, with maths in pure functions (arrays in, arrays out) and no hidden global state.
-15. **Label simulation.** Every dashboard view shows the SIMULATION badge. Every chart footer states seeds and simulated days.
-16. **Document the journey.** Every phase writes `docs/journey/phase-N-<name>.md` (goal, what was built, how it works, challenges, decisions with pros and cons, how each issue was resolved or parked, acceptance results, what to demo), adds a row to `docs/journey/README.md`, and updates every page in `docs/guide/`, `docs/architecture/` and `docs/results/` that the phase changes. Problems are documented, not hidden: an issue stays in the journey with its resolution or its `KNOWN_ISSUES.md` entry. Write in the project's own words; quote numbers only from simulator outputs and label them SIM.
+`git merge main` (or a release tag such as `v1.0.0`) on `site-dev`. The most likely conflict is this file, whenever
+`main` has changed its own `CLAUDE.md`: keep the site version (`git checkout --ours CLAUDE.md`). Resolve any other
+conflict in favour of `main` for engine, configs, recordings and results, and re-apply the site switch for dashboard
+files (the list of shared-file edits is in `docs/site/LOG.md`). Then run the checks in rule 8.
 
 ## At the end of every session
 
-- Update `PROGRESS.md`: what was done, test status, the next step.
-- Add any deviation, new dependency or tuning choice to `DECISIONS.md`.
-- Add any parked module to `KNOWN_ISSUES.md`.
-- Update the documentation (rule 16): the phase's journey page, the timeline, and any affected guide, architecture or results page; check that relative links resolve.
-- Tell the developer exactly what to open to see the change (a command and a dashboard view).
+- Add the entry to `docs/site/LOG.md` (rule 10).
+- Tell the developer what to open: the `site-dev` preview address, or `npm run build && npm run preview` locally.
+- If the change is ready, say so; the developer promotes it with a pull request `site-dev → site-live`.
 
-## Useful commands (keep this list up to date)
+## Useful commands
 
 ```text
-pip install -e "engine[dev,server]"          # engine (+ optional live server: fastapi, uvicorn, websockets)
-pip install -r engine/requirements-lock.txt -e "engine[dev,server]"   # release 1.0: the exact tested versions (dashboard: npm ci)
-scripts/check_all.sh [--quick]                # release check: tests, typecheck, build, doc links, recordings byte-identical
-pytest engine/tests                           # all engine tests
-prahari run --config configs/scenarios/smoke.yaml --out recordings/smoke.prs.jsonl.gz
-prahari run --config configs/scenarios/siting_greedy.yaml --out recordings/siting_greedy.prs.jsonl.gz   # also siting_corridor
-prahari run --config configs/scenarios/signals_3day.yaml --out recordings/signals_3day.prs.jsonl.gz     # Phase 2 signals
-prahari run --config configs/scenarios/fires_day.yaml --out recordings/fires_day.prs.jsonl.gz           # Phase 3a fires
-prahari run --config configs/scenarios/fires_day_gaussian.yaml --out recordings/fires_day_gaussian.prs.jsonl.gz   # 3b
-prahari run --config configs/scenarios/node_3day.yaml --out recordings/node_3day.prs.jsonl.gz           # Phase 5 node layer
-prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz       # 31 d, recorded from day 29 (~70 s)
-prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz   # View 5 variant
-prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz   # Phase 8 store-and-forward
-prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz         # Phase 8 energy
-prahari energy                                # Phase 8: M41–M43 comparison → results/energy.json
-prahari run --config configs/scenarios/satellite_race.yaml --out recordings/satellite_race.prs.jsonl.gz   # Phase 9; also sensor_fault, lightning_storm(__no-relax), power_line_corridor, bushfire_afternoon (~1 min each)
-prahari experiment --preset golden --jobs 4   # P0–P2, edge ablations, node metrics, dial → results/golden.json + summary.json
-prahari experiment --preset ablation --jobs 4 # P2-QCC, P2-TTC (run after golden; joins summary.json)
-prahari experiment --preset spacing --jobs 4  # P2 at 70/100/150 m, seeds 11,22,33
-prahari experiment --preset seeds20 --jobs 4  # P0–P2 over seeds 11–30
-prahari experiment --preset learning --jobs 4 # Phase 9: M36 learning curve + M26 maturity → results/learning.json (~5 min)
-prahari experiment --preset golden --seeds 11 --pipelines P1   # quicker single-seed check
-PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)
-uvicorn server.app:app --reload               # live server (Phase 6); dashboard: Live engine ▸ Scenarios ▸ Start
-cd dashboard && npm install && npm run dev    # dashboard (copies recordings/ in first)
-cd dashboard && npm test                      # dashboard unit tests (Vitest)
-cd dashboard && npm run build && npm run preview   # static build, no engine server
-scripts/demo.sh [--build]                     # Phase 10: serve dashboard/dist on :8765 in presenter mode (Windows: scripts\demo.cmd)
-prahari run --config configs/scenarios/wet_morning_haze.yaml --out recordings/wet_morning_haze.prs.jsonl.gz   # storyboard steps 3–4; also __scmr-stub, __raq-stub
+cd dashboard && npm ci                         # install (Node 22, see .node-version)
+cd dashboard && npx tsc --noEmit && npx vitest run && npm run build   # checks before promotion
+cd dashboard && npm run preview                # serve the built site at http://localhost:4173
+cd dashboard && VITE_LIVE_ENGINE=1 npm run dev # show the live-engine panel again (needs a local engine server)
+git merge main                                 # on site-dev: bring in science updates
 ```

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { runCounters, SWITCHES, variantName } from "../edge";
 import { RecordingSource } from "../sources/RecordingSource";
 import { useSim } from "../store";
+import { LIVE_ENGINE } from "../site/siteConfig";
 import type { Frame } from "../types";
 import { useLive } from "./LivePanel";
 
@@ -54,7 +55,7 @@ export function MechanismSwitches() {
           const available = live || recs.includes(variantName(source.name, m, to));
           return (
             <button key={m} className={`switch ${on ? "on" : ""}`} aria-pressed={on} disabled={busy || !available}
-                    title={available ? `switch ${LABEL[m]} to ${to}` : "no pre-recorded variant; use live mode"}
+                    title={available ? `switch ${LABEL[m]} to ${to}` : `no pre-recorded variant${LIVE_ENGINE ? "; use live mode" : ""}`}
                     onClick={() => toggle(m, to)} data-testid={`switch-${m}`}>
               {LABEL[m]} <span className="small">{on ? "real" : state}</span>
             </button>

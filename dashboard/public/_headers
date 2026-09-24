@@ -1,0 +1,16 @@
+# Cloudflare Pages response headers for the public site (site branches only; see docs/site/README.md).
+# Other static servers ignore this file, so the laptop demo (scripts/demo.sh) is unaffected.
+
+# Unlisted: anyone with the link can view it, search engines are asked not to index it.
+/*
+  X-Robots-Tag: noindex, nofollow
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+# Vite puts a content hash in every file name under assets/, so these never change: cache for a year.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Recordings keep their names when regenerated: cache for an hour, then check for a newer copy.
+/recordings/*
+  Cache-Control: public, max-age=3600
