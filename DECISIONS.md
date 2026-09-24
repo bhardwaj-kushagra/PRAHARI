@@ -764,7 +764,8 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The
   view-only dashboard at `https://dashboard.firenet.live` (Cloudflare Pages) is built from `site-live`, which changes
-  only by promotion from the draft branch `site-dev`; both started from the locked release `v1.0.0` (`318fe4d`).
+  only by promotion from the draft branch `site-dev`. Both were created from `318fe4d`; the tag `v1.0.0` was then made
+  on GitHub at `578f1c8` (release 1.0 with the second audit, pull request #3) and merged into `site-dev`.
   `main` stays the simulator: science, experiments and results, under this repository's `CLAUDE.md`, and never
   receives site changes. The site branches carry their own `CLAUDE.md` (dashboard-only work, no fabricated results,
   SIMULATION labels kept) and may change accepted dashboard files, which `main`'s rule 4 forbids here. Science updates

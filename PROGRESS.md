@@ -505,8 +505,9 @@ passing and log output changes in `DECISIONS.md`.
 - Created from `318fe4d`:
   - `site-dev`: the draft website;
   - `site-live`: what Cloudflare Pages publishes.
-- Tag `v1.0.0`: created locally, but the working environment could not push it. The developer creates it on GitHub,
-  on `318fe4d`.
+- Tag `v1.0.0`: the working environment could not push tags, so the developer created it on GitHub as the release
+  "PRAHARI-SIM 1.0". By then the second audit (pull request #3) was on `main`, so the tag is on `578f1c8`, not
+  `318fe4d`. It marks release 1.0 including the second audit, and it has been merged into `site-dev`.
 - Site work (live-engine panel hidden, hosting headers, site rules and docs) is on `site-dev` only.
 - `main` gains only this entry and Site-1. No code, recording or result changed here, so the release 1.0 test status
   stands.
