@@ -12,6 +12,7 @@ import { NodePanel } from "./components/NodePanel";
 import { LivePanel } from "./components/LivePanel";
 import { openFile, RecordingPicker } from "./components/RecordingPicker";
 import { TimeControls } from "./components/TimeControls";
+import { LIVE_ENGINE } from "./site/siteConfig";
 import { type Panel, useSim } from "./store";
 
 // Charts (ECharts) load only when the Signals tab opens, keeping the map view light.
@@ -82,7 +83,7 @@ export function App() {
           <ErrorBoundary name="race timeline" resetKey={rec}><RaceTimeline /></ErrorBoundary>
         </section>
         <aside className="right">
-          <ErrorBoundary name="recording picker"><RecordingPicker /><LivePanel /></ErrorBoundary>
+          <ErrorBoundary name="recording picker"><RecordingPicker />{LIVE_ENGINE && <LivePanel />}</ErrorBoundary>
           <nav className="tabs" role="tablist">
             {TABS.map(([id, label]) => (
               <button key={id} role="tab" aria-selected={panel === id} className={panel === id ? "on" : ""} onClick={() => setPanel(id)}>{label}</button>
