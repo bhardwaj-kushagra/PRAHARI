@@ -121,6 +121,18 @@ real dataclass fields.
 **Lesson.** Additive contracts need the validators to know what "additive" means; test every module state (the
 contract test runs all-stub, all-off and all-real configurations, which is how this was caught).
 
+## 7c. A curve that looked like noise was a bug (Phase 9)
+
+**What happened.** The first learning curve rose, fell by 17 points and rose again. It would have been easy to call
+this small-sample noise, or to re-run with other seeds until it looked monotone.
+
+**What we did.** Read the training sets before the numbers: the quiet (negative) data changed with K because the
+loop stopped reading seeds once it had K burns. Fixed that alone; the curve became monotone. The buggy numbers stay
+in the journey page and `DECISIONS.md` P9-13.
+
+**Lesson.** Before explaining a surprising result, check that every point was computed the same way. The same habit
+found the stuck-sensor weight recovering after 13 hours (the reference variance had learned the fault).
+
 ## 8. Tooling surprises
 
 | Problem | Resolution |

@@ -1,4 +1,5 @@
 // Frame contract prahari.frame/1 (SPEC §4.6). The dashboard knows only this contract.
+import type { RegimeCard } from "./regimes";
 
 export interface NodeInfo { id: number; x: number; y: number; type: string }
 export interface Gateway { id: string; x: number; y: number }
@@ -33,8 +34,13 @@ export interface Header {
   detection_radius_m?: number;
   satellite_pixel_m?: number;
   record_from_min?: number;    // warm start: frames begin at this minute (Phase 5 follow-up)
+  regime?: RegimeCard;         // Regime Card the run used (Phase 9, SPEC §8.1)
 }
-export interface FrameEvent { type: string; node?: number; fire?: number; module?: string; error?: string; trace_id?: string; x?: number; y?: number; cause?: string; members?: number[] }
+export interface FrameEvent {
+  type: string; node?: number; fire?: number; module?: string; error?: string; trace_id?: string; x?: number; y?: number;
+  cause?: string; members?: number[];
+  overpass_t?: number | null; platform?: string | null; alert_t?: number | null; missed?: number[];   // satellite_plan (M37)
+}
 // Plume grid (Phase 3a): float16 little-endian, base64; row 0 is the southern row.
 export interface PlumeGrid { x0: number; y0: number; cell_m: number; nx: number; ny: number; max: number; data: string }
 export interface Alert { level: string; cluster: number[]; trace_id: string }

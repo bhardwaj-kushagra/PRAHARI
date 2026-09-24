@@ -61,6 +61,10 @@ def combine(out_dir: str | Path, primary: str | None = None) -> dict:
     if energy:
         summary["energy"] = energy
         sources["energy"] = {"seeds": []}
+    learning = _load(out, "learning")                               # Phase 9: M36 learning curve, M26 maturity
+    if learning:
+        summary["learning"] = learning
+        sources["learning"] = {"seeds": learning["train_seeds"] + learning["test_seeds"]}
     summary["sources"] = sources
     summary["table"] = table(summary["pipelines"], summary.get("reference"))
     (out / "summary.json").write_text(json.dumps(summary, indent=1), encoding="utf-8")

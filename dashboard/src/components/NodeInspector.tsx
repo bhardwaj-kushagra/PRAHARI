@@ -98,7 +98,7 @@ export function NodeInspector() {
                                ...(hasF ? [{ name: "floor 1/(n+1)", s: data.floor, ref: true, endLabel: "floor" }] : [])] }),
       G: stackOption({ title: "Node CUSUM G and threshold h (M28)", unit: "", span, cursor, marks: data.marks,
                        lines: [{ name: "G", s: data.G }, { name: "h", s: data.h, ref: true, endLabel: "h" }] }),
-      health: stackOption({ title: "Health weight c (M29; stub = 1)", unit: "", span, cursor, height: "compact",
+      health: stackOption({ title: "Health weight c (M29; below 0.1 the sensor abstains; stub = 1)", unit: "", span, cursor, height: "compact",
                             lines: [{ name: "c", s: data.health }] }),
       soc: data.soc ? stackOption({ title: "Stored energy · state of charge (M43)", unit: "", span, cursor, height: "compact",
                                     lines: [{ name: "state of charge", s: data.soc },

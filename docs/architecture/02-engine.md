@@ -21,18 +21,19 @@ engine/prahari/
 │   ├── health.py, trace.py module health records; evidence-trace records
 ├── world/                  landscape (M2–M3), siting (M1, M4), geometry
 ├── env/                    weather (M5–M6), ffmc (M7)
-├── fire/                   ignition (M3, M8), growth (M9), plume (M12 legacy), gaussian (M11, M14–M15)
-├── sensors/                mox sensor (M17–M19), nuisance and haze (M20), faults (M21)
+├── fire/                   ignition (M3 with lightning, M8), growth (M9), plume (M12 legacy), gaussian (M11, M14–M15)
+├── sensors/                mox sensor (M17–M19), nuisance and haze (M20), faults (stub) and faults_real (M21, Phase 9)
 ├── detect/baselines/       fixed (P0, M22), v1 (P1, M23), v1t (P1t)
 ├── detect/prahari/         ttc, qcc, score, cusum (stubs) and ttc_real, qcc_real, cusum_real, tuning (Phase 5);
 │                           cluster, scmr, fisher, srp, learn, raq, escalate (stubs) and edge_real, decide_real,
-│                           escalate_real (Phase 6)
+│                           escalate_real (Phase 6); score_real (M27 + M29) and learn_real (M36) (Phase 9)
 ├── comms/                  pathloss (M38 + shadowing, relays), lora (M39, M40 maths), lorawan (stub), lorawan_real (Phase 8)
 ├── energy/                 power (M41–M43 maths), budget (stub), budget_real (Phase 8)
-├── satellite/              stub until Phase 9
+├── satellite/              overpass (stub: fixed delay), race (M37 overpasses, Phase 9)
 ├── record/                 writer and reader of recordings, frame helpers, world header sections
 └── eval/                   stats (M44–M46), experiments (harness), node_metrics (Phase 5),
-                            offline (edge replay, dial), report (summary table) (Phase 7)
+                            offline (edge replay, dial), report (summary table) (Phase 7), energy_table (Phase 8),
+                            learning (M36 learning curve, M26 maturity) (Phase 9)
 server/                     optional live server: app.py (FastAPI), live.py (threaded run + LiveWriter)
 ```
 
@@ -118,6 +119,28 @@ node layer costs about 0.3 ms per tick (SIM timing on the development machine).
   5%, back on at 10%).
 - **Defaults.** Both modules stay `stub` except in the Phase 8 scenarios, so every earlier result and recording is
   unchanged (checked frame by frame).
+
+## Regimes, satellite, faults and learning (Phase 9)
+
+- **Regime Cards.** `configs/regimes/<name>.yaml` sits between `default.yaml` and the scenario (`regime: canada`). It
+  sets weather, interface weights, haze and the radio plan, and a `regime_card` block (name, label, radio plan, alert
+  format, lightning) that the recording header copies as `regime`.
+- **Arrival time.** The real comms stage fills `Delivered.t_detect`, the minute each delivered candidate was raised;
+  the cluster stage windows candidates by that minute, so a frame delayed by the radio still meets its neighbours.
+- **Lightning.** `IgnitionReal` turns scripted storms into Poisson strikes over a disc; each can ignite a fire in the
+  forest. `ctx.storm` stays set until 180 minutes after a storm ends; the prior then carries `lightning`, and SCMR
+  uses its relaxed ratio.
+- **Satellite (`race.py`).** When a fire ignites, the whole overpass plan is drawn at once (which pass sees it, which
+  misses, when the alert arrives) and published as a `satellite_plan` event for the race timeline.
+- **Faults and health (`faults_real.py`, `score_real.py`).** Faults change the readings after the sensor stage; a
+  dropout sets `Readings.missing` and holds the last value. The real score stage computes each node's health weight
+  and zeroes the evidence of a node that abstains.
+- **Learning (`learn_real.py`, `eval/learning.py`).** The learn stage now receives the clusters, SCMR and health
+  weights as well as Fisher; with a fitted model file (K ≥ 10 burns) it returns the fitted likelihood ratio, otherwise
+  the bound. The harness lists every cluster window of the protocol runs, fits the model for each K and compares the
+  rules at a fixed false-alarm budget.
+- **Defaults.** All of these stay `stub`, off or `legacy` by default and in the golden presets, so every earlier
+  result and recording keeps identical frames.
 
 ## Live mode (Phase 6)
 

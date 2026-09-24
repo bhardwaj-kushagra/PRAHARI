@@ -136,6 +136,7 @@ class Readings:
     x: np.ndarray            # (N, C) compensated channels, su
     x_raw: np.ndarray        # (N, C) uncompensated channels (fixed-threshold baseline)
     fault: np.ndarray | None = None   # (N,) bool, True where a fault is injected
+    missing: np.ndarray | None = None  # (N,) bool, True where no data arrived (dropout; last value held) — Phase 9
 
     def validate(self, n: int) -> None:
         c = self.x.shape[1] if self.x.ndim == 2 else -1
@@ -229,6 +230,7 @@ class Delivered:
                              # "toa_ms", "relay", "queued")
     queue: np.ndarray | None = None   # (N,) frames waiting at each node (store-and-forward, Phase 8)
     down: tuple = ()                  # gateways out of service this minute (Phase 8 outages)
+    t_detect: tuple = ()              # detection minute of each delivered candidate; empty = this minute (Phase 9)
 
     def validate(self, n: int) -> None:
         _same_len("delivered", self.nodes, self.p)
@@ -256,6 +258,7 @@ class EnergyState:
 @dataclass(frozen=True)
 class SatelliteAlerts:
     alert_t: tuple = ()          # tuple of (fire_id, alert time in minutes)
+    plan: tuple = ()             # dicts for fires first seen this minute: overpass, platform, alert time (M37, Phase 9)
 
     def validate(self, n: int) -> None:
         for _, t in self.alert_t:

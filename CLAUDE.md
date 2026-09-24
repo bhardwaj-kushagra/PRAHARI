@@ -62,10 +62,12 @@ prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordi
 prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz   # Phase 8 store-and-forward
 prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz         # Phase 8 energy
 prahari energy                                # Phase 8: M41–M43 comparison → results/energy.json
+prahari run --config configs/scenarios/satellite_race.yaml --out recordings/satellite_race.prs.jsonl.gz   # Phase 9; also sensor_fault, lightning_storm(__no-relax), power_line_corridor, bushfire_afternoon (~1 min each)
 prahari experiment --preset golden --jobs 4   # P0–P2, edge ablations, node metrics, dial → results/golden.json + summary.json
 prahari experiment --preset ablation --jobs 4 # P2-QCC, P2-TTC (run after golden; joins summary.json)
 prahari experiment --preset spacing --jobs 4  # P2 at 70/100/150 m, seeds 11,22,33
 prahari experiment --preset seeds20 --jobs 4  # P0–P2 over seeds 11–30
+prahari experiment --preset learning --jobs 4 # Phase 9: M36 learning curve + M26 maturity → results/learning.json (~5 min)
 prahari experiment --preset golden --seeds 11 --pipelines P1   # quicker single-seed check
 PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden   # golden tests (slow; skipped otherwise)
 uvicorn server.app:app --reload               # live server (Phase 6); dashboard: Live engine ▸ Scenarios ▸ Start

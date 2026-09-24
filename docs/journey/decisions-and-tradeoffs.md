@@ -40,6 +40,9 @@ The decisions that most shape the project, with the alternatives considered. Ids
 | Both ablation forms: module stubs (default, the dashboard's switches) and the report simulation's legacy variants (the `ablation` preset) | one form only | the SPEC's meaning and a like-for-like comparison with the report | three extra parameters and two optional contract fields in accepted modules (approved) | P7-10, P7-12 |
 | A 2 × 2 reverse swap before calling a gap "sampling" | stop at the fresh-seed check | separates background from fire-set effects; each then checked at model level | about an hour of compute | P7-14 |
 | Radio and energy models real only in the Phase 8 scenarios | real everywhere | every earlier result and recording unchanged | the default demo shows perfect links | P8-1 |
+| Fault glyph from the health weight (the system's view), not the injected fault | draw injected faults | shows what an operator sees; honest about undetected faults | a small offset shows no glyph | P9-6 |
+| Satellite plan drawn once at ignition and published as an event | compute the race in the dashboard | deterministic; no look-ahead in replay | the plan cannot react to later fire behaviour | P9-3 |
+| Learning rules compared at a fixed false-alarm budget on held-out seeds; K counts burns, quiet data fixed | compare at each rule's own threshold | the curve shows learning, not a moved threshold | the budget threshold is set on the evaluation seeds' quiet runs | P9-10, P9-11 |
 
 ## Process
 

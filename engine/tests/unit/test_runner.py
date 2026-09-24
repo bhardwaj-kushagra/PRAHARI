@@ -74,10 +74,10 @@ def test_required_module_holds_last_valid_output(smoke_cfg, tmp_path, monkeypatc
 
 def test_real_falls_back_to_stub_while_no_real_exists(smoke_cfg, tmp_path):
     cfg = short(smoke_cfg, days=0.05)
-    cfg["modules"]["satellite"] = "real"              # no real satellite model until Phase 9 (energy until Phase 8)
+    cfg["modules"]["growth"] = "real"                 # no real growth model (M10 not built); was energy, then satellite
     _, health, rec = run_cfg(cfg, tmp_path / "r.prs.jsonl.gz")
-    assert health["satellite"]["requested"] == "real" and health["satellite"]["state"] == "stub"
-    assert rec.header["modules"]["satellite"] == "real"
+    assert health["growth"]["requested"] == "real" and health["growth"]["state"] == "stub"
+    assert rec.header["modules"]["growth"] == "real"
 
 
 # -- Phase 1 setup modules --------------------------------------------------------

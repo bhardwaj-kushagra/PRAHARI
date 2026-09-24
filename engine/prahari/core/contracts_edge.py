@@ -84,6 +84,9 @@ class Prior:
     day_type: str = "dry_busy"   # or "wet_quiet"
     lam: float = 0.0             # M33 integral term, 0 when not modelled
     p_s: float = 0.0             # M8 sustained-ignition probability, 0 when not modelled
+    lightning: bool = False      # M31 — a lightning storm is active: SCMR relaxes (Phase 9)
+    lam_map: np.ndarray | None = None   # M33 integral: sustained-fire rate per raster cell per unit activity (Phase 9)
+    disk: tuple | None = None    # M33 integral: raster cells within R of each node (index arrays)
 
     def validate(self, n: int) -> None:
         _num("prior odds", self.odds, 0.0)
@@ -102,6 +105,9 @@ class Raq:
     posterior_odds: tuple = ()
     decide: tuple = ()
     method: str = "fixed quorum (stub)"   # Phase 6: which rule decided — shown in traces
+    odds_c: tuple = ()           # M33 integral: each cluster's own prior odds (Phase 9; empty otherwise)
+    lam_c: tuple = ()            # M33 integral: each cluster's Λ_C Δt (Phase 9)
+    OPTIONAL: ClassVar[tuple] = ("odds_c", "lam_c")
 
     def validate(self, n: int) -> None:
         _same_len("raq", self.posterior_odds, self.decide)

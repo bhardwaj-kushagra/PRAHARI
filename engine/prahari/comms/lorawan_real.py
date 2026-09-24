@@ -117,7 +117,7 @@ class CommsReal(Stage):
                                 "queued": False, "retry": 0, "toa_ms": 0.0, "relay": None})
             else:
                 air.append(f)
-        delivered = [(i, pv) for (tt, i, pv) in self._late if tt <= t]
+        delivered = [(i, pv, t0) for (tt, i, pv, t0) in self._late if tt <= t]
         self._late = [x for x in self._late if x[0] > t]
         lost = self._resolve(air, end)
         for f, bad in zip(air, lost):
@@ -137,12 +137,13 @@ class CommsReal(Stage):
             elif f["kind"] == "candidate":
                 tt = int(fin // 60)
                 if tt <= t:
-                    delivered.append((f["node"], f["p"]))
+                    delivered.append((f["node"], f["p"], f["t0"]))
                 else:
-                    self._late.append((tt, f["node"], f["p"]))
+                    self._late.append((tt, f["node"], f["p"], f["t0"]))
         queue = np.array([len(q) for q in self._queue], dtype=float)
-        return Delivered(nodes=tuple(int(i) for i, _ in delivered), p=tuple(float(v) for _, v in delivered),
-                         packets=tuple(packets), queue=queue, down=tuple(g for g, u in zip(self._gw, up) if not u))
+        return Delivered(nodes=tuple(int(i) for i, _, _ in delivered), p=tuple(float(v) for _, v, _ in delivered),
+                         packets=tuple(packets), queue=queue, down=tuple(g for g, u in zip(self._gw, up) if not u),
+                         t_detect=tuple(int(t0) for _, _, t0 in delivered))       # the edge windows by detection time
 
     def _resolve(self, air: list, end: float) -> list:
         """M40 — collisions among this minute's frames; lost candidate frames retry (appended to `air`) until no

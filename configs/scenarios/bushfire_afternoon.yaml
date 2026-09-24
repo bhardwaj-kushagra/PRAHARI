@@ -1,0 +1,22 @@
+# Bushfire afternoon (Phase 9) on the Australia card: hot, dry, strong north-westerly winds over dry eucalypt forest.
+# A mature network (31 days, days 29–31 recorded) on the standard grid; a fire by the north-east footpath on day 31
+# at 15:00; the satellite baseline races it.
+regime: australia
+scenario:
+  name: bushfire_afternoon
+  description: "A fire on a hot, windy afternoon in dry eucalypt forest (Australia card)"
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+modules:
+  satellite: real
+params:
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}
+  ignition:
+    scripted:
+      - {t_min: 44100, x: 600, y: 445}                     # day 31, 15:00

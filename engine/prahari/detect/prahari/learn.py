@@ -1,4 +1,4 @@
-"""Learning loop (SPEC §5.10). Real M36 fitted likelihood ratio: Phase 9.
+"""Learning loop (SPEC §5.10). Real M36 fitted likelihood ratio: `learn_real.py` (Phase 9).
 
 Stub and off: the Sellke–Bayarri–Berger bound of M34.
 """
@@ -26,6 +26,8 @@ class LearnStub(Stage):
     description = "Sellke–Bayarri–Berger Bayes-factor bound"
 
     def step(self, fisher: Fisher, ctx) -> BayesFactors:
+        if isinstance(fisher, tuple):                    # Phase 9: the pipeline also passes clusters, SCMR and c (M36)
+            fisher = fisher[0]
         return BayesFactors(bf=tuple(float(b) for b in sbb_bound(fisher.p_cluster)))
 
 

@@ -28,6 +28,7 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 | `spacing_m`, `radius_m`, `detection_radius_m`, `satellite_pixel_m` | geometry |
 | `modules` | requested state of every module |
 | `model_card` | per module: kind running, equation, tag, description, version, source, `notes` (stage snapshot) |
+| `regime` | the Regime Card the run used (Phase 9): `name` (`none` without a card), `label`, `radio_plan`, `alert_format`, `lightning` |
 
 ### Frame
 
@@ -36,7 +37,7 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 | `t` | minutes since start |
 | `weather` | `T` °C, `RH` %, `wind_ms`, `wind_dir_deg` (direction the wind comes from), `rain_mm`, `ffmc`, `dew_c` |
 | `prior` | `odds`, `quorum` (nodes that must agree today), `day_type` |
-| `nodes.state` | per node: 0 normal, 1 elevated, 2 candidate, 3 confirmed, 4 fault, 5 low power |
+| `nodes.state` | per node: 0 normal, 1 elevated, 2 candidate, 3 confirmed, 4 fault (from Phase 9: health weight below `display.abstain_c` = 0.1, the sensor abstains), 5 low power |
 | `nodes.reading`, `residual`, `p`, `cusum`, `health`, `soc`, `conc` | per-node values (4 significant figures); `conc` is the fire signal reaching the node |
 | `nodes.baseline`, `nodes.n_cal` | TTC slow baseline and QCC calibration-set size (Phase 5); the p floor is 1/(n_cal + 1) |
 | `nodes.queue`, `nodes.mode` | only with the real radio and energy models (Phase 8): frames waiting at each node (store-and-forward), and the power mode 0 standard, 1 ULP, 2 off |
@@ -46,7 +47,7 @@ Gzip (header time 0, no file name, so identical runs give identical bytes) of JS
 | `plume` | optional smoke grid: origin, cell size, shape, max, base64 float16 values (row 0 = south) |
 | `packets` | uplink attempts: `from`, `to` (gateway id or `n<k>` for a relay), `ok`, `sf`; Phase 8 adds `kind` (candidate, heartbeat), `retry`, `toa_ms`, `relay`, `queued`, and `t` for packets carried from ticks between recorded frames |
 | `gateways_down` | only with the real radio model: gateways out of service this minute (Phase 8) |
-| `events` | `ignition`, `candidate`, `p0_alarm`, `p1_alarm`, `p1t_alarm`, `haze_start`, `satellite_alert`, `degraded`, `module_switch` (live) |
+| `events` | `ignition` (Phase 9 adds `cause`: scripted, human or lightning), `candidate`, `p0_alarm`, `p1_alarm`, `p1t_alarm`, `haze_start`, `satellite_alert`, `degraded`, `module_switch` (live); Phase 9 adds `satellite_plan` (`fire`, `overpass_t`, `platform`, `alert_t`, `missed` overpass minutes) and `fault_start` (`node`, `kind`) |
 | `alerts` | new alerts: level, cluster members, trace id, `incident` (Phase 6) |
 | `health` | state of every module |
 
@@ -101,10 +102,24 @@ Written beside each recording by `prahari run`: seconds, frame and trace counts,
 | `seed_sweep` | `seeds` and `pipelines` of the 20-seed sweep |
 | `sources` | which preset file supplied which part, with its seeds |
 | `table[]` | one row per pipeline in the report's order: `pipeline`, `label`, our rate and intervals, and `report` (the report's row) |
+| `learning` | Phase 9, from `results/learning.json` (`prahari experiment --preset learning`): `train_seeds`, `test_seeds`, `fa_budget_per_month`, `bound` and `rows[]` per K (`rule`, `n_pos`, `n_neg`, `weights`, `confirmed`, `fires`, `rate`, `ci95`, `latency_median_min`, `false_incidents`, `ln_threshold`), and `maturity.rows[]` per calibration length (`cal_days`, `n_cal`, `p_min`, `candidate_rate`, `candidate_latency_median_min`, `h`). The fitted models are written beside it as `learning_model_k<K>.json` |
 | `energy` | Phase 8, from `results/energy.json` (`prahari energy`): M41 `rows` (sensor, mode, `wh_day`, `autonomy_days`), M42 `harvest_wh_day` (clear, cloudy range), M43 `store_wh`, `frames_per_day`, `toa_ms` |
 | `reference` | the report's values, copied from `engine/tests/golden/report_reference.json`, labelled as such |
 
 ## Configuration files
 
-`configs/default.yaml` (every key), `configs/scenarios/*.yaml` (demo runs), `configs/experiments/*.yaml` (experiment
-presets). See [02-engine.md](02-engine.md#configuration).
+`configs/default.yaml` (every key), `configs/regimes/*.yaml` (Regime Cards, Phase 9: merged between the defaults and
+the scenario when a scenario names `regime:`), `configs/scenarios/*.yaml` (demo runs), `configs/experiments/*.yaml`
+(experiment presets). See [02-engine.md](02-engine.md#configuration).
+
+## Stage contracts added in Phase 9
+
+All additive, with defaults, so every earlier stage and test is unchanged (CLAUDE.md rule 3):
+
+| Contract | New field | Meaning |
+| --- | --- | --- |
+| `Readings` | `missing` | per node: no data this minute (a dropout); the last value is held |
+| `Delivered` | `t_detect` | per delivered candidate: the minute it was raised (the cluster window uses it) |
+| `SatelliteAlerts` | `plan` | overpass plans drawn this minute, one per new fire |
+| `Prior` | `lightning`, `lam_map`, `disk` | storm flag for SCMR; the integral prior's rate map and the raster cells within R of each node |
+| `Raq` | `odds_c`, `lam_c` | per-cluster prior odds and expected sustained fires (integral prior only) |

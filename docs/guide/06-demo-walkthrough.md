@@ -65,12 +65,25 @@ none do. Every footer names the seeds and simulated days.
 
 **4c. Engineering depth (optional, 60 s) — Phase 8 recordings.**
 Open `gateway_outage.prs.jsonl.gz`, day 31. At 14:07 node 41's candidate cannot reach g1 (crossed out on the map); a
-badge shows the frame waiting at the node. At 14:30 the gateway returns, the frame goes out, and at 14:48 the fire is
-confirmed. "The radio link can fail; the node keeps the evidence and the edge still decides." Then open
+badge shows the frame waiting at the node. At 14:30 the gateway returns and the frame goes out; the edge still dates
+it 14:07, so it does not pair with node 31's later candidate, and the fire is confirmed at 15:14 — as with a perfect
+link. "The radio link can fail; the node keeps the evidence and the edge still decides." Then open
 `cloudy_days.prs.jsonl.gz` at day 5, 02:00: amber rings are nodes that dropped to ultra-low-power scanning after three
 cloudy days; by day 5 afternoon every ring is green again. The *Results* tab's energy chart says why the design uses the
 BME688: about 0.42 Wh a day in standard mode against 22.9 Wh for an MQ-2 heater, which would empty the store in
 about five hours (SIM).
+
+**4d. The satellite race, broken sensors and learning (optional, 90 s) — Phase 9 recordings.**
+Open `satellite_race.prs.jsonl.gz`, day 31, and scrub from 14:00. The strip under the map fills in: first node
+candidate at 14:55, PRAHARI confirmation at 15:14, then nothing from space until Terra passes at 22:30 and its alert
+arrives at 23:20. "About eight hours before the satellite alert — and at 14:00 no satellite is overhead at all" (SIM;
+the overpass model is illustrative). Then open `sensor_fault.prs.jsonl.gz`, day 31 from 09:00: node 55 sticks at a
+high reading, and at 09:59 it turns into a fault glyph — its health weight has fallen below 0.1 and it abstains. The
+13:00 fire is still confirmed by its healthy neighbours. Use the *Regime* selector to show the same system under the
+Canada, USA and Australia cards (`lightning_storm`: eight fires from one storm). In *Results*, the learning curve:
+with the conservative bound the edge confirms 49% of fires at 3 false incidents a month; fitted on ten controlled
+burns it confirms 68%, on a hundred 71% (SIM). The maturity chart: each quiet day lowers the p-value floor, and node
+candidates come sooner.
 
 **5. Robustness (optional, 20 s) — *Health & model card* tab.**
 Every module, its equation, its source tag and its state. "If any real model fails during a run, its simple stub
@@ -81,7 +94,7 @@ takes over and the demo keeps going."
 | Question | Short answer |
 | --- | --- |
 | Is this real data? | No. Everything is simulation, labelled SIM. The models are calibrated to literature, datasheets or stated assumptions, and each parameter carries its tag. |
-| Why not just use satellites? | They see fires only after overpass and processing, and only once fires are hot and large. Early fires under canopy are too small. |
+| Why not just use satellites? | They see fires only after overpass and processing, and only once fires are hot and large. Early fires under canopy are too small. The race timeline shows it: `satellite_race` is confirmed about 8 h before the satellite alert (SIM; illustrative overpass model). |
 | What if the radio link fails? | `gateway_outage`: frames wait at the node (store-and-forward) and the fire is still confirmed when the gateway returns (SIM). |
 | Why not a cheaper MQ-2 sensor? | The energy chart: its heater needs about 55 times the energy of a BME688 in standard mode (SIM). |
 | Why these node spacings? | The spacing chart: a fire's smoke reaches two nodes reliably only when they are about 70 m apart (SIM). |
@@ -90,5 +103,7 @@ takes over and the demo keeps going."
 | What stops haze triggering PRAHARI? | Two things: common-mode periods are excluded when thresholds are tuned, and spatial common-mode rejection needs a cluster to be at least 3× more active than the network. Switch SCMR off and watch the difference (3 vs 15 alarms on the haze day, SIM). |
 | How do you know the p-values are right? | They are conformal: ranked against each node's own quiet history, so on quiet data about 1% fall below 1%. We measure that (1.10%, SIM). |
 | Why did detection take about two hours in the demo? | The node needs sustained evidence to cross a threshold set for one false candidate per node per month, and a second node must agree. The operating curve (Phase 7) shows the trade-off. |
-| What happens if a node fails? | Health weights (M29) and fault injection (M21) arrive in Phase 9; module-level failures already fall back to stubs. |
-| How long did it take to build? | See [../journey/README.md](../journey/README.md): phases 0–6 so far, each ending with a working dashboard. |
+| What happens if a node fails? | Its health weight drops and it abstains: a stuck sensor within about an hour, a silent one within 5 minutes (`sensor_fault`, SIM). Module-level failures fall back to stubs. |
+| How long did it take to build? | See [../journey/README.md](../journey/README.md): phases 0–9 so far, each ending with a working dashboard. |
+| Does it get better with data? | Yes: the learning curve (M36). Fitted on ten controlled burns, the edge's likelihood ratio confirms 68% of held-out fires instead of 49% at the same false-alarm budget (SIM). |
+| Does it work outside India? | The Regime Cards change weather, ignition sources, haze and radio plan; lightning (Canada, Australia) starts several fires at once and SCMR relaxes while a storm is flagged. |

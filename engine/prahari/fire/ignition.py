@@ -91,17 +91,51 @@ class IgnitionReal(IgnitionStub):
         self._lam0 = p["expected_fires"] / (a_sum * self._S.sum() * land.cell_m ** 2 * ps_ref)
         self._a_max = max(p["activity_day"], p["activity_night"]) * (p["market_multiplier"] if p["market_days"] else 1.0)
 
+    def _lightning(self, t: int, ctx, fuel) -> list:
+        """M3 λ_light — strikes as a Poisson process over each active storm's disc; each starts a fire with
+        probability strike_ignition_prob × p_s(FFMC) (ASM). Sets `ctx.storm` for the prior (Phase 9)."""
+        p, rng = self.params, self.rng
+        live = [s for s in p["storms"] if s["t_min"] <= t < s["t_min"] + s["duration_min"]]
+        hold = float(p["storm_hold_min"])                     # fires the storm started are still being detected
+        ctx.storm = any(s["t_min"] <= t < s["t_min"] + s["duration_min"] + hold for s in p["storms"])
+        new = []
+        for s in live:
+            n = int(rng.poisson(float(s["strikes_per_min"]) * ctx.tick_minutes))
+            if not n:
+                continue
+            r = float(s["radius_m"]) * np.sqrt(rng.random(n))
+            a = rng.uniform(0.0, 2.0 * np.pi, n)
+            xy = np.stack([s["x"] + r * np.cos(a), s["y"] + r * np.sin(a)], axis=1)
+            ps = float(sustained_probability(fuel.ffmc, p["ps_a"], p["ps_b"]))                 # M8
+            for (x, y), ok in zip(xy, rng.random(n) < float(p["strike_ignition_prob"]) * ps):
+                if ok and self._in_forest(x, y, ctx):
+                    new.append(Fire(id=self._next_id, x=float(x), y=float(y), t0=int(t)))
+                    self._next_id += 1
+        return new
+
+    def _in_forest(self, x: float, y: float, ctx) -> bool:
+        land = ctx.landscape
+        if land is None:
+            return True
+        j, i = int(round((x - land.x0) / land.cell_m)), int(round((y - land.y0) / land.cell_m))   # x0, y0 are cell centres
+        return 0 <= i < land.forest.shape[0] and 0 <= j < land.forest.shape[1] and bool(land.forest[i, j])
+
     def step(self, inputs, ctx) -> Fires:
         t, env, fuel = inputs
         base = super().step(inputs, ctx)
+        strikes = self._lightning(t, ctx, fuel) if self.params["storms"] else []
+        if strikes:
+            self._active += strikes
+            base = Fires(active=tuple(self._active), new=base.new + tuple(f.id for f in strikes))
+        light = ("lightning",) * len(strikes)
         if self._lam0 <= 0:
-            return Fires(active=base.active, new=base.new, new_causes=("scripted",) * len(base.new),
+            return Fires(active=base.active, new=base.new, new_causes=("scripted",) * (len(base.new) - len(strikes)) + light,
                          attempts=self.attempts)
         p, rng, land = self.params, self.rng, self._land
         area = land.width_m * land.height_m
         lam_max = self._lam0 * self._a_max                                     # thinning envelope (S_max = 1)
         n = int(rng.poisson(lam_max * area * ctx.tick_minutes))
-        new, causes = list(base.new), ["scripted"] * len(base.new)
+        new, causes = list(base.new), ["scripted"] * (len(base.new) - len(strikes)) + list(light)
         if n:
             xy = rng.uniform((0.0, 0.0), (land.width_m, land.height_m), (n, 2))
             col = np.clip((xy[:, 0] // land.cell_m).astype(int), 0, self._S.shape[1] - 1)

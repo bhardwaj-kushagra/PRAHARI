@@ -9,10 +9,10 @@
 | 3b | Gaussian plume (optional) | accepted (2026-09-23) |
 | 4 | Baselines and evaluation harness | accepted (2026-09-23) |
 | 5 | PRAHARI node layer | accepted (2026-09-23) |
-| 6 | PRAHARI edge layer, trace and live mode | awaiting review |
-| 7 | Experiments and results | not started |
-| 8 | Communications and energy (optional) | not started |
-| 9 | Regimes, satellite race, learning loop and faults (optional) | not started |
+| 6 | PRAHARI edge layer, trace and live mode | accepted (2026-09-23) |
+| 7 | Experiments and results | accepted (2026-09-23) |
+| 8 | Communications and energy (optional) | accepted (2026-09-24) |
+| 9 | Regimes, satellite race, learning loop and faults (optional) | awaiting review |
 | 10 | Demo hardening | not started |
 
 Statuses: not started · in progress · awaiting review · accepted.
@@ -375,3 +375,43 @@ at 02:00 (amber ULP rings), click a node for its state-of-charge chart; tab *Res
 
 **Next step:** review Phase 8; decide on the arrival-time item (KNOWN_ISSUES). Then Phase 9 (regimes, satellite race,
 learning loop, faults) or Phase 10 (demo packaging).
+
+### 2026-09-24 — Session 13 (Phase 9)
+
+- Phase 8 accepted by the developer ("good"); the arrival-time fix approved.
+- Built Phase 9 — regimes, satellite race, learning loop and faults (DECISIONS P9-1 … P9-16):
+  - Arrival-time fix: `Delivered.t_detect`; the cluster window uses each candidate's detection minute.
+  - M37 satellite race (`satellite/race.py`) and the race timeline under the map (View 4).
+  - M21 faults (`sensors/faults_real.py`) and M29 health weights (`detect/prahari/score_real.py`); a node below 0.1
+    abstains and is drawn as a fault.
+  - M3 lightning storms, the SCMR relaxation while a storm is flagged (held 180 min), and the M33 integral prior
+    (option).
+  - Regime Cards (`configs/regimes/`: india, canada, usa, australia), the header's `regime` block and the regime
+    selector (View 8).
+  - M36 learning loop (`learn_real.py`, `eval/learning.py`, `prahari experiment --preset learning`): learning curve
+    and calibration-maturity curve, charted in Results.
+  - Scenarios: `satellite_race`, `sensor_fault`, `lightning_storm` (+ `__no-relax`), `power_line_corridor`,
+    `bushfire_afternoon`. All earlier recordings regenerated for the header; frames identical except
+    `gateway_outage` (fix: confirmation 14:48 → 15:14) and two `cloudy_days` traces (no decision changes).
+
+**Phase 9 acceptance (details in `docs/journey/phase-9-regimes-learning.md` and `docs/results/validation.md` §7):**
+
+| # | Test | Result (SIM) |
+| --- | --- | --- |
+| 1 | Race timeline reports correct deltas on scripted fires | **pass** — `satellite_race`: candidate +55 min, confirmation +74 min, satellite alert +9 h 20 min (Terra 22:30); unit and Vitest checks |
+| 2 | Learning curve monotone within noise, K = 5 → 100 | **pass** — 49% (bound) → 68, 68, 68, 71% confirmed within 3 h at ≤ 3 false incidents/month on held-out seeds 51–53 (183 fires) |
+| 3 | Stuck sensor's health weight < 0.1 within 90 min | **pass** — 58 min (unit test), 59 min (node 55 in `sensor_fault`) |
+| — | Suite | 204 engine tests pass (21 golden skipped unless enabled), 48 dashboard tests, `tsc` and build clean; browser check of the race timeline, fault glyph, regime selector and both Results charts with no console errors; docs link check clean |
+
+Parked: nothing. New limits logged in `KNOWN_ISSUES.md`: a +1.5 su offset is not caught; a stuck sensor can raise one
+candidate before it abstains. The first learning run exposed a training-set bug (quiet data varying with K), fixed
+before acceptance (P9-13).
+
+**To see it:** `cd dashboard && npm run dev`:
+- Open `satellite_race.prs.jsonl.gz`, day 31, and scrub from 14:00: the race timeline under the map.
+- Open `sensor_fault.prs.jsonl.gz`, day 31 from 09:00: node 55 abstains at 09:59; click it for the health weight.
+- Pick a regime in the new *Regime* selector (Canada: `lightning_storm`).
+- Open the *Results* tab for the learning and maturity charts.
+
+**Next step:** review Phase 9. Then Phase 10 (demo hardening).
+

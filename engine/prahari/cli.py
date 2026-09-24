@@ -43,6 +43,8 @@ def experiment(args) -> int:
     except ConfigError as exc:
         print(f"config error: {exc}", file=sys.stderr)
         return 2
+    if cfg["experiment"]["train_seeds"]:                  # Phase 9: learning curve and calibration maturity
+        return learning(cfg, args)
     seeds = [int(v) for v in args.seeds.split(",")] if args.seeds else cfg["experiment"]["seeds"]
     pipes = args.pipelines.split(",") if args.pipelines else cfg["experiment"]["pipelines"]
     t0 = time.perf_counter()
@@ -66,6 +68,26 @@ def experiment(args) -> int:
               f"candidates {nd['local_cand_mean']:.2f} per node per 30 d (median {nd['local_cand_median']:.2f}); "
               f"mean tuned h {nd['h_mean']:.1f} — SIMULATION")
     print(f"wrote {args.out}/{path.stem}.json and {args.out}/summary.json in {time.perf_counter() - t0:.0f} s")
+    return 0
+
+
+def learning(cfg: dict, args) -> int:
+    """Phase 9: M36 learning curve and M26 calibration maturity → results/learning.json."""
+    from prahari.eval.learning import run_learning
+    t0 = time.perf_counter()
+    cur = run_learning(cfg, args.out, jobs=args.jobs)
+    b = cur["bound"]
+    print(f"budget {cur['fa_budget_per_month']} false incidents/month on held-out seeds {cur['test_seeds']} — SIMULATION")
+    print(f"bound: confirmed {b['confirmed']}/{b['fires']}, median {b['latency_median_min']} min, "
+          f"{b['false_incidents']} false incidents")
+    for r in cur["rows"]:
+        print(f"K = {r['K']} ({r['rule']}, {r['n_pos']} fire / {r['n_neg']} quiet windows): confirmed "
+              f"{r['confirmed']}/{r['fires']} ({r['ci95'][0]:.2f}–{r['ci95'][1]:.2f}), median {r['latency_median_min']} min, "
+              f"{r['false_incidents']} false incidents")
+    for r in cur["maturity"]["rows"]:
+        print(f"{r['cal_days']} d calibration: p_min {r['p_min']:.1e}, candidates {r['candidate_rate']:.2f} of "
+              f"{r['fires']} fires, median {r['candidate_latency_median_min']} min, h {r['h']}")
+    print(f"wrote {args.out}/learning.json and {args.out}/summary.json in {time.perf_counter() - t0:.0f} s")
     return 0
 
 

@@ -3,6 +3,13 @@
 # Every parameter block carries `source`: a provenance tag (LIT, VEN, DER, ASM, TGT) plus reference.
 
 regime: null                      # name of configs/regimes/<name>.yaml, or null
+regime_card:                      # Phase 9 — identity of the Regime Card in use (SPEC §8.1); the defaults are India-like
+  name: none                      # no card: configs/default.yaml alone
+  label: "Default (India-like, no card)"
+  radio_plan: IN865
+  alert_format: none
+  lightning: false
+  source: "ASM; SPEC §8.1"
 
 experiment:                       # `prahari experiment` (Phase 4)
   pipelines: [P0, P1]
@@ -11,6 +18,12 @@ experiment:                       # `prahari experiment` (Phase 4)
   dial: []                        # Phase 7: operating dial — re-tuned M28 targets (node-local false candidates per node per 30 d)
   spacings: []                    # Phase 7: node spacings to sweep (m); empty = world.spacing_m only
   ablation_form: stub             # P2-QCC / P2-TTC as module stubs (SPEC switches); legacy = the report simulation's variants
+  train_seeds: []                 # Phase 9 learning preset: seeds whose protocol fires are the controlled burns (M36)
+  ks: []                          # Phase 9: numbers of burns K for the learning curve
+  fa_budget_per_month: 3.0        # Phase 9: false-alarm budget at which rules are compared (TGT, near P2's golden rate)
+  maturity_seeds: []              # Phase 9: seeds for the calibration-maturity curve (M26)
+  maturity_cal_days: []           # Phase 9: days of quiet calibration data to sweep
+  maturity_test_days: 10          # Phase 9: test days per maturity run
 
 run:
   seed: 11
@@ -147,7 +160,10 @@ params:
     activity_ramp_down_h: [18.0, 21.0]
     market_days: []               # day indices (0 = first day) with ×market_multiplier activity
     market_multiplier: 1.5
-    source: "ASM; M3 activity and M8 shape (form LIT [10]); λ₀ DER from expected_fires; lifetime from report simulation"
+    storms: []                    # M3 λ_light — lightning storms: {t_min, duration_min, x, y, radius_m, strikes_per_min}
+    strike_ignition_prob: 0.3     # ASM — a strike starts a fire with this probability × p_s(FFMC)
+    storm_hold_min: 180           # ASM — the lightning flag lasts this long after a storm (its fires are still found)
+    source: "ASM; M3 activity and M8 shape (form LIT [10]); λ₀ DER from expected_fires; lifetime from report simulation; lightning storms and strike probability ASM"
   growth:
     q_ref: 8.7259                 # M12 — Q_ref = 2.5 su × exp(50/40), so C = 2.5 su at 50 m downwind
     qmax_lognormal_sigma: 0.5     # M9
@@ -207,6 +223,24 @@ params:
     gain_clip: [0.5, 1.5]
     scripted: []                  # scenario-scripted episodes: {t_min, duration_min, amplitude}
     source: "ASM; SPEC §5.6 M18/M20, matching reference/prahari_simulation.py"
+  faults:                         # Phase 9 — M21 (real); the stub injects nothing
+    rate_per_node_30d: {stuck: 0.05, offset: 0.1, spike: 0.1, dropout: 0.2}   # M21 — SPEC defaults
+    stuck_duration_min: [360, 4320]   # ASM — a stuck sensor stays stuck 6 h to 3 days
+    offset_su: [0.5, 1.5]         # M21 — offset jump ±U(0.5, 1.5) su (permanent)
+    spike_samples: [5, 20]        # M21 — spike burst length
+    spike_su: 5.0                 # M21 — ±5 su
+    dropout_min: [10, 600]        # M21 — missing data 10–600 min
+    scripted: []                  # {node, kind, t_min, duration_min?, value_su?}
+    source: "ASM; SPEC §5.6 M21 rates and effects; stuck duration assumed"
+  score:                          # Phase 9 — M27 with M29 health weights (real); the stub is c = 1
+    fresh_min: 5                  # M29 — data within the last 5 minutes
+    stuck_window_min: 60          # M29 — rolling 60-minute variance …
+    stuck_frac: 0.01              # M29 — … above 1% of the node's median variance
+    stuck_floor: 1.0e-9           # ASM — su²; a flat window is stuck however quiet the node's history
+    variance_history_h: 24        # ASM — hourly variances kept for the node's median
+    consensus_min: 1440           # M29 — neighbour consensus over the last day
+    consensus_every_min: 10       # ASM — the day-smoothed consensus is refreshed every 10 minutes
+    source: "ASM; SPEC §5.8 M29"
   ttc:
     slow_tau_min: 720             # M24 — α = 1/720 per minute
     freeze_z: 3.0                 # M24 — freeze while |z| ≥ 3
@@ -252,11 +286,18 @@ params:
     source: "ASM; report simulation (window); LIT M30 and the report simulation (form)"
   scmr:
     ratio_min: 3.0                # M31 — ρ ≥ 3
-    source: "LIT M31 and the report simulation"
+    ratio_min_lightning: 1.5      # M31 — relaxed while the prior carries a lightning-storm flag (ASM, untested hypothesis)
+    source: "LIT M31 and the report simulation; ASM lightning relaxation (SPEC M31)"
   fisher:
     rate_per_node_30d: 1.0        # M32 — candidate p-value p_i ≈ r·ΔT with r = 1 per node per 30 d …
     window_min: 30                # … and ΔT = W = 30 min → 6.9e-4
     source: "DER M32 from the M28 target rate and the M30 window"
+  learn:                          # Phase 9 — M36 fitted likelihood ratio (real); the stub is the M34 SBB bound
+    k_min: 10                     # M36 step 5 — use the fit once it has seen ≥ 10 controlled burns
+    l2: 1.0                       # M36 — L2 penalty on the standardised weights (ASM)
+    rho_clip: [1.0e-3, 1.0e+3]    # M36 — ln ρ_C taken on a clipped ratio (ASM)
+    model_file: null              # fitted model (JSON) from `prahari experiment --preset learning`; null = bound
+    source: "LIT M36 (SPEC §5.10); ASM penalty and clip"
   srp:
     prior_odds: 1.0e-4            # stub: M33 legacy — dry, busy day
     day_type: dry_busy            # stub
@@ -264,7 +305,17 @@ params:
     odds_dry: 1.0e-4              # M33 legacy — dry, busy day
     odds_wet: 1.0e-6              # M33 legacy — wet, quiet day
     day_type_overrides: []        # scenario or harness: [{day: 31, type: dry_busy}] (1-based days)
-    source: "TGT M33 legacy day-type prior; LIT P(dry) 0.5 from the report simulation"
+    form: legacy                  # legacy = day type (default); integral = M33 as written, per cluster (Phase 9)
+    fires_per_30d: 1.0            # integral: sustained fires the map expects in 30 days (scales λ, as ignition λ₀)
+    window_min: 30                # integral: Δt
+    ps_a: -21.0                   # integral: M8, as params.ignition
+    ps_b: 0.25
+    ps_reference_ffmc: 90.0
+    activity_night: 0.2           # integral: M3 a(t), as params.ignition
+    activity_day: 1.0
+    activity_ramp_up_h: [6.0, 9.0]
+    activity_ramp_down_h: [18.0, 21.0]
+    source: "TGT M33 legacy day-type prior; LIT P(dry) 0.5 from the report simulation; ASM integral scale (fires_per_30d); M3/M8 shapes as ignition"
   raq:
     fixed_quorum: 2               # stub: M34 legacy — dry, busy day
     cost_ratio: 0.01              # M34 — C_FA / C_miss
@@ -283,7 +334,19 @@ params:
   satellite:
     fixed_delay_min: 90
     pixel_m: 375                  # VIIRS I-band pixel, for the map overlay
-    source: "ASM; SPEC §4.2 satellite stub; LIT [17] VIIRS 375 m pixel"
+    passes:                       # M37 — overpass local times (IST)
+      - {platform: Terra, sensor: MODIS, time: "10:30"}
+      - {platform: Terra, sensor: MODIS, time: "22:30"}
+      - {platform: Aqua, sensor: MODIS, time: "13:30"}
+      - {platform: Aqua, sensor: MODIS, time: "01:30"}
+      - {platform: VIIRS, sensor: VIIRS, time: "13:30"}
+      - {platform: VIIRS, sensor: VIIRS, time: "01:30"}
+    delay_min: {MODIS: [40.0, 60.0], VIIRS: [60.0, 90.0]}   # M37 — processing delay after the overpass
+    a_det_m2: 500.0               # M37 — detection threshold (illustrative)
+    p_miss: 0.2                   # M37 — missed for cloud or canopy (illustrative)
+    area_15min_m2: 20.0           # M37 — A_15 of the fallback area law (as growth.area_15min_m2)
+    horizon_days: 3               # overpasses searched beyond the run
+    source: "ASM; SPEC §4.2 satellite stub; LIT [17] VIIRS 375 m pixel, overpass times and processing delays; ASM A_det, p_miss (illustrative)"
   baseline_p0:
     init_min: 1440                # M22 — first day of raw data sets the threshold
     n_sigma: 3.0                  # M22 — μ + 3σ
@@ -389,4 +452,5 @@ params:
     elevated_p: 0.01              # node shown as elevated below this p-value
     confirmed_hold_min: 120       # confirmed glyph shown this long after confirmation
     low_power_soc: 0.05           # M43 — below 5% the node shows as low power
+    abstain_c: 0.1                # M29 — below this health weight the node shows as faulty (abstains)
     source: "ASM; dashboard display thresholds"

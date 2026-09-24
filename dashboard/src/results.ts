@@ -1,3 +1,4 @@
+import type { Learning } from "./learning";
 // Experiment summary (results/summary.json from `prahari experiment`) and chart-data builders (Phase 4).
 
 export interface Interval { rate: number; ci95: [number, number] }
@@ -32,6 +33,7 @@ export interface Summary {
   seed_sweep?: { seeds: number[]; pipelines: Record<string, PipelineResult> };
   ablation_form?: "stub" | "legacy";
   energy?: EnergyTable;
+  learning?: Learning;                 // Phase 9: M36 learning curve and M26 maturity
 }
 
 /** Phase 8: M41 daily budgets per sensor mode, the M42 harvest and the M43 store (`prahari energy`). */

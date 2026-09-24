@@ -69,18 +69,18 @@ flowchart TD
 
 Before the first tick three **setup** stages run once: `landscape` (M2–M3), `siting` (M1, M4) and `links` (M38).
 
-## State of the modules (after Phase 6)
+## State of the modules (after Phase 9)
 
-| Group | Real | Still stub |
+| Group | Real by default | Stub by default (real version, and where it runs) |
 | --- | --- | --- |
 | World | landscape, siting, links | — |
 | Environment | weather, ffmc | — |
 | Fire | ignition; plume (Gaussian, opt-in) | growth (M9 legacy is the default), plume (M12 legacy is the default) |
-| Signals | sensor, nuisance, haze | faults |
+| Signals | sensor, nuisance, haze | faults (M21, Phase 9: `sensor_fault`) |
 | Baselines | P0, P1, P1t | — |
-| Node layer | ttc, qcc, cusum | score (with one channel the stub *is* M27), health weights |
-| Edge layer | cluster, scmr, fisher, srp (legacy day type), raq (legacy quorum; Bayes selectable), escalate | comms (Phase 8), learn (the stub *is* the M34 bound; M36 in Phase 9) |
-| Other | — | energy, satellite (Phases 8–9) |
+| Node layer | ttc, qcc, cusum | score (with one channel and c = 1 the stub *is* M27; M29 health weights, Phase 9: `sensor_fault`) |
+| Edge layer | cluster, scmr, fisher, srp (legacy day type; integral form selectable), raq (legacy quorum; Bayes selectable), escalate | comms (Phase 8: `gateway_outage`, `cloudy_days`), learn (the stub *is* the M34 bound; M36 fit with a model file, Phase 9) |
+| Other | — | energy (Phase 8 scenarios), satellite (M37, Phase 9 scenarios) |
 
 ## Design principles that shape the architecture
 

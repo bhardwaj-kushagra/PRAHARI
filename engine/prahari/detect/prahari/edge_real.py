@@ -61,13 +61,20 @@ class ClusterReal(Stage):
         self._recent: deque = deque()                        # (t, node, p)
 
     def _prune(self, t: int) -> None:
-        w = int(self.params["window_min"])
-        while self._recent and self._recent[0][0] < t - w:  # keep candidates with t' ≥ t − W (report simulation)
-            self._recent.popleft()
+        # Keep 2W of detections: a frame delayed by the radio (Phase 8) is grouped around its own detection minute.
+        w = 2 * int(self.params["window_min"])
+        if any(r[0] < t - w for r in self._recent):
+            self._recent = deque(r for r in self._recent if r[0] >= t - w)
 
-    def _best_p(self, nodes) -> tuple:
+    def _window(self, td: int) -> list:
+        """Candidates detected within W of `td` — for in-order candidates, t' ≥ t − W as the report simulation."""
+        w = int(self.params["window_min"])
+        return [r for r in self._recent if abs(r[0] - td) <= w]
+
+    @staticmethod
+    def _best_p(nodes, entries) -> tuple:
         best: dict[int, float] = {}
-        for _, i, p in self._recent:
+        for _, i, p in entries:
             best[i] = min(p, best.get(i, 1.0))
         return tuple(best[i] for i in nodes)
 
@@ -77,31 +84,36 @@ class ClusterReal(Stage):
             self._prune(t)
             return Clusters()
         members, ps, anchors, n_recent = [], [], [], []
+        when = delivered.t_detect or (t,) * len(delivered.nodes)   # Phase 9: detection minute, not arrival minute
         if self.params["form"] == "legacy":
-            for i, p in zip(delivered.nodes, delivered.p):
+            for i, p, td in zip(delivered.nodes, delivered.p, when):
                 self._prune(t)
-                self._recent.append((t, int(i), float(p)))
-                recent = {j for _, j, _ in self._recent}
+                self._recent.append((int(td), int(i), float(p)))
+                win = self._window(int(td))
+                recent = {j for _, j, _ in win}
                 local = tuple(sorted(j for j in recent if nbr[i, j]))
                 members.append(local)
-                ps.append(self._best_p(local))
+                ps.append(self._best_p(local, win))
                 anchors.append(int(i))
                 n_recent.append(len(recent))
         else:
             self._prune(t)
-            self._recent.extend((t, int(i), float(p)) for i, p in zip(delivered.nodes, delivered.p))
-            recent = sorted({j for _, j, _ in self._recent})
+            self._recent.extend((int(td), int(i), float(p)) for i, p, td in zip(delivered.nodes, delivered.p, when))
+            win = self._window(max(int(td) for td in when))
+            recent = sorted({j for _, j, _ in win})
             new = set(int(i) for i in delivered.nodes)
             for comp in components(recent, nbr):
                 if new.intersection(comp):
                     members.append(tuple(comp))
-                    ps.append(self._best_p(comp))
+                    ps.append(self._best_p(comp, win))
                     anchors.append(-1)
                     n_recent.append(len(recent))
         return Clusters(members=tuple(members), p=tuple(ps), anchor=tuple(anchors), n_recent=tuple(n_recent))
 
     def recent_nodes(self) -> set:
-        return {i for _, i, _ in self._recent}
+        w = int(self.params["window_min"])
+        latest = max((r[0] for r in self._recent), default=0)
+        return {i for td, i, _ in self._recent if td >= latest - w}
 
 
 @register("scmr", kind="real")
@@ -112,7 +124,9 @@ class ScmrReal(Stage):
 
     def step(self, clusters: Clusters, ctx) -> Scmr:
         nbr, n = ctx.neighbours, ctx.n_nodes
-        thr = float(self.params["ratio_min"])
+        prior = getattr(ctx, "prior", None)
+        storm = bool(prior is not None and getattr(prior, "lightning", False))
+        thr = float(self.params["ratio_min_lightning" if storm else "ratio_min"])   # M31 — lightning relaxation
         f_loc, f_net, ratio, passed = [], [], [], []
         anchors = clusters.anchor or (-1,) * len(clusters.members)
         n_rec = clusters.n_recent or tuple(len(set().union(*map(set, clusters.members))) for _ in clusters.members)

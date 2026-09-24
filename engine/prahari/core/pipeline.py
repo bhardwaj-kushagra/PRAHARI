@@ -70,6 +70,7 @@ class Simulation:
                          "notes": s.snapshot()})
         return {"schema": C.CONTRACT_VERSION, "label": "SIMULATION",
                 "scenario": cfg["scenario"]["name"], "description": cfg["scenario"]["description"],
+                "regime": {k: v for k, v in cfg["regime_card"].items() if k != "source"},   # Phase 9, SPEC §8.1
                 "seed": int(cfg["run"]["seed"]), "start": cfg["run"]["start"], "days": float(cfg["run"]["days"]),
                 "tick_minutes": self.clock.tick_minutes, "n_ticks": self.clock.n_ticks,
                 "record_every": int(cfg["record"]["every_k_ticks"]),
@@ -124,19 +125,20 @@ class Simulation:
         res = self.stage("ttc", x)
         self.ctx.z_slow = res.z                            # M28 — common-mode exclusion reads the slow z
         pv = self.stage("qcc", res)
-        sc = self.stage("score", pv)
+        sc = self.stage("score", (pv, x, res))            # M27; the real score adds M29 health weights (Phase 9)
         cand = self.stage("cusum", sc)
         return res, pv, sc, cand
 
-    def step_edge(self, t: int, env, fuel, cand):
+    def step_edge(self, t: int, env, fuel, cand, c=None):
         """PRAHARI edge layer: comms → cluster → SCMR → Fisher → Bayes factor → RAQ → escalation (M30–M35)."""
         dl = self.stage("comms", cand)
         prior = self.stage("srp", (t, env, fuel))
+        self.ctx.prior = prior                             # SCMR relaxes during a lightning storm (M31, Phase 9)
         cl = self.stage("cluster", dl)
         k = len(cl.members)
         scmr = self.stage("scmr", cl, expect_len(k))
         fisher = self.stage("fisher", cl, expect_len(k))
-        bf = self.stage("learn", fisher, expect_len(k))
+        bf = self.stage("learn", (fisher, cl, scmr, c), expect_len(k))   # M34 bound, or the M36 fit (Phase 9)
         raq = self.stage("raq", (cl, scmr, bf, prior), expect_len(k))
         dec = self.stage("escalate", (cl, scmr, raq), expect_len(k))
         return dl, prior, cl, scmr, fisher, bf, raq, dec
@@ -145,7 +147,7 @@ class Simulation:
         env, fuel, fires, src, conc, haze, x = self.step_signals(t)
         base0, base1, base1t = self.step_baselines(x)
         res, pv, sc, cand = self.step_node(x)
-        dl, prior, cl, scmr, fisher, bf, raq, dec = self.step_edge(t, env, fuel, cand)
+        dl, prior, cl, scmr, fisher, bf, raq, dec = self.step_edge(t, env, fuel, cand, sc.c)
         k = len(cl.members)
         energy = self.stage("energy", (t, env, dl))          # M41–M43: harvest, draw, and this tick's frames
         self.ctx.energy_mode = energy.mode                 # comms skips nodes that are off (next tick)
@@ -168,6 +170,8 @@ class Simulation:
             if dec.new_alert[j]:
                 alerts.append({"level": dec.levels[j], "cluster": list(cl.members[j]), "trace_id": traces[-1]["trace_id"],
                                "incident": int(dec.incident[j]) if dec.incident else -1})
+        for tf, i, kind in getattr(self.slots["faults"].stage, "started", ()):   # M21 ground truth (Phase 9)
+            events.append({"type": "fault_start", "node": int(i), "kind": kind})
         if haze.level > 0 and self._haze_prev == 0:
             events.append({"type": "haze_start", "level": float(f"{haze.level:.4g}")})
         self._haze_prev = haze.level
@@ -177,6 +181,10 @@ class Simulation:
             events.append({"type": "p1_alarm", "node": int(i), "members": list(members)})
         for i, members in base1t.alarms:
             events.append({"type": "p1t_alarm", "node": int(i), "members": list(members)})
+        for pl in sat.plan:                                # M37 — the race timeline's satellite forecast (Phase 9)
+            events.append({"type": "satellite_plan", "fire": pl["fire"], "overpass_t": pl["overpass_t"],
+                           "platform": pl["platform"], "alert_t": None if pl["alert_t"] is None else round(pl["alert_t"], 1),
+                           "missed": [q["t"] for q in pl["passes"] if not q["seen"]]})
         for fid, ta in sat.alert_t:
             if fid not in self._sat_done and ta <= t:
                 self._sat_done.add(fid)
@@ -188,8 +196,9 @@ class Simulation:
 
         disp = self.cfg["params"]["display"]
         win = self.cfg["params"]["cluster"]["window_min"]
+        abstain = sc.c.min(axis=1) < float(disp["abstain_c"])  # M29 — "this sensor abstains" (the system's view)
         states = fr.node_states(sc.p_node, self._last_cand > t - win, self._last_conf > t - disp["confirmed_hold_min"],
-                                x.fault, energy.soc, disp["elevated_p"], disp["low_power_soc"])
+                                abstain, energy.soc, disp["elevated_p"], disp["low_power_soc"])
         frame = {"t": t,
                  "weather": fr.weather_dict(env, fuel),
                  "prior": {"odds": float(f"{prior.odds:.4g}"), "quorum": int(raq.quorum), "day_type": prior.day_type},
@@ -232,7 +241,8 @@ class Simulation:
                   "modelled": st["scmr"] == "real"},
             fisher={"X": fisher.X[j], "dof": int(fisher.dof[j]), "p_cluster": fisher.p_cluster[j],
                     "method": "fisher" if st["fisher"] == "real" else "bonferroni (stub)"},
-            prior={"lambda": prior.lam, "p_s": prior.p_s, "odds": prior.odds, "day_type": prior.day_type},
+            prior={"lambda": raq.lam_c[j] if raq.lam_c else prior.lam, "p_s": prior.p_s,
+                   "odds": raq.odds_c[j] if raq.odds_c else prior.odds, "day_type": prior.day_type},
             bayes={"bf_bound": bf.bf[j], "posterior_odds": raq.posterior_odds[j], "threshold": raq.threshold,
                    "quorum": int(raq.quorum), "decision": bool(raq.decide[j]), "method": raq.method},
             window_min=int(self.cfg["params"]["cluster"]["window_min"]),

@@ -150,7 +150,7 @@ export function CommandMap() {
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="6" className="glyph-elevated" /></svg>elevated</span>
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="5" className="glyph-ember" /></svg>candidate (pulsing)</span>
         <span><svg width="20" height="20" viewBox="-10 -10 20 20"><circle r="9" className="glyph-halo" /><circle r="5" className="glyph-ember" /></svg>confirmed</span>
-        <span><svg width="16" height="16" viewBox="-8 -8 16 16"><path d="M-5,-5L5,5M5,-5L-5,5" className="glyph-fault" /></svg>fault</span>
+        <span><svg width="16" height="16" viewBox="-8 -8 16 16"><path d="M-5,-5L5,5M5,-5L-5,5" className="glyph-fault" /></svg>fault: health &lt; 0.1, abstains (M29)</span>
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><circle r="5" className="glyph-lowpower" /></svg>low power</span>
         <span><svg width="16" height="16" viewBox="-8 -8 16 16"><rect x="-6" y="-6" width="12" height="12" className="gateway" /></svg>gateway</span>
         <span><svg width="18" height="18" viewBox="-9 -9 18 18"><circle r="8" className="glow" opacity="0.6" /><circle r="4" className="glyph-normal" /></svg>glow = smoke signal at the node</span>

@@ -19,7 +19,8 @@ class ScoreStub(Stage):
     tag = "ASM"
     description = "Sum of −ln p over channels, health weight 1"
 
-    def step(self, pv: PValues, ctx) -> Scores:
+    def step(self, inputs, ctx) -> Scores:
+        pv: PValues = inputs[0] if isinstance(inputs, tuple) else inputs   # (p-values, readings, residuals) since Phase 9
         c = np.ones_like(pv.p)
         s = node_score(pv.p, c)
         z = None if pv.z is None else pv.z[:, 0]                 # passed on for a z-statistic CUSUM (P7-12)

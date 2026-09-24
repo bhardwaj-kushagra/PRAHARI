@@ -589,6 +589,82 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   `results.ts`, `mapView.ts`, `CommandMap.tsx`, `MapTools.tsx`, `NodePanel.tsx`, `NodeInspector.tsx`,
   `ExperimentCharts.tsx`, `theme.css` (all additive).
 
+## Phase 9 design choices
+
+- **P9-1. Real Phase 9 modules only where they are asked for.** `faults`, `score` (M29), `satellite` (M37) and
+  `learn` (M36) stay `stub` in `configs/default.yaml`, the golden presets and every earlier scenario. The ignition
+  lightning term has no storms by default, `srp.form` stays `legacy` and `regime` stays null. The new scenarios switch
+  on what they show. Every earlier recording was regenerated for the new header block (`regime`) and compared line by
+  line: identical frames, except the two noted in P9-2.
+- **P9-2. Arrival-time fix (approved by the developer; closes the Phase 8 item).** `Delivered` gains `t_detect`, the
+  minute each candidate was raised; the real comms stage fills it from the frame it delivers. The cluster stage keeps
+  2W of history and gathers, for each arrival, the candidates whose *detection* minutes lie within W of it. With the
+  perfect-link stub arrival and detection coincide, so legacy results are unchanged. `gateway_outage` now confirms at
+  15:14, the same minute as `node_mature` with a perfect link (SIM). In `cloudy_days` two decision traces change their
+  SCMR network share (0.42 against 0.40 and 0.34 against 0.33); no decision changes.
+- **P9-3. M37 satellite race.** Overpasses at the SPEC's fixed local times; the first pass at which the M37 fallback
+  area A_15 (τ/15)² has reached 500 m² sees the fire with probability 0.8; the alert follows after U(40, 60) min
+  (MODIS) or U(60, 90) min (VIIRS). The whole plan is drawn at ignition from the `satellite` stream and published as a
+  `satellite_plan` event, so the race timeline needs no look-ahead. The area model assumes an unattended fire keeps
+  growing after the sensing model's 180-minute smoke window (ASM, labelled illustrative on the chart).
+- **P9-4. M21 faults.** Poisson faults at the SPEC rates plus scripted ones. A dropout holds the last reading and sets
+  `Readings.missing` (new optional field) so no NaN reaches the pipeline. Stuck-at duration 6 h to 3 days (ASM).
+- **P9-5. M29 health weights in a real `score` stage.** Fresh data (5 min), not stuck (rolling 60-minute variance
+  above 1% of the node's median hourly variance), neighbour consensus q (robust z of the node's slow baseline against
+  its neighbours', over a day). Two corrections found while testing acceptance 3: hours in which a node was already
+  stuck are stored as missing (NaN) so they do not pull its own reference variance towards zero, and a flat window
+  below 1e-9 su² counts as stuck whatever the history (ASM). Without them the stuck node's weight recovered after
+  about 13 hours. For speed, neighbour lists are padded arrays, the hourly reference is cached and q is refreshed every
+  10 minutes (0.77 → 0.14 ms per tick).
+- **P9-6. The dashboard's fault glyph is the system's view.** A node is drawn as "fault" when its health weight is
+  below 0.1 (`display.abstain_c`), not when a fault was injected; injected faults are shown as `fault_start` events.
+  This is what an operator would see: "this sensor abstains".
+- **P9-7. Lightning (M3 λ_light) and the SCMR relaxation.** Storms are scripted discs with a strike rate; each strike
+  ignites with probability strike_ignition_prob × p_s(FFMC) inside the forest. `ctx.storm` stays set for 180 minutes
+  after the storm ends (`storm_hold_min`, ASM) because the fires it started are still being detected then; without the
+  hold SCMR still held clusters after the storm. While the flag is set the prior carries `lightning` and SCMR uses
+  ρ ≥ 1.5 instead of 3 (SPEC M31, an untested hypothesis, labelled ASM).
+- **P9-8. M33 integral prior as an option.** `srp.form: integral` computes each cluster's prior from the M3 map, the
+  M8 sustained-fire probability and the activity curve, scaled so the map expects `fires_per_30d` sustained fires (ASM,
+  1 per 30 days). Two-node odds come out at 3.9e-5 to 1.1e-4 (SIM), close to the legacy 1e-4; no scenario uses it yet.
+- **P9-9. Regime Cards.** `configs/regimes/{india,canada,usa,australia}.yaml` set weather, interface weights, haze and
+  radio plan, plus a `regime_card` identity block that the recording header carries. The card values are illustrative
+  (ASM) apart from the SPEC §8.1 facts they encode (lightning on for Canada and Australia; IN865, US915, AU915).
+- **P9-10. M36 learning loop.** `learn: real` loads a fitted model file and replaces the SBB bound with LR̂ once the
+  model has seen K ≥ 10 burns. The fit is logistic regression with an L2 penalty (λ = 1 on standardised features, ASM)
+  by IRLS in NumPy — no new dependency. Training uses only windows that pass SCMR, the population M34 is applied to: a
+  first fit on all windows learned that network-wide haze windows (large X, large |C|, low ρ) are not fires and so
+  weighted X almost to zero; restricted to SCMR-passed windows, X and |C| carry the weight. Quiet windows come from
+  every training seed's quiet pass (quiet data is cheap in the field; burns are the scarce resource K counts).
+- **P9-11. Rules are compared at a fixed false-alarm budget.** For the bound and for each K the threshold on the M34
+  posterior odds is the most permissive one whose false incidents on the held-out quiet passes stay within 3 per month
+  (TGT, near P2's golden rate). The confirmation rate and median latency at that threshold are the learning curve. The
+  threshold is set on the evaluation seeds' quiet passes (as a fixed-FPR comparison is), never on their fire passes.
+- **P9-12. Runner fallback test retargeted.** `test_runner.py`'s "real module falls back to its stub" case used
+  modules that now have real implementations (energy in Phase 8, satellite in Phase 9); it now uses `growth`.
+- **P9-13. Learning-curve bug found and fixed before the curve was accepted.** The first full run gave 49, 54, 37, 37
+  and 71% for K = 5–100 (SIM). The training loop stopped reading seeds once it had K burns, so the quiet windows
+  changed with K (91 up to K = 50, 209 at K = 100) and each fit had a different prior. Every K now uses all training
+  seeds' quiet windows; the result is 49 → 68, 68, 68, 71% (acceptance 2). This is a correction, not tuning: nothing
+  else changed (same seeds, budget, penalty and features), and the buggy numbers are kept in the journey page.
+- **P9-14. The learning preset.** Training seeds 41–42 (119 protocol fires), held-out seeds 51–53, K = 5, 10, 20, 50,
+  100, budget 3 false incidents a month; calibration maturity on seeds 11 and 22 with 1, 2, 4, 7 and 14 days of quiet
+  data, 14 tuning and 10 test days. The seeds were chosen before any run, apart from 11 and 22, which are the first two
+  golden seeds. The deployed legacy quorum is reported on the same held-out runs as a reference (80% at 7.7 false
+  incidents a month, outside the budget), not as a point on the curve. `results/learning.json` and the K = 100 model
+  are committed; the other model files are regenerated by the preset.
+- **P9-15. `sensor_fault` uses the M37 satellite.** With the stub's fixed 90-minute delay its satellite alert (14:30)
+  came before the confirmation (14:49) and the race timeline would have shown a satellite win that no overpass
+  schedule allows. Switching it to `real` changes only the satellite events (checked frame by frame).
+- **P9-16. Files from accepted phases touched.** `core/{pipeline,contracts,contracts_edge,context}.py`,
+  `comms/lorawan_real.py` (`t_detect`), `detect/prahari/{edge_real,decide_real,score,learn}.py` (the detection-minute
+  window; lightning SCMR threshold and the integral prior; stubs accepting the new inputs), `fire/ignition.py`
+  (storms), `satellite/overpass.py` (docstring), `eval/{offline,report}.py`, `stages.py`, `cli.py`,
+  `configs/default.yaml`, `.gitignore`, `tests/unit/test_runner.py` (P9-12); dashboard `App.tsx`, `CommandMap.tsx`,
+  `NodeInspector.tsx`, `NodePanel.tsx`, `RecordingPicker.tsx`, `ExperimentCharts.tsx`, `types.ts`, `results.ts`,
+  `theme.css`, `scripts/sync-recordings.mjs` (all additive). Every earlier recording was regenerated for the header's
+  `regime` block.
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four

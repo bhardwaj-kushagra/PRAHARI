@@ -1,0 +1,26 @@
+# Learning preset (SPEC §5.10, Phase 9): the M36 learning curve and the M26 calibration-maturity curve, in legacy
+# mode on the report's 100-node grid. The protocol fires of the training seeds are the controlled burns; the
+# held-out seeds are scored with the SBB bound and with the fit for each K at the same false-alarm budget.
+scenario:
+  name: learning_legacy
+  description: "M36 learning curve (K = 5–100 burns, held-out seeds) and M26 calibration maturity (1–14 days)"
+experiment:
+  pipelines: [P2]
+  seeds: [51, 52, 53]             # held-out evaluation seeds
+  train_seeds: [41, 42]           # the burns: about 65 protocol fires per seed
+  ks: [5, 10, 20, 50, 100]
+  fa_budget_per_month: 3.0
+  maturity_seeds: [11, 22]
+  maturity_cal_days: [1, 2, 4, 7, 14]
+  maturity_test_days: 10
+modules:
+  ignition: stub                  # scripted by the protocol in the fire pass
+  growth: stub                    # M9 legacy
+  plume: stub                     # M12 legacy
+  sensor: real
+  nuisance: real
+  haze: real
+  faults: stub
+params:
+  plume:
+    wind: per_fire                # the report simulation's fire injection: constant random wind per fire (P7-1)

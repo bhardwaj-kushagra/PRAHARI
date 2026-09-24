@@ -67,6 +67,11 @@ Each command simulates a scenario and writes a recording plus a `*.health.json` 
 | `prahari run --config configs/scenarios/node_mature__scmr-stub.yaml --out recordings/node_mature__scmr-stub.prs.jsonl.gz` | the same with SCMR off — the replay variant behind the SCMR switch | ~70 s |
 | `prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz` | Phase 8: the mature network with the real radio and energy models; gateway g1 down 12:30–14:30 on day 31 across the fire (store-and-forward) | ~65 s |
 | `prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz` | Phase 8: six days, days 2–4 cloudy; state of charge falls, weak nodes switch to ULP scanning, all recover | ~15 s |
+| `prahari run --config configs/scenarios/satellite_race.yaml --out recordings/satellite_race.prs.jsonl.gz` | Phase 9 (India card): the mature network against the satellite (M37) — a 14:00 fire on day 31 and the race timeline | ~55 s |
+| `prahari run --config configs/scenarios/sensor_fault.yaml --out recordings/sensor_fault.prs.jsonl.gz` | Phase 9 (India card): random and scripted faults (M21) — node 55 stuck, node 23 dropped out, node 77 offset; health weights (M29) and "this sensor abstains"; the day-31 fire is still confirmed | ~65 s |
+| `prahari run --config configs/scenarios/lightning_storm.yaml --out recordings/lightning_storm.prs.jsonl.gz` | Phase 9 (Canada card): a storm starts several fires at once; SCMR relaxed while the storm is flagged (also `lightning_storm__no-relax`) | ~55 s |
+| `prahari run --config configs/scenarios/power_line_corridor.yaml --out recordings/power_line_corridor.prs.jsonl.gz` | Phase 9 (USA card): nodes along a power line and road, a fire beside the line | ~55 s |
+| `prahari run --config configs/scenarios/bushfire_afternoon.yaml --out recordings/bushfire_afternoon.prs.jsonl.gz` | Phase 9 (Australia card): a fire on a hot, windy afternoon | ~55 s |
 
 Options: `--seed N` overrides the seed, `--days D` the length. Restart `npm run dev` (or rerun `npm run build`) after
 generating, so the new files are copied into the dashboard.
@@ -93,6 +98,7 @@ prahari experiment --preset seeds20 --jobs 4   # P0, P1, P1t, P2 over seeds 11�
 prahari experiment --preset golden --seeds 11 --pipelines P1   # quick single-seed check
 PRAHARI_GOLDEN=1 PRAHARI_JOBS=4 pytest engine/tests/golden     # golden assertions (slow)
 prahari energy                                 # Phase 8: M41–M43 comparison → results/energy.json (instant)
+prahari experiment --preset learning --jobs 4  # Phase 9: M36 learning curve and M26 maturity → results/learning.json (~5 min)
 ```
 
 `--jobs N` runs N seeds at once in separate processes (results are identical to `--jobs 1`; each seed has its own

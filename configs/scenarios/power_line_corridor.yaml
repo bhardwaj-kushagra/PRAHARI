@@ -1,0 +1,26 @@
+# Power-line corridor (SPEC §8.2, Phase 9) on the USA card: roads and power lines weigh most, so the nodes are sited
+# along the distribution line (corridor layout, M1) and a fire starts beside it on day 31 at 14:00 in hot, dry, windy
+# weather. A mature network (31 days, days 29–31 recorded); the satellite baseline races it.
+regime: usa
+scenario:
+  name: power_line_corridor
+  description: "Nodes along a distribution line (USA card); a fire beside the line on a hot, windy afternoon"
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+world:
+  layout: corridor
+modules:
+  satellite: real
+params:
+  siting:
+    corridor_classes: [power_line, road]
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}
+  ignition:
+    scripted:
+      - {t_min: 44040, x: 700, y: 975}                     # day 31, 14:00, beside the power line

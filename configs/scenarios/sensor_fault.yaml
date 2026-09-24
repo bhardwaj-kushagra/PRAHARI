@@ -1,0 +1,34 @@
+# Sensor faults (SPEC §8.2, Phase 9): the mature network of `node_mature` with the real fault model (M21: random
+# stuck-at, offset, spike and dropout faults at the SPEC rates) and health weights (M29). Scripted on top: node 55
+# sticks at a high reading (2.5 su, as a failed heater might) on day 31 from 09:00 for 8 hours; node 23 drops out at
+# 11:00 for 3 hours; node 77 takes a +1.5 su offset on day 30 at 12:00. A stuck sensor abstains — its health weight
+# drops to zero — so it raises no false alarm, and the day-31 fire at 13:00 is still confirmed by healthy nodes.
+regime: india
+scenario:
+  name: sensor_fault
+  description: "Stuck, dropped-out and offset sensors abstain (health weight → 0); the fire is still confirmed"
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+modules:
+  faults: real
+  score: real
+  satellite: real                 # M37 race, as in the other Phase 9 scenarios
+params:
+  faults:
+    scripted:
+      - {node: 77, kind: offset, t_min: 42480, value_su: 1.5}                 # day 30, 12:00
+      - {node: 55, kind: stuck, t_min: 43740, duration_min: 480, value_su: 2.5}   # day 31, 09:00–17:00
+      - {node: 23, kind: dropout, t_min: 43860, duration_min: 180}            # day 31, 11:00–14:00
+  haze:
+    scripted:
+      - {t_min: 42360, duration_min: 480, amplitude: 1.6}  # day 30, as node_mature
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}
+  ignition:
+    scripted:
+      - {t_min: 43980, x: 600, y: 445}                     # day 31, 13:00, as node_mature

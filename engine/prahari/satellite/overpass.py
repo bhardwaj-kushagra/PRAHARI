@@ -1,4 +1,4 @@
-"""Satellite baseline (SPEC §5.11). Real M37: Phase 9. Stub: alert a fixed delay after ignition. Off: not shown."""
+"""Satellite baseline (SPEC §5.11). Real M37: `race.py` (Phase 9). Stub: alert a fixed delay after ignition. Off: not shown."""
 from __future__ import annotations
 
 from prahari.core.contracts import Fires, SatelliteAlerts

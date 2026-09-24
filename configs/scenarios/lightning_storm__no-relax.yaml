@@ -1,0 +1,25 @@
+# Variant of `lightning_storm` for comparison: SCMR keeps its threshold of 3 during the storm (no lightning relaxation).
+regime: canada
+scenario:
+  name: lightning_storm__no-relax
+  description: "The same storm with SCMR kept at 3 (no lightning relaxation) — for comparison"
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+modules:
+  satellite: real
+params:
+  cluster:
+    form: components
+  scmr:
+    ratio_min_lightning: 3.0
+  ignition:
+    storms:
+      - {t_min: 44100, duration_min: 90, x: 700, y: 700, radius_m: 330, strikes_per_min: 0.12}
+    strike_ignition_prob: 0.8
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}

@@ -72,6 +72,8 @@ cut to 10–40% on a cloudy day and shaded by the canopy), minus the sensor, mic
 - 4 and 5: lollipop stems from the axis minimum, one series hue (each row is named on the axis).
 - 6: list processes first, then kill by process ID (now twice-learned; see the troubleshooting page).
 - 7: documented and proposed (use the detection minute each frame carries in the cluster window), `KNOWN_ISSUES.md`.
+  Resolved in Phase 9 on approval: the confirmation is now at 15:14, as with a perfect link
+  ([phase-9-regimes-learning.md](phase-9-regimes-learning.md)).
 
 ## Acceptance results
 
@@ -86,7 +88,7 @@ Scenario outcomes, energy numbers and the reproduce commands are in
 
 ## What to show
 
-`gateway_outage`, day 31, 14:00–14:50: the gateway crossed out, the badge on node 41 while its frame waits, the burst
-at 14:30, the confirmation at 14:48. `cloudy_days`, day 5 at 02:00: amber rings on the nodes scanning in ULP; click one
+`gateway_outage`, day 31, 14:00–15:15: the gateway crossed out, the badge on node 41 while its frame waits, the burst
+at 14:30, the confirmation at 15:14 (14:48 before the Phase 9 arrival-time fix). `cloudy_days`, day 5 at 02:00: amber rings on the nodes scanning in ULP; click one
 for its state-of-charge chart. Results: the energy chart — a BME688 node runs on a fraction of the harvest; an MQ-2
 heater would drain the store in hours.

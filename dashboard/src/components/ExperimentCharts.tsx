@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { dialPoints, type DialPt, energyRows, type EnergyRow, spacingPoints, type SpacingPt, type Summary } from "../results";
 import { EChart, type EOption } from "./EChart";
+import { LearningCharts } from "./LearningCharts";
 
 // PRAHARI wears ember (SPEC §6.3); single-node alerts use the validated series blue; the report is hollow and grey.
 const C = { text: "#e8e3da", text2: "#a8a29a", line: "#2a3238", prahari: "#f26a2e", series: "#3987e5" };
@@ -142,6 +143,7 @@ export function ExperimentCharts({ summary }: { summary: Summary }) {
           <p className="chart-foot">SIMULATION · M41–M43 · per simulated day · computed from configs/default.yaml (no random draws)</p>
         </section>
       ) : null}
+      {summary.learning ? <LearningCharts learning={summary.learning} /> : null}
       {sp.length ? (
         <section data-testid="spacing">
           <EChart option={spacingOption(sp)} height={270} testId="chart-spacing" />

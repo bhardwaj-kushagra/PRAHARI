@@ -21,6 +21,8 @@ class RunContext:
     z_slow: object = None            # latest TTC slow z (N, C), set by the pipeline; M28 common-mode exclusion
     links: object = None             # Links from the setup modules (Phase 8: comms routes and relays)
     energy_mode: object = None       # (N,) last energy mode, set by the pipeline; comms skips nodes that are off
+    storm: bool = False              # a lightning storm is active this minute (set by ignition, Phase 9)
+    prior: object = None             # this minute's Prior, for SCMR's lightning relaxation (Phase 9)
 
     @property
     def n_nodes(self) -> int:

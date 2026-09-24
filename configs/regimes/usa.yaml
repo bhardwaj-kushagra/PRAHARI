@@ -1,0 +1,24 @@
+# Regime Card — USA, western wildland–urban interface (SPEC §8.1: roads and power lines weigh most; US915). Hot,
+# dry, windy afternoons; little rain.
+regime_card:
+  name: usa
+  label: "USA — western wildland–urban interface"
+  radio_plan: US915
+  alert_format: nifc
+  lightning: false
+  source: "SPEC §8.1 (roads, power lines, US915); ASM weather and weights (illustrative)"
+params:
+  weather:
+    t_mean_c: 29.0
+    t_amp_c: 11.0
+    dew_point_c: 3.0
+    wind_median_ms: 3.0
+    prevailing_dir_deg: 240.0
+    rain_prob_day: 0.01
+  landscape:
+    weights: {path: 0.8, village: 1.0, road: 1.5, power_line: 1.5}
+    decay_m: {path: 30, village: 150, road: 60, power_line: 40}
+  haze:
+    crop_burning_multiplier: 1.0
+  comms:
+    channels: 8                   # US915: one 8-channel sub-band

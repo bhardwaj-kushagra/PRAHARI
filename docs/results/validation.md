@@ -1,6 +1,6 @@
 # Results and validation
 
-All numbers below are **simulation output (SIM)** from the files named, as of Phase 8. They change only when the
+All numbers below are **simulation output (SIM)** from the files named, as of Phase 9. They change only when the
 engine or configuration changes; regenerate them with the commands at the end.
 
 ## 1. Golden reproduction (legacy mode)
@@ -177,17 +177,61 @@ Energy comparison (`results/energy.json`, from `configs/default.yaml`, no random
 
 Scenario outcomes:
 - `gateway_outage` (seed 11, 6 dB shadowing): 4 nodes use a TS011 relay. Gateway g1 is out 12:30–14:30 on day 31;
-  node 41's 14:07 candidate waits at the node and goes out at 14:30; node 31's 14:48 candidate completes the pair and
-  the fire is confirmed at 14:48 (+108 min). Over the three recorded days 200 heartbeats had no route (the outage)
+  node 41's 14:07 candidate waits at the node and goes out at 14:30. Since the Phase 9 arrival-time fix the edge
+  windows candidates by their detection minute, so that delayed frame no longer pairs with node 31's 14:48 candidate;
+  the fire is confirmed at 15:14 (+134 min) when node 41 raises its next candidate — the same minute as the
+  perfect-link `node_mature` run. (Before the fix: 14:48.) Over the three recorded days 200 heartbeats had no route (the outage)
   and 2 collided; none of the 188 delivered candidate frames needed a retry.
 - `cloudy_days` (seed 11): starting at 30% with canopy spread 0.6, the lowest node falls from 32% to 19% across the
   cloudy days 2–4; 15 nodes are scanning in ULP mode at 02:00 on day 5; all recover once the sun returns. 10 of about
   15,000 heartbeats collided (low load).
 
-The edge clusters candidates by the minute they arrive. In `gateway_outage` the delayed frame from node 41 therefore
-lands in the same 30-minute window as node 31's, and the confirmation comes earlier (14:48) than in the perfect-link
-`node_mature` run (15:14). A deployed edge would use the detection time each frame carries; this is logged as an
-improvement (`KNOWN_ISSUES.md`).
+In Phase 8 the edge clustered candidates by the minute they arrived, so the delayed frame shared a window with node
+31's and the confirmation came earlier (14:48). Phase 9 carries each candidate's detection minute and resolves this
+(`DECISIONS.md` P9-2).
+
+## 7. Regimes, satellite race, learning and faults (Phase 9)
+
+| Acceptance | Result (SIM) | Source |
+| --- | --- | --- |
+| 1. Race timeline deltas on scripted fires | `satellite_race`: ignition 14:00, first node candidate 14:55 (+55 min), PRAHARI confirmation 15:14 (+74 min), Terra overpass 22:30, satellite alert 23:20 (+9 h 20 min) — headline "PRAHARI confirmed 8 h 06 min before the satellite alert". Deltas checked against the events — pass | `recordings/satellite_race.prs.jsonl.gz`, `race.test.ts`, `test_phase9_satellite.py` |
+| 2. Learning curve monotone within noise, K = 5 → 100 | confirmed within 3 h at ≤ 3 false incidents a month on held-out seeds 51–53 (183 fires, 90 test days): 49% (bound; K = 5 < k_min), 68%, 68%, 68%, 71% for K = 10, 20, 50, 100; median latency 75, 58.5, 58.5, 59, 60 min — pass (no step down) | `results/learning.json` |
+| 3. Stuck sensor's health weight < 0.1 within 90 min | 58 min (unit test); node 55 in `sensor_fault`: 59 min; a dropout abstains after 5 min — pass | `test_phase9_faults.py`, `recordings/sensor_fault.prs.jsonl.gz` |
+
+Learning preset (`configs/experiments/learning.yaml`): legacy mode, training seeds 41 and 42 (119 protocol fires),
+held-out seeds 51–53. The bound and every fit are held to the same budget (9 false incidents in 90 days); the fits used
+7–8. The fitted models weight the SCMR ratio and cluster size (X_C and |C| are collinear in legacy mode). For
+reference, the deployed legacy quorum confirms 80% (74–85%) on the same runs at 7.7 false incidents a month — outside
+the budget.
+
+Calibration maturity (same preset; seeds 11 and 22; 14 tuning and 10 test days per run):
+
+| Quiet calibration days | p_min (DER) | Fires with a node candidate within 3 h | Median minutes to first candidate | Tuned h per seed |
+| --- | --- | --- | --- | --- |
+| 1 | 4.1e-3 | 97% of 33 | 92.5 | 369, 365 |
+| 2 | 2.1e-3 | 97% of 30 | 69 | 297, 312 |
+| 4 | 1.0e-3 | 97% of 31 | 47 | 245, 288 |
+| 7 | 5.9e-4 | 96% of 28 | 46 | 242, 252 |
+| 14 | 3.0e-4 | 88% of 42 | 59 | 227, 400 (cap) |
+
+At 14 days seed 22's tuning ends at the h cap, the Phase 5 seed issue in `KNOWN_ISSUES.md`; that lengthens the median.
+
+Scenario outcomes (seed 11, days 29–31 recorded unless noted):
+- `sensor_fault` (India card): 8 faults start in the recorded days (3 scripted, 5 random). Node 55 (stuck at 2.5 su
+  from 09:00) raises one candidate at 09:33 and abstains at 09:59; node 23 (dropout 11:00–14:00) abstains at 11:05;
+  node 77's +1.5 su offset keeps its weight. The 13:00 fire is confirmed at 14:49; no alarm from a faulty node.
+- `lightning_storm` (Canada card): the storm starts 8 fires between 15:06 and 16:21 on day 31; 6 are confirmed
+  within 3 h. SCMR holds none of the 20 decisions during the storm; without the relaxation
+  (`lightning_storm__no-relax`) it holds 4, with the same 6 fires confirmed. One fire's 22:30 Terra overpass misses
+  it and the 01:30 Aqua pass alerts at 02:18.
+- `power_line_corridor` (USA card): fire at 14:00 beside the line; first candidate 14:40, confirmed 14:47.
+- `bushfire_afternoon` (Australia card): fire at 15:00; first candidate 16:07, confirmed 16:31.
+- In every Phase 9 fire scenario the satellite alert comes after PRAHARI's confirmation: the first overpass that can
+  see a 14:00–15:00 fire is Terra's at 22:30.
+- `gateway_outage` and `cloudy_days` were regenerated after the arrival-time fix: `gateway_outage` confirms at 15:14
+  (section 6); `cloudy_days` changes two decision traces' SCMR network share and no decision.
+- Integral prior (`srp.form: integral`, not used by any scenario): two-node clusters get prior odds of 3.9e-5 to 1.1e-4,
+  close to the legacy 1e-4 on a dry, busy day.
 
 ## Reproduce
 
@@ -201,6 +245,10 @@ prahari energy                                     # section 6 (energy compariso
 prahari run --config configs/scenarios/gateway_outage.yaml --out recordings/gateway_outage.prs.jsonl.gz   # section 6
 prahari run --config configs/scenarios/cloudy_days.yaml --out recordings/cloudy_days.prs.jsonl.gz         # section 6
 prahari run --config configs/scenarios/node_mature.yaml --out recordings/node_mature.prs.jsonl.gz   # section 5
+prahari experiment --preset learning --jobs 4      # section 7 (learning curve and maturity, ~5 min)
+prahari run --config configs/scenarios/satellite_race.yaml --out recordings/satellite_race.prs.jsonl.gz   # section 7
+prahari run --config configs/scenarios/sensor_fault.yaml --out recordings/sensor_fault.prs.jsonl.gz       # section 7
+prahari run --config configs/scenarios/lightning_storm.yaml --out recordings/lightning_storm.prs.jsonl.gz # section 7 (and __no-relax)
 ```
 
 The report simulation's side of the 20-seed comparisons was run with short scripts that call

@@ -1,0 +1,27 @@
+# Lightning storm (SPEC §8.2, Phase 9) on the Canada card: the mature network (31 days, days 29–31 recorded). A storm
+# crosses the network on day 31 from 15:00 to 16:30; strikes arrive as a Poisson process over its footprint (M3,
+# λ_light) and some start fires, so several fires burn at once. Clustering keeps them apart (M30 components), and while
+# the storm lasts the prior carries a lightning flag that relaxes SCMR from 3 to 1.5 (M31) — simultaneous local fires
+# must not look like a network-wide common mode. The strike rate is a scenario setting chosen to start several fires.
+regime: canada
+scenario:
+  name: lightning_storm
+  description: "A lightning storm starts several fires at once: separate clusters, SCMR relaxed while the storm lasts"
+run:
+  seed: 11
+  days: 31
+record:
+  every_k_ticks: 10
+  from_day: 28
+modules:
+  satellite: real
+params:
+  cluster:
+    form: components
+  ignition:
+    storms:
+      - {t_min: 44100, duration_min: 90, x: 700, y: 700, radius_m: 330, strikes_per_min: 0.12}   # day 31, 15:00
+    strike_ignition_prob: 0.8
+  srp:
+    day_type_overrides:
+      - {day: 31, type: dry_busy}

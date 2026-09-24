@@ -20,6 +20,9 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | Golden test reports P0 or P1t outside the report interval | A known sampling effect, documented and checked against the oracle over 20 seeds. | See [../results/validation.md](../results/validation.md); do not tune to make it pass. |
 | Golden tests fail for P2, the ablations or spacing | Known and documented: P2 detection is below the report (haze in calibration windows, `KNOWN_ISSUES.md`); node ablations are defined as module stubs. | See [../results/validation.md](../results/validation.md) and `DECISIONS.md` P7-9, P7-10. |
 | No packets or energy rings on the map | Only recordings made with the real radio and energy models carry them (`gateway_outage`, `cloudy_days`). | Open one of those, or run a scenario with `modules.comms: real` and `modules.energy: real`. |
+| `config error: config file not found: …/regimes/…` or a card key rejected | `regime:` names a file that is not in `configs/regimes/`, or a card sets a key missing from `default.yaml`. | Use `india`, `canada`, `usa` or `australia`, or add the new card's keys to `default.yaml` with a source. |
+| Results tab lacks the learning and maturity charts | `results/learning.json` has not been written. | `prahari experiment --preset learning --jobs 4` (about 5 minutes), then restart the dashboard. |
+| `learn: real` behaves exactly like the bound | No model file is set (`params.learn.model_file`), or the model was fitted on fewer than `k_min` = 10 burns. | Point `model_file` at `results/learning_model_k100.json`; the model card notes show `fitted_in_use`. |
 | Results tab lacks the energy chart | `results/energy.json` has not been written. | `prahari energy`, then restart the dashboard. |
 | Results tab lacks the spacing or ablation chart | Only `golden` has run; `summary.json` is rebuilt from whichever preset files exist. | Run the `ablation` and `spacing` presets, then restart the dashboard. |
 
@@ -37,6 +40,9 @@ Symptoms first, then the likely cause and the fix. Several of these were met whi
 | `npm install` fails resolving vitest peers | Some npm 10 releases fail on vitest 4.1.x optional peers. | The project pins vitest 5 (DECISIONS Dep-2); run `npm install` from `dashboard/` with the committed lock file. |
 | `npm audit` warnings about echarts or vitest | Older versions carried advisories. | The project uses echarts 6.1 and vitest 5, which report none (Dep-2, Dep-5). |
 | The node inspector is empty | No node is selected. | Click a node on the map (the tab switches to Node automatically). |
+| No race timeline under the map | The recording has no fire, or predates Phase 9's satellite events. | Open `satellite_race` (or any Phase 9 recording); without `satellite_plan` events the strip shows PRAHARI's side only. |
+| No regime selector next to the recording list | The bundled recordings carry only one regime, or `index.json` was written before Phase 9. | Restart `npm run dev` (or rebuild) so the sync script rereads the headers. |
+| A faulty node is not drawn as a fault | The glyph shows the system's view (health weight below 0.1), not the injected fault; small offsets keep their weight. | See the `fault_start` events on the time bar and `KNOWN_ISSUES.md`. |
 | The floor line or baseline is missing from the inspector | The recording predates Phase 5. | Regenerate the recording. |
 
 ## Live mode

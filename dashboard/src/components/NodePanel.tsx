@@ -20,7 +20,7 @@ export function NodePanel() {
     ["p-value", sci(v.p[i])],
     ["CUSUM G / h", `${v.cusum[i]} / ${frame.cusum_h}`],
     ...(v.n_cal ? [["Calibration n / floor p_min", `${v.n_cal[i]} / ${sci(1 / (v.n_cal[i] + 1))}`] as [string, string]] : []),
-    ["Health weight", String(v.health[i])],
+    ["Health weight (M29)", v.health[i] < 0.1 ? `${v.health[i]} — this sensor abstains` : String(v.health[i])],
     ["State of charge", `${Math.round(v.soc[i] * 100)}%`],
     ...(v.mode ? [["Power mode (M43)", MODE_NAME[v.mode[i]]] as [string, string]] : []),
     ...(v.queue ? [["Frames waiting (store-and-forward)", String(v.queue[i])] as [string, string]] : []),

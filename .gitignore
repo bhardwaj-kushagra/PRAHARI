@@ -10,6 +10,8 @@ results/*
 !results/spacing.json
 !results/seeds20.json
 !results/energy.json
+!results/learning.json
+!results/learning_model_k100.json
 node_modules/
 dashboard/dist/
 *.health.json

@@ -58,7 +58,7 @@ def edge_alarms(cands: dict, stages: dict, ctx) -> list:
         if not cl.members:
             continue
         sc = stages["scmr"].step(cl, ctx)
-        bf = stages["learn"].step(stages["fisher"].step(cl, ctx), ctx)
+        bf = stages["learn"].step((stages["fisher"].step(cl, ctx), cl, sc, None), ctx)
         raq = stages["raq"].step((cl, sc, bf, prior), ctx)
         anchors = cl.anchor or tuple(m[0] for m in cl.members)
         alarms += [(t, int(a), list(m)) for a, m, d in zip(anchors, cl.members, raq.decide) if d]
