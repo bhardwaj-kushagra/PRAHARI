@@ -60,6 +60,18 @@ describe("decodeRecordingBytes", () => {
     expect(await decodeRecordingBytes(plain)).toBe(text);
     expect(await decodeRecordingBytes(gz)).toBe(text);
   });
+
+  it("recovers the readable part of a .gz cut off in a copy, and names a hopeless one (release 1.0)", async () => {
+    const lines = [JSON.stringify({ header })];
+    for (let t = 0; t < 4000; t++) lines.push(JSON.stringify(frame(t)));
+    const gz = new Uint8Array(gzipSync(new TextEncoder().encode(lines.join("\n") + "\n")));
+    const partial = await decodeRecordingBytes(gz.slice(0, Math.floor(gz.length / 2)));
+    const rec = parseRecording(partial);
+    expect(rec.frames.length).toBeGreaterThan(100);
+    expect(rec.frames.length).toBeLessThan(4000);
+    expect(rec.footer).toBeNull();
+    await expect(decodeRecordingBytes(gz.slice(0, 12))).rejects.toThrow(/damaged or incomplete/);
+  });
 });
 
 describe("RecordingSource", () => {

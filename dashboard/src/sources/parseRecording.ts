@@ -10,10 +10,10 @@ export function parseRecording(text: string): Recording {
   try {
     first = JSON.parse(lines[0]);
   } catch {
-    throw new RecordingError("line 1 is not JSON");
+    throw new RecordingError("not a PRAHARI recording: line 1 is not JSON");
   }
   if (!first || typeof first !== "object" || !("header" in first)) {
-    throw new RecordingError("line 1 must be the header");
+    throw new RecordingError("not a PRAHARI recording: line 1 must be the header");
   }
   const header = (first as { header: Recording["header"] }).header;
   if (header.schema !== SUPPORTED_SCHEMA) {
@@ -52,9 +52,24 @@ export function isGzip(bytes: Uint8Array): boolean {
   return bytes.length >= 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
 }
 
-/** Decode recording bytes, gunzipping with the platform DecompressionStream when needed (no library). */
+/** Decode recording bytes, gunzipping with the platform DecompressionStream when needed (no library).
+ *  Release 1.0 (second audit): a .gz file cut off in a copy is read up to where it breaks; the lines recovered open
+ *  as an incomplete recording (see `parseRecording`). A file with nothing readable is a clear error. */
 export async function decodeRecordingBytes(bytes: Uint8Array): Promise<string> {
   if (!isGzip(bytes)) return new TextDecoder().decode(bytes);
-  const stream = new Blob([bytes as BlobPart]).stream().pipeThrough(new DecompressionStream("gzip"));
-  return await new Response(stream).text();
+  const reader = new Blob([bytes as BlobPart]).stream().pipeThrough(new DecompressionStream("gzip")).getReader();
+  const decoder = new TextDecoder();
+  let text = "";
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      text += decoder.decode(value, { stream: true });
+    }
+    return text + decoder.decode();
+  } catch {
+    if (!text.trim()) throw new RecordingError("the .gz file is damaged or incomplete: nothing could be decompressed");
+    console.warn("recording: the .gz file ends early; the part that could be read is shown");
+    return text + decoder.decode();
+  }
 }

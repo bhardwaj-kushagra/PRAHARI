@@ -743,6 +743,14 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     audited code.
   - The 16 recordings were regenerated. Each was compared with its predecessor: only that header text differs, and every
     frame and trace line is identical.
+- **R1-12. Second audit: latest load wins.** A reproduced race let a slow recording load overwrite a newer choice,
+  across presenter keys, the picker, the mechanism switches and the live stream. One token in the store (`beginLoad`
+  and `isLatestLoad`) now guards every load. A live stream stops once something else is opened. No output
+  change; `loadToken.test.ts` and a browser reproduction cover it.
+- **R1-13. Second audit: damaged `.gz` files.** The readable part of a truncated `.gz` opens as an incomplete recording,
+  consistent with R1-4. Nothing readable gives "the .gz file is damaged or incomplete", and files that are not
+  recordings say "not a PRAHARI recording". Files touched: `store.ts`, `PresenterOverlay.tsx`, `RecordingPicker.tsx`,
+  `MechanismSwitches.tsx`, `LivePanel.tsx`, `sources/parseRecording.ts`; no engine file.
 - **R1-10. Files from accepted phases touched** (all narrow, listed for review):
   - engine: `core/{config,contracts,contracts_edge,contracts_world,contracts_baselines,clock,context,health,runner,
     registry,rng,trace,pipeline}.py`, `record/{writer,frames,reader,world}.py`, `cli.py`, `eval/{experiments,report,
