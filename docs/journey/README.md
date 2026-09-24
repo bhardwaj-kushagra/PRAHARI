@@ -2,8 +2,8 @@
 
 PRAHARI-SIM was built in phases defined in [SPEC §7](../SPEC.md). Each phase started with a written plan (what will be
 built, which files, which tests prove it), was implemented with tests, ended with a runnable dashboard, and was
-accepted by the developer before the next began. All phases so far were built on 23–24 September 2026 in one long
-working session with an AI coding agent (Claude Code), under the rules in `CLAUDE.md`.
+accepted by the developer before the next began. All phases, 0 to 10 (with 3a and 3b), were built and accepted on
+23–24 September 2026 in one long working session with an AI coding agent (Claude Code), under the rules in `CLAUDE.md`.
 
 ## Timeline
 
@@ -20,7 +20,7 @@ working session with an AI coding agent (Claude Code), under the rules in `CLAUD
 | 7 | Experiments and results | accepted | P2 3.4 false incidents/month (P0 340.6); every ablation raises false alarms; dial 46–67 min median; spacing 63/33/5% confirmed; legacy ablations reproduce the report simulation; detection gap traced by a 2 × 2 swap to sampling (haze-heavy calibration windows, wet-day share) | [phase-7-experiments.md](phase-7-experiments.md) |
 | 8 | Communications and energy | accepted | M39 61.7 / 1,482.75 ms; ALOHA within 1.1 points of e^(−2G); 0.5 Wh/day node lasts 8.7–9.1 days; store-and-forward across a gateway outage; BME688 0.42 vs MQ-2 22.9 Wh/day | [phase-8-comms-energy.md](phase-8-comms-energy.md) |
 | 9 | Regimes, satellite race, learning loop, faults | accepted | PRAHARI confirmed about 8 h before the satellite alert (`satellite_race`); stuck sensor abstains after 59 min; learning curve 49% (bound) → 68–71% confirmed at 3 false incidents/month for K = 10–100; QCC floor 4.1e-3 → 3.0e-4 from 1 to 14 quiet days | [phase-9-regimes-learning.md](phase-9-regimes-learning.md) |
-| 10 | Demo hardening | awaiting review | presenter mode (keys 1–9, S/R, F); storyboard rehearsal 170.1 s with no external requests and no console errors; one-command launchers for macOS, Linux and Windows | [phase-10-demo.md](phase-10-demo.md) |
+| 10 | Demo hardening | accepted | presenter mode (keys 1–9, S/R, F); storyboard rehearsal 170.1 s with no external requests and no console errors; one-command launchers for macOS, Linux and Windows | [phase-10-demo.md](phase-10-demo.md) |
 
 Cross-cutting pages:
 

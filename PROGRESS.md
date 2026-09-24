@@ -13,7 +13,7 @@
 | 7 | Experiments and results | accepted (2026-09-23) |
 | 8 | Communications and energy (optional) | accepted (2026-09-24) |
 | 9 | Regimes, satellite race, learning loop and faults (optional) | accepted (2026-09-24) |
-| 10 | Demo hardening | awaiting review |
+| 10 | Demo hardening | accepted (2026-09-24) |
 
 Statuses: not started · in progress · awaiting review · accepted.
 
@@ -442,4 +442,16 @@ full screen, then 1–9. Read `DEMO_CHECKLIST.md` before the talk.
 
 **Next step:** review Phase 10. All phases of SPEC §7 are then complete; what remains is the developer's rehearsal on
 the demo laptop and any items from `KNOWN_ISSUES.md` the developer wants before the conference.
+
+### 2026-09-24 — Session 15 (Phase 10 acceptance)
+
+- Phase 10 accepted by the developer ("good, approved phase 10"). All phases 0–10 of SPEC §7 are now accepted.
+- No code, recording or model changes this session. Test status as at `32f920d`: 204 engine tests pass (21 golden
+  skipped unless enabled), 53 dashboard tests pass.
+
+**To see it:** `scripts/demo.sh` (Windows: double-click `scripts\demo.cmd`), then F and 1–9; follow `DEMO_CHECKLIST.md`.
+
+**Next step:** the developer's rehearsal on the demo laptop. Optional items remain in `KNOWN_ISSUES.md` (the M28
+common-mode backlog, the P2 legacy detection gap, the M29 small-offset limit, the pre-abstain candidate) for the
+developer to schedule or leave.
 
