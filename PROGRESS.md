@@ -517,3 +517,22 @@ has set up Cloudflare Pages and the `dashboard` CNAME at name.com.
 
 **Next step:** science work continues on `main` as before. Site work continues on `site-dev`; the first open item
 there is the mobile layout.
+
+### 2026-09-24 — Session 18 (complete guide)
+
+- Developer request: one detailed guide to the whole simulator for future reference. Added
+  `docs/guide/07-complete-guide.md`, linked from `docs/README.md`. It covers:
+  - the names (FIRENET, PRAHARI, PRAHARI-SIM);
+  - the system and one simulated minute, stage by stage;
+  - every model group in plain words;
+  - the pipelines P0–P2;
+  - every dashboard element (header, map layers and glyphs, race timeline, controls, each tab, presenter keys, colours);
+  - all 20 recordings and the four Regime Cards;
+  - the experiment presets and headline results (SIM, from `results/` and `docs/results/validation.md`);
+  - commands, where to change things, the honesty rules, the repository and branches, and the known limits.
+- Also on this branch: the Session 17 and Site-1 wording fix about where the `v1.0.0` tag points (`ca50607`).
+- Documentation only. No code, recording or result changed, so the release 1.0 test status stands. Doc links checked.
+
+**To see it:** open `docs/guide/07-complete-guide.md` on GitHub.
+
+**Next step:** none required. The science backlog is in `KNOWN_ISSUES.md`.

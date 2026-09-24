@@ -9,6 +9,7 @@ Everything the simulator produces is **simulation output (SIM)**, not field data
 | If you want to… | Read |
 | --- | --- |
 | Understand the project in ten minutes | [guide/01-overview.md](guide/01-overview.md) |
+| Look up anything in one place: the models, every dashboard element, every scenario, results, commands | [guide/07-complete-guide.md](guide/07-complete-guide.md) |
 | Learn the science and statistics behind it | [guide/02-background.md](guide/02-background.md), then [guide/03-glossary.md](guide/03-glossary.md) |
 | Install and run it | [guide/04-setup.md](guide/04-setup.md) |
 | Fix something that does not work | [guide/05-troubleshooting.md](guide/05-troubleshooting.md) |
@@ -29,7 +30,8 @@ docs/
 │   ├── 03-glossary.md         every term and acronym used in the code and dashboard
 │   ├── 04-setup.md            prerequisites, installation, every command
 │   ├── 05-troubleshooting.md  symptoms → causes → fixes
-│   └── 06-demo-walkthrough.md presenter-mode storyboard, click path, talking points, likely questions
+│   ├── 06-demo-walkthrough.md presenter-mode storyboard, click path, talking points, likely questions
+│   └── 07-complete-guide.md   the whole simulator on one page: models, dashboard elements, scenarios, results
 ├── architecture/              for a developer
 │   ├── 01-system.md           components and data flow
 │   ├── 02-engine.md           registry, stages, isolation, configuration, randomness, tick loop, harness
