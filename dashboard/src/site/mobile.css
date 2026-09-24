@@ -22,11 +22,16 @@
   :root .picker select { flex: 1 1 160px; min-width: 0; max-width: 100%; }
   :root .mark-legend { flex-wrap: wrap; }
   :root .foot { overflow-wrap: anywhere; }
+  /* The guided tour's caption and buttons stay at the top of the screen while the page scrolls under them */
+  :root .top { display: contents; }
+  :root .presenter { position: sticky; top: 0; z-index: 11; box-shadow: 0 6px 12px rgba(0, 0, 0, 0.35); }
+  /* Race timeline: keep its labels readable; it scrolls sideways on its own instead of shrinking */
+  :root .race { overflow-x: auto; }
+  :root .race svg { min-width: 760px; }
 }
 
 @media (max-width: 640px) {
   :root .site-bar { padding: 5px 10px; font-size: 12px; }
-  :root .site-bar-url { display: none; }
   :root .strip { gap: 8px; padding: 8px 10px; }
   :root .strip-stats { gap: 6px 16px; }
   :root .strip-stats dd { font-size: 13px; }
@@ -43,4 +48,25 @@
   :root .presenter-line { font-size: 15px; flex-direction: column; gap: 2px; }
   :root .presenter-keys { display: none; }                /* keyboard shortcuts mean nothing on a touch screen */
   :root .foot { padding: 6px 10px; font-size: 11px; }
+  :root .mark-legend { flex-wrap: nowrap; overflow-x: auto; white-space: nowrap; }   /* one line in the pinned controls */
+  :root .presenter-touch { flex: 1 1 100%; }
+  :root .presenter-touch button { flex: 1; padding: 8px 6px; }
+  :root .presenter-touch button:last-child { flex: none; padding: 8px 14px; }
+  /* Map layer switches: one row that scrolls sideways, instead of four rows above the map */
+  :root .layer-toggle { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+  :root .layer { flex: none; white-space: nowrap; }
+  /* Health & model card: one card per module instead of a six-column table. The column names come from
+     position (Module, Config, Now, Model, Tag, Errors), so ModuleHealth.tsx itself is unchanged. */
+  :root .health thead { display: none; }
+  :root .health table, :root .health tbody { display: block; }
+  :root .health tr { display: grid; grid-template-columns: 1fr auto auto; gap: 4px 12px; align-items: center;
+    padding: 10px 0; border-bottom: 1px solid var(--line); }
+  :root .health td { display: block; padding: 0; border: 0; }
+  :root .health td:nth-child(1) { font-weight: 600; }
+  :root .health td:nth-child(4) { grid-column: 1 / -1; }
+  :root .health td:nth-child(2)::before, :root .health td:nth-child(5)::before, :root .health td:nth-child(6)::before {
+    color: var(--text-2); font: 11px var(--font-ui); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
+  :root .health td:nth-child(2)::before { content: "config"; }
+  :root .health td:nth-child(5)::before { content: "tag"; }
+  :root .health td:nth-child(6)::before { content: "errors"; }
 }

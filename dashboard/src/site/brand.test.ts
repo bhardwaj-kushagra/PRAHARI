@@ -14,8 +14,12 @@ describe("public-site branding", () => {
     expect(FIRENET_EXPANSION).toBe("Fire Identification and Response Network for Early Tracking");
   });
 
-  it("links the team site over https", () => {
-    expect(TEAM.url).toMatch(/^https:\/\//);
+  it("names the team without linking to or mentioning its website (left out for now, S4)", () => {
+    expect(TEAM).toEqual({ name: "AgniWare" });
+    for (const f of ["SiteBar.tsx", "brand.ts", "site.css"]) {
+      expect(readFileSync(join(here, f), "utf8")).not.toMatch(/agniware\.tech|href=/i);
+    }
+    expect(html).not.toMatch(/agniware\.tech/i);
   });
 
   it("gives the page a title, a description and a link preview that say SIMULATION or simulation", () => {

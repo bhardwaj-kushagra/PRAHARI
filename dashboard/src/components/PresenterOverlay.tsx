@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { variantName } from "../edge";
 import { useMapView } from "../mapView";
 import { keyAction, type Step, type Storyboard, stepMinute, storyboardProblems } from "../presenter";
+import { PresenterTouch } from "../site/PresenterTouch";
 import { RecordingSource } from "../sources/RecordingSource";
 import { beginLoad, isLatestLoad, useSim } from "../store";
 
@@ -28,7 +29,7 @@ function load(name: string): Promise<RecordingSource> {
 }
 
 /** SPEC §6.4 — apply a storyboard step: recording, bookmark, speed, layers, tab, then play or hold. */
-async function goTo(step: Step) {
+export async function goTo(step: Step) {   // exported for the site's touch buttons
   const sim = useSim.getState();
   const token = beginLoad();                     // keys pressed in quick succession: only the last step is applied
   usePresenter.setState({ step, note: null });
@@ -135,6 +136,7 @@ export function PresenterOverlay() {
       ) : null}
       {note ? <p className="presenter-note small" data-testid="presenter-note">{note}</p> : null}
       <p className="presenter-keys small muted">1–9 steps · Space play · S SCMR · R RAQ · F full screen · Esc hide · SIMULATION</p>
+      {step ? <PresenterTouch board={board} step={step} go={(s) => void goTo(s)} hide={() => usePresenter.setState({ step: null, note: null })} /> /* site */ : null}
     </div>
   );
 }
