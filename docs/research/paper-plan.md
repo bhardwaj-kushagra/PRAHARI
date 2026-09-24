@@ -308,3 +308,25 @@ Open decisions: the venue and its deadline, how many nodes can log quiet data, a
 | Seeds | Selection 901–920; test 1001–1100 |
 | Figures | matplotlib as an optional extra |
 | Venue and deadline | Chosen by the developer. If the deadline is under 4 weeks away, the scope is simulation-only, with real data as a pilot |
+
+## 10. One paper or two? (added after the go-ahead)
+
+The developer chose a **simulation-only** paper for now. Physical experiments become a separate study.
+
+**Recommendation: the simulator can be a second paper, but only with a distinct contribution.**
+
+| | Paper A: method (this one) | Paper B: the simulator as a tool |
+| --- | --- | --- |
+| Question | Does budgeted, derived-threshold detection beat the alternatives at equal false alarms, and why? | Can wildfire sensor-network detection be evaluated reproducibly, with every assumption visible and every component swappable? |
+| Evidence | Operating curves, paired statistics, ablations, sensitivity sweeps (protocol R1) | Architecture (stub/real/off registry, isolation and degradation), determinism, provenance tags, agreement with an independent reference implementation, performance, the replay dashboard |
+| Venue type | Regional IEEE conference, sensors/IoT track | Tool or demo track, or a software journal |
+| Overlap rule | Owns the detection results | Cites Paper A for results; its own claims concern the tool |
+
+**Order:**
+
+1. Write Paper A first.
+2. Paper B follows once Paper A is submitted, and reuses no results table.
+3. Physical experiments become Paper C.
+
+Keeping everything in one paper is also acceptable. The simulator then appears as a contribution bullet and a
+reproducibility section, which is what Paper A does in any case.

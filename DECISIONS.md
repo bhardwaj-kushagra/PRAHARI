@@ -760,6 +760,24 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     `package.json`, `package-lock.json`;
   - `README.md`.
 
+## Research track R1 (post-1.0: simulation-only paper)
+
+- **R2-1. Additive only; the release stays locked.** The research work lives in a new package
+  (`engine/prahari/research/`, run as `python -m prahari.research`), `configs/research/` and `results/research/`. No
+  model, parameter, default or recording of release 1.0 changes, and `scripts/check_all.sh` must keep regenerating all
+  20 recordings byte for byte. Accepted files are touched only where listed here.
+- **R2-2. Pre-registered protocol.** `docs/research/protocol.md` fixes the seeds (selection 901–920, test 1001–1100,
+  sweeps 1001–1010), pipelines, knob grids, budgets, endpoints, tests and sweeps. It is committed before any of those
+  seeds is run. Any later change is logged here as R2-n with its reason.
+- **R2-3. Random stream `research`** appended at the end of `core/rng.py` `STREAMS` (rule 7). It is used for the seed
+  bootstrap and the wrong-prior sweep. Appending leaves every existing stream's draws unchanged, because children are
+  indexed by position.
+- **R2-4. Physical experiments are out of scope** for this paper, at the developer's request. Quiet logging, burns and
+  negative controls become a separate later study. The simulator itself may become a separate tool paper; see
+  `docs/research/paper-plan.md` §10.
+- **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
+  `results/research/*.json`.
+
 ## Documentation
 
 - **Doc-1. A documentation set in `docs/` (developer request after Phase 5).** `docs/README.md` indexes four
@@ -780,3 +798,5 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   optional `server` extra; `httpx` in the `dev` extra, needed by FastAPI's test client. The engine and the replay
   dashboard do not depend on any of them.
 - **Dep-5 (Phase 2).** `echarts` 6.1 (named in rule 13). Version 6.1 because 5.x carries advisory GHSA-fgmj-fm8m-jvvx (XSS); `npm audit` reports 0 vulnerabilities.
+- **Dep-7 (research track).** `matplotlib` as the optional `paper` extra, for the paper's figures only (R2-5). The
+  engine, server and dashboard do not depend on it.
