@@ -497,3 +497,22 @@ developer to schedule or leave.
 **Next step:** none required. Tag `v1.0.0` marks the locked release; any later change should keep `scripts/check_all.sh`
 passing and log output changes in `DECISIONS.md`.
 
+
+### 2026-09-24 — Session 17 (public-site branches)
+
+- Developer decision: publish the dashboard as a view-only website at `https://dashboard.firenet.live` without
+  changing `main`. See `DECISIONS.md` Site-1.
+- Created from `318fe4d`:
+  - `site-dev`: the draft website;
+  - `site-live`: what Cloudflare Pages publishes.
+- Tag `v1.0.0`: created locally, but the working environment could not push it. The developer creates it on GitHub,
+  on `318fe4d`.
+- Site work (live-engine panel hidden, hosting headers, site rules and docs) is on `site-dev` only.
+- `main` gains only this entry and Site-1. No code, recording or result changed here, so the release 1.0 test status
+  stands.
+
+**To see it:** the `site-dev` branch (`docs/site/README.md`), then `https://dashboard.firenet.live` once the developer
+has set up Cloudflare Pages and the `dashboard` CNAME at name.com.
+
+**Next step:** science work continues on `main` as before. Site work continues on `site-dev`; the first open item
+there is the mobile layout.
