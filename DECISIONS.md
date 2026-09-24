@@ -781,6 +781,14 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - `tests/unit/test_release_hardening.py`: `configs/research/` joins `regimes/` among the folders that are not full
     simulation configurations (`r1.yaml` is the protocol's settings, read as plain YAML);
   - `CLAUDE.md`: the command list.
+- **R2-7. Deviation: P2-med added to the sweeps.**
+  - *Trigger:* the selection seeds (seeds 901–920; no test seed had been run) showed that the pre-registered
+    median-subtraction ablation (P2-med) reaches budgets P2 cannot reach.
+  - *Why:* its robustness to node-gain spread therefore matters to the paper's conclusion.
+  - *Change:* P2-med joins `sweep_pipelines`. The partial sweep files (13, main node layer only) were deleted and the
+    sweeps restarted.
+  - *Untouched:* the other pipelines' sweep results are deterministic and unchanged by the addition. No budget, grid,
+    seed or model changed.
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 

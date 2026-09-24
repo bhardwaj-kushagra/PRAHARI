@@ -17,7 +17,7 @@ primary_budget: 3
 priors: [0.1, 0.2, 0.3]                 # wrong-prior sweep: srp day types flipped with probability q
 bootstrap: {seed: 20260924, resamples: 10000}
 pauc_range: [0.5, 10]                   # R8
-sweep_pipelines: [P2, P2-SCMR, P2-Q2, P2-Q3]   # PRAHARI variants in the sweeps (P0, P1, P1t, AR always run)
+sweep_pipelines: [P2, P2-SCMR, P2-Q2, P2-Q3, P2-med]   # PRAHARI variants in the sweeps (P0, P1, P1t, AR always run); P2-med added (R2-7)
 sweeps:                                 # one change at a time from the golden configuration (protocol §5)
   ar_phi:      {key: params.sensor.ar_phi, values: [0.80, 0.90, 0.98]}
   sigma_e:     {key: params.sensor.sigma_e, values: [0.025, 0.10]}

@@ -114,23 +114,31 @@ def families(test_rows: list[dict], sel: dict, budget: float, W) -> dict:
 
 
 def priors(test_rows: list[dict], sel: dict, r1: dict) -> dict:
-    """Wrong-prior sweep: P2 with day types flipped, at P2's selected knob and at equal FA (interpolated)."""
+    """Wrong-prior sweep: P2 with day types flipped, per budget at P2's selected knob and at equal FA (interpolated)."""
     P = by_pipeline(test_rows)
-    j = sel["P2"][str(r1["primary_budget"])]["index"]
     out = {}
     for name in ["P2", *[f"P2-prior{q:g}" for q in r1["priors"]]]:
-        m = ps.seed_matrix(P[name])
-        pc = ps.pooled(m)
-        out[name] = {"at_selected_knob": {"fa_per_month": _r(pc["fa"][j]), "det": _r(pc["det"][j])},
-                     "det_at_equal_fa": _r(ps.interp_det(pc["fa"], pc["det"], r1["primary_budget"]))}
+        out[name] = _at_budgets(ps.seed_matrix(P[name]), sel["P2"], r1["budgets"])
+    return out
+
+
+def _at_budgets(m: dict, sel_p: dict, budgets) -> dict:
+    """Per budget: FA and detection at the selected knob of `sel_p` (None if unreachable) and detection at that FA
+    interpolated from the curve itself (R8 rule)."""
+    pc = ps.pooled(m)
+    out = {}
+    for b in budgets:
+        j = sel_p[str(b)]["index"]
+        out[str(b)] = {"at_selected_knob": None if j is None else {"fa_per_month": _r(pc["fa"][j]),
+                                                                   "det": _r(pc["det"][j])},
+                       "det_at_equal_fa": _r(ps.interp_det(pc["fa"], pc["det"], b))}
     return out
 
 
 def sweeps(out: Path, sel: dict, test_rows: list[dict], r1: dict) -> dict:
-    """Protocol R1 §5 — per sweep point and pipeline: (a) FA and detection at the knob selected on the default model,
-    (b) detection at the primary budget interpolated from the point's own curve; the default point is the test
+    """Protocol R1 §5 — per sweep point, pipeline and budget: (a) FA and detection at the knob selected on the default
+    model, (b) detection at that budget interpolated from the point's own curve; the default point is the test
     stage's first ten seeds."""
-    B = r1["primary_budget"]
     seeds = set(range(r1["seeds"]["sweep"]["from"], r1["seeds"]["sweep"]["to"] + 1))
     groups = {"default": [r for r in test_rows if r["seed"] in seeds]}
     for f in sorted((out / "sweeps").glob("*_seed*.json")):
@@ -144,11 +152,8 @@ def sweeps(out: Path, sel: dict, test_rows: list[dict], r1: dict) -> dict:
                 continue
             m = ps.seed_matrix(prow)
             pc = ps.pooled(m)
-            j = sel[name][str(B)]["index"]
-            res[label]["pipelines"][name] = {
-                "at_selected_knob": None if j is None else {"fa_per_month": _r(pc["fa"][j]), "det": _r(pc["det"][j])},
-                "det_at_equal_fa": _r(ps.interp_det(pc["fa"], pc["det"], B)),
-                "fa_at_first_knob": _r(pc["fa"][0]), "det_at_first_knob": _r(pc["det"][0])}
+            res[label]["pipelines"][name] = {**_at_budgets(m, sel[name], r1["budgets"]),
+                                             "fa_at_first_knob": _r(pc["fa"][0]), "det_at_first_knob": _r(pc["det"][0])}
     return res
 
 
