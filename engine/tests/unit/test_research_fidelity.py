@@ -81,7 +81,7 @@ def test_offline_pipelines_reproduce_the_online_harness(seed):
     cfg = short_cfg()
     on = run_seed(cfg, seed, list(ONLINE))
     off = evaluate_seed(cfg, seed, None, default=True)
-    assert on["n_fires"] == off["n_fires"] > 0
+    assert on["n_fires"] == off["n_fires"] > 0 and off["degraded"] == []
     for a, b in ONLINE.items():
         assert on["pipelines"][a]["false_incidents"] == off["pipelines"][b]["false_incidents"][0], a
         assert on["pipelines"][a]["latencies_min"] == off["pipelines"][b]["latencies"][0], a

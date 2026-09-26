@@ -27,3 +27,5 @@ sweeps:                                 # one change at a time from the golden c
   drift:       {keys: [params.sensor.drift_step_sd, params.sensor.ageing_sd], scale: [2, 4]}
   plume:       {key: modules.plume, values: [real]}
   spacing:     {key: world.spacing_m, values: [50, 100, 150, 200]}
+excluded_sweep_points:                  # points the simulated world cannot represent (reported, not analysed)
+  spacing=200: "10 x 200 m exceeds the 1,400 m landscape: the layout check fails and siting degrades to its stub (a 70 m grid), so it is not a 200 m network (DECISIONS R2-9)"

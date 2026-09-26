@@ -116,7 +116,7 @@ def fig_ablations(plt, a: dict, budget: str) -> list[str]:
 
 
 def fig_sweeps(plt, sw: dict, budget: str, defaults: dict) -> list[str]:
-    """F5 — sensitivity: detection at equal false alarms for P2, P2-med and P1t across each swept assumption
+    """F5 — sensitivity: detection at equal false alarms for P2, P2-med and the AR(1) chart across each swept assumption
     (the default value, starred, is the test stage's first ten seeds)."""
     dims: dict = {}
     for label in sw:
@@ -126,7 +126,7 @@ def fig_sweeps(plt, sw: dict, budget: str, defaults: dict) -> list[str]:
     for ax, (dim, labels) in zip(axes.ravel(), dims.items()):
         pts = sorted([(defaults[dim], "default")] + [(lab.split("=")[1], lab) for lab in labels], key=_value)
         xs = list(range(len(pts)))
-        for name in ("P2", "P2-med", "P1t"):
+        for name in ("P2", "P2-med", "AR"):
             ys = [sw[lab]["pipelines"].get(name, {}).get(budget, {}).get("det_at_equal_fa") for _, lab in pts]
             ax.plot(xs, [None if v is None else 100 * v for v in ys], marker="o", ms=3,
                     color=SERIES[MAIN.index(name)], label=LABEL[name])
@@ -135,8 +135,7 @@ def fig_sweeps(plt, sw: dict, budget: str, defaults: dict) -> list[str]:
         ax.set_ylim(0, 100)
     for ax in axes.ravel()[len(dims):]:
         ax.set_visible(False)
-    for ax in axes[:, 0]:
-        ax.set_ylabel(f"Confirmed at {budget} FA/month (%)")
+    fig.supylabel(f"Fires confirmed within 3 h at {budget} false incidents/month (%)", fontsize=7)
     h, lab = axes[0, 0].get_legend_handles_labels()
     fig.legend(h, lab, loc="upper center", ncol=3, fontsize=6.5)
     fig.tight_layout(rect=(0, 0.06, 1, 0.93))

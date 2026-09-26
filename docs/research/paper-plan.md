@@ -367,8 +367,13 @@ The honest story has three parts:
 
 Reviewers tend to trust a paper that reports its own design losing an ablation.
 
-**Still to do before writing:**
+**What the sweeps added** ([results-r1.md](results-r1.md) §5):
 
-- Finish the sweeps: do the conclusions hold under node-gain spread, haze frequency, spacing and the Gaussian plume?
-  This matters most for P2-med, because median referencing assumes similar node gains.
-- The learning-curve extension (M36) stays out of this paper, as the protocol states.
+- Median subtraction wins under frequent haze: P2 cannot reach 10 a month at ×3 haze, while P2-med keeps 72%.
+- It loses under large node-gain spread: 65.8% against P2's 81.5% at a standard deviation of 0.4.
+- So the two common-mode defences fail in opposite conditions. That is a clean, novel design lesson for the paper, and
+  it motivates a combined or gain-normalised reference as future work.
+- Absolute detection roughly halves with the Gaussian plume. Report detection as conditional on the plume model; the
+  rankings are the robust result.
+
+The learning-curve extension (M36) stays out of this paper, as the protocol states.

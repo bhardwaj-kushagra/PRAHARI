@@ -162,6 +162,7 @@ def evaluate_seed(base_cfg: dict, seed: int, grids: dict, cap=None, edge_names=t
         if default else grids
     cap = None if default else cap
     out = {"seed": seed, "test_days": se.ev["test_days"], "n_fires": len(se.fires),
+           "degraded": sorted(n for n, slot in se.sim.slots.items() if slot.health.state == "degraded"),
            "fires_dry": [bool(se.dry[t0 // 1440]) for t0, _ in se.fires],
            "pipelines": {"P0": eval_p0(se, g["P0"]), "P1": eval_p1(se, g["P1"]),
                          "P1t": eval_v1_tuned(se, g["v1t"], cap), "AR": eval_v1_tuned(se, g["v1t"], cap, ar=True),

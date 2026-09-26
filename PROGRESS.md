@@ -537,3 +537,36 @@ passing and log output changes in `DECISIONS.md`.
 **Next step:** the developer chooses the venue and deadline and gives the go-ahead. The work then starts with the
 pre-registered protocol (`docs/research/protocol.md`) and Phase A (additive research package; `check_all.sh` must stay
 byte-identical).
+
+### 2026-09-24 to 26 — Session 19 (research track R1: simulation-only paper)
+
+- **Protocol first.** `docs/research/protocol.md` was committed before any run: fresh seeds, knob grids, budgets of 1,
+  3 and 10 false incidents a month, paired tests with Holm, and sensitivity sweeps (DECISIONS R2-1…R2-9).
+- **Built.** `engine/prahari/research/`, run as `python -m prahari.research`: one recording pass per seed, then every
+  pipeline replayed offline over its knob grid. New comparators: an AR(1) residual chart, network-median subtraction
+  (P2-med), a fixed quorum of 3 and a wrong prior. Offline results equal the online harness exactly (unit test; full
+  golden seed 11).
+- **Ran.**
+  - selection seeds 901–920;
+  - test seeds 1001–1100 (6,043 fires);
+  - 200 sweep runs, with the 200 m point excluded as unrepresentable (R2-9).
+- **Results (SIM, `docs/research/results-r1.md`):**
+  - P2 cannot reach 1 or 3 false incidents a month; its floor is 5.1.
+  - At 10 a month: P2 83.3% against 46.2% (P0), 50.6% (AR) and 31.7% (P1t).
+  - Every ablation costs detection except a fixed quorum of 3, which is equal.
+  - Median subtraction beats SCMR (92.1%) and reaches 3 a month. It is strong under heavy haze and weak under large
+    node-gain spread.
+  - The Gaussian plume halves absolute detection.
+- **Files:**
+  - `results/research/r1_*.json`;
+  - figures f2–f5 in `docs/research/figures/`;
+  - journey page `docs/journey/research-1-protocol-r1.md`;
+  - paper plan §10–11.
+- **Tests:** engine suite passes; `check_all.sh` passes with all 20 recordings byte-identical (release 1.0
+  untouched).
+
+**To see it:** open `docs/research/results-r1.md` and the figures in `docs/research/figures/`. Regenerate with
+`python -m prahari.research analyse` and `python -m prahari.research figures`.
+
+**Next step:** the developer drafts the paper from `paper-plan.md` §11 and `results-r1.md`, in their own words.
+Optional follow-up study: a gain-normalised or combined common-mode reference, under a new pre-registered protocol.

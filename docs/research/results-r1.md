@@ -105,7 +105,48 @@ The prior helps modestly, and a wrong prior degrades the result gradually: 3.6 p
 
 ## 5. Sensitivity sweeps
 
-*Filled in when the sweep runs finish (`r1_sweeps.json`, figure f5).*
+**Set-up:** ten seeds (1001–1010) per point, one assumption changed at a time from the golden configuration
+[`r1_sweeps.json`, figure f5].
+
+**Measure:** detection at 10 false incidents a month, interpolated from each point's own curve (R8 rule; 0 = the
+budget cannot be reached). At the default point, P2 is at 84.5%, P2-med at 93.3% and the AR chart at 52.0% on these
+ten seeds.
+
+| Assumption (default) | Values | P2 | P2-med | AR(1) chart |
+| --- | --- | --- | --- | --- |
+| Noise memory φ (0.95) | 0.8 / 0.9 / 0.98 | 84.2 / 86.2 / 61.8 | 82.9 / 87.4 / 77.8 | 58.2 / 57.8 / 49.5 |
+| Noise level σ (0.05) | 0.025 / 0.10 | 80.5 / 62.8 | 84.0 / 81.4 | 59.8 / 48.2 |
+| Haze frequency (×1) | ×0 / ×3 / ×6 | 95.4 / **0** / **0** | 95.2 / 72.1 / 66.3 | 80.4 / 18.8 / 33.5 |
+| Node-gain spread (0.2) | 0.1 / 0.4 | 84.4 / 81.5 | 94.8 / **65.8** | 53.2 / 53.4 |
+| Nuisance rate (×1) | ×0.5 / ×2 / ×4 | 82.8 / 86.3 / 81.5 | 93.5 / 93.3 / 90.8 | 52.7 / 53.8 / 41.8 |
+| Drift (×1) | ×2 / ×4 | 81.0 / 79.2 | 91.8 / 88.3 | 51.2 / 49.8 |
+| Plume model (legacy M12) | Gaussian M11 | 35.9 | 39.8 | 17.6 |
+| Spacing (70 m) | 50 / 100 / 150 m | 93.3 / 56.4 / 14.1 | 98.8 / 70.2 / 23.0 | 79.1 / 22.3 / 5.7 |
+
+**What the sweeps show** (descriptive; ten seeds per point, so read the direction more than the decimals):
+
+- **Haze frequency decides between the two common-mode defences.**
+  - With three or six times the default haze (a crop-burning season), P2 can no longer reach 10 false incidents a
+    month, while P2-med keeps 72% and 66%.
+  - Without haze, all three PRAHARI-family variants are equal (about 95%).
+- **Node-gain spread is median subtraction's weakness, as expected.** At a gain standard deviation of 0.4, P2-med
+  falls to 65.8% and drops below P2 (81.5%). A shared median cannot cancel haze that each node sees at a different
+  strength.
+  - Together with the haze result, this is the paper's design lesson: the two methods fail in opposite conditions. A
+    gain-normalised median, or median referencing plus SCMR, is the natural next step, evaluated under a new protocol.
+- **Absolute detection depends strongly on the plume model and the spacing.**
+  - Every pipeline loses about half its detection with the Gaussian plume.
+  - Detection falls steeply beyond 70 m.
+
+  The paper must present absolute detection as conditional on the modelled plume. The ranking of the pipelines holds
+  in every row except the gain-spread and φ = 0.8 points.
+- **Robust:** nuisance rate and drift change little. The AR chart stays 30–40 points below the PRAHARI variants
+  throughout.
+- **The textbook ARL threshold (P1 at h = 8.8)** gives 124–171 false incidents a month at every point
+  [`fa_at_first_knob`]. The ARL formula's failure is not specific to φ = 0.95.
+
+**Excluded point:** 200 m spacing. Ten nodes at 200 m do not fit the 1,400 m landscape, so siting fell back to a 70 m
+grid; that is not a 200 m network. The reason is recorded in `r1_sweeps.json` (`excluded`) and DECISIONS R2-9.
 
 ## 6. What this supports, and what it does not
 
@@ -125,6 +166,7 @@ The prior helps modestly, and a wrong prior degrades the result gradually: 3.6 p
 **Limits:**
 
 - One simulator, with ASM-tagged background models; the sweeps test the main ones.
+- Absolute detection depends on the plume model (about halved with the Gaussian plume) and on spacing.
 - A legacy-mode plume.
 - A 100-node, 70 m grid.
 - Median subtraction assumes that a fire affects well under half the nodes.
@@ -135,6 +177,6 @@ The prior helps modestly, and a wrong prior degrades the result gradually: 3.6 p
   and P2-med.
 - [f3 time to confirmation](figures/f3_time_to_confirm.png): at 10 a month.
 - [f4 ablations](figures/f4_ablations.png): at 10 a month.
-- f5 sensitivity: the sweeps (pending, added when the sweep runs finish).
+- [f5 sensitivity](figures/f5_sensitivity.png): the sweeps (P2, P2-med and the AR chart).
 
 PDF versions sit beside each PNG.

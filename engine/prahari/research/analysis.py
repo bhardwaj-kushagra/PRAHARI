@@ -141,8 +141,11 @@ def sweeps(out: Path, sel: dict, test_rows: list[dict], r1: dict) -> dict:
     stage's first ten seeds."""
     seeds = set(range(r1["seeds"]["sweep"]["from"], r1["seeds"]["sweep"]["to"] + 1))
     groups = {"default": [r for r in test_rows if r["seed"] in seeds]}
+    excluded = r1.get("excluded_sweep_points", {})
     for f in sorted((out / "sweeps").glob("*_seed*.json")):
-        groups.setdefault(f.stem.rsplit("_seed", 1)[0], []).append(json.loads(f.read_text(encoding="utf-8")))
+        label = f.stem.rsplit("_seed", 1)[0]
+        if label not in excluded:
+            groups.setdefault(label, []).append(json.loads(f.read_text(encoding="utf-8")))
     res = {}
     for label, rows in groups.items():
         rows = sorted(rows, key=lambda r: r["seed"])
@@ -173,7 +176,8 @@ def write_analysis(r1: dict, out: Path) -> list:
     files = {"r1_selection.json": {**meta, **compact(sel_rows)}, "r1_test.json": {**meta, **compact(test_rows)},
              "r1_analysis.json": analysis}
     if (out / "sweeps").is_dir():
-        files["r1_sweeps.json"] = {**meta, "sweeps": sweeps(out, sel, test_rows, r1)}
+        files["r1_sweeps.json"] = {**meta, "excluded": r1.get("excluded_sweep_points", {}),
+                                   "sweeps": sweeps(out, sel, test_rows, r1)}
     paths = []
     for name, obj in files.items():
         write_text_atomic(out / name, json.dumps(obj, indent=1, default=_json))

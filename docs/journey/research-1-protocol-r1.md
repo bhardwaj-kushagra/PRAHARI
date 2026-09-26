@@ -72,7 +72,12 @@ latency, for P0, P1, P1t, P2, P2-SCMR, P2-RAQ, P2-QCC and P2-TTC.
    - *Resolution:* the pre-registered rule applies, so those comparisons are reported as "not reachable". P2-med was
      added to the sweeps (deviation R2-7, decided before any test seed ran). The false-incident floor is logged in
      `KNOWN_ISSUES.md` as a research item.
-5. **Deciding which budget to plot.**
+5. **The 200 m spacing point was invalid.** Ten nodes at 200 m exceed the 1,400 m landscape; the layout check
+   failed, and siting fell back to a 70 m grid. The runs looked implausible (93% detection against 23% at 150 m), which
+   is how it was caught.
+   - *Resolution:* the point is excluded, with its reason in `r1_sweeps.json`. Seed outputs now list degraded modules,
+     and the other points were checked (R2-9).
+6. **Deciding which budget to plot.**
    - *Resolution:* the budget figures use 10 a month, the smallest pre-registered budget P2 reaches. All budgets are
      in `r1_analysis.json` and on the results page (R2-8).
 
@@ -100,6 +105,11 @@ Details: [docs/research/results-r1.md](../research/results-r1.md).
   - fixed quorum 3 86.2%, not significantly different from P2;
   - **median subtraction 92.1%, significantly better than P2.**
 - **Wrong prior:** 10, 20 and 30% of days mislabelled give 81.9, 80.8 and 79.7%.
+- **Sweeps** (10 seeds per point; 200 m excluded, R2-9):
+  - at ×3 haze P2 cannot reach 10 a month, while P2-med keeps 72%;
+  - at node-gain spread 0.4, P2-med falls to 65.8%, below P2 (81.5%);
+  - the Gaussian plume halves every pipeline's detection;
+  - the ranking against the AR chart holds everywhere.
 
 ## Acceptance
 
@@ -112,3 +122,4 @@ Details: [docs/research/results-r1.md](../research/results-r1.md).
 - **Figure f2** (operating curves): P2 and P2-med well to the upper left of every baseline, and P2's curve stopping at
   about 5 false incidents a month.
 - **Figure f4:** every ablation except the quorum rule costs detection, and median subtraction gains.
+- **Figure f5:** the haze and gain-spread panels, where the two common-mode defences fail in opposite conditions.

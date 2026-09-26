@@ -797,6 +797,18 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     interpolated detection would read 0, which carries no information.
   - (c) The sweep process stopped with 52 of 200 files written and was resumed. Existing files are kept, and each file
     is deterministic.
+- **R2-9. Deviation: the 200 m spacing sweep point is excluded.**
+  - *Cause:* ten nodes at 200 m (2 km) do not fit the 1,400 m landscape. The layout check fails, and siting degrades to
+    its stub, a 70 m grid at the corner with R = 320 m. The protocol listed the point without checking it against the
+    world size.
+  - *Evidence:* its runs are not a 200 m network, and they showed implausible detection (93% for P2-med against 23% at
+    150 m).
+  - *Handling:*
+    - `r1.yaml` lists it under `excluded_sweep_points`, with the reason recorded in `r1_sweeps.json`;
+    - its files are kept but not analysed;
+    - each seed's output now lists any degraded module (`degraded`), so this cannot pass unnoticed again.
+  - *Checked:* every other sweep point and the test seeds use the golden world (spacing ≤ 150 m fits). The Gaussian
+    plume point runs with no degraded module.
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 
