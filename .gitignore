@@ -12,6 +12,9 @@ results/*
 !results/energy.json
 !results/learning.json
 !results/learning_model_k100.json
+!results/research/
+results/research/*
+!results/research/r1_*.json
 node_modules/
 dashboard/dist/
 *.health.json

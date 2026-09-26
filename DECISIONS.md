@@ -789,6 +789,14 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     sweeps restarted.
   - *Untouched:* the other pipelines' sweep results are deterministic and unchanged by the addition. No budget, grid,
     seed or model changed.
+- **R2-8. Reporting choices after the test seeds** (no model, grid, seed or budget changed):
+  - (a) P2 cannot reach 1 or 3 false incidents a month, so the pre-registered comparisons there are reported as "not
+    reachable" (protocol R4). The budget-point figures (f3, f4) use 10 a month, the smallest budget P2 reaches. Every
+    budget's numbers are in `r1_analysis.json`.
+  - (b) Sweeps and wrong-prior results are recorded at every budget, not only the primary one. At 3 a month P2's
+    interpolated detection would read 0, which carries no information.
+  - (c) The sweep process stopped with 52 of 200 files written and was resumed. Existing files are kept, and each file
+    is deterministic.
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 

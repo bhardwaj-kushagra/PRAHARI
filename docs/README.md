@@ -16,7 +16,7 @@ Everything the simulator produces is **simulation output (SIM)**, not field data
 | See how the pieces fit together | [architecture/01-system.md](architecture/01-system.md) |
 | Follow the build story, phase by phase | [journey/README.md](journey/README.md) |
 | Check the numbers and how they were validated | [results/validation.md](results/validation.md) |
-| Plan a research paper from the simulator | [research/paper-plan.md](research/paper-plan.md) |
+| Plan a research paper from the simulator | [research/paper-plan.md](research/paper-plan.md), then [research/protocol.md](research/protocol.md) and [research/results-r1.md](research/results-r1.md) |
 
 ## Map of the folder
 
@@ -47,7 +47,10 @@ docs/
 ├── results/
 │   └── validation.md          golden numbers, equivalence checks, acceptance results
 └── research/
-    └── paper-plan.md          can the simulator support a paper: verdict, novelty, experiments, data, framing
+    ├── paper-plan.md          can the simulator support a paper: verdict, novelty, experiments, data, framing
+    ├── protocol.md            protocol R1, pre-registered: seeds, knobs, budgets, tests, sweeps
+    ├── results-r1.md          R1 results (SIM) with their source keys
+    └── figures/               the paper figures (PDF and PNG), built from results/research/r1_*.json
 ```
 
 ## How these documents relate to the logs

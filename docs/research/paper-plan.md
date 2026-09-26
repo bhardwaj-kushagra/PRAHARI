@@ -330,3 +330,45 @@ The developer chose a **simulation-only** paper for now. Physical experiments be
 
 Keeping everything in one paper is also acceptable. The simulator then appears as a contribution bullet and a
 reproducibility section, which is what Paper A does in any case.
+
+## 11. What protocol R1 found, and how it changes the paper (added after the test seeds)
+
+The results are in [results-r1.md](results-r1.md): SIM, 100 fresh test seeds, operating points chosen on separate
+seeds. Sections 2–3 above were written before these runs. Where they differ, this section is the current evidence.
+
+**Claims now supported:**
+
+| Claim | Evidence |
+| --- | --- |
+| C1 | At 10 false incidents a month, the budgeted chain (P2) confirms 83.3% of fires within 3 h. That is +33 to +52 points over a fixed threshold, an AR(1) residual chart and replay-tuned v1 (Holm p ≤ 1.2e-15) |
+| C2 (revised) | Common-mode rejection matters, but the better tool is **network-median referencing at the node input**, not SCMR. P2-med detects 92.1% at 10 a month (+8.8 points over P2), and it is the only variant that reaches 3 a month (66.0%) |
+| C3 | The textbook ARL threshold fails. P1 cannot get below 9.4 false incidents a month at any h in its grid, and has the lowest pAUC (0.01) |
+| C4 | Components: TTC (+39.1 points), SCMR (+17.7), QCC (+13.8) and RAQ against a fixed quorum of 2 (+9.2) each add detection. RAQ is not better than a fixed quorum of 3 |
+| C5 | A wrong prior degrades gracefully: 30% of days mislabelled costs 3.6 points |
+
+**Claims to drop or soften:**
+
+- "PRAHARI meets one false confirmation per network per month." P2 does not, in this simulator; its floor is about
+  5 a month.
+- "SCMR is the right common-mode defence."
+- "RAQ beats any fixed quorum."
+
+**Suggested framing:** "Budgeted, derived thresholds with network common-mode referencing". Possible titles:
+
+- "Budgeted false-alarm control for gas-sensor wildfire networks: an equal-false-alarm simulation study";
+- "What makes ground-sensor wildfire detection work at a fixed false-alarm budget?"
+
+The honest story has three parts:
+
+1. The two-timescale residual plus replay tuning and spatial confirmation beat the classical detectors by a wide
+   margin.
+2. The spatial rule we designed (SCMR) is outperformed by the simpler median reference.
+3. The prior-adaptive quorum is no better than choosing 3.
+
+Reviewers tend to trust a paper that reports its own design losing an ablation.
+
+**Still to do before writing:**
+
+- Finish the sweeps: do the conclusions hold under node-gain spread, haze frequency, spacing and the Gaussian plume?
+  This matters most for P2-med, because median referencing assumes similar node gains.
+- The learning-curve extension (M36) stays out of this paper, as the protocol states.

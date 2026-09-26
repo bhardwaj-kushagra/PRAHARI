@@ -22,6 +22,7 @@ accepted by the developer before the next began. All phases, 0 to 10 (with 3a an
 | 9 | Regimes, satellite race, learning loop, faults | accepted | PRAHARI confirmed about 8 h before the satellite alert (`satellite_race`); stuck sensor abstains after 59 min; learning curve 49% (bound) → 68–71% confirmed at 3 false incidents/month for K = 10–100; QCC floor 4.1e-3 → 3.0e-4 from 1 to 14 quiet days | [phase-9-regimes-learning.md](phase-9-regimes-learning.md) |
 | 10 | Demo hardening | accepted | presenter mode (keys 1–9, S/R, F); storyboard rehearsal 170.1 s with no external requests and no console errors; one-command launchers for macOS, Linux and Windows | [phase-10-demo.md](phase-10-demo.md) |
 | 1.0 | Final audit and hardening | released | 13 findings (2 dashboard defects, 7 robustness, 3 documentation, 1 limitation) fixed or logged; every recording and result reproduces byte for byte; golden pattern unchanged (5 of 21); 60-page browser sweep and rehearsal clean | [release-1.0-audit.md](release-1.0-audit.md) |
+| R1 | Research protocol R1 (paper, simulation only) | done | pre-registered; at 10 false incidents/month P2 confirms 83.3% vs 46.2% fixed threshold, 50.6% AR(1) chart, 31.7% replay-tuned v1 (100 fresh seeds, Holm p ≤ 1e-15); P2 cannot reach 1 or 3/month (floor 5.1); median subtraction instead of SCMR 92.1% and reaches 3/month | [research-1-protocol-r1.md](research-1-protocol-r1.md) |
 
 Cross-cutting pages:
 
