@@ -135,6 +135,6 @@ The prior helps modestly, and a wrong prior degrades the result gradually: 3.6 p
   and P2-med.
 - [f3 time to confirmation](figures/f3_time_to_confirm.png): at 10 a month.
 - [f4 ablations](figures/f4_ablations.png): at 10 a month.
-- [f5 sensitivity](figures/f5_sensitivity.png): the sweeps.
+- f5 sensitivity: the sweeps (pending, added when the sweep runs finish).
 
 PDF versions sit beside each PNG.
