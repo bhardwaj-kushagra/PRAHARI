@@ -4,6 +4,7 @@
   sweep [--jobs N] [--only ar_phi,haze]         sensitivity sweeps → results/research/sweeps/
   analyse                                       → results/research/r1_*.json
   figures                                       → docs/research/figures/
+  realdata                                      → results/research/real_thompson2026.json (REAL, exploratory)
 """
 from __future__ import annotations
 
@@ -17,7 +18,7 @@ from prahari.research.runner import DEFAULT_CONFIG, DEFAULT_OUT, load_r1, run_st
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="python -m prahari.research", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("command", choices=["run", "sweep", "analyse", "figures"])
+    ap.add_argument("command", choices=["run", "sweep", "analyse", "figures", "realdata"])
     ap.add_argument("stage", nargs="?", choices=["selection", "test"])
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -37,6 +38,9 @@ def main(argv=None) -> int:
     elif a.command == "analyse":
         from prahari.research.analysis import write_analysis
         done = write_analysis(r1, out)
+    elif a.command == "realdata":
+        from prahari.research.realdata_report import write_realdata
+        done = write_realdata(out)
     else:
         from prahari.research.figures import write_figures
         done = write_figures(out)

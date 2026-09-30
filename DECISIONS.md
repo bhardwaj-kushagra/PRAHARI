@@ -843,6 +843,13 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - venue decided later.
 - **P-3. Source tag `DATA`** for parameters derived from a public dataset, always with the deriving script.
 
+- **P-4. Real data: Thompson et al. (2026) N5 networks** (public, MIT; Zenodo 10.5281/zenodo.18222779).
+  - *Storage:* fetched by `scripts/fetch_thompson2026.sh` (checksum verified); the raw zip is not committed.
+  - *Plan and outputs:* the plan (`docs/research/realdata-plan.md`) was committed before the analysis. Results:
+    `results/research/real_thompson2026.json` and `docs/research/realdata.md` (REAL, exploratory).
+  - *Addition:* one labelled addition, the WR candidate share within 24 h of a recorded fire.
+  - *Why a PM₂.₅ analogue:* the dataset is PM₂.₅ at kilometre spacing, not MOX at 70 m.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

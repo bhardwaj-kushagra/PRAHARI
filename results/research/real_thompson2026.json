@@ -1,0 +1,267 @@
+{
+ "label": "REAL (exploratory)",
+ "source": "Thompson, Fusina & Jackson (2026), Fire 9:141; doi:10.5281/zenodo.18222779 (MIT)",
+ "plan": "docs/research/realdata-plan.md",
+ "tick_s": 300,
+ "clusters": {
+  "WR": {
+   "cluster": "WR",
+   "stations": 10,
+   "days_with_share": 30.0,
+   "spacing_km": {
+    "min": 0.97,
+    "median": 5.28,
+    "max": 16.21
+   },
+   "events": [
+    {
+     "start_tick": 2897,
+     "end_tick": 2919,
+     "duration_min": 110,
+     "stations_involved": 7,
+     "stations_active": 7,
+     "share_involved": 1.0,
+     "onset_spread_min": 100,
+     "peak_excess_median": 50.0,
+     "peak_excess_cv": 0.939,
+     "start_utc_epoch": 1712813100,
+     "start_local_hour": 23,
+     "attribution": "fire: WR-07"
+    }
+   ],
+   "n_events": 1,
+   "events_per_day": 0.033,
+   "event_duration_min_q10_50_90": [
+    110.0,
+    110.0,
+    110.0
+   ],
+   "onset_spread_min_q10_50_90": [
+    100.0,
+    100.0,
+    100.0
+   ],
+   "share_involved_q10_50_90": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "peak_excess_cv_q10_50_90": [
+    0.94,
+    0.94,
+    0.94
+   ],
+   "peak_excess_median_q10_50_90": [
+    50.0,
+    50.0,
+    50.0
+   ],
+   "local_excursions_per_station_day": 0.406,
+   "node_replay": {
+    "h": 53.640570878982544,
+    "h_at_cap": false,
+    "test_days": 16.0,
+    "nodes": 10,
+    "candidates": 34,
+    "candidates_per_node_30d": 6.375,
+    "share_in_cm_mask": 0.706,
+    "share_in_event_spans": 0.0,
+    "share_in_fire_events": 0.0,
+    "share_within_24h_of_recorded_fire": 1.0,
+    "candidates_outside_fire_windows_per_node_30d": 0.0,
+    "cm_mask_time_share_test": 0.098,
+    "event_time_share_test": 0.0,
+    "exceedance_outside_cm_at_1pct": 0.0118
+   }
+  },
+  "BC": {
+   "cluster": "BC",
+   "stations": 10,
+   "days_with_share": 30.0,
+   "spacing_km": {
+    "min": 0.4,
+    "median": 7.2,
+    "max": 16.91
+   },
+   "events": [],
+   "n_events": 0,
+   "events_per_day": 0.0,
+   "event_duration_min_q10_50_90": null,
+   "onset_spread_min_q10_50_90": null,
+   "share_involved_q10_50_90": null,
+   "peak_excess_cv_q10_50_90": null,
+   "peak_excess_median_q10_50_90": null,
+   "local_excursions_per_station_day": 0.4365,
+   "node_replay": {
+    "h": 75.57884657382965,
+    "h_at_cap": false,
+    "test_days": 16.0,
+    "nodes": 10,
+    "candidates": 1,
+    "candidates_per_node_30d": 0.188,
+    "share_in_cm_mask": 0.0,
+    "share_in_event_spans": 0.0,
+    "share_in_fire_events": 0.0,
+    "share_within_24h_of_recorded_fire": null,
+    "candidates_outside_fire_windows_per_node_30d": null,
+    "cm_mask_time_share_test": 0.0,
+    "event_time_share_test": 0.0,
+    "exceedance_outside_cm_at_1pct": 0.0156
+   }
+  },
+  "VC": {
+   "cluster": "VC",
+   "stations": 10,
+   "days_with_share": 23.3,
+   "spacing_km": {
+    "min": 1.75,
+    "median": 6.42,
+    "max": 15.68
+   },
+   "events": [
+    {
+     "start_tick": 1510,
+     "end_tick": 1527,
+     "duration_min": 85,
+     "stations_involved": 7,
+     "stations_active": 8,
+     "share_involved": 0.875,
+     "onset_spread_min": 35,
+     "peak_excess_median": 4.0,
+     "peak_excess_cv": 0.253,
+     "start_utc_epoch": 1712396700,
+     "start_local_hour": 5,
+     "attribution": "no fire records"
+    },
+    {
+     "start_tick": 1594,
+     "end_tick": 1665,
+     "duration_min": 355,
+     "stations_involved": 7,
+     "stations_active": 9,
+     "share_involved": 0.778,
+     "onset_spread_min": 15,
+     "peak_excess_median": 8.0,
+     "peak_excess_cv": 0.283,
+     "start_utc_epoch": 1712421900,
+     "start_local_hour": 12,
+     "attribution": "no fire records"
+    }
+   ],
+   "n_events": 2,
+   "events_per_day": 0.086,
+   "event_duration_min_q10_50_90": [
+    112.0,
+    220.0,
+    328.0
+   ],
+   "onset_spread_min_q10_50_90": [
+    17.0,
+    25.0,
+    33.0
+   ],
+   "share_involved_q10_50_90": [
+    0.79,
+    0.83,
+    0.87
+   ],
+   "peak_excess_cv_q10_50_90": [
+    0.26,
+    0.27,
+    0.28
+   ],
+   "peak_excess_median_q10_50_90": [
+    4.4,
+    6.0,
+    7.6
+   ],
+   "local_excursions_per_station_day": 0.5165,
+   "node_replay": {
+    "h": 27.92969846725464,
+    "h_at_cap": false,
+    "test_days": 16.0,
+    "nodes": 10,
+    "candidates": 9,
+    "candidates_per_node_30d": 1.687,
+    "share_in_cm_mask": 0.222,
+    "share_in_event_spans": 0.0,
+    "share_in_fire_events": 0.0,
+    "share_within_24h_of_recorded_fire": null,
+    "candidates_outside_fire_windows_per_node_30d": null,
+    "cm_mask_time_share_test": 0.089,
+    "event_time_share_test": 0.0,
+    "exceedance_outside_cm_at_1pct": 0.0042
+   }
+  },
+  "RC": {
+   "cluster": "RC",
+   "stations": 6,
+   "days_with_share": 19.25,
+   "spacing_km": {
+    "min": 0.41,
+    "median": 1.72,
+    "max": 4.13
+   },
+   "events": [
+    {
+     "start_tick": 5503,
+     "end_tick": 5507,
+     "duration_min": 20,
+     "stations_involved": 3,
+     "stations_active": 6,
+     "share_involved": 0.5,
+     "onset_spread_min": 5,
+     "peak_excess_median": 4.0,
+     "peak_excess_cv": 0.34,
+     "start_utc_epoch": 1714510200,
+     "start_local_hour": 13,
+     "attribution": "no fire records"
+    }
+   ],
+   "n_events": 1,
+   "events_per_day": 0.052,
+   "event_duration_min_q10_50_90": [
+    20.0,
+    20.0,
+    20.0
+   ],
+   "onset_spread_min_q10_50_90": [
+    5.0,
+    5.0,
+    5.0
+   ],
+   "share_involved_q10_50_90": [
+    0.5,
+    0.5,
+    0.5
+   ],
+   "peak_excess_cv_q10_50_90": [
+    0.34,
+    0.34,
+    0.34
+   ],
+   "peak_excess_median_q10_50_90": [
+    4.0,
+    4.0,
+    4.0
+   ],
+   "local_excursions_per_station_day": 1.233,
+   "node_replay": {
+    "h": 56.81122088432312,
+    "h_at_cap": false,
+    "test_days": 5.41,
+    "nodes": 6,
+    "candidates": 0,
+    "candidates_per_node_30d": 0.0,
+    "share_in_cm_mask": null,
+    "share_in_event_spans": null,
+    "share_in_fire_events": null,
+    "share_within_24h_of_recorded_fire": null,
+    "candidates_outside_fire_windows_per_node_30d": null,
+    "cm_mask_time_share_test": 0.0,
+    "event_time_share_test": 0.018,
+    "exceedance_outside_cm_at_1pct": 0.0111
+   }
+  }
+ }
+}
