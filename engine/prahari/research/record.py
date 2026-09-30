@@ -34,10 +34,12 @@ class NodeTrace:
 
 @dataclass
 class PassRecord:
-    """Readings (channel 0) of one pass and the node traces of every requested variant."""
+    """Readings (channel 0) of one pass, the regional haze level H(t) per minute (M20; R2-10), and the node traces of
+    every requested variant."""
     x: np.ndarray
     x_raw: np.ndarray
     nodes: dict = field(default_factory=dict)
+    haze: np.ndarray | None = None
 
 
 def variant_config(cfg: dict, overrides: dict) -> dict:
@@ -69,6 +71,7 @@ def record_pass(cfg: dict, scripted=(), variants=("main",)) -> tuple[Simulation,
             extra[v] = s
     T, n = int(sim.clock.n_ticks), sim.ctx.n_nodes
     rec = PassRecord(x=np.zeros((T, n)), x_raw=np.zeros((T, n)))
+    hz = np.zeros(T)
     buf = {v: (np.zeros((T, n)), np.zeros((T, n)), np.zeros(T)) for v in variants}
     stat_z = {v: _cusum_params(cfg, v).get("statistic", "neglogp") == "z" for v in variants}
     cm_z = float(cfg["params"]["cusum"]["cm_z"])
@@ -76,7 +79,8 @@ def record_pass(cfg: dict, scripted=(), variants=("main",)) -> tuple[Simulation,
         if t != tick:
             raise ValueError("research passes assume one-minute ticks starting at minute 0")
         sim.ctx.tick = tick
-        *_, x = sim.step_signals(t)
+        *_, haze, x = sim.step_signals(t)
+        hz[tick] = float(getattr(haze, "level", 0.0) or 0.0)                               # M20 — H(t), R2-10
         rec.x[tick], rec.x_raw[tick] = x.x[:, 0], x.x_raw[:, 0]
         for v in variants:
             if v == "main":
@@ -94,6 +98,7 @@ def record_pass(cfg: dict, scripted=(), variants=("main",)) -> tuple[Simulation,
             P[tick] = sc.p_node
             S[tick] = sc.z if stat_z[v] else -np.log(np.clip(sc.p_node, P_FLOOR, 1.0))   # M28 input (as CusumReal)
             F[tick] = elevated_fraction(z, cm_z)                                           # M28 common mode
+    rec.haze = hz
     for v in variants:
         p = _cusum_params(cfg, v)
         k = float(p["k_z"] if p.get("statistic", "neglogp") == "z" else p["k_node"])

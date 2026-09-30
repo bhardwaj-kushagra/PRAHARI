@@ -17,6 +17,7 @@ from prahari.eval.offline import edge_alarms, edge_stages, tuning_mask
 from prahari.eval.stats import detect, incidents
 from prahari.research.baselines import ar_innovation, capped_z, confirm, p0_alarms, v1_z
 from prahari.research.cusum import by_tick, cusum_multi, tune_multi
+from prahari.research.hazesplit import episodes, fire_overlaps, incident_list
 from prahari.research.record import record_pass
 
 # PRAHARI variants: (node-layer variant, edge module overrides, extra parameter overrides).
@@ -65,11 +66,15 @@ class SeedEval:
         self.fires, self.dry = fires or protocol_fires(seed, self.ev, self.xy, self.T)
         _, self.f = record_pass(self.cfg, self.fires, variants)
 
-    def score(self, quiet, burn) -> tuple[int, list]:
-        """M46 — false incidents of the quiet-pass alarms and fire latencies of the fire-pass alarms."""
+    def score(self, quiet, burn) -> tuple[int, list, list]:
+        """M46 — false incidents of the quiet-pass alarms, fire latencies of the fire-pass alarms, and each false
+        incident's first-alarm minute (R2-10; the count equals `incidents`, checked here)."""
         ev = self.ev
+        inc = incident_list(quiet, self.dist, self.R, self.test0, self.T, ev["merge_min"], ev["merge_radius_factor"])
         k = incidents(quiet, self.dist, self.R, self.test0, self.T, ev["merge_min"], ev["merge_radius_factor"])
-        return k, detect(burn, self.fires, self.xy, ev["detect_radius_m"], ev["detect_window_min"])
+        if k != len(inc):
+            raise AssertionError("incident_list disagrees with M46 incidents")
+        return k, detect(burn, self.fires, self.xy, ev["detect_radius_m"], ev["detect_window_min"]), [m[0] for m in inc]
 
     def tuned_both(self, Sq, fq, Sf, ff, targets, k, p, cap):
         """Tuned h for each pass. The passes share their tuning window exactly (fires start in the test period), so the
@@ -83,7 +88,7 @@ class SeedEval:
 
 def _row(knob: str, grid, scored, h=None, cap=None) -> dict:
     row = {"knob": knob, "grid": [float(g) for g in grid], "false_incidents": [int(s[0]) for s in scored],
-           "latencies": [s[1] for s in scored]}
+           "latencies": [s[1] for s in scored], "fi_starts": [s[2] for s in scored]}
     if h is not None:
         row["h"] = [round(float(v), 6) for v in h]
         row["at_cap"] = [bool(c) for c in cap]
@@ -164,6 +169,9 @@ def evaluate_seed(base_cfg: dict, seed: int, grids: dict, cap=None, edge_names=t
     out = {"seed": seed, "test_days": se.ev["test_days"], "n_fires": len(se.fires),
            "degraded": sorted(n for n, slot in se.sim.slots.items() if slot.health.state == "degraded"),
            "fires_dry": [bool(se.dry[t0 // 1440]) for t0, _ in se.fires],
+           "haze_episodes": episodes(se.q.haze),                                   # R2-10 (quiet pass)
+           "haze_passes_equal": bool(np.array_equal(se.q.haze, se.f.haze)),
+           "fires_haze_overlap": fire_overlaps(episodes(se.f.haze), se.fires, se.T, se.ev["detect_window_min"]),
            "pipelines": {"P0": eval_p0(se, g["P0"]), "P1": eval_p1(se, g["P1"]),
                          "P1t": eval_v1_tuned(se, g["v1t"], cap), "AR": eval_v1_tuned(se, g["v1t"], cap, ar=True),
                          **eval_edge(se, edge_names, g["node"], cap, priors)}}

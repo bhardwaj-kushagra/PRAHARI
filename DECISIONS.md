@@ -809,6 +809,15 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     - each seed's output now lists any degraded module (`degraded`), so this cannot pass unnoticed again.
   - *Checked:* every other sweep point and the test seeds use the golden world (spacing ≤ 150 m fits). The Gaussian
     plume point runs with no degraded module.
+- **R2-10. Deviation (descriptive): false incidents split into inside and outside haze** (research-direction fix 7).
+  - *Re-run:* R1's test seeds 1001–1100 are re-run with additive recording: the haze level H(t) per minute (kept as
+    episodes), each false incident's first-alarm minute, and each fire's overlap with haze.
+  - *Check:* every per-seed false-incident count and fire latency must equal the committed R1 run. Nothing
+    registered changes, and no hypothesis test is added.
+  - *Tags, fixed before the re-run:*
+    - primary: *inside* when a haze episode is active at the incident's first alarm;
+    - secondary: active within the 60 minutes before it (the M28 padding).
+  - *Output:* `results/research/r1_haze_split.json`.
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 
