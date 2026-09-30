@@ -1,0 +1,151 @@
+{
+ "source": "https://data.sensor.community/static/v2/data.24h.json",
+ "retrieved": "2026-09-30",
+ "centre": [
+  48.7758,
+  9.1829
+ ],
+ "rule": "outdoor SDS011 within 3.0 km of the centre on the retrieval date (shortlist only; October 2024 locations are verified from the archive files)",
+ "sensors": {
+  "11741": {
+   "lat": 48.7714493,
+   "lon": 9.18369540421,
+   "km_from_centre": 0.487
+  },
+  "13463": {
+   "lat": 48.774,
+   "lon": 9.174,
+   "km_from_centre": 0.682
+  },
+  "5127": {
+   "lat": 48.77,
+   "lon": 9.19,
+   "km_from_centre": 0.829
+  },
+  "7561": {
+   "lat": 48.784,
+   "lon": 9.174,
+   "km_from_centre": 1.121
+  },
+  "41139": {
+   "lat": 48.784,
+   "lon": 9.192,
+   "km_from_centre": 1.13
+  },
+  "49610": {
+   "lat": 48.766,
+   "lon": 9.176,
+   "km_from_centre": 1.201
+  },
+  "9485": {
+   "lat": 48.776,
+   "lon": 9.2,
+   "km_from_centre": 1.253
+  },
+  "100226": {
+   "lat": 48.786,
+   "lon": 9.192,
+   "km_from_centre": 1.316
+  },
+  "295": {
+   "lat": 48.77,
+   "lon": 9.2,
+   "km_from_centre": 1.409
+  },
+  "11933": {
+   "lat": 48.784,
+   "lon": 9.198,
+   "km_from_centre": 1.434
+  },
+  "673": {
+   "lat": 48.764,
+   "lon": 9.174,
+   "km_from_centre": 1.465
+  },
+  "140": {
+   "lat": 48.778,
+   "lon": 9.16,
+   "km_from_centre": 1.696
+  },
+  "94949": {
+   "lat": 48.768,
+   "lon": 9.162,
+   "km_from_centre": 1.76
+  },
+  "37239": {
+   "lat": 48.76,
+   "lon": 9.178,
+   "km_from_centre": 1.793
+  },
+  "13083": {
+   "lat": 48.79,
+   "lon": 9.198,
+   "km_from_centre": 1.928
+  },
+  "4313": {
+   "lat": 48.794,
+   "lon": 9.182,
+   "km_from_centre": 2.025
+  },
+  "37047": {
+   "lat": 48.78,
+   "lon": 9.21,
+   "km_from_centre": 2.04
+  },
+  "9900": {
+   "lat": 48.774,
+   "lon": 9.154,
+   "km_from_centre": 2.127
+  },
+  "100441": {
+   "lat": 48.7724751,
+   "lon": 9.1540809,
+   "km_from_centre": 2.144
+  },
+  "19257": {
+   "lat": 48.78,
+   "lon": 9.212,
+   "km_from_centre": 2.183
+  },
+  "151": {
+   "lat": 48.792,
+   "lon": 9.164,
+   "km_from_centre": 2.272
+  },
+  "4837": {
+   "lat": 48.768,
+   "lon": 9.154,
+   "km_from_centre": 2.289
+  },
+  "850": {
+   "lat": 48.796,
+   "lon": 9.19,
+   "km_from_centre": 2.306
+  },
+  "38142": {
+   "lat": 48.782,
+   "lon": 9.214,
+   "km_from_centre": 2.381
+  },
+  "40815": {
+   "lat": 48.788,
+   "lon": 9.214,
+   "km_from_centre": 2.652
+  },
+  "422": {
+   "lat": 48.752,
+   "lon": 9.18,
+   "km_from_centre": 2.655
+  },
+  "7511": {
+   "lat": 48.78,
+   "lon": 9.146,
+   "km_from_centre": 2.744
+  },
+  "55262": {
+   "lat": 48.752,
+   "lon": 9.168,
+   "km_from_centre": 2.863
+  }
+ }
+}
