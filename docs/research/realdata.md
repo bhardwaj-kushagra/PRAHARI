@@ -80,6 +80,48 @@ wide ranges, and the conversion from kilometres to 70 m is stated as an assumpti
   SIM result. The real data support its premise (calibrated nodes, rare but synchronous common-mode events), not its
   size.
 
+## 4. A dense sub-kilometre network: Sensor.Community, Stuttgart (addendum B)
+
+**Data:** Sensor.Community open archive (ODbL 1.0), October 2024.
+
+**Selection:**
+
+- 28 outdoor SDS011 sensors were shortlisted within 3 km of the centre; 21 of them had archive files.
+- The selection keeps sensors whose October 2024 location lies within 2.0 km and whose readings cover at least 90% of
+  the 5-minute bins. **9 sensors**, 0.49–3.06 km apart (median 1.70).
+- Sensor 850 was excluded: its October 2024 files place it about 316 km away, so it has moved since.
+
+Source: `results/research/real_sensorcommunity_stuttgart.json`.
+
+| Quantity | Value (REAL) |
+| --- | --- |
+| Common-mode events (plan definition) | 7 in 31 days (0.23 per day) |
+| Start (local) | 23, 01, 06, 22, 08, 07 and 20 h: six of seven between 20:00 and 08:00 |
+| Duration (10th / 50th / 90th percentile) | 68 / 80 / 277 min |
+| Stations involved | 67–89% (median 78%) |
+| Onset spread across stations | 15–140 min (median 40) |
+| Amplitude CV across stations | 0.18–2.49 (median 0.42) |
+| Single-station excursions | 0.62 per station-day |
+| Node layer: candidates / node / 30 d | 0.00 over 17 test days |
+| Node layer: exceedance at nominal 1% | 1.32% |
+
+**Reading:**
+
+- **Night-time pooling.** At sub-kilometre spacing, network-wide events are about three times more frequent than in
+  the N5 networks, and they are mostly nocturnal: inversions trapping particles near the ground.
+- **Slow, uneven development.** Onsets spread 15–140 minutes across a network only 1.7 km across, and amplitudes vary
+  widely between stations (median CV 0.42). This is not a fast front. Real common-mode events at small spacing are
+  *less* synchronous and *less* even than the simulator's haze.
+- **Calibration holds.** The node layer again stays within its false-candidate budget: 0 candidates, and exceedance
+  1.3% at a nominal 1%.
+
+**Consequence for R2 (recorded in `protocol-r2.md` §7 before registration):** the haze scenarios widen three ways,
+because the real events are uneven:
+
+- per-node onset jitter;
+- night-weighted episode starts;
+- a per-episode spread of node amplitudes.
+
 ## Additions to the plan (labelled)
 
 For WR, the share of candidates within 24 hours after a recorded ignition within 20 km is also reported, together with

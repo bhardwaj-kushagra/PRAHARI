@@ -32,23 +32,30 @@ and the M46 protocol (14 d calibration, 14 d tuning, 30 d test).
 Haze episodes keep M20's rate (1 per 10 days), duration U(180, 720) min, amplitude U(0.8, 2.5) su and 60-minute
 ramps. What changes is **how each node sees an episode**, through the new haze model M20b:
 
-h_i(t) = g_i · c_i,e · A_e · trapezoid(t − t_e − δ_i,e)
+h_i(t) = g_i · u_i,e · c_i,e · A_e · trapezoid(t − t_e − δ_i,e)
 
 - **gᵢ, the node gain:**
   - a spatially correlated field: gᵢ = clip(1 + σ_g (ρ_s Zᵢ + √(1−ρ_s²) εᵢ), 0.3, 2.0);
   - Z is a Gaussian field over node positions with correlation length L = 200 m (ASM), with ρ_s = 0.7 (ASM);
   - ε is independent N(0, 1).
+- **u_i,e, per-episode unevenness:** u_i,e = exp(s_e η_i,e − s_e²/2), with η ~ N(0, 1) and s_e ~ U(0.1, 0.6) (DATA).
+  This gives an across-node CV of about 0.1–0.66, covering the event-to-event amplitude spread of the real networks
+  (Stuttgart median 0.42; N5 unattributed 0.25–0.34). Stuttgart's most extreme event (CV 2.49) lies outside it.
+- **Episode start time:** a start falls between 20:00 and 08:00 local with probability 0.7 (DATA: 7 of 10 real
+  unattributed events, 1 of 3 in N5 and 6 of 7 in Stuttgart), uniformly within the chosen window. The rate stays 1 per
+  10 days.
 - **c_i,e, the coverage of episode e:**
   - a swath of width W_e = f_e × 630 m (the network width), random orientation and offset, with soft edges (20 m);
   - nodes outside the swath see a floor of 0.1;
   - f_e = 1 means the whole network.
 - **δ_i,e, the arrival delay:** the node's position along a random direction θ_e divided by the front speed v_e,
-  shifted so that the first node has zero delay.
+  shifted so that the first node has zero delay. A per-node jitter U(0, J_e) is added, with J_e ~ U(0, 60) min (DATA:
+  onsets spread 15–140 min, median 40, across a 1.7 km network; its size at 70 m is ASM).
 
 | Scenario | Role | Gain spread σ_g | Coverage f_e | Front speed v_e | Seeds |
 | --- | --- | --- | --- | --- | --- |
 | **H-mix (primary)** | confirmatory | 0.3 (DATA) | 1 with p 0.5; else U(0.3, 1.0) (DATA) | U(1, 6) m/s (DATA) | selection 1901–1920, test 2001–2100 |
-| H-sync | continuity with R1 | 0.2, uncorrelated | 1 | ∞ (synchronous) | test 2101–2150 |
+| H-sync | continuity with R1 (no unevenness, jitter or night weighting) | 0.2, uncorrelated | 1 | ∞ (synchronous) | test 2101–2150 |
 | H-gain | where median subtraction breaks | 0.4 | 1 | U(1, 6) m/s | test 2151–2200 |
 | H-patch | where SCMR and medians break | 0.3 | U(0.2, 0.5) | U(1, 6) m/s | test 2201–2250 |
 | H-mix, Gaussian plume | plume-conditional detection | as H-mix | as H-mix | as H-mix | test 2251–2300 |
@@ -153,8 +160,13 @@ source keys.
   1–6 m/s.
   - At 630 m this means arrival delays of about 2–10 minutes: near-synchronous.
   - Converting km-scale spreads to 70 m assumes a constant front speed (ASM).
-- **Sub-kilometre network (Stuttgart):** filled in when that analysis is done. If its values contradict the ranges
-  above, the ranges are widened, not narrowed, and the change is noted here before registration.
+- **Sub-kilometre network (Stuttgart; 9 sensors, median spacing 1.7 km):** 7 events in 31 days (0.23 per day); six of
+  seven start at night; onsets spread 15–140 min (median 40); amplitude CV 0.18–2.49 (median 0.42); 67–89% of
+  stations involved.
+  - These contradict the "near-synchronous, even" reading of the N5 events, so the ranges were **widened** before
+    registration: per-node onset jitter J_e, per-episode unevenness s_e, and night-weighted starts.
+  - The episode rate stays at R1's 1 per 10 days. Stuttgart's 0.23 per day is urban PM, not wildfire smoke; the rate
+    is swept in R1 already, as the dose–response.
 
 ## 8. Compute and records
 

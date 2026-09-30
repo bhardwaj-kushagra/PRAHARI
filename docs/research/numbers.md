@@ -135,3 +135,7 @@ Every number the paper may quote, with the result file (under `results/research/
 | REAL RC: node candidates per node per 30 d | 0.0 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
 | REAL RC: exceedance at nominal 1% (outside common mode) | 1.1% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
 | REAL RC: share of candidates while ≥ 25% of stations elevated | None | `real_thompson2026.json` | `node_replay.share_in_cm_mask` |
+| REAL ST: common-mode events | 7 in 31.0 days | `real_sensorcommunity_stuttgart.json` | `cluster.n_events` |
+| REAL ST: node candidates per node per 30 d | 0.0 | `real_sensorcommunity_stuttgart.json` | `node_replay.candidates_per_node_30d` |
+| REAL ST: exceedance at nominal 1% (outside common mode) | 1.3% | `real_sensorcommunity_stuttgart.json` | `node_replay.exceedance_outside_cm_at_1pct` |
+| REAL ST: share of candidates while ≥ 25% of stations elevated | None | `real_sensorcommunity_stuttgart.json` | `node_replay.share_in_cm_mask` |
