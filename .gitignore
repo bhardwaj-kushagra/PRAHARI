@@ -19,3 +19,4 @@ node_modules/
 dashboard/dist/
 *.health.json
 .DS_Store
+data/real/*/raw/
