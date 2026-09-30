@@ -91,3 +91,33 @@ excluded exactly as M28 does: f ≥ 0.25 on the elevated-station share, padded b
 - **`docs/research/realdata.md`:** the write-up, with REAL labels.
 - **Protocol R2:** event statistics carried into it become `DATA` parameters (event rate, duration, onset spread,
   amplitude spread and station share), with conversion to 70 m spacing stated as an assumption (`ASM`).
+
+## Addendum B — a dense sub-kilometre network (Sensor.Community, Stuttgart)
+
+**Status.** Written and committed before any Stuttgart data are fetched or analysed. Exploratory.
+
+**Why.** The N5 networks are kilometres apart and had few regional events in April 2024. A dense urban low-cost PM
+network gives common-mode statistics nearer the design's 70 m scale. Its events are regional PM episodes: inversions,
+dust, smoke, and humidity artefacts of low-cost optical sensors. They are not specifically wildfire smoke; this
+network is an analogue, not a validation.
+
+**Data.** Sensor.Community open archive (`archive.sensor.community`), licence ODbL 1.0.
+
+- Period: **1–31 October 2024**.
+- Sensors: outdoor SDS011 PM sensors within **2.0 km** of Stuttgart centre (48.7758° N, 9.1829° E), located from the
+  archive's own daily files.
+- Selection: sensors with readings on at least 90% of the 5-minute bins. The 30 nearest to the centre are used, or
+  all if fewer.
+- The station list is saved with the results.
+
+**Method.** The same as the N5 analysis:
+
+- the 5-minute grid, and y = ln(1 + PM₂.₅) with PM₂.₅ = the SDS011 `P2` field;
+- the rolling 24-hour robust z, the network share, the event definition (core ≥ 0.5 for 15 minutes, span ≥ 0.25,
+  merge within 60 minutes) and local excursions;
+- the node-layer replay with 7 calibration days, 7 tuning days and the rest as test days, at the M28 target of 1 per
+  node per 30 days.
+- Local time is UTC+2 until 27 October and UTC+1 after; bins use UTC+2 throughout, a documented approximation.
+- No fire attribution is attempted.
+
+**Outputs:** `results/research/real_sensorcommunity_stuttgart.json` and a section in `docs/research/realdata.md`.
