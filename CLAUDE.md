@@ -1,52 +1,86 @@
-# CLAUDE.md — PRAHARI-SIM agent rules
+# CLAUDE.md — PRAHARI paper branch (research charter)
 
-This repository builds a **local simulator and dashboard** for the FIRENET–PRAHARI wildfire-detection system, for a conference demonstration. The full specification is `docs/SPEC.md`. These rules are **non-negotiable**. If a request conflicts with them, stop and say so.
+This branch (`paper/common-mode-floor`) turns PRAHARI-SIM into the evidence base for one research paper. Working
+title: *The Common-Mode Floor: Regional Smoke, Not Sensor Noise, Limits False Alarms in Low-Cost Gas-Sensor Wildfire
+Networks*.
 
-## Before writing any code in a session
+The direction is `docs/research/direction.md`, which summarises the developer's research-direction PDF of 25 Sep
+2026. Where that document and older pages conflict, the direction wins.
 
-1. Read `PROGRESS.md` (which phase we are in), `KNOWN_ISSUES.md` (what is parked) and `DECISIONS.md`; `docs/README.md` maps the documentation you will update.
-2. Read `docs/SPEC.md` §2 (principles) and §4 (framework) if you have not this session, then **only** the current phase's section in §7 and the §5 equations it lists.
-3. State in a few bullets what you will build, which files you will touch, and which acceptance tests will prove it. Wait for "go" unless told to proceed.
+`main` stays the locked release 1.0 simulator, under its own `CLAUDE.md`.
 
-## The rules
+On this branch, models, assumptions, protocols and code may change whenever the science needs it. **Results may
+never be manipulated, selected or invented.** The rules below draw that line. If a request conflicts with them,
+stop and say so.
 
-1. **Stubs are sacred.** Every stage has a `stub` implementation registered under the same name as its `real` one. Never delete, weaken or bypass a stub. New real implementations replace stubs *through the registry*, not by editing callers.
-2. **Module states come from config.** Each module is `real`, `stub` or `off` in `configs/*.yaml`. Never hard-code which implementation runs.
-3. **Contracts are additive.** Data classes in `engine/prahari/core/contracts.py` may gain fields with defaults. Never rename or remove a field from an accepted phase without bumping the contract version, updating every consumer and its tests in the same change, and logging it in `DECISIONS.md`.
-4. **No rewrites of accepted phases.** Do not restructure, rename, reformat or "clean up" files from phases marked accepted in `PROGRESS.md`. If a change there is truly needed, propose it and wait for approval.
-5. **Failures degrade; they never crash.** Every stage call goes through the runner's isolation wrapper. A real module that raises or returns invalid output (NaN, wrong shape, out of range) switches to its stub for the rest of the run and is marked `degraded`.
-6. **Escape hatch — never get stuck.** If a module fails its acceptance tests after about three focused attempts, or its timebox in `docs/SPEC.md` §7 runs out:
-   - set it to `stub` in `configs/default.yaml`,
-   - write the symptoms, what you tried and your best diagnosis in `KNOWN_ISSUES.md`,
-   - confirm the full test suite and the dashboard still run,
-   - move on to the next item.
+## Before work in a session
 
-   Parking a module is always better than blocking the project.
-7. **Determinism.** All randomness comes from the master seed via `numpy.random.SeedSequence`, one spawned generator per module (`core/rng.py`). New modules append their stream name at the **end** of the list. Never use Python's `random` or an unseeded NumPy call.
-8. **Vectorise over nodes.** Per-node state lives in NumPy arrays. No Python loops over nodes inside the tick loop.
-9. **Cite the maths.** Every formula in code carries a comment with its equation number, for example `# M26 — QCC p-value`. Every parameter lives in configuration with a `source` tag (`LIT`, `VEN`, `DER`, `ASM`, `TGT`).
-10. **No fabricated results.** Charts and numbers come from simulator output files. Never hard-code result values outside `tests/golden/`. Never tune a model to improve a chart without recording why in `DECISIONS.md`.
-11. **Replay first.** The dashboard must always work from recordings with no server running. Live mode is optional and must never be required.
-12. **Tests with every change.** Write or update the unit tests for the equations you implement, using the reference values in `docs/SPEC.md` §9.2. Run the whole suite before finishing. Golden tests (§9.3) run in legacy mode only.
-13. **Minimal dependencies.**
-    - Engine: NumPy, SciPy, PyYAML, Pydantic (optional), pytest.
-    - Server: FastAPI, Uvicorn.
-    - Dashboard: React, TypeScript, Vite, ECharts, zustand.
+1. Read:
+   - `docs/research/direction.md`, `PROGRESS.md` (latest session), `DECISIONS.md` (Research track and Paper branch
+     sections) and `KNOWN_ISSUES.md`;
+   - the protocol of the round in progress (`docs/research/protocol*.md`).
+2. State what you will do, which files you will touch and how it will be checked. Wait for "go" unless told to
+   proceed.
 
-    Anything else needs a line in `DECISIONS.md` first.
-14. **Small files.** Keep modules under about 300 lines, with maths in pure functions (arrays in, arrays out) and no hidden global state.
-15. **Label simulation.** Every dashboard view shows the SIMULATION badge. Every chart footer states seeds and simulated days.
-16. **Document the journey.** Every phase writes `docs/journey/phase-N-<name>.md` (goal, what was built, how it works, challenges, decisions with pros and cons, how each issue was resolved or parked, acceptance results, what to demo), adds a row to `docs/journey/README.md`, and updates every page in `docs/guide/`, `docs/architecture/` and `docs/results/` that the phase changes. Problems are documented, not hidden: an issue stays in the journey with its resolution or its `KNOWN_ISSUES.md` entry. Write in the project's own words; quote numbers only from simulator outputs and label them SIM.
+## Integrity rules (non-negotiable)
+
+1. **Pre-registration.** Every confirmatory round (R1, R2, …) has a protocol committed **before** the first run on its
+   seeds: seeds, data-generating scenarios, methods, knobs, endpoints, statistics.
+   - Git history must show the protocol commit before the first result file.
+2. **No outcome-driven changes.** Inside a round, no model, parameter, method, grid, budget or seed changes because of
+   that round's results. A change goes into the *next* round, with new seeds.
+   - Anything changed after a round's runs start is a **deviation**, logged in `DECISIONS.md` with its reason.
+   - Deviations are allowed only for errors (such as a configuration the world cannot represent) or for additive
+     descriptive analyses, never to improve a result.
+3. **Report everything.** Every registered comparison is reported, whatever its outcome, and earlier rounds stay as
+   registered. Analyses not in a protocol are labelled **exploratory**.
+4. **No fabricated or hand-edited results.** Numbers and figures come only from result files written by code. Never
+   type a result into a document without its source.
+   - `docs/research/numbers.md` maps every number in the paper to its file and key.
+5. **Determinism.** All randomness comes from `numpy.random.SeedSequence` streams (`core/rng.py`). New streams are
+   appended at the end of the list. No unseeded randomness. Result files must regenerate byte for byte.
+6. **Provenance.** Every parameter lives in configuration with a `source` tag: `LIT`, `VEN`, `DER`, `ASM`, `TGT`, or
+   `DATA` (derived from a public dataset, with the script that derived it).
+   - Every formula in code cites its equation (M1–M46 from `docs/SPEC.md`, R1–R8 from protocol R1, new ones from the
+     round's protocol).
+7. **Real data.**
+   - Public datasets only, used within their licence.
+   - Raw files sit under `data/real/<dataset>/`, unmodified, with a README giving the source, licence, retrieval date
+     and checksum. Every derivation is a script.
+   - Real data used to *set* simulation parameters are never also used to *validate* them.
+   - No physical experiments are part of this paper.
+8. **Labels.** Every number states whether it is **SIM** (simulator output) or **REAL** (public data), and every
+   figure footer gives its seeds or dataset.
+9. **Tests.** Every new method or model has unit tests with reference values. A method replayed offline has a
+   fidelity test against its reference implementation. Run the whole engine suite before finishing a session.
+10. **Authorship.** The authors write the paper's prose. The agent supplies analyses, numbers, figures, outlines and
+    reviews. AI use is disclosed in the paper (IEEE policy).
+
+## What is relaxed on this branch (the release-1.0 build rules)
+
+- **Models and code.** Any model, module or accepted file may be changed or rewritten, with a `DECISIONS.md` entry
+  (why, and what output changes) and updated tests.
+  - Stubs are kept where they help, but they are not required for research modules.
+  - Data contracts may change with their consumers and tests.
+- **Configuration.** Module states and parameters still come from configuration. Research code may add its own
+  configuration files (`configs/research/*.yaml`, plain YAML).
+- **Dashboard and recordings.** Not maintained here, and not published from here. The byte-identity gate of
+  `scripts/check_all.sh` becomes an optional regression report: run it to see which release outputs a change moves.
+- **Dependencies.** Allowed with a one-line `DECISIONS.md` entry.
+- **File size.** About 300 lines is a guideline, not a rule.
+- **Documentation.** A research log replaces per-phase journey pages:
+  - `PROGRESS.md` entries;
+  - `docs/research/` pages per round;
+  - `KNOWN_ISSUES.md` for open problems.
 
 ## At the end of every session
 
-- Update `PROGRESS.md`: what was done, test status, the next step.
-- Add any deviation, new dependency or tuning choice to `DECISIONS.md`.
-- Add any parked module to `KNOWN_ISSUES.md`.
-- Update the documentation (rule 16): the phase's journey page, the timeline, and any affected guide, architecture or results page; check that relative links resolve.
-- Tell the developer exactly what to open to see the change (a command and a dashboard view).
+- `PROGRESS.md`: what was done, test status, the next step.
+- `DECISIONS.md`: every deviation, new dependency, model change and data source.
+- `docs/research/`: the round's results page and `numbers.md`, with relative links checked.
+- Commit and push to `paper/common-mode-floor`. Tell the developer what to open.
 
-## Useful commands (keep this list up to date)
+## Useful commands (keep this list up to date; the release-1.0 commands still work)
 
 ```text
 pip install -e "engine[dev,server]"          # engine (+ optional live server: fastapi, uvicorn, websockets)

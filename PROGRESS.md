@@ -589,3 +589,15 @@ byte-identical).
 
 **Next step:** the developer drafts the paper from `paper-plan.md` §11 and `results-r1.md`, in their own words.
 Optional follow-up study: a gain-normalised or combined common-mode reference, under a new pre-registered protocol.
+
+### 2026-09-30 — Session 20 (paper branch set up)
+
+- The developer shared a research-direction document and agreed on a plan built on it. That document takes priority;
+  the venue is decided later; there are no physical experiments; public real data are used.
+- Created `paper/common-mode-floor` from `3bc78f0` with `main` merged in, and restored the progress entry the merge
+  dropped.
+- `CLAUDE.md` on this branch is the research charter: integrity rules kept, build rules relaxed (DECISIONS P-1…P-3).
+- `docs/research/direction.md` records the direction and the decisions.
+
+**Next step:** the R1 close-out, which decomposes false incidents into inside and outside haze (R2-10) and builds the
+number-to-source table. Then the real data, once the environment's network access allows the data hosts.

@@ -812,6 +812,28 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 
+## Paper branch (`paper/common-mode-floor`, from 30 Sep 2026)
+
+- **P-1. A separate branch for the paper, with its own charter.**
+  - *Base:* the branch starts from `3bc78f0` (release 1.0 plus R1), with `main` (`f505857`, the Site-1 records)
+    merged in.
+  - *Merge note:* the merge dropped the second-audit progress entry, which an earlier merge on `main` had lost; it
+    was restored.
+  - *Rules:* `CLAUDE.md` here is a research charter. It keeps the integrity rules (pre-registration, no
+    outcome-driven changes, report everything, results only from files, determinism, provenance, labels, tests) and
+    relaxes the release-1.0 build rules (stubs, contracts, no rewrites, the dashboard, byte identity of recordings,
+    dependencies).
+  - *`main`* and its `CLAUDE.md` are unchanged.
+- **P-2. Direction.** `docs/research/direction.md` summarises the developer's research-direction document (25 Sep)
+  and the decisions of 30 Sep, and it governs over older planning pages:
+  - one paper, led by the common-mode floor;
+  - R1 closed as registered;
+  - a pre-registered R2 on common-mode handling;
+  - public real data only;
+  - no physical experiments;
+  - venue decided later.
+- **P-3. Source tag `DATA`** for parameters derived from a public dataset, always with the deriving script.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

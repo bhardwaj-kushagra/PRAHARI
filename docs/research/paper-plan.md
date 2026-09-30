@@ -1,5 +1,15 @@
 # Research paper from PRAHARI-SIM — feasibility analysis and roadmap
 
+> **Superseded in part (30 Sep 2026).** The paper's direction is now [direction.md](direction.md):
+>
+> - one paper, led by the common-mode floor;
+> - no separate simulator paper (§10);
+> - no physical experiments;
+> - public real data;
+> - venue decided later.
+>
+> This page is kept as the record of the earlier analysis.
+
 ## Context
 
 Written 24 September 2026 in answer to the question of whether the simulator can support a conference paper. It covers five things:
