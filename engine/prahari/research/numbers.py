@@ -119,6 +119,48 @@ def rows_real(r: dict, file: str) -> list[tuple]:
     return out
 
 
+def rows_india(r: dict) -> list[tuple]:
+    """Addendum C (REAL): per cluster-year events, rates and the held-out comparison; pooled per cluster; DL15 node
+    replay; provenance check."""
+    f, out = "real_india.json", []
+    for key, c in r["clusters"].items():
+        k = f"clusters.{key}"
+        if not c.get("analysed"):
+            out.append((f"REAL India {key}", f"not analysed: {c.get('reason')}", f, k))
+            continue
+        h = c["held_out"]
+        out.append((f"REAL India {key}: stations, events", f"{c['stations']} stations; {c['n_events']} events in "
+                    f"{c['days_with_share']} days ({c['events_per_day']}/day, ×{h['rate_multiplier_vs_h_mix']} H-mix)",
+                    f, k + ".held_out.events_per_day"))
+        out.append((f"REAL India {key}: night share (Wilson 95%)",
+                    f"{h['night_share']} ({h['night_share_ci95_wilson']}); reference 0.7", f, k + ".held_out.night_share"))
+        out.append((f"REAL India {key}: amplitude CV median; share inside operator 90%",
+                    f"{h['cv_median']}; {h['cv_share_inside_operator_90']} (operator {h['cv_operator_q05_50_95']})",
+                    f, k + ".held_out.cv_median"))
+        out.append((f"REAL India {key}: onset spread median (min); share inside operator 90%",
+                    f"{h['onset_spread_median_min']}; {h['onset_spread_share_inside_operator_90']} "
+                    f"(operator {h['onset_spread_operator_q05_50_95']})", f, k + ".held_out.onset_spread_median_min"))
+        if c.get("node_replay", {}).get("candidates_per_node_30d") is not None:
+            nr = c["node_replay"]
+            out.append((f"REAL India {key}: node candidates per node per 30 d; share while ≥ 25% elevated",
+                        f"{nr['candidates_per_node_30d']}; {_pct(nr['share_in_cm_mask'])}", f, k + ".node_replay"))
+            out.append((f"REAL India {key}: exceedance at nominal 1% (outside common mode)",
+                        _pct(nr["exceedance_outside_cm_at_1pct"]), f, k + ".node_replay.exceedance_outside_cm_at_1pct"))
+        if "co" in c and c["co"].get("n_events") is not None:
+            out.append((f"REAL India {key}: CO events; share of PM events overlapping a CO event",
+                        f"{c['co']['n_events']}; {c['co']['share_pm_events_overlapping_co']}", f, k + ".co"))
+    for cl, pl in r["pooled"].items():
+        out.append((f"REAL India {cl} pooled: events per day; night share (Wilson 95%)",
+                    f"{pl['events_per_day']} (×{pl['rate_multiplier_vs_h_mix']} H-mix); {pl['night_share']} "
+                    f"({pl['night_share_ci95_wilson']})", f, f"pooled.{cl}"))
+    pv = r.get("provenance_2017", {})
+    if pv.get("median_abs_rel_diff_all") is not None:
+        out.append(("REAL India provenance: OpenAQ vs Princeton CPCB, 2017, median abs. relative difference",
+                    f"{pv['median_abs_rel_diff_all']} over {pv['hours']} station-hours ({pv['matched']} stations)",
+                    f, "provenance_2017"))
+    return out
+
+
 def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> list[str]:
     """Collect every table the result files allow and write docs/research/numbers.md."""
     out = Path(out)
@@ -129,6 +171,9 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
     h = _load(out / "r1_haze_split.json")
     if h:
         rows += rows_split(h)
+    ri = _load(out / "real_india.json")
+    if ri:
+        rows += rows_india(ri)
     a2 = _load(out / "r2_analysis.json")
     if a2:
         rows += rows_r2(a2)

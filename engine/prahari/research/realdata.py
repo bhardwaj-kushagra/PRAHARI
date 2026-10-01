@@ -51,10 +51,11 @@ def _local_to_epoch(s: str, tz_hours: int) -> int:
     return int(d.timestamp()) - tz_hours * 3600
 
 
-def to_grid(epochs, values, t_start: int, T: int, carry: int = 3):
-    """Readings onto the 5-minute grid: mean per bin; gaps of ≤ `carry` bins carried forward, longer gaps NaN."""
+def to_grid(epochs, values, t_start: int, T: int, carry: int = 3, tick_s: int = TICK_S):
+    """Readings onto the grid (5-minute by default): mean per bin; gaps of ≤ `carry` bins carried forward, longer gaps
+    NaN."""
     g = np.full(T, np.nan)
-    idx = (np.asarray(epochs) - t_start) // TICK_S
+    idx = (np.asarray(epochs) - t_start) // tick_s
     ok = (idx >= 0) & (idx < T) & np.isfinite(values)
     s = np.bincount(idx[ok], weights=np.asarray(values)[ok], minlength=T)
     c = np.bincount(idx[ok], minlength=T)
@@ -151,7 +152,7 @@ def find_events(f, core: float = 0.5, span: float = 0.25, min_core: int = 3, mer
     return [tuple(x) for x in out]
 
 
-def event_stats(ev, elevated, active, pm, med_y) -> dict:
+def event_stats(ev, elevated, active, pm, med_y, tick_s: int = TICK_S) -> dict:
     """Per event: duration, station share involved, onset spread (min), peak excess PM2.5 per involved station."""
     a, b = ev
     E, A = elevated[a:b], active[a:b]
@@ -160,10 +161,10 @@ def event_stats(ev, elevated, active, pm, med_y) -> dict:
     base = np.expm1(np.nanmedian(med_y[a:b][:, inv], axis=0)) if inv.size else np.array([])
     peak = np.nanmax(pm[a:b][:, inv], axis=0) - base if inv.size else np.array([])
     n_act = int(A.any(axis=0).sum())
-    return {"start_tick": int(a), "end_tick": int(b), "duration_min": int((b - a) * TICK_S // 60),
+    return {"start_tick": int(a), "end_tick": int(b), "duration_min": int((b - a) * tick_s // 60),
             "stations_involved": int(inv.size), "stations_active": n_act,
             "share_involved": round(inv.size / n_act, 3) if n_act else None,
-            "onset_spread_min": int((max(first) - min(first)) * TICK_S // 60) if first else None,
+            "onset_spread_min": int((max(first) - min(first)) * tick_s // 60) if first else None,
             "peak_excess_median": round(float(np.median(peak)), 1) if peak.size else None,
             "peak_excess_cv": round(float(np.std(peak) / np.mean(peak)), 3) if peak.size and np.mean(peak) > 0 else None}
 
@@ -180,16 +181,18 @@ def local_excursions(elevated, f, min_len: int = 3) -> int:
 
 
 # -- PRAHARI node layer on real data ----------------------------------------------------------------------------
-def node_layer(y, tz_hours: int, t_start: int, cal_days: int = 7, bins: int = 6, alpha_min: float = 720.0,
-               freeze: float = 3.0, cap_min: int = 180, lag0_min: int = 60, lag1_min: int = 180, var_floor: float = 1e-4):
-    """M24–M26 on a 5-minute grid: capped slow z (for the M28 common-mode share), lagged fast residual, and the
-    conformal p-value per station and 4-hour local time-of-day bin, frozen after `cal_days`. Missing → p = 1."""
+def node_layer(y, tz_hours: float, t_start: int, cal_days: int = 7, bins: int = 6, alpha_min: float = 720.0,
+               freeze: float = 3.0, cap_min: int = 180, lag0_min: int = 60, lag1_min: int = 180, var_floor: float = 1e-4,
+               tick_s: int = TICK_S):
+    """M24–M26 on the grid (5-minute by default): capped slow z (for the M28 common-mode share), lagged fast residual,
+    and the conformal p-value per station and 4-hour local time-of-day bin, frozen after `cal_days`. Missing → p = 1."""
     T, N = y.shape
-    tick_min = TICK_S // 60
+    tick_min = tick_s // 60
+    day = 86400 // tick_s
     alpha, fmax = tick_min / alpha_min, cap_min // tick_min
     lag0, lag1 = lag0_min // tick_min, lag1_min // tick_min
     # M24 — slow baseline, initialised from the first day's valid values, updates skipped at missing ticks
-    d1 = y[:DAY]
+    d1 = y[:day]
     n1 = np.isfinite(d1).sum(axis=0)
     b = np.where(n1 > 0, np.nansum(d1, axis=0) / np.maximum(n1, 1), 0.0)
     s2 = np.where(n1 > 1, np.nansum((d1 - b) ** 2, axis=0) / np.maximum(n1, 1), 1.0) + var_floor
@@ -210,8 +213,8 @@ def node_layer(y, tz_hours: int, t_start: int, cal_days: int = 7, bins: int = 6,
         m = np.where(cnt > 0, np.nansum(w, axis=0) / np.maximum(cnt, 1), np.nan)
         r[t] = np.where(cnt >= (lag1 - lag0) // 2, y[t] - m, np.nan)
     # M26 — conformal p per station and local 4-hour bin, calibration set from the first `cal_days`
-    tod_bin = (((np.arange(T) * TICK_S + t_start + tz_hours * 3600) % 86400) // (86400 // bins)).astype(int)
-    cal_end = cal_days * DAY
+    tod_bin = (((np.arange(T) * tick_s + t_start + tz_hours * 3600) % 86400) // (86400 // bins)).astype(int)
+    cal_end = cal_days * day
     p = np.ones((T, N))
     for k in range(bins):
         sel = tod_bin == k
@@ -229,16 +232,17 @@ def node_layer(y, tz_hours: int, t_start: int, cal_days: int = 7, bins: int = 6,
 
 def replay(p, z_slow, active, cal_days: int = 7, tune_days: int = 7, target_per_node_30d: float = 1.0,
            k: float = 1.5, ref_min: int = 30, cm_z: float = 3.0, cm_frac: float = 0.25, pad_min: int = 60,
-           h_lo: float = 0.5, h_hi: float = 5000.0, iters: int = 22):
+           h_lo: float = 0.5, h_hi: float = 5000.0, iters: int = 22, tick_s: int = TICK_S):
     """M28 on real data: −ln p evidence, one h for the network replay-tuned to the target on the tuning days with
     common-mode ticks (share of slow z ≥ cm_z at least cm_frac, padded) excluded; candidates on the test days."""
-    tick_min = TICK_S // 60
+    tick_min = tick_s // 60
+    day = 86400 // tick_s
     T, N = p.shape
     S = -np.log(p)                                                                   # M28 — node evidence
     elev = np.nan_to_num(z_slow, nan=-np.inf) >= cm_z
     frac = share(elev, active, min_active=1)
     cm = cm_mask(np.nan_to_num(frac, nan=0.0), cm_frac, pad_min // tick_min)
-    t0, t1 = cal_days * DAY, (cal_days + tune_days) * DAY
+    t0, t1 = cal_days * day, (cal_days + tune_days) * day
     n_active = float(active[t0:t1].any(axis=0).sum())
     target = target_per_node_30d / 30.0 * n_active * tune_days
     ref = ref_min // tick_min

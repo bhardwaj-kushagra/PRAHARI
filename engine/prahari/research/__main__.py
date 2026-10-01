@@ -6,6 +6,7 @@
   figures                                       → docs/research/figures/
   realdata                                      → results/research/real_thompson2026.json (REAL, exploratory)
   hazesplit                                     → results/research/r1_haze_split.json (R2-10, descriptive)
+  realdata-india                                → results/research/real_india.json (REAL, exploratory; addendum C)
   r2-run selection|test [--scenarios H-mix,..]  protocol R2 → results/research/r2/<stage>/<scenario>/seed<N>.json
   r2-analyse                                    → results/research/r2_*.json
   r2-figures                                    → docs/research/figures/r2_*
@@ -23,7 +24,7 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="python -m prahari.research", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run", "sweep", "analyse", "figures", "realdata", "realdata-sc", "hazesplit",
-                                        "numbers", "r2-run", "r2-analyse", "r2-figures"])
+                                        "numbers", "r2-run", "r2-analyse", "r2-figures", "realdata-india"])
     ap.add_argument("stage", nargs="?", choices=["selection", "test"])
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -49,6 +50,9 @@ def main(argv=None) -> int:
     elif a.command == "numbers":
         from prahari.research.numbers import write_numbers
         done = write_numbers(out)
+    elif a.command == "realdata-india":
+        from prahari.research.realdata_india import write_realdata_india
+        done = write_realdata_india(out)
     elif a.command == "realdata-sc":
         from prahari.research.realdata_sc import write_realdata_sc
         done = write_realdata_sc(out)

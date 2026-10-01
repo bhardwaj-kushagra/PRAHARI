@@ -899,6 +899,28 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     (48 stations). Ten older sensors cover 2017, which serves a provenance check against Princeton.
   - *Earlier OpenAQ reasoning:* Sensor.Community has no Indian stations, which is why OpenAQ was considered.
 
+- **P-10. Addendum C implementation notes, fixed after the fetch and before any statistic was computed.**
+  - *AK coordinates:* the Aakash files carry station IDs (`CUPIG_NS-01` …) but no coordinates. Singh et al. (2023)
+    Table S1 gives 29 site coordinates (0.1°), numbered 1–29 with no published mapping to the file IDs.
+    - The AK front fit is therefore **skipped**: the addendum's fallback cannot be joined to the files without
+      guessing.
+    - The AK observation operator uses the **Table S1 layout** (29 sites), since it needs only the network geometry,
+      not which file sits where.
+  - *AK 2023:* that zip starts on 1 Oct 2023, so it has no September pre-season and no baseline warm-up. The first 12
+    hours of 1 Oct 2023 cannot be elevated, under the plan's rule.
+  - *AK CO:* the raw `CO` mean column is used; the files' `delta_CO` variants are derived offsets. Missing is −99999.
+  - *Times:* Aakash's `dateUTC` column is used. Princeton's `From Date` is read as IST, per the addendum.
+  - *Princeton file formats* (format rules only; no values were examined):
+    - columns are read by header name;
+    - the 2 files whose header lists `PM2.5` twice are **excluded**, because the right column is ambiguous;
+    - dates come as `D/M/YY[YY] H:MM` or `DD-MM-YYYY HH:MM`, both day-first (row 25 of every file is 2 January);
+    - a file is used only if ≥ 99% of consecutive rows are exactly 1 h apart;
+    - blank trailing rows (no date, or no station) are skipped.
+  - *Coordinates as given:* the Princeton file for Ashok Vihar places it at 28.485° N, 77.016° E, which is in
+    Gurugram. That is likely a geocoding error by the compilers, about 25 km from the real site. The addendum's rule
+    (the files' coordinates govern) is followed, so it falls outside the 25 km radius and is excluded. This is noted
+    as a limitation, not corrected by hand.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The
