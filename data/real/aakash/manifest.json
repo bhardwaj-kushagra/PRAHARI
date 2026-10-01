@@ -1,0 +1,24 @@
+{
+ "files": {
+  "raw/1H_20220901_20221130.zip": {
+   "url": "https://aakash-rihn.org/en/wp-content/uploads/2025/01/1H_20220901_20221130.zip",
+   "sha256": "f29bbbecb99cb2a9bb0a4bc95fdc8be4f97d2dc907342003e8d8657de0739b13",
+   "bytes": 1596824,
+   "retrieved_utc": "2026-10-01T02:38:58Z"
+  },
+  "raw/1H_20230901_20231130.zip": {
+   "url": "https://aakash-rihn.org/en/wp-content/uploads/2025/01/1H_20230901_20231130.zip",
+   "sha256": "8efefa677f58255f7bc6a3bc00a9d8666be906502fa513b0d0b0c7e4b81074e9",
+   "bytes": 1517581,
+   "retrieved_utc": "2026-10-01T02:39:00Z"
+  },
+  "raw/1H_20240901_20241130.zip": {
+   "url": "https://aakash-rihn.org/en/wp-content/uploads/2025/01/1H_20240901_20241130.zip",
+   "sha256": "eb3523254625dce862f411393f8a33194548d7785eb6a2aa7f568978822968a6",
+   "bytes": 1638482,
+   "retrieved_utc": "2026-10-01T02:39:02Z"
+  }
+ },
+ "source": "Aakash project, RIHN (https://aakash-rihn.org/en/data-set/)",
+ "licence": "CC BY-NC-ND 4.0"
+}

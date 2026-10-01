@@ -1,0 +1,271 @@
+{
+ "files": {
+  "raw/Delhi-SoniaVihar.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi-SoniaVihar.csv",
+   "sha256": "e30900b1eb57cef68c0ef6656270ca0315b05eef8de320c2f63526cd5a419b61",
+   "bytes": 4386918,
+   "retrieved_utc": "2026-10-01T02:39:10Z"
+  },
+  "raw/Delhi_AnandVihar.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_AnandVihar.csv",
+   "sha256": "b954f3dece7e8646b7b20b8620ad4978b2521ab56747d705488c41e09e926160",
+   "bytes": 4210060,
+   "retrieved_utc": "2026-10-01T02:39:11Z"
+  },
+  "raw/Delhi_AshokVihar.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_AshokVihar.csv",
+   "sha256": "f9bb35f11e13c4368de728f6073be37e0cba04e71203d5a8de2e1fd5c47f8383",
+   "bytes": 4132708,
+   "retrieved_utc": "2026-10-01T02:39:12Z"
+  },
+  "raw/Delhi_AyaNagar.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_AyaNagar.csv",
+   "sha256": "0d8ab02dac9ed62ab147d11f1392dc19e5968845f9de6415a502d66378152859",
+   "bytes": 4215299,
+   "retrieved_utc": "2026-10-01T02:39:13Z"
+  },
+  "raw/Delhi_Bawana.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Bawana.csv",
+   "sha256": "37dbe741eb2dadec0d7937da093edc078f0602ff3e12c8f22fbc8000f82671b4",
+   "bytes": 4246571,
+   "retrieved_utc": "2026-10-01T02:39:14Z"
+  },
+  "raw/Delhi_Burari.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Burari.csv",
+   "sha256": "a1f9dae6bd19b6e0254f9aedb6066c96c8b70c3d9d81a2c590cd4a6173b9767d",
+   "bytes": 4078735,
+   "retrieved_utc": "2026-10-01T02:39:15Z"
+  },
+  "raw/Delhi_CRRI.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_CRRI.csv",
+   "sha256": "ab0722b3ba241682e74de5709e7aa270a00e955e70705882d2acec3a286bc640",
+   "bytes": 4592913,
+   "retrieved_utc": "2026-10-01T02:39:16Z"
+  },
+  "raw/Delhi_DTU.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_DTU.csv",
+   "sha256": "f8da48569b30546bd1dd95f5583b79f5a7e545a0b97f26d28680b57128bc47ed",
+   "bytes": 3913371,
+   "retrieved_utc": "2026-10-01T02:39:18Z"
+  },
+  "raw/Delhi_Dwarka.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Dwarka.csv",
+   "sha256": "6a549605e488c7d85fc8b23e847ba44c7237b1fbf2e09b184e339a11de8d9cf5",
+   "bytes": 4500050,
+   "retrieved_utc": "2026-10-01T02:39:18Z"
+  },
+  "raw/Delhi_Dwarka_8.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Dwarka_8.csv",
+   "sha256": "1ebe35cdf2799c6949970029f100d66a529fb90379b74828cf2561ebd7739345",
+   "bytes": 4689169,
+   "retrieved_utc": "2026-10-01T02:39:19Z"
+  },
+  "raw/Delhi_IGI.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_IGI.csv",
+   "sha256": "76a3fc84aa5a1a2bcd6f2e06c2cc1f3e06b44beb5edc8f0e7dcc45f289857f23",
+   "bytes": 4269823,
+   "retrieved_utc": "2026-10-01T02:39:20Z"
+  },
+  "raw/Delhi_ITO.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_ITO.csv",
+   "sha256": "fa3c325ca84ebdd48e1c8b8c6c21b9e607bfe4c21e3a85bec5fed330fba1d630",
+   "bytes": 4104176,
+   "retrieved_utc": "2026-10-01T02:39:21Z"
+  },
+  "raw/Delhi_JNStadium.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_JNStadium.csv",
+   "sha256": "3b3f578b4a48d64beb1f1cb21aa2d489db76cee7bc5d0843f5b9371d6a847a91",
+   "bytes": 6447032,
+   "retrieved_utc": "2026-10-01T02:39:21Z"
+  },
+  "raw/Delhi_Jahangirpuri.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Jahangirpuri.csv",
+   "sha256": "a8b2f6cc8fb3da801282d919439d862c01f0afc74a13a770ac319827529c5bdf",
+   "bytes": 6518442,
+   "retrieved_utc": "2026-10-01T02:39:22Z"
+  },
+  "raw/Delhi_LodhiRoad.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_LodhiRoad.csv",
+   "sha256": "1233ae3e1fe3b798ca89e5447dcf87b66e8a9f2059ad709a1a9748c0f06e5dbb",
+   "bytes": 4292935,
+   "retrieved_utc": "2026-10-01T02:39:23Z"
+  },
+  "raw/Delhi_MandirMarg.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_MandirMarg.csv",
+   "sha256": "02b8767a827a9f6d245a36d2fe5a80f73eb035a9dc5da9282f32908b987ae8b3",
+   "bytes": 4445206,
+   "retrieved_utc": "2026-10-01T02:39:24Z"
+  },
+  "raw/Delhi_Mundka.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Mundka.csv",
+   "sha256": "fb9fa42b28f1bffd3e377e145afbe41d961d013e4965dc19a3871df8e4d71717",
+   "bytes": 4238608,
+   "retrieved_utc": "2026-10-01T02:39:25Z"
+  },
+  "raw/Delhi_Najafgarh.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Najafgarh.csv",
+   "sha256": "5c16a61e1b2634d66e14d13501104247713de7d742520331307e67f07f0197ce",
+   "bytes": 4370273,
+   "retrieved_utc": "2026-10-01T02:39:26Z"
+  },
+  "raw/Delhi_Narela.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Narela.csv",
+   "sha256": "5e5096bd38521565b35a6ef56e09d95ed9e506b74cfd2814319f35cc00656872",
+   "bytes": 4258433,
+   "retrieved_utc": "2026-10-01T02:39:27Z"
+  },
+  "raw/Delhi_NationalStadium.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_NationalStadium.csv",
+   "sha256": "c888cfe98a1d58ef26b6be1682f7960586462973b642a5f4404228298840956e",
+   "bytes": 4472868,
+   "retrieved_utc": "2026-10-01T02:39:28Z"
+  },
+  "raw/Delhi_NehruNagar.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_NehruNagar.csv",
+   "sha256": "4ed8aea064606eafab494f73afe690c547b2330b3fee7752c5036f8bc392aa82",
+   "bytes": 4470794,
+   "retrieved_utc": "2026-10-01T02:39:28Z"
+  },
+  "raw/Delhi_NorthCampus.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_NorthCampus.csv",
+   "sha256": "a8ff48ef1901f4724207f9792218c365f399224fe63fde3dce07cdd8f238dc3c",
+   "bytes": 4353378,
+   "retrieved_utc": "2026-10-01T02:39:29Z"
+  },
+  "raw/Delhi_Okhla.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Okhla.csv",
+   "sha256": "2dcda21f5b9f7da8520691f920d16be511a8d165a982808c0f2eafcd652fdc24",
+   "bytes": 3974443,
+   "retrieved_utc": "2026-10-01T02:39:30Z"
+  },
+  "raw/Delhi_Parpargunj.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Parpargunj.csv",
+   "sha256": "67ad6665a56fc0e93604f77514ec1127a94c25e6834a007bb472a023f30a76d2",
+   "bytes": 4247227,
+   "retrieved_utc": "2026-10-01T02:39:31Z"
+  },
+  "raw/Delhi_PunjabiBagh.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_PunjabiBagh.csv",
+   "sha256": "3279a1d76555278e40d2d7da998240086c5008370a654875eaa4ea10f8ed06d3",
+   "bytes": 4615884,
+   "retrieved_utc": "2026-10-01T02:39:32Z"
+  },
+  "raw/Delhi_PusaDPCC.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_PusaDPCC.csv",
+   "sha256": "f9997db718a8f04fd1d569234301d2d0cba4a7b37782724bd9343eb601e9b767",
+   "bytes": 4285618,
+   "retrieved_utc": "2026-10-01T02:39:33Z"
+  },
+  "raw/Delhi_RKPuram.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_RKPuram.csv",
+   "sha256": "ab0baf06a65a5c9454aa58cc26633992579ab7db13107d021ddf6cae8acfa282",
+   "bytes": 4450480,
+   "retrieved_utc": "2026-10-01T02:39:33Z"
+  },
+  "raw/Delhi_Rohini.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Rohini.csv",
+   "sha256": "cf1638ecc113dcd251e4fe23334401af11443d87992e415bc6cb25397f23af9b",
+   "bytes": 4007347,
+   "retrieved_utc": "2026-10-01T02:39:34Z"
+  },
+  "raw/Delhi_Shadipur.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Shadipur.csv",
+   "sha256": "942a8e26ea952b29c3b78aa285581ce4d655677b49c48bc4349bdb4705b1c190",
+   "bytes": 4398236,
+   "retrieved_utc": "2026-10-01T02:39:35Z"
+  },
+  "raw/Delhi_Sirifort.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Sirifort.csv",
+   "sha256": "0e70e6434764f99b184ee6fdc6837cd9eae4cdef0b3d931fb36bd0729b2816f2",
+   "bytes": 4346897,
+   "retrieved_utc": "2026-10-01T02:39:36Z"
+  },
+  "raw/Delhi_SriAuro.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_SriAuro.csv",
+   "sha256": "c77e355d4692008d17be0114cf9898fbaa3fb5ec8bbe86160acfc0fb56815be3",
+   "bytes": 4593760,
+   "retrieved_utc": "2026-10-01T02:39:37Z"
+  },
+  "raw/Delhi_VivekVihar.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_VivekVihar.csv",
+   "sha256": "839b460688aa7db3ea6c9ba519607554936770e14c166e192c8c5ad859642923",
+   "bytes": 4375731,
+   "retrieved_utc": "2026-10-01T02:39:38Z"
+  },
+  "raw/Delhi_Wazirpur.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_Wazirpur.csv",
+   "sha256": "8783cd94277b6b4797f72618c8e4b3e53f79750174a5596f195fee763351cf5a",
+   "bytes": 4242764,
+   "retrieved_utc": "2026-10-01T02:39:39Z"
+  },
+  "raw/Delhi_alipur.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Delhi_alipur.csv",
+   "sha256": "d891c1e70621537b3f53e5d560b656a1c20e4d3965b17ca10999b0e5c82dda5d",
+   "bytes": 3870870,
+   "retrieved_utc": "2026-10-01T02:39:40Z"
+  },
+  "raw/Haryana_Bahadurgarh_all.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Haryana_Bahadurgarh_all.csv",
+   "sha256": "a41e38ffaa95a42b59a19bab324a615ab4cfc946de5cc3819defc889c546b70c",
+   "bytes": 4627071,
+   "retrieved_utc": "2026-10-01T02:39:41Z"
+  },
+  "raw/Haryana_Faridabad_all.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Haryana_Faridabad_all.csv",
+   "sha256": "fe7e56f9f14f84adc7a21b4461f5b569868b4824de3d209b34e8f163674c16e7",
+   "bytes": 4197806,
+   "retrieved_utc": "2026-10-01T02:39:42Z"
+  },
+  "raw/Haryana_Gurugram_NISE.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Haryana_Gurugram_NISE.csv",
+   "sha256": "74729267223aeff4fc7894d8e2e49d1a20dd4ceb160b770fea15b817958883f5",
+   "bytes": 4389573,
+   "retrieved_utc": "2026-10-01T02:39:43Z"
+  },
+  "raw/Haryana_Gurugram_VikasSadan.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/Haryana_Gurugram_VikasSadan.csv",
+   "sha256": "c6dfc1bc608271767c6185dd364451caeb1da7b49bbfc39fd689e45a91ccea6e",
+   "bytes": 4670006,
+   "retrieved_utc": "2026-10-01T02:39:44Z"
+  },
+  "raw/UP_GreaterNoida_KnowledgePark.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/UP_GreaterNoida_KnowledgePark.csv",
+   "sha256": "fc25f0fb007996af84e89e79a85a8211a7f7afe3daf602193cd24617e0cabf2e",
+   "bytes": 4648864,
+   "retrieved_utc": "2026-10-01T02:39:44Z"
+  },
+  "raw/UP_GreaterNoida_KnowledgePark_V.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/UP_GreaterNoida_KnowledgePark_V.csv",
+   "sha256": "aa79359f3908f17ccc13e7da9b240dfc78a3d6103933cc7a9494213513ce5abb",
+   "bytes": 4559394,
+   "retrieved_utc": "2026-10-01T02:39:45Z"
+  },
+  "raw/UP_Noida_125.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/UP_Noida_125.csv",
+   "sha256": "90a637cd28665815cad0e1343cedd1950180fb922ceac677f607a018255e2231",
+   "bytes": 4152723,
+   "retrieved_utc": "2026-10-01T02:39:46Z"
+  },
+  "raw/UP_Noida_Sector-116_new.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/UP_Noida_Sector-116_new.csv",
+   "sha256": "bc9d27acc3faabda1cf6f288b3183a54cada5addbef33a3c376f13cdde128b51",
+   "bytes": 4078434,
+   "retrieved_utc": "2026-10-01T02:39:47Z"
+  },
+  "raw/UP_Noida_Sector1.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/UP_Noida_Sector1.csv",
+   "sha256": "e4327d4477ef50b9f13d449a191aaa814d4952bd161b0689f79744cdbe1cc091",
+   "bytes": 3773601,
+   "retrieved_utc": "2026-10-01T02:39:48Z"
+  },
+  "raw/UP_Noida_sector62.csv": {
+   "url": "https://g-ef94ef.f0ad1.36fe.data.globus.org/10.34770/60j3-yp02/495/pm25_ccr_copy/UP_Noida_sector62.csv",
+   "sha256": "386b6341a68052bc496be19fc76353a6a4749d60c88f05fc25547d93094b487e",
+   "bytes": 3946944,
+   "retrieved_utc": "2026-10-01T02:39:49Z"
+  }
+ },
+ "source": "Sharma & Mauzerall (2021), Princeton University, doi:10.34770/60j3-yp02",
+ "licence": "CC BY 4.0",
+ "catalog": "https://datacommons.princeton.edu/discovery/catalog/doi-10-34770-60j3-yp02.json"
+}
