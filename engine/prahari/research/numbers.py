@@ -67,6 +67,41 @@ def rows_split(h: dict) -> list[tuple]:
     return out
 
 
+def rows_r2(a: dict) -> list[tuple]:
+    """R2 (SIM): B*, every scenario's floors with their haze split, detection at B*, and families F and D."""
+    f = "r2_analysis.json"
+    out = [("R2 B* (false incidents/month, set on the H-mix selection seeds)", str(a["b_star"]), f, "b_star")]
+    for sc, s in a["scenarios"].items():
+        tag = f"R2 {sc}" + ("" if s["complete"] else " (incomplete)")
+        for name, m in s["methods"].items():
+            key = f"scenarios.{sc}.methods.{name}"
+            fl = m["floor_at_selected_knob"]
+            fi, d = fl["false_incidents"], fl["decomposition"]
+            out.append((f"{tag} {name}: floor, false incidents/month (selected knob {fl['cell']})",
+                        f"{fi['rate']:.2f} (bootstrap {fi['ci95_bootstrap'][0]:.2f}–{fi['ci95_bootstrap'][1]:.2f}); "
+                        f"inside haze {d['inside']}, outside {d['outside']}", f, key + ".floor_at_selected_knob"))
+            out.append((f"{tag} {name}: own floor", f"{m['own_floor']['fa_per_month']} at {m['own_floor']['cell']}",
+                        f, key + ".own_floor"))
+            b = m.get("at_b_star")
+            if b:
+                out.append((f"{tag} {name}: confirmed within 3 h at B*",
+                            f"{_pct(b['det'])} ({_pct(b['det_ci95'][0])}–{_pct(b['det_ci95'][1])}); "
+                            f"{b['detected']}/{b['fires']}; {b['false_incidents']['rate']:.2f} false incidents/month",
+                            f, key + ".at_b_star"))
+            if a["b_star"] is not None:
+                out.append((f"{tag} {name}: detection at equal FA = B*", _pct(m["det_at_equal_fa"][str(a["b_star"])]),
+                            f, key + ".det_at_equal_fa"))
+        for fam, comps in s.get("families", {}).items():
+            for x, c in comps.items():
+                if c.get("reachable"):
+                    scale, unit = (1, " /month") if fam == "F" else (100, " points")
+                    out.append((f"{tag} {x} − P2 (family {fam})",
+                                f"{scale * c['mean_diff']:+.2f}{unit} ({scale * c['ci95'][0]:+.2f} to "
+                                f"{scale * c['ci95'][1]:+.2f}); Wilcoxon p {c['p_wilcoxon']:.2g}, Holm p {c['p_holm']:.2g}",
+                                f, f"scenarios.{sc}.families.{fam}.{x}"))
+    return out
+
+
 def rows_real(r: dict, file: str) -> list[tuple]:
     """Real data (REAL): per cluster, events and the node-replay decomposition."""
     out = []
@@ -94,6 +129,9 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
     h = _load(out / "r1_haze_split.json")
     if h:
         rows += rows_split(h)
+    a2 = _load(out / "r2_analysis.json")
+    if a2:
+        rows += rows_r2(a2)
     for f in ("real_thompson2026.json", "real_sensorcommunity_stuttgart.json"):
         r = _load(out / f)
         if r:

@@ -871,6 +871,15 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     existing `haze` stream. No new RNG stream.
   - *Refactor:* `runner._pool_map` was factored out of `_pool`; R1 output is unchanged.
 
+- **P-8. R2 analysis code, committed before any R2 result file** (`analysis_r2.py`, `figures_r2.py`, R2 rows in
+  `numbers.py`, the run queue `scripts/research_queue.sh`).
+  - *Equal-false-alarm view on a knob surface:* R8's interpolation (linear in log₁₀ FA) runs along each method's Pareto
+    front. For a one-knob method with a monotone curve, that front is the curve itself. This fixes how protocol §4's
+    "each scenario's own curve is interpolated at B*" applies to two-knob methods.
+  - *Family F statistic:* per-seed false incidents per month at the floor knobs. Differences are reported as
+    method − P2, for both families.
+  - *E3 window:* episodes on the quiet pass; the calibration and tuning days are 28.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The
