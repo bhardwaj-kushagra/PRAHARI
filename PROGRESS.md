@@ -601,3 +601,41 @@ Optional follow-up study: a gain-normalised or combined common-mode reference, u
 
 **Next step:** the R1 close-out, which decomposes false incidents into inside and outside haze (R2-10) and builds the
 number-to-source table. Then the real data, once the environment's network access allows the data hosts.
+
+### 2026-09-30 to 10-01 — Session 21 (real data, R2 registered, India held-out check)
+
+- **Real data (REAL, exploratory):**
+  - *Thompson et al. N5 networks and Sensor.Community Stuttgart:* plans committed before the analyses
+    (`realdata-plan.md`, addendum B). Results are in `realdata.md` §1–4.
+  - *Chwalek et al. 2023:* the developer supplied the paper. It has no usable data, only video clips on a company
+    SharePoint (P-6).
+- **Protocol R2:**
+  - The developer approved it, and it is **registered** (`a24bfbd`) with its §10 implementation details.
+  - Code: M20b haze, the R9 factor reference, the R10 gate, R11 Mei, and the fast two-knob replay.
+  - The analysis and figure code (`b342ece`) was committed before any R2 result.
+  - The run queue (`scripts/research_queue.sh`) runs the R1 re-run, then the R2 selection, then the R2 test. It
+    restarts after container restarts, through hourly check-ins.
+- **India (addendum C, committed `f08c5b4` before any fetch):**
+  - *Sources:*
+    - Aakash/RIHN (CC BY-NC-ND 4.0, hourly PM₂.₅ and CO, 2022–2024);
+    - Princeton CPCB Delhi (CC BY 4.0, 2017–2019);
+    - CPCB through OpenAQ (no licence listed; the developer's decision, P-9; 15 min, 2025; OpenAQ has no Delhi
+      sensors for 2023–2024).
+  - *Results* (`results/research/real_india.json`, `realdata.md` §5):
+    - network-wide PM rises occur at ×0.05–×0.33 of the simulator's rate;
+    - where they occur, they are more even than M20b draws;
+    - Delhi onset spreads fall inside the operator's range, and Delhi events start at night;
+    - on 15-minute Delhi data the node layer gives 1.41 candidates per node per 30 d, with only 3.1% in common-mode
+      periods;
+    - the OpenAQ and Princeton copies of CPCB data agree to a 7.6% median difference.
+  - *Logs:* implementation notes in P-10 and the additive diagnostics in P-11.
+- **Tests:**
+  - new: `test_research_r2.py` (11), `test_research_r2_analysis.py` (3), `test_research_realdata_india.py` (6);
+  - the N5 and Stuttgart outputs regenerate byte-identically;
+  - the engine suite passed (252 passed, 21 skipped) before the India code; the new research test files pass.
+
+**Next step:**
+
+- When the R1 re-run finishes: `hazesplit` (0 mismatches expected), then the update to `results-r1.md` and the
+  `numbers` regeneration.
+- When the R2 runs finish: `r2-analyse`, `r2-figures` and `results-r2.md`.

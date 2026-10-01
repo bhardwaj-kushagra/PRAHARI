@@ -262,7 +262,17 @@ def catalogue(pm, tick_s: int, t_start: int, w0: int, w1: int, latlon=None) -> d
     win = slice(a0, a1)
     days = float(np.isfinite(f[win]).sum()) / day
     excursions = local_excursions(elevated[win], f[win], min_len=max(1, 900 // tick_s))
-    return {"events": stats, "n_events": len(stats), "days_with_share": round(days, 2),
+    zw = ((y - med) / sc)[win]
+    zw = zw[np.isfinite(zw)]
+    fw = f[win]
+    diagnostics = {"note": "exploratory; added after the first run to explain the event rate",
+                   "elevated_share_station_ticks": round(float(elevated[win].sum() / max(active[win].sum(), 1)), 4),
+                   "z_scale_median_log": round(float(np.nanmedian(sc[win])), 3),
+                   "z_q99": round(float(np.percentile(zw, 99)), 2) if zw.size else None,
+                   "share_f_q99": round(float(np.nanpercentile(fw, 99)), 3) if np.isfinite(fw).any() else None,
+                   "share_f_max": round(float(np.nanmax(fw)), 3) if np.isfinite(fw).any() else None,
+                   "ticks_f_ge_0_25": int(np.nansum(fw >= 0.25)), "ticks_f_ge_0_5": int(np.nansum(fw >= 0.5))}
+    return {"events": stats, "n_events": len(stats), "days_with_share": round(days, 2), "diagnostics": diagnostics,
             "events_per_day": round(len(stats) / days, 3) if days else None,
             "local_excursions_per_station_day": round(excursions / max(float(active[win].sum()) / day, 1e-9), 4),
             "_masks": (evs, elevated, active, f, med)}

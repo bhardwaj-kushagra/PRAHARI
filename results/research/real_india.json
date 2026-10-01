@@ -1,0 +1,1465 @@
+{
+ "label": "REAL (exploratory)",
+ "plan": "docs/research/realdata-plan.md, addendum C",
+ "sources": {
+  "AK": "Aakash project, RIHN; CC BY-NC-ND 4.0 (no redistribution)",
+  "DL": "Sharma & Mauzerall (2021), Princeton, doi:10.34770/60j3-yp02; CC BY 4.0",
+  "DL15": "CPCB through OpenAQ v3; no licence listed by OpenAQ; developer's decision (DECISIONS P-9)"
+ },
+ "operator": {
+  "seed": 20261003,
+  "draws": 10000,
+  "model": "prahari.sensors.haze.M20b, r2.yaml H-mix"
+ },
+ "clusters": {
+  "AK-2022": {
+   "analysed": true,
+   "tick_s": 3600,
+   "stations": 23,
+   "station_ids": [
+    "NS-03",
+    "NS-05",
+    "NS-07",
+    "NS-09",
+    "NS-10",
+    "NS-11",
+    "NS-12",
+    "NS-14",
+    "NS-15",
+    "NS-17",
+    "NS-20",
+    "NS-24",
+    "NS-26",
+    "NS-28",
+    "NS-D3",
+    "NS-H1",
+    "NS-H2",
+    "NS-H3",
+    "NS-P4",
+    "NS-P6",
+    "NS-P7",
+    "NS-U1",
+    "NS-U2"
+   ],
+   "spacing_km": {
+    "min": 14.81,
+    "median": 157.15,
+    "max": 470.45
+   },
+   "spacing_source": "Singh et al. 2023 Table S1 layout",
+   "events": [],
+   "n_events": 0,
+   "days_with_share": 61.0,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.016,
+    "z_scale_median_log": 0.346,
+    "z_q99": 3.56,
+    "share_f_q99": 0.194,
+    "share_f_max": 0.4,
+    "ticks_f_ge_0_25": 10,
+    "ticks_f_ge_0_5": 0
+   },
+   "events_per_day": 0.0,
+   "local_excursions_per_station_day": 0.088,
+   "operator": {
+    "cv_q05_50_95": [
+     0.276,
+     0.442,
+     0.738
+    ],
+    "onset_spread_min_q05_50_95": [
+     420.0,
+     1320.0,
+     4320.0
+    ],
+    "share_involved_q05_50_95": [
+     0.31,
+     1.0,
+     1.0
+    ],
+    "p_full_coverage": 0.599,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 0,
+    "events_per_day": 0.0,
+    "rate_multiplier_vs_h_mix": null,
+    "night_share": null,
+    "night_share_ci95_wilson": null,
+    "night_share_reference": 0.7,
+    "cv_median": null,
+    "cv_operator_q05_50_95": [
+     0.276,
+     0.442,
+     0.738
+    ],
+    "cv_share_inside_operator_90": null,
+    "onset_spread_median_min": null,
+    "onset_spread_operator_q05_50_95": [
+     420.0,
+     1320.0,
+     4320.0
+    ],
+    "onset_spread_share_inside_operator_90": null,
+    "share_events_involving_ge_90pct": null,
+    "operator_p_full_coverage": 0.599,
+    "front_fits_r2_ge_0_5": 0,
+    "front_speed_share_in_1_6_ms": null,
+    "front_speed_median_ms": null,
+    "duration_share_in_300_840_min": null,
+    "duration_median_min": null
+   },
+   "co": {
+    "stations": 7,
+    "n_events": 3,
+    "events_per_day": 0.06,
+    "night_share": 0.0,
+    "share_pm_events_overlapping_co": null,
+    "share_co_events_overlapping_pm": 0.0
+   },
+   "preseason_september": {
+    "stations": 22,
+    "n_events": 0,
+    "events_per_day": 0.0,
+    "night_share": null
+   }
+  },
+  "AK-2023": {
+   "analysed": true,
+   "tick_s": 3600,
+   "stations": 23,
+   "station_ids": [
+    "NS-03",
+    "NS-04",
+    "NS-05",
+    "NS-06",
+    "NS-08",
+    "NS-09",
+    "NS-10",
+    "NS-11",
+    "NS-12",
+    "NS-14",
+    "NS-15",
+    "NS-16",
+    "NS-17",
+    "NS-18",
+    "NS-19",
+    "NS-20",
+    "NS-21",
+    "NS-22",
+    "NS-24",
+    "NS-25",
+    "NS-26",
+    "NS-28",
+    "NS-29"
+   ],
+   "spacing_km": {
+    "min": 14.81,
+    "median": 157.15,
+    "max": 470.45
+   },
+   "spacing_source": "Singh et al. 2023 Table S1 layout",
+   "events": [],
+   "n_events": 0,
+   "days_with_share": 61.0,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.016,
+    "z_scale_median_log": 0.347,
+    "z_q99": 3.54,
+    "share_f_q99": 0.177,
+    "share_f_max": 0.304,
+    "ticks_f_ge_0_25": 8,
+    "ticks_f_ge_0_5": 0
+   },
+   "events_per_day": 0.0,
+   "local_excursions_per_station_day": 0.0869,
+   "operator": {
+    "cv_q05_50_95": [
+     0.273,
+     0.44,
+     0.735
+    ],
+    "onset_spread_min_q05_50_95": [
+     420.0,
+     1320.0,
+     4320.0
+    ],
+    "share_involved_q05_50_95": [
+     0.31,
+     1.0,
+     1.0
+    ],
+    "p_full_coverage": 0.598,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 0,
+    "events_per_day": 0.0,
+    "rate_multiplier_vs_h_mix": null,
+    "night_share": null,
+    "night_share_ci95_wilson": null,
+    "night_share_reference": 0.7,
+    "cv_median": null,
+    "cv_operator_q05_50_95": [
+     0.273,
+     0.44,
+     0.735
+    ],
+    "cv_share_inside_operator_90": null,
+    "onset_spread_median_min": null,
+    "onset_spread_operator_q05_50_95": [
+     420.0,
+     1320.0,
+     4320.0
+    ],
+    "onset_spread_share_inside_operator_90": null,
+    "share_events_involving_ge_90pct": null,
+    "operator_p_full_coverage": 0.598,
+    "front_fits_r2_ge_0_5": 0,
+    "front_speed_share_in_1_6_ms": null,
+    "front_speed_median_ms": null,
+    "duration_share_in_300_840_min": null,
+    "duration_median_min": null
+   },
+   "co": {
+    "stations": 17,
+    "n_events": 1,
+    "events_per_day": 0.016,
+    "night_share": 0.0,
+    "share_pm_events_overlapping_co": null,
+    "share_co_events_overlapping_pm": 0.0
+   },
+   "preseason_september": {
+    "stations": 12,
+    "n_events": 0,
+    "events_per_day": 0.0,
+    "night_share": null
+   }
+  },
+  "AK-2024": {
+   "analysed": true,
+   "tick_s": 3600,
+   "stations": 24,
+   "station_ids": [
+    "NS-01",
+    "NS-03",
+    "NS-04",
+    "NS-05",
+    "NS-06",
+    "NS-07",
+    "NS-09",
+    "NS-10",
+    "NS-11",
+    "NS-12",
+    "NS-14",
+    "NS-15",
+    "NS-16",
+    "NS-18",
+    "NS-20",
+    "NS-21",
+    "NS-22",
+    "NS-24",
+    "NS-25",
+    "NS-26",
+    "NS-27",
+    "NS-28",
+    "NS-29",
+    "NS-30"
+   ],
+   "spacing_km": {
+    "min": 14.81,
+    "median": 157.15,
+    "max": 470.45
+   },
+   "spacing_source": "Singh et al. 2023 Table S1 layout",
+   "events": [
+    {
+     "start_tick": 1748,
+     "end_tick": 1756,
+     "duration_min": 480,
+     "stations_involved": 17,
+     "stations_active": 23,
+     "share_involved": 0.739,
+     "onset_spread_min": 240,
+     "peak_excess_median": 943.0,
+     "peak_excess_cv": 0.382,
+     "start_ist": "2024-11-12 20:00",
+     "start_hour_ist": 20,
+     "night": true
+    }
+   ],
+   "n_events": 1,
+   "days_with_share": 61.0,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.0144,
+    "z_scale_median_log": 0.353,
+    "z_q99": 3.41,
+    "share_f_q99": 0.212,
+    "share_f_max": 0.565,
+    "ticks_f_ge_0_25": 14,
+    "ticks_f_ge_0_5": 3
+   },
+   "events_per_day": 0.016,
+   "local_excursions_per_station_day": 0.0781,
+   "operator": {
+    "cv_q05_50_95": [
+     0.277,
+     0.439,
+     0.74
+    ],
+    "onset_spread_min_q05_50_95": [
+     420.0,
+     1320.0,
+     4320.0
+    ],
+    "share_involved_q05_50_95": [
+     0.31,
+     1.0,
+     1.0
+    ],
+    "p_full_coverage": 0.598,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 1,
+    "events_per_day": 0.016,
+    "rate_multiplier_vs_h_mix": 0.16,
+    "night_share": 1.0,
+    "night_share_ci95_wilson": [
+     0.207,
+     1.0
+    ],
+    "night_share_reference": 0.7,
+    "cv_median": 0.382,
+    "cv_operator_q05_50_95": [
+     0.277,
+     0.439,
+     0.74
+    ],
+    "cv_share_inside_operator_90": 1.0,
+    "onset_spread_median_min": 240.0,
+    "onset_spread_operator_q05_50_95": [
+     420.0,
+     1320.0,
+     4320.0
+    ],
+    "onset_spread_share_inside_operator_90": 0.0,
+    "share_events_involving_ge_90pct": 0.0,
+    "operator_p_full_coverage": 0.598,
+    "front_fits_r2_ge_0_5": 0,
+    "front_speed_share_in_1_6_ms": null,
+    "front_speed_median_ms": null,
+    "duration_share_in_300_840_min": 1.0,
+    "duration_median_min": 480.0
+   },
+   "co": {
+    "stations": 9,
+    "n_events": 5,
+    "events_per_day": 0.09,
+    "night_share": 0.8,
+    "share_pm_events_overlapping_co": 1.0,
+    "share_co_events_overlapping_pm": 0.2
+   },
+   "preseason_september": {
+    "stations": 16,
+    "n_events": 0,
+    "events_per_day": 0.0,
+    "night_share": null
+   }
+  },
+  "DL-2017": {
+   "analysed": true,
+   "tick_s": 3600,
+   "stations": 5,
+   "station_ids": [
+    "Burari",
+    "IGI Airport",
+    "NSIT Dwarka",
+    "Sector '62'",
+    "Shadipur"
+   ],
+   "spacing_km": {
+    "min": 4.9,
+    "median": 21.16,
+    "max": 28.67
+   },
+   "spacing_source": "files",
+   "events": [
+    {
+     "start_tick": 1606,
+     "end_tick": 1611,
+     "duration_min": 300,
+     "stations_involved": 5,
+     "stations_active": 5,
+     "share_involved": 1.0,
+     "onset_spread_min": 120,
+     "peak_excess_median": 399.6,
+     "peak_excess_cv": 0.089,
+     "start_ist": "2017-11-06 22:00",
+     "start_hour_ist": 22,
+     "night": true,
+     "front": {
+      "speed_ms": 4.099,
+      "direction_deg": 45.6,
+      "residual_sd_min": 52.43,
+      "r2": 0.618,
+      "n": 5
+     }
+    }
+   ],
+   "n_events": 1,
+   "days_with_share": 38.92,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.0157,
+    "z_scale_median_log": 0.278,
+    "z_q99": 3.41,
+    "share_f_q99": 0.2,
+    "share_f_max": 1.0,
+    "ticks_f_ge_0_25": 7,
+    "ticks_f_ge_0_5": 4
+   },
+   "events_per_day": 0.026,
+   "local_excursions_per_station_day": 0.1157,
+   "operator": {
+    "cv_q05_50_95": [
+     0.098,
+     0.343,
+     0.684
+    ],
+    "onset_spread_min_q05_50_95": [
+     0.0,
+     60.0,
+     300.0
+    ],
+    "share_involved_q05_50_95": [
+     0.2,
+     1.0,
+     1.0
+    ],
+    "p_full_coverage": 0.523,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 1,
+    "events_per_day": 0.026,
+    "rate_multiplier_vs_h_mix": 0.26,
+    "night_share": 1.0,
+    "night_share_ci95_wilson": [
+     0.207,
+     1.0
+    ],
+    "night_share_reference": 0.7,
+    "cv_median": 0.089,
+    "cv_operator_q05_50_95": [
+     0.098,
+     0.343,
+     0.684
+    ],
+    "cv_share_inside_operator_90": 0.0,
+    "onset_spread_median_min": 120.0,
+    "onset_spread_operator_q05_50_95": [
+     0.0,
+     60.0,
+     300.0
+    ],
+    "onset_spread_share_inside_operator_90": 1.0,
+    "share_events_involving_ge_90pct": 1.0,
+    "operator_p_full_coverage": 0.523,
+    "front_fits_r2_ge_0_5": 1,
+    "front_speed_share_in_1_6_ms": 1.0,
+    "front_speed_median_ms": 4.099,
+    "duration_share_in_300_840_min": 1.0,
+    "duration_median_min": 300.0
+   }
+  },
+  "DL-2018": {
+   "analysed": true,
+   "tick_s": 3600,
+   "stations": 31,
+   "station_ids": [
+    "Anand Vihar",
+    "Aya Nagar",
+    "CRRI Mathura Road",
+    "DTU",
+    "Delhi",
+    "Dwarka Sector'8'",
+    "Faridabad",
+    "Gurugram_NISE",
+    "IGI Airport",
+    "ITO",
+    "JN Stadium",
+    "Jahangirpuri",
+    "Mandir Marg",
+    "Mundka",
+    "NSIT Dwarka",
+    "Najafgarh",
+    "National Stadium",
+    "North Campus",
+    "Okhla",
+    "Parpargunj",
+    "Punjabi Bagh",
+    "PusaDPCC",
+    "RK Puram",
+    "Rohini",
+    "Sector '125'",
+    "Sector '62'",
+    "Shadipur",
+    "Sirifort",
+    "Sri Aurobindo",
+    "Vivek Vihar",
+    "Wazirpur"
+   ],
+   "spacing_km": {
+    "min": 0.94,
+    "median": 16.5,
+    "max": 42.78
+   },
+   "spacing_source": "files",
+   "events": [
+    {
+     "start_tick": 1629,
+     "end_tick": 1635,
+     "duration_min": 360,
+     "stations_involved": 22,
+     "stations_active": 27,
+     "share_involved": 0.815,
+     "onset_spread_min": 120,
+     "peak_excess_median": 762.6,
+     "peak_excess_cv": 0.208,
+     "start_ist": "2018-11-07 21:00",
+     "start_hour_ist": 21,
+     "night": true,
+     "front": {
+      "speed_ms": 32.11,
+      "direction_deg": 233.4,
+      "residual_sd_min": 51.3,
+      "r2": 0.008,
+      "n": 22
+     }
+    },
+    {
+     "start_tick": 1821,
+     "end_tick": 1828,
+     "duration_min": 420,
+     "stations_involved": 23,
+     "stations_active": 31,
+     "share_involved": 0.742,
+     "onset_spread_min": 120,
+     "peak_excess_median": 192.8,
+     "peak_excess_cv": 0.176,
+     "start_ist": "2018-11-15 21:00",
+     "start_hour_ist": 21,
+     "night": true,
+     "front": {
+      "speed_ms": 8.447,
+      "direction_deg": 22.7,
+      "residual_sd_min": 44.68,
+      "r2": 0.121,
+      "n": 23
+     }
+    }
+   ],
+   "n_events": 2,
+   "days_with_share": 61.0,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.0169,
+    "z_scale_median_log": 0.313,
+    "z_q99": 3.63,
+    "share_f_q99": 0.233,
+    "share_f_max": 0.742,
+    "ticks_f_ge_0_25": 14,
+    "ticks_f_ge_0_5": 6
+   },
+   "events_per_day": 0.033,
+   "local_excursions_per_station_day": 0.0471,
+   "operator": {
+    "cv_q05_50_95": [
+     0.272,
+     0.442,
+     0.738
+    ],
+    "onset_spread_min_q05_50_95": [
+     60.0,
+     120.0,
+     420.0
+    ],
+    "share_involved_q05_50_95": [
+     0.258,
+     1.0,
+     1.0
+    ],
+    "p_full_coverage": 0.56,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 2,
+    "events_per_day": 0.033,
+    "rate_multiplier_vs_h_mix": 0.33,
+    "night_share": 1.0,
+    "night_share_ci95_wilson": [
+     0.342,
+     1.0
+    ],
+    "night_share_reference": 0.7,
+    "cv_median": 0.192,
+    "cv_operator_q05_50_95": [
+     0.272,
+     0.442,
+     0.738
+    ],
+    "cv_share_inside_operator_90": 0.0,
+    "onset_spread_median_min": 120.0,
+    "onset_spread_operator_q05_50_95": [
+     60.0,
+     120.0,
+     420.0
+    ],
+    "onset_spread_share_inside_operator_90": 1.0,
+    "share_events_involving_ge_90pct": 0.0,
+    "operator_p_full_coverage": 0.56,
+    "front_fits_r2_ge_0_5": 0,
+    "front_speed_share_in_1_6_ms": null,
+    "front_speed_median_ms": null,
+    "duration_share_in_300_840_min": 1.0,
+    "duration_median_min": 390.0
+   }
+  },
+  "DL-2019": {
+   "analysed": true,
+   "tick_s": 3600,
+   "stations": 36,
+   "station_ids": [
+    "Alipur",
+    "Anand Vihar",
+    "Aya Nagar",
+    "Burari",
+    "CRRI Mathura Road",
+    "DTU",
+    "Delhi",
+    "Dwarka Sector'8'",
+    "Faridabad",
+    "GrNoida_Know.ParkV",
+    "Gurugram_NISE",
+    "IGI Airport",
+    "ITO",
+    "JN Stadium",
+    "Jahangirpuri",
+    "Mandir Marg",
+    "Mundka",
+    "NSIT Dwarka",
+    "Najafgarh",
+    "National Stadium",
+    "North Campus",
+    "Okhla",
+    "Parpargunj",
+    "Punjabi Bagh",
+    "PusaDPCC",
+    "RK Puram",
+    "Rohini",
+    "Sector '125'",
+    "Sector '62'",
+    "Sector'1'",
+    "Sector'116'",
+    "Shadipur",
+    "Sirifort",
+    "Sri Aurobindo",
+    "Vivek Vihar",
+    "Wazirpur"
+   ],
+   "spacing_km": {
+    "min": 0.94,
+    "median": 17.93,
+    "max": 48.39
+   },
+   "spacing_source": "files",
+   "events": [
+    {
+     "start_tick": 1366,
+     "end_tick": 1371,
+     "duration_min": 300,
+     "stations_involved": 22,
+     "stations_active": 36,
+     "share_involved": 0.611,
+     "onset_spread_min": 180,
+     "peak_excess_median": 552.5,
+     "peak_excess_cv": 0.185,
+     "start_ist": "2019-10-27 22:00",
+     "start_hour_ist": 22,
+     "night": true,
+     "front": {
+      "speed_ms": 27.289,
+      "direction_deg": 332.2,
+      "residual_sd_min": 63.25,
+      "r2": 0.008,
+      "n": 22
+     }
+    },
+    {
+     "start_tick": 1803,
+     "end_tick": 1809,
+     "duration_min": 360,
+     "stations_involved": 19,
+     "stations_active": 36,
+     "share_involved": 0.528,
+     "onset_spread_min": 120,
+     "peak_excess_median": 306.5,
+     "peak_excess_cv": 0.299,
+     "start_ist": "2019-11-15 03:00",
+     "start_hour_ist": 3,
+     "night": true,
+     "front": {
+      "speed_ms": 42.88,
+      "direction_deg": 37.1,
+      "residual_sd_min": 36.93,
+      "r2": 0.007,
+      "n": 19
+     }
+    }
+   ],
+   "n_events": 2,
+   "days_with_share": 61.0,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.0145,
+    "z_scale_median_log": 0.314,
+    "z_q99": 3.41,
+    "share_f_q99": 0.308,
+    "share_f_max": 0.56,
+    "ticks_f_ge_0_25": 19,
+    "ticks_f_ge_0_5": 4
+   },
+   "events_per_day": 0.033,
+   "local_excursions_per_station_day": 0.037,
+   "operator": {
+    "cv_q05_50_95": [
+     0.28,
+     0.446,
+     0.743
+    ],
+    "onset_spread_min_q05_50_95": [
+     60.0,
+     180.0,
+     480.0
+    ],
+    "share_involved_q05_50_95": [
+     0.278,
+     1.0,
+     1.0
+    ],
+    "p_full_coverage": 0.572,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 2,
+    "events_per_day": 0.033,
+    "rate_multiplier_vs_h_mix": 0.33,
+    "night_share": 1.0,
+    "night_share_ci95_wilson": [
+     0.342,
+     1.0
+    ],
+    "night_share_reference": 0.7,
+    "cv_median": 0.242,
+    "cv_operator_q05_50_95": [
+     0.28,
+     0.446,
+     0.743
+    ],
+    "cv_share_inside_operator_90": 0.5,
+    "onset_spread_median_min": 150.0,
+    "onset_spread_operator_q05_50_95": [
+     60.0,
+     180.0,
+     480.0
+    ],
+    "onset_spread_share_inside_operator_90": 1.0,
+    "share_events_involving_ge_90pct": 0.0,
+    "operator_p_full_coverage": 0.572,
+    "front_fits_r2_ge_0_5": 0,
+    "front_speed_share_in_1_6_ms": null,
+    "front_speed_median_ms": null,
+    "duration_share_in_300_840_min": 1.0,
+    "duration_median_min": 330.0
+   }
+  },
+  "DL15-2025": {
+   "analysed": true,
+   "tick_s": 900,
+   "stations": 45,
+   "station_ids": [
+    "10484",
+    "10486",
+    "10831",
+    "10919",
+    "10921",
+    "11607",
+    "17",
+    "235",
+    "50",
+    "5404",
+    "5541",
+    "5570",
+    "5586",
+    "5598",
+    "5610",
+    "5613",
+    "5616",
+    "5622",
+    "5626",
+    "5627",
+    "5630",
+    "5634",
+    "5650",
+    "5665",
+    "6356",
+    "6358",
+    "6359",
+    "6924",
+    "6929",
+    "6931",
+    "6932",
+    "6934",
+    "6938",
+    "6957",
+    "6960",
+    "6980",
+    "6986",
+    "6988",
+    "7005",
+    "8235",
+    "8239",
+    "8365",
+    "8475",
+    "8915",
+    "8917"
+   ],
+   "spacing_km": {
+    "min": 0.0,
+    "median": 15.85,
+    "max": 43.66
+   },
+   "spacing_source": "files",
+   "events": [
+    {
+     "start_tick": 4356,
+     "end_tick": 4370,
+     "duration_min": 210,
+     "stations_involved": 30,
+     "stations_active": 45,
+     "share_involved": 0.667,
+     "onset_spread_min": 75,
+     "peak_excess_median": 209.5,
+     "peak_excess_cv": 0.265,
+     "start_ist": "2025-11-01 09:00",
+     "start_hour_ist": 9,
+     "night": false,
+     "front": {
+      "speed_ms": 24.185,
+      "direction_deg": 182.0,
+      "residual_sd_min": 23.29,
+      "r2": 0.052,
+      "n": 30
+     }
+    }
+   ],
+   "n_events": 1,
+   "days_with_share": 57.24,
+   "diagnostics": {
+    "note": "exploratory; added after the first run to explain the event rate",
+    "elevated_share_station_ticks": 0.0176,
+    "z_scale_median_log": 0.316,
+    "z_q99": 3.87,
+    "share_f_q99": 0.256,
+    "share_f_max": 0.659,
+    "ticks_f_ge_0_25": 58,
+    "ticks_f_ge_0_5": 7
+   },
+   "events_per_day": 0.017,
+   "local_excursions_per_station_day": 0.1026,
+   "operator": {
+    "cv_q05_50_95": [
+     0.287,
+     0.452,
+     0.736
+    ],
+    "onset_spread_min_q05_50_95": [
+     75.0,
+     180.0,
+     510.0
+    ],
+    "share_involved_q05_50_95": [
+     0.244,
+     0.978,
+     1.0
+    ],
+    "p_full_coverage": 0.568,
+    "n": 10000
+   },
+   "held_out": {
+    "n_events": 1,
+    "events_per_day": 0.017,
+    "rate_multiplier_vs_h_mix": 0.17,
+    "night_share": 0.0,
+    "night_share_ci95_wilson": [
+     0.0,
+     0.793
+    ],
+    "night_share_reference": 0.7,
+    "cv_median": 0.265,
+    "cv_operator_q05_50_95": [
+     0.287,
+     0.452,
+     0.736
+    ],
+    "cv_share_inside_operator_90": 0.0,
+    "onset_spread_median_min": 75.0,
+    "onset_spread_operator_q05_50_95": [
+     75.0,
+     180.0,
+     510.0
+    ],
+    "onset_spread_share_inside_operator_90": 1.0,
+    "share_events_involving_ge_90pct": 0.0,
+    "operator_p_full_coverage": 0.568,
+    "front_fits_r2_ge_0_5": 0,
+    "front_speed_share_in_1_6_ms": null,
+    "front_speed_median_ms": null,
+    "duration_share_in_300_840_min": 0.0,
+    "duration_median_min": 210.0
+   },
+   "node_replay": {
+    "h": 40.727919936180115,
+    "h_at_cap": false,
+    "test_days": 61.0,
+    "nodes": 45,
+    "candidates": 129,
+    "candidates_per_node_30d": 1.41,
+    "share_in_cm_mask": 0.031,
+    "share_in_event_spans": 0.039,
+    "cm_mask_time_share_test": 0.007,
+    "event_time_share_test": 0.004,
+    "exceedance_outside_cm_at_1pct": 0.0163
+   }
+  }
+ },
+ "pooled": {
+  "AK": {
+   "n_events": 1,
+   "days_with_share": 183.0,
+   "events_per_day": 0.005,
+   "rate_multiplier_vs_h_mix": 0.05,
+   "night_share": 1.0,
+   "night_share_ci95_wilson": [
+    0.207,
+    1.0
+   ],
+   "cv_share_inside_operator_90": 1.0,
+   "onset_spread_share_inside_operator_90": 0.0,
+   "share_events_involving_ge_90pct": 0.0,
+   "operator_p_full_coverage_mean": 0.598,
+   "front_fits_r2_ge_0_5": 0,
+   "front_speed_share_in_1_6_ms": null,
+   "duration_share_in_300_840_min": 1.0
+  },
+  "DL": {
+   "n_events": 5,
+   "days_with_share": 160.92,
+   "events_per_day": 0.031,
+   "rate_multiplier_vs_h_mix": 0.31,
+   "night_share": 1.0,
+   "night_share_ci95_wilson": [
+    0.566,
+    1.0
+   ],
+   "cv_share_inside_operator_90": 0.2,
+   "onset_spread_share_inside_operator_90": 1.0,
+   "share_events_involving_ge_90pct": 0.2,
+   "operator_p_full_coverage_mean": 0.552,
+   "front_fits_r2_ge_0_5": 1,
+   "front_speed_share_in_1_6_ms": 1.0,
+   "duration_share_in_300_840_min": 1.0
+  },
+  "DL15": {
+   "n_events": 1,
+   "days_with_share": 57.24,
+   "events_per_day": 0.017,
+   "rate_multiplier_vs_h_mix": 0.17,
+   "night_share": 0.0,
+   "night_share_ci95_wilson": [
+    0.0,
+    0.793
+   ],
+   "cv_share_inside_operator_90": 0.0,
+   "onset_spread_share_inside_operator_90": 1.0,
+   "share_events_involving_ge_90pct": 0.0,
+   "operator_p_full_coverage_mean": 0.568,
+   "front_fits_r2_ge_0_5": 0,
+   "front_speed_share_in_1_6_ms": null,
+   "duration_share_in_300_840_min": 0.0
+  }
+ },
+ "princeton_files": [
+  {
+   "file": "Delhi-SoniaVihar.csv",
+   "station": null,
+   "lat": null,
+   "lon": null,
+   "excluded": "PM2.5 column ambiguous or missing",
+   "hourly_steps": null
+  },
+  {
+   "file": "Delhi_AnandVihar.csv",
+   "station": "Anand Vihar",
+   "lat": 28.618821,
+   "lon": 77.010183,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 21.42
+  },
+  {
+   "file": "Delhi_AshokVihar.csv",
+   "station": "Ashok Vihar",
+   "lat": 28.485269,
+   "lon": 77.015767,
+   "excluded": "outside 25 km",
+   "hourly_steps": 1.0,
+   "km": 25.24
+  },
+  {
+   "file": "Delhi_AyaNagar.csv",
+   "station": "Aya Nagar",
+   "lat": 28.475084,
+   "lon": 77.133169,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 17.98
+  },
+  {
+   "file": "Delhi_Bawana.csv",
+   "station": "Bawana",
+   "lat": 28.808334,
+   "lon": 77.041482,
+   "excluded": "outside 25 km",
+   "hourly_steps": 1.0,
+   "km": 28.43
+  },
+  {
+   "file": "Delhi_Burari.csv",
+   "station": "Burari",
+   "lat": 28.755099,
+   "lon": 77.199031,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 16.09
+  },
+  {
+   "file": "Delhi_CRRI.csv",
+   "station": "CRRI Mathura Road",
+   "lat": 28.551242,
+   "lon": 77.274622,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 8.15
+  },
+  {
+   "file": "Delhi_DTU.csv",
+   "station": "DTU",
+   "lat": 28.750616,
+   "lon": 77.116578,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 18.86
+  },
+  {
+   "file": "Delhi_Dwarka.csv",
+   "station": "NSIT Dwarka",
+   "lat": 28.597807,
+   "lon": 77.073263,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 15.34
+  },
+  {
+   "file": "Delhi_Dwarka_8.csv",
+   "station": "Dwarka Sector'8'",
+   "lat": 28.565612,
+   "lon": 77.067064,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 16.71
+  },
+  {
+   "file": "Delhi_IGI.csv",
+   "station": "IGI Airport",
+   "lat": 28.554842,
+   "lon": 77.08434,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 15.57
+  },
+  {
+   "file": "Delhi_ITO.csv",
+   "station": "ITO",
+   "lat": 28.62735,
+   "lon": 77.243303,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 2.1
+  },
+  {
+   "file": "Delhi_JNStadium.csv",
+   "station": "JN Stadium",
+   "lat": 28.69847,
+   "lon": 77.104687,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 15.45
+  },
+  {
+   "file": "Delhi_Jahangirpuri.csv",
+   "station": "Jahangirpuri",
+   "lat": 28.72562,
+   "lon": 77.182357,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 13.35
+  },
+  {
+   "file": "Delhi_LodhiRoad.csv",
+   "station": null,
+   "lat": null,
+   "lon": null,
+   "excluded": "PM2.5 column ambiguous or missing",
+   "hourly_steps": null
+  },
+  {
+   "file": "Delhi_MandirMarg.csv",
+   "station": "Mandir Marg",
+   "lat": 28.574151,
+   "lon": 77.07731,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 15.47
+  },
+  {
+   "file": "Delhi_Mundka.csv",
+   "station": "Mundka",
+   "lat": 28.681933,
+   "lon": 77.030648,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 20.87
+  },
+  {
+   "file": "Delhi_Najafgarh.csv",
+   "station": "Najafgarh",
+   "lat": 28.613304,
+   "lon": 76.980431,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 24.31
+  },
+  {
+   "file": "Delhi_Narela.csv",
+   "station": "Narela",
+   "lat": 28.852488,
+   "lon": 77.097797,
+   "excluded": "outside 25 km",
+   "hourly_steps": 1.0,
+   "km": 29.57
+  },
+  {
+   "file": "Delhi_NationalStadium.csv",
+   "station": "National Stadium",
+   "lat": 28.612536,
+   "lon": 77.237331,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 0.77
+  },
+  {
+   "file": "Delhi_NehruNagar.csv",
+   "station": "Delhi",
+   "lat": 28.570244,
+   "lon": 77.253286,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 5.28
+  },
+  {
+   "file": "Delhi_NorthCampus.csv",
+   "station": "North Campus",
+   "lat": 28.714833,
+   "lon": 77.129333,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 14.97
+  },
+  {
+   "file": "Delhi_Okhla.csv",
+   "station": "Okhla",
+   "lat": 28.562572,
+   "lon": 77.286059,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 7.86
+  },
+  {
+   "file": "Delhi_Parpargunj.csv",
+   "station": "Parpargunj",
+   "lat": 28.6347,
+   "lon": 77.3046,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 7.72
+  },
+  {
+   "file": "Delhi_PunjabiBagh.csv",
+   "station": "Punjabi Bagh",
+   "lat": 28.667505,
+   "lon": 77.127874,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 11.63
+  },
+  {
+   "file": "Delhi_PusaDPCC.csv",
+   "station": "PusaDPCC",
+   "lat": 28.64204,
+   "lon": 77.174999,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 6.23
+  },
+  {
+   "file": "Delhi_RKPuram.csv",
+   "station": "RK Puram",
+   "lat": 28.562199,
+   "lon": 77.172283,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 7.94
+  },
+  {
+   "file": "Delhi_Rohini.csv",
+   "station": "Rohini",
+   "lat": 28.702805,
+   "lon": 77.096446,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 16.39
+  },
+  {
+   "file": "Delhi_Shadipur.csv",
+   "station": "Shadipur",
+   "lat": 28.652243,
+   "lon": 77.151937,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 8.74
+  },
+  {
+   "file": "Delhi_Sirifort.csv",
+   "station": "Sirifort",
+   "lat": 28.551793,
+   "lon": 77.214456,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 6.95
+  },
+  {
+   "file": "Delhi_SriAuro.csv",
+   "station": "Sri Aurobindo",
+   "lat": 28.569229,
+   "lon": 77.207283,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 5.32
+  },
+  {
+   "file": "Delhi_VivekVihar.csv",
+   "station": "Vivek Vihar",
+   "lat": 28.66852,
+   "lon": 77.3167,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 10.52
+  },
+  {
+   "file": "Delhi_Wazirpur.csv",
+   "station": "Wazirpur",
+   "lat": 28.68929,
+   "lon": 77.17513,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 10.01
+  },
+  {
+   "file": "Delhi_alipur.csv",
+   "station": "Alipur",
+   "lat": 28.796635,
+   "lon": 77.13916,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 22.25
+  },
+  {
+   "file": "Haryana_Bahadurgarh_all.csv",
+   "station": "Bahadurgarh",
+   "lat": 28.6914,
+   "lon": 76.9314,
+   "excluded": "outside 25 km",
+   "hourly_steps": 1.0,
+   "km": 30.37
+  },
+  {
+   "file": "Haryana_Faridabad_all.csv",
+   "station": "Faridabad",
+   "lat": 28.4089,
+   "lon": 77.3178,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 24.27
+  },
+  {
+   "file": "Haryana_Gurugram_NISE.csv",
+   "station": "Gurugram_NISE",
+   "lat": 28.4235,
+   "lon": 77.1489,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 22.48
+  },
+  {
+   "file": "Haryana_Gurugram_VikasSadan.csv",
+   "station": "Gurugram_VikasSadan",
+   "lat": 28.4501,
+   "lon": 77.0285,
+   "excluded": "outside 25 km",
+   "hourly_steps": 1.0,
+   "km": 26.71
+  },
+  {
+   "file": "UP_GreaterNoida_KnowledgePark.csv",
+   "station": "GrNoida_Know.ParkIII",
+   "lat": 28.4785,
+   "lon": 77.4814,
+   "excluded": "outside 25 km",
+   "hourly_steps": 1.0,
+   "km": 28.79
+  },
+  {
+   "file": "UP_GreaterNoida_KnowledgePark_V.csv",
+   "station": "GrNoida_Know.ParkV",
+   "lat": 28.5509,
+   "lon": 77.4709,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 24.56
+  },
+  {
+   "file": "UP_Noida_125.csv",
+   "station": "Sector '125'",
+   "lat": 28.5438,
+   "lon": 77.331,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 12.54
+  },
+  {
+   "file": "UP_Noida_Sector-116_new.csv",
+   "station": "Sector'116'",
+   "lat": 28.5672,
+   "lon": 77.397,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 17.13
+  },
+  {
+   "file": "UP_Noida_Sector1.csv",
+   "station": "Sector'1'",
+   "lat": 28.5355,
+   "lon": 77.391,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 17.97
+  },
+  {
+   "file": "UP_Noida_sector62.csv",
+   "station": "Sector '62'",
+   "lat": 28.628,
+   "lon": 77.3649,
+   "excluded": null,
+   "hourly_steps": 1.0,
+   "km": 13.32
+  }
+ ],
+ "provenance_2017": {
+  "window_ist": "2017-10-01 to 2017-11-30",
+  "stations": [
+   {
+    "openaq": "Income Tax Office, Delhi - CPCB",
+    "princeton": "ITO",
+    "km": 0.733,
+    "hours_compared": 683,
+    "median_abs_rel_diff": 0.0651
+   },
+   {
+    "openaq": "Delhi Technological University, Delhi - CPCB",
+    "princeton": "DTU",
+    "km": 0.808,
+    "hours_compared": 791,
+    "median_abs_rel_diff": 0.0903
+   },
+   {
+    "openaq": "R K Puram, Delhi - DPCC",
+    "match": null
+   },
+   {
+    "openaq": "Anand Vihar, New Delhi - DPCC",
+    "match": null
+   },
+   {
+    "openaq": "Mandir Marg, Delhi - DPCC",
+    "match": null
+   },
+   {
+    "openaq": "Shadipur, Delhi - CPCB",
+    "princeton": "Shadipur",
+    "km": 0.604,
+    "hours_compared": 1126,
+    "median_abs_rel_diff": 0.084
+   },
+   {
+    "openaq": "Sector16A, Faridabad - HSPCB",
+    "princeton": "Faridabad",
+    "km": 0.416,
+    "hours_compared": 633,
+    "median_abs_rel_diff": 0.1704
+   },
+   {
+    "openaq": "IHBAS, Delhi - CPCB",
+    "match": null
+   },
+   {
+    "openaq": "Punjabi Bagh, Delhi - DPCC",
+    "princeton": "Punjabi Bagh",
+    "km": 0.789,
+    "hours_compared": 498,
+    "median_abs_rel_diff": 0.0
+   },
+   {
+    "openaq": "Pusa, Delhi - IMD",
+    "match": null
+   }
+  ],
+  "matched": 5,
+  "median_abs_rel_diff_all": 0.0764,
+  "hours": 3731
+ }
+}

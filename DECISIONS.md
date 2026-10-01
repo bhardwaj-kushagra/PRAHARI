@@ -906,8 +906,9 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
       guessing.
     - The AK observation operator uses the **Table S1 layout** (29 sites), since it needs only the network geometry,
       not which file sits where.
-  - *AK 2023:* that zip starts on 1 Oct 2023, so it has no September pre-season and no baseline warm-up. The first 12
-    hours of 1 Oct 2023 cannot be elevated, under the plan's rule.
+  - *AK 2023 (corrected after the run):* the note first said the whole 2023 zip starts on 1 Oct; that was read off one
+    file. Station start dates vary: 14 start on 1 Sep, 14 between 18 and 27 Sep, one on 1 Oct and one on 18 Oct. The
+    analysis code never used the note; it uses each file as it is.
   - *AK CO:* the raw `CO` mean column is used; the files' `delta_CO` variants are derived offsets. Missing is −99999.
   - *Times:* Aakash's `dateUTC` column is used. Princeton's `From Date` is read as IST, per the addendum.
   - *Princeton file formats* (format rules only; no values were examined):
@@ -920,6 +921,12 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     Gurugram. That is likely a geocoding error by the compilers, about 25 km from the real site. The addendum's rule
     (the files' coordinates govern) is followed, so it falls outside the 25 km radius and is excluded. This is noted
     as a limitation, not corrected by hand.
+
+- **P-11. India results: one additive diagnostics block (exploratory).** After the first run of `realdata-india`
+  showed few events, each cluster-year gained a `diagnostics` block (elevated share, robust scale, network-share
+  quantiles) to explain the rate.
+  - A rerun reproduced every other output exactly.
+  - No definition, threshold or selection changed.
 
 ## Public site (branch model)
 

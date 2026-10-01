@@ -119,6 +119,43 @@ Every number the paper may quote, with the result file (under `results/research/
 | R1 wrong prior P2-prior0.1 at P2's ≤10 knob | 81.9% at 8.45/month | `r1_analysis.json` | `priors.P2-prior0.1.10` |
 | R1 wrong prior P2-prior0.2 at P2's ≤10 knob | 80.8% at 8.71/month | `r1_analysis.json` | `priors.P2-prior0.2.10` |
 | R1 wrong prior P2-prior0.3 at P2's ≤10 knob | 79.7% at 8.82/month | `r1_analysis.json` | `priors.P2-prior0.3.10` |
+| REAL India AK-2022: stations, events | 23 stations; 0 events in 61.0 days (0.0/day, ×None H-mix) | `real_india.json` | `clusters.AK-2022.held_out.events_per_day` |
+| REAL India AK-2022: night share (Wilson 95%) | None (None); reference 0.7 | `real_india.json` | `clusters.AK-2022.held_out.night_share` |
+| REAL India AK-2022: amplitude CV median; share inside operator 90% | None; None (operator [0.276, 0.442, 0.738]) | `real_india.json` | `clusters.AK-2022.held_out.cv_median` |
+| REAL India AK-2022: onset spread median (min); share inside operator 90% | None; None (operator [420.0, 1320.0, 4320.0]) | `real_india.json` | `clusters.AK-2022.held_out.onset_spread_median_min` |
+| REAL India AK-2022: CO events; share of PM events overlapping a CO event | 3; None | `real_india.json` | `clusters.AK-2022.co` |
+| REAL India AK-2023: stations, events | 23 stations; 0 events in 61.0 days (0.0/day, ×None H-mix) | `real_india.json` | `clusters.AK-2023.held_out.events_per_day` |
+| REAL India AK-2023: night share (Wilson 95%) | None (None); reference 0.7 | `real_india.json` | `clusters.AK-2023.held_out.night_share` |
+| REAL India AK-2023: amplitude CV median; share inside operator 90% | None; None (operator [0.273, 0.44, 0.735]) | `real_india.json` | `clusters.AK-2023.held_out.cv_median` |
+| REAL India AK-2023: onset spread median (min); share inside operator 90% | None; None (operator [420.0, 1320.0, 4320.0]) | `real_india.json` | `clusters.AK-2023.held_out.onset_spread_median_min` |
+| REAL India AK-2023: CO events; share of PM events overlapping a CO event | 1; None | `real_india.json` | `clusters.AK-2023.co` |
+| REAL India AK-2024: stations, events | 24 stations; 1 events in 61.0 days (0.016/day, ×0.16 H-mix) | `real_india.json` | `clusters.AK-2024.held_out.events_per_day` |
+| REAL India AK-2024: night share (Wilson 95%) | 1.0 ([0.207, 1.0]); reference 0.7 | `real_india.json` | `clusters.AK-2024.held_out.night_share` |
+| REAL India AK-2024: amplitude CV median; share inside operator 90% | 0.382; 1.0 (operator [0.277, 0.439, 0.74]) | `real_india.json` | `clusters.AK-2024.held_out.cv_median` |
+| REAL India AK-2024: onset spread median (min); share inside operator 90% | 240.0; 0.0 (operator [420.0, 1320.0, 4320.0]) | `real_india.json` | `clusters.AK-2024.held_out.onset_spread_median_min` |
+| REAL India AK-2024: CO events; share of PM events overlapping a CO event | 5; 1.0 | `real_india.json` | `clusters.AK-2024.co` |
+| REAL India DL-2017: stations, events | 5 stations; 1 events in 38.92 days (0.026/day, ×0.26 H-mix) | `real_india.json` | `clusters.DL-2017.held_out.events_per_day` |
+| REAL India DL-2017: night share (Wilson 95%) | 1.0 ([0.207, 1.0]); reference 0.7 | `real_india.json` | `clusters.DL-2017.held_out.night_share` |
+| REAL India DL-2017: amplitude CV median; share inside operator 90% | 0.089; 0.0 (operator [0.098, 0.343, 0.684]) | `real_india.json` | `clusters.DL-2017.held_out.cv_median` |
+| REAL India DL-2017: onset spread median (min); share inside operator 90% | 120.0; 1.0 (operator [0.0, 60.0, 300.0]) | `real_india.json` | `clusters.DL-2017.held_out.onset_spread_median_min` |
+| REAL India DL-2018: stations, events | 31 stations; 2 events in 61.0 days (0.033/day, ×0.33 H-mix) | `real_india.json` | `clusters.DL-2018.held_out.events_per_day` |
+| REAL India DL-2018: night share (Wilson 95%) | 1.0 ([0.342, 1.0]); reference 0.7 | `real_india.json` | `clusters.DL-2018.held_out.night_share` |
+| REAL India DL-2018: amplitude CV median; share inside operator 90% | 0.192; 0.0 (operator [0.272, 0.442, 0.738]) | `real_india.json` | `clusters.DL-2018.held_out.cv_median` |
+| REAL India DL-2018: onset spread median (min); share inside operator 90% | 120.0; 1.0 (operator [60.0, 120.0, 420.0]) | `real_india.json` | `clusters.DL-2018.held_out.onset_spread_median_min` |
+| REAL India DL-2019: stations, events | 36 stations; 2 events in 61.0 days (0.033/day, ×0.33 H-mix) | `real_india.json` | `clusters.DL-2019.held_out.events_per_day` |
+| REAL India DL-2019: night share (Wilson 95%) | 1.0 ([0.342, 1.0]); reference 0.7 | `real_india.json` | `clusters.DL-2019.held_out.night_share` |
+| REAL India DL-2019: amplitude CV median; share inside operator 90% | 0.242; 0.5 (operator [0.28, 0.446, 0.743]) | `real_india.json` | `clusters.DL-2019.held_out.cv_median` |
+| REAL India DL-2019: onset spread median (min); share inside operator 90% | 150.0; 1.0 (operator [60.0, 180.0, 480.0]) | `real_india.json` | `clusters.DL-2019.held_out.onset_spread_median_min` |
+| REAL India DL15-2025: stations, events | 45 stations; 1 events in 57.24 days (0.017/day, ×0.17 H-mix) | `real_india.json` | `clusters.DL15-2025.held_out.events_per_day` |
+| REAL India DL15-2025: night share (Wilson 95%) | 0.0 ([0.0, 0.793]); reference 0.7 | `real_india.json` | `clusters.DL15-2025.held_out.night_share` |
+| REAL India DL15-2025: amplitude CV median; share inside operator 90% | 0.265; 0.0 (operator [0.287, 0.452, 0.736]) | `real_india.json` | `clusters.DL15-2025.held_out.cv_median` |
+| REAL India DL15-2025: onset spread median (min); share inside operator 90% | 75.0; 1.0 (operator [75.0, 180.0, 510.0]) | `real_india.json` | `clusters.DL15-2025.held_out.onset_spread_median_min` |
+| REAL India DL15-2025: node candidates per node per 30 d; share while ≥ 25% elevated | 1.41; 3.1% | `real_india.json` | `clusters.DL15-2025.node_replay` |
+| REAL India DL15-2025: exceedance at nominal 1% (outside common mode) | 1.6% | `real_india.json` | `clusters.DL15-2025.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL India AK pooled: events per day; night share (Wilson 95%) | 0.005 (×0.05 H-mix); 1.0 ([0.207, 1.0]) | `real_india.json` | `pooled.AK` |
+| REAL India DL pooled: events per day; night share (Wilson 95%) | 0.031 (×0.31 H-mix); 1.0 ([0.566, 1.0]) | `real_india.json` | `pooled.DL` |
+| REAL India DL15 pooled: events per day; night share (Wilson 95%) | 0.017 (×0.17 H-mix); 0.0 ([0.0, 0.793]) | `real_india.json` | `pooled.DL15` |
+| REAL India provenance: OpenAQ vs Princeton CPCB, 2017, median abs. relative difference | 0.0764 over 3731 station-hours (5 stations) | `real_india.json` | `provenance_2017` |
 | REAL WR: common-mode events | 1 in 30.0 days | `real_thompson2026.json` | `clusters.WR.n_events` |
 | REAL WR: node candidates per node per 30 d | 6.375 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
 | REAL WR: exceedance at nominal 1% (outside common mode) | 1.2% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
