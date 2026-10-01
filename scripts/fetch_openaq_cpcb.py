@@ -17,6 +17,7 @@ The API key is read from OPENAQ_API_KEY and never written or printed. Requests s
 """
 import argparse
 import gzip
+import http.client
 import json
 import os
 import sys
@@ -60,7 +61,7 @@ def get(path: str, params: dict) -> dict:
                 time.sleep(float(e.headers.get("Retry-After") or 2 ** (k + 2)))
                 continue
             raise
-        except urllib.error.URLError:
+        except (urllib.error.URLError, http.client.IncompleteRead, ConnectionError, TimeoutError):
             if k < 5:
                 time.sleep(2 ** (k + 2))
                 continue
