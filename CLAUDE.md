@@ -118,4 +118,11 @@ python -m prahari.research run test --jobs 4        # seeds 1001–1100 (~3–4 
 python -m prahari.research sweep --jobs 4           # sensitivity sweeps on seeds 1001–1010 (~2–3 h)
 python -m prahari.research analyse                  # → results/research/r1_{selection,test,sweeps,analysis}.json
 python -m prahari.research figures                  # → docs/research/figures/ (from the r1_*.json files only)
+python -m prahari.research hazesplit                # R1 inside/outside-haze split (R2-10) → r1_haze_split.json
+python -m prahari.research realdata                 # REAL: Thompson et al. N5 → real_thompson2026.json (also realdata-sc)
+python -m prahari.research numbers                  # → docs/research/numbers.md (number-to-source table)
+python -m prahari.research r2-run selection --jobs 4 [--scenarios H-mix]   # protocol R2 (docs/research/protocol-r2.md)
+python -m prahari.research r2-run test --jobs 4     # every scenario with test seeds (~12 h; resumes)
+python -m prahari.research r2-analyse               # → results/research/r2_*.json; then r2-figures
+pytest engine/tests/unit/test_research_r2.py        # R2 unit and fidelity tests (~2 min)
 ```

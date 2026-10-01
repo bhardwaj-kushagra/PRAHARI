@@ -850,6 +850,27 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - *Addition:* one labelled addition, the WR candidate share within 24 h of a recorded fire.
   - *Why a PM₂.₅ analogue:* the dataset is PM₂.₅ at kilometre spacing, not MOX at 70 m.
 
+- **P-5. Real data: Sensor.Community, Stuttgart** (public, ODbL 1.0; October 2024; 9 SDS011 sensors within 2 km).
+  - *Storage:* fetched by `scripts/fetch_sensorcommunity_stuttgart.py`; raw files are not committed, and the
+    shortlist and manifest are in `data/real/sensorcommunity_stuttgart/`.
+  - *Plan:* addendum B of `realdata-plan.md`, committed before fetching.
+  - *Outputs:* `results/research/real_sensorcommunity_stuttgart.json` and `realdata.md` §4 (REAL, exploratory).
+  - *Use:* its event statistics widened the R2 haze ranges before registration (protocol R2 §7). Under charter rule
+    7 it is therefore not used to validate them.
+- **P-6. Chwalek et al. (Fire 2023): no usable data.**
+  - The developer supplied the paper (30 Sep). Its Data Availability Statement says only "publicly available", with
+    no repository.
+  - Its one link (tinyurl) resolves to a company SharePoint folder of video clips, with no data files and no licence.
+  - Under charter rule 7 it is not used as data; it can be cited for the BME680's qualitative response near a burn
+    (two units, 1 Hz, under 5 m downwind).
+- **P-7. Protocol R2 registered (30 Sep 2026)** after the developer approved the draft ("approved, go ahead with
+  R2").
+  - *Order:* the registration commit holds the protocol (with §10, the implementation details), `r2.yaml`, the code
+    and its tests, and it precedes every R2 seed file.
+  - *M20b:* `params.haze.form` (`m20` default, byte-identical to release 1.0, pinned by a test), drawing from the
+    existing `haze` stream. No new RNG stream.
+  - *Refactor:* `runner._pool_map` was factored out of `_pool`; R1 output is unchanged.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

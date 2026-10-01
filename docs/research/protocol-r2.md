@@ -1,8 +1,12 @@
 # Research protocol R2 — common-mode handling and the false-alarm floor
 
-**Status: DRAFT for the developer's review.** Nothing in round R2 has been run. Once approved, this page is marked
-*registered* in a commit that comes before the first R2 result file (charter rule 1). After that, any change is a
-logged deviation.
+**Status: REGISTERED on 30 Sep 2026**, after the developer's review and approval, and before any R2 seed was run
+(charter rule 1). §10 records the implementation details fixed at registration. Any change from here on is a logged
+deviation in `DECISIONS.md`.
+
+**Configuration:** [`configs/research/r2.yaml`](../../configs/research/r2.yaml). **Code:** `python -m prahari.research
+r2-run | r2-analyse | r2-figures` (`engine/prahari/research/*_r2.py`, `edge2.py`, `gate.py`, `mei.py`; M20b in
+`engine/prahari/sensors/haze.py`).
 
 **Scope.** Simulation, with real-data anchors where they exist ([realdata.md](realdata.md)). Every number R2 produces
 is labelled **SIM**.
@@ -187,3 +191,38 @@ Runs are resumable, and each seed file is written atomically and deterministical
   edge stages at every ρ on a short run.
 - **Unit tests:** reference values for R9, R10 and R11 and for the M20b haze geometry (delays, swath coverage, gain
   field).
+
+## 10. Fixed at registration (implementation details the draft left open)
+
+None of these changes a scenario, method, grid, seed, budget or endpoint. Each is how the draft's text is implemented.
+
+1. **M20b randomness.** M20b draws from the `haze` stream, which no other module reads. The default form (`m20`)
+   draws exactly as release 1.0; a test pins 40 days of its output to a reference hash.
+2. **Night weighting.** "Night" is 20:00–08:00 of simulated time (minute of day; runs start at 00:00). The start rate
+   is multiplied by 0.7/0.5 at night and 0.3/0.5 by day, so the mean rate stays 1 per 10 days.
+3. **Swath and delays.**
+   - The swath centre is uniform over the nodes' span along the swath's normal. The edges are linear over 20 m.
+   - Every node's delay is its front delay plus its jitter, so the first node to see an episode need not be at zero.
+4. **Haze level for E3 and E5.** An episode counts as active from its start until the last node's trapezoid ends
+   (the per-minute level is Σ_e A_e · max_i trapezoid(t − t_e − δ_i,e)).
+5. **R9 timing.**
+   - ĝ ≡ 1 during the calibration days, so the input there is x − median(x − b).
+   - ĝ is fitted once, at the end of the calibration days, and then held fixed.
+   - b is the main node layer's M24 slow baseline.
+6. **P2-gate** is the main node layer with SCMR off, plus the R10 gate. θ = off is P2 with SCMR off.
+7. **R11 refractory.** After a Mei alarm all Wᵢ reset to 0. For 30 minutes no alarm can fire, but the statistics keep
+   accumulating, as the node CUSUM (M28) does.
+8. **ρ grid.** P2 and P2-medSCMR share the grid {0, 1.5, 2, 3, 4, 6, 10}; ρ = 0 means SCMR off. R1's P2 is ρ = 3.
+9. **B*.** B* is set by P2 and the six family-D methods. AR is reported at B* if it reaches it.
+10. **Selection rules on the pooled selection seeds (H-mix):**
+    - **Floor knob:** the lowest false incidents; ties go to the higher detection, then to the first cell in grid
+      order.
+    - **Operating point at B*:** the highest detection among cells with false incidents ≤ B*; ties go to the lower
+      false incidents, then to the first cell.
+11. **Fast replay guards.** The two-knob replay refuses anything other than the legacy RAQ quorum, the Bayes-factor
+    stub, the real SCMR and no lightning relaxation. All of these hold in golden.
+12. **Implementation checks (§9), all passed before registration** (`engine/tests/unit/test_research_r2.py`, no
+    protocol seed used):
+    - the fast replay equals the registered edge stages at every ρ on development seed 11;
+    - with the release haze, R2's P2 at ρ = 3, its P2-med and its AR equal R1's rows on seed 11 (short protocol);
+    - reference values for M20b's geometry, the gain-field correlation, R9, R10 and R11.

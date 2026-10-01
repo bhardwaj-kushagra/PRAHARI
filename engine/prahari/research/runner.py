@@ -76,12 +76,16 @@ def _job(args) -> str:
     return str(path)
 
 
-def _pool(tasks: list, jobs: int) -> list:
+def _pool_map(fn, tasks: list, jobs: int) -> list:
     if jobs > 1 and len(tasks) > 1:
         import multiprocessing as mp
         with mp.get_context("fork").Pool(min(jobs, len(tasks))) as pool:
-            return pool.map(_job, tasks, chunksize=1)
-    return [_job(t) for t in tasks]
+            return pool.map(fn, tasks, chunksize=1)
+    return [fn(t) for t in tasks]
+
+
+def _pool(tasks: list, jobs: int) -> list:
+    return _pool_map(_job, tasks, jobs)
 
 
 def run_stage(r1: dict, stage: str, jobs: int = 1, out_dir: Path = DEFAULT_OUT, seeds=None) -> list:
