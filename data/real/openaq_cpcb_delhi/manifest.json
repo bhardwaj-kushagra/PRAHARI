@@ -1,0 +1,3039 @@
+{
+ "files": {
+  "raw/2017/sensor13860_p1.json.gz": {
+   "sensor": 13860,
+   "season": 2017,
+   "page": 1,
+   "sha256": "a65ba93287db7a4b530c46e6b12d1e3313a102c89c0de705a380fe1e31edcf70",
+   "bytes": 23406,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:23Z"
+  },
+  "raw/2017/sensor13860_p2.json.gz": {
+   "sensor": 13860,
+   "season": 2017,
+   "page": 2,
+   "sha256": "4c03e4fb933eb9717c8a09b89012bd643d635109041e90b8817849dd241fbcbc",
+   "bytes": 20415,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:24Z"
+  },
+  "raw/2017/sensor13860_p3.json.gz": {
+   "sensor": 13860,
+   "season": 2017,
+   "page": 3,
+   "sha256": "cedd74f18517e987fb60cec7fc9450e4501cb4d8f745daabb0f401e35104b95f",
+   "bytes": 20429,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:26Z"
+  },
+  "raw/2017/sensor13860_p4.json.gz": {
+   "sensor": 13860,
+   "season": 2017,
+   "page": 4,
+   "sha256": "51ec53a3df1ef7c30bc31c1a0f98b2f5fd0c2727336ea6ed63657019b288253c",
+   "bytes": 5043,
+   "n": 218,
+   "retrieved_utc": "2026-10-01T03:00:28Z"
+  },
+  "raw/2017/sensor13861_p1.json.gz": {
+   "sensor": 13861,
+   "season": 2017,
+   "page": 1,
+   "sha256": "9a3885b0091f9e02365f298650600775ee2b60acbd5ca7c3853db054b7c59c39",
+   "bytes": 18579,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:45Z"
+  },
+  "raw/2017/sensor13861_p2.json.gz": {
+   "sensor": 13861,
+   "season": 2017,
+   "page": 2,
+   "sha256": "9358e7eadc942c0279c6f148e7ff70fd8a37f5c05cd0bc992229ae218957fadd",
+   "bytes": 18708,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:06Z"
+  },
+  "raw/2017/sensor13861_p3.json.gz": {
+   "sensor": 13861,
+   "season": 2017,
+   "page": 3,
+   "sha256": "7c9796ce6ac4d74cabc30b2e0bf8bfcf903cbc2751008a87f956fc2f1d542bdb",
+   "bytes": 20431,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:08Z"
+  },
+  "raw/2017/sensor13861_p4.json.gz": {
+   "sensor": 13861,
+   "season": 2017,
+   "page": 4,
+   "sha256": "8df21061ef753648da511443b2933b5e3996db4d0e0c412d2c670765ea875d23",
+   "bytes": 7075,
+   "n": 313,
+   "retrieved_utc": "2026-10-01T03:00:10Z"
+  },
+  "raw/2017/sensor13864_p1.json.gz": {
+   "sensor": 13864,
+   "season": 2017,
+   "page": 1,
+   "sha256": "e217122b826456cc70f4e27d5702f0baade7be19c895ac2ac77418be043476bc",
+   "bytes": 18247,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:31Z"
+  },
+  "raw/2017/sensor13864_p2.json.gz": {
+   "sensor": 13864,
+   "season": 2017,
+   "page": 2,
+   "sha256": "7f12b8df168b1ed7828d8fc91b569bd2f94710e9c8a7c2715511ae096911eea3",
+   "bytes": 18117,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:32Z"
+  },
+  "raw/2017/sensor13864_p3.json.gz": {
+   "sensor": 13864,
+   "season": 2017,
+   "page": 3,
+   "sha256": "abc4aacf78058f968c655a6ff922bf857f87fee98128555e0667d26af1ea544b",
+   "bytes": 18553,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:34Z"
+  },
+  "raw/2017/sensor13864_p4.json.gz": {
+   "sensor": 13864,
+   "season": 2017,
+   "page": 4,
+   "sha256": "85710ce354ff62d08edc0b7d69e85fc6a7e62db4f8f775143afe5bf2ff114a0e",
+   "bytes": 18857,
+   "n": 921,
+   "retrieved_utc": "2026-10-01T02:59:36Z"
+  },
+  "raw/2017/sensor13868_p1.json.gz": {
+   "sensor": 13868,
+   "season": 2017,
+   "page": 1,
+   "sha256": "f7b04f9f3705de529cccfc26909d3625e4a90aa6674de92c558ff4b24837f086",
+   "bytes": 21844,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:19Z"
+  },
+  "raw/2017/sensor13868_p2.json.gz": {
+   "sensor": 13868,
+   "season": 2017,
+   "page": 2,
+   "sha256": "adff8406c504ae782080566681bbcbeb6f41e5c1922bcd3b18cb146ffc72af43",
+   "bytes": 21827,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:20Z"
+  },
+  "raw/2017/sensor13868_p3.json.gz": {
+   "sensor": 13868,
+   "season": 2017,
+   "page": 3,
+   "sha256": "1bcd5757ed4df3649851eba76fad626268a4e5b44a4049a4bb2ce32d5f38b389",
+   "bytes": 17198,
+   "n": 781,
+   "retrieved_utc": "2026-10-01T03:00:22Z"
+  },
+  "raw/2017/sensor13900_p1.json.gz": {
+   "sensor": 13900,
+   "season": 2017,
+   "page": 1,
+   "sha256": "a5034b7ae46800ea3241dba452ad0d38bff2e05e63b408ae0a466e77ee5de530",
+   "bytes": 22440,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:30Z"
+  },
+  "raw/2017/sensor13900_p2.json.gz": {
+   "sensor": 13900,
+   "season": 2017,
+   "page": 2,
+   "sha256": "918efc71f7b71a8e62b7778f6b0c72b1413b8079dc3bdc7caf05775000ed85e2",
+   "bytes": 22716,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:32Z"
+  },
+  "raw/2017/sensor13900_p3.json.gz": {
+   "sensor": 13900,
+   "season": 2017,
+   "page": 3,
+   "sha256": "2be4b73cf757b4e86ff1330e6a772f624df724e437b80e0209732bf63ada417a",
+   "bytes": 15799,
+   "n": 670,
+   "retrieved_utc": "2026-10-01T03:00:33Z"
+  },
+  "raw/2017/sensor14087_p1.json.gz": {
+   "sensor": 14087,
+   "season": 2017,
+   "page": 1,
+   "sha256": "b8c9a03936f0df0257df39f729b587111140dfa8c86a10d0122d25920b195142",
+   "bytes": 20670,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:34Z"
+  },
+  "raw/2017/sensor14087_p2.json.gz": {
+   "sensor": 14087,
+   "season": 2017,
+   "page": 2,
+   "sha256": "ab25cd30d11bc532a017bf2134354ba521ac3968744e6ee5c18b14726513c85d",
+   "bytes": 10024,
+   "n": 438,
+   "retrieved_utc": "2026-10-01T03:00:35Z"
+  },
+  "raw/2017/sensor35_p1.json.gz": {
+   "sensor": 35,
+   "season": 2017,
+   "page": 1,
+   "sha256": "a36d69ee513b48ca5a9f7c5b12c4d1d14bf9da531eec5e15f15c85c3465200e6",
+   "bytes": 18744,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:37Z"
+  },
+  "raw/2017/sensor35_p2.json.gz": {
+   "sensor": 35,
+   "season": 2017,
+   "page": 2,
+   "sha256": "4bf00402111769f4e43553aa4332b6555c168b74960b6d641678779b006106d0",
+   "bytes": 19073,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:38Z"
+  },
+  "raw/2017/sensor35_p3.json.gz": {
+   "sensor": 35,
+   "season": 2017,
+   "page": 3,
+   "sha256": "49a84b645a0db672ab9676ef7a1c4bc907d49c95dc89d8b5d6051f0798176eed",
+   "bytes": 8777,
+   "n": 445,
+   "retrieved_utc": "2026-10-01T02:59:40Z"
+  },
+  "raw/2017/sensor384_p1.json.gz": {
+   "sensor": 384,
+   "season": 2017,
+   "page": 1,
+   "sha256": "acc65fa479915e86de7fbf143c25037fa4d03c1825929cfb00272ee9f08bc454",
+   "bytes": 19033,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:11Z"
+  },
+  "raw/2017/sensor384_p2.json.gz": {
+   "sensor": 384,
+   "season": 2017,
+   "page": 2,
+   "sha256": "2855dd1f669364dd6a530ae67795216b842311e2f5d1e28d34e9692d905c3e75",
+   "bytes": 19410,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:13Z"
+  },
+  "raw/2017/sensor384_p3.json.gz": {
+   "sensor": 384,
+   "season": 2017,
+   "page": 3,
+   "sha256": "0fed20af347c4649dc9670943cde232e2e508441531bb94a8ed4314a5ba167ad",
+   "bytes": 7221,
+   "n": 366,
+   "retrieved_utc": "2026-10-01T03:00:15Z"
+  },
+  "raw/2017/sensor388_p1.json.gz": {
+   "sensor": 388,
+   "season": 2017,
+   "page": 1,
+   "sha256": "995e0c2198e3e370e67b58e32ab2403ff83fc86a97c0d8a46c213c018fecac9f",
+   "bytes": 23088,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T03:00:16Z"
+  },
+  "raw/2017/sensor388_p2.json.gz": {
+   "sensor": 388,
+   "season": 2017,
+   "page": 2,
+   "sha256": "1a5bcb7a6563281f6963228732ca291d8908feb7833b900c4d84963c4dcd8f02",
+   "bytes": 21555,
+   "n": 898,
+   "retrieved_utc": "2026-10-01T03:00:18Z"
+  },
+  "raw/2017/sensor396_p1.json.gz": {
+   "sensor": 396,
+   "season": 2017,
+   "page": 1,
+   "sha256": "e1e2554be18ce13ddd1435d6d819b90cbf89f63289225267d8a2b019faee303e",
+   "bytes": 19040,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:41Z"
+  },
+  "raw/2017/sensor396_p2.json.gz": {
+   "sensor": 396,
+   "season": 2017,
+   "page": 2,
+   "sha256": "8418db3d5151be08c8a9dcbaa7ea6aac2ad908e196d8451f09912ef528200253",
+   "bytes": 19242,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:43Z"
+  },
+  "raw/2017/sensor396_p3.json.gz": {
+   "sensor": 396,
+   "season": 2017,
+   "page": 3,
+   "sha256": "4252672f452ae6d2ef89a4e8313a609829b7f488c5fb3d71c4d793a434b5bb6e",
+   "bytes": 799,
+   "n": 20,
+   "retrieved_utc": "2026-10-01T02:59:44Z"
+  },
+  "raw/2025/sensor12234678_p1.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 1,
+   "sha256": "e8e6d45cdcb48d9a3ebc8f838e7807750b94712c74fd1cfdf668f1ffc52f3a8d",
+   "bytes": 19136,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:44Z"
+  },
+  "raw/2025/sensor12234678_p2.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 2,
+   "sha256": "d49b8bc9f82d39533f12be4f3e4171ff7796c37ea749411a9877d8c31f775317",
+   "bytes": 18416,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:46Z"
+  },
+  "raw/2025/sensor12234678_p3.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 3,
+   "sha256": "c7921d6e22d5716b5294ed6f62094f442266999d51801db41124ce326f5878f9",
+   "bytes": 19232,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:49Z"
+  },
+  "raw/2025/sensor12234678_p4.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 4,
+   "sha256": "f38de6266fcd9fa40297000a1f2f4aadd3b279c364a8771d087c20393d1ef486",
+   "bytes": 19408,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:54Z"
+  },
+  "raw/2025/sensor12234678_p5.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 5,
+   "sha256": "4bbb5be10ec823744946099a83f6bf4bfbc5ba09db0714dc2b5d2f3334ac3f4f",
+   "bytes": 19590,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:58Z"
+  },
+  "raw/2025/sensor12234678_p6.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 6,
+   "sha256": "58619f956df8825bc0b2e9874b6b9eca2f4742b8a90ab19e41bda42a5ad0476d",
+   "bytes": 19616,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:03Z"
+  },
+  "raw/2025/sensor12234678_p7.json.gz": {
+   "sensor": 12234678,
+   "season": 2025,
+   "page": 7,
+   "sha256": "d281ecad3fc7523221d0f248906300b2c9e30f54655c5e28bf87cb8ee9e7b50c",
+   "bytes": 5264,
+   "n": 254,
+   "retrieved_utc": "2026-10-01T02:43:08Z"
+  },
+  "raw/2025/sensor12234684_p1.json.gz": {
+   "sensor": 12234684,
+   "season": 2025,
+   "page": 1,
+   "sha256": "113bd2d48e2b9b5f8ec790bab6b3a2fdfa516dc8692af1df11fa39968c8a7036",
+   "bytes": 18893,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:59Z"
+  },
+  "raw/2025/sensor12234684_p2.json.gz": {
+   "sensor": 12234684,
+   "season": 2025,
+   "page": 2,
+   "sha256": "479b2a96490c91eb3a7d2ac933e4758bfff15da4a304199e80dc36ed4e807616",
+   "bytes": 19025,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:00Z"
+  },
+  "raw/2025/sensor12234684_p3.json.gz": {
+   "sensor": 12234684,
+   "season": 2025,
+   "page": 3,
+   "sha256": "10302861dccfa77a052b4f1123e3639ca8a6b4d8ecfb9615babbc836ab427934",
+   "bytes": 19577,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:03Z"
+  },
+  "raw/2025/sensor12234684_p4.json.gz": {
+   "sensor": 12234684,
+   "season": 2025,
+   "page": 4,
+   "sha256": "13fe0ad20bbe30b9f27838150c9e497b522366446c8e219111490d812b0daa93",
+   "bytes": 19722,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:06Z"
+  },
+  "raw/2025/sensor12234684_p5.json.gz": {
+   "sensor": 12234684,
+   "season": 2025,
+   "page": 5,
+   "sha256": "0b60a3bfafe1df6a1f2112caba9acf6d80c76151c83378ff2cbf547885edd564",
+   "bytes": 19670,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:09Z"
+  },
+  "raw/2025/sensor12234684_p6.json.gz": {
+   "sensor": 12234684,
+   "season": 2025,
+   "page": 6,
+   "sha256": "584c7d4c99a3c238f9c1626526c6d12d353f44402b448c5b5e14a09c2827b555",
+   "bytes": 7503,
+   "n": 366,
+   "retrieved_utc": "2026-10-01T02:40:12Z"
+  },
+  "raw/2025/sensor12234690_p1.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 1,
+   "sha256": "f32ec78a3d22e0e00d0c5c2aaa566a175f259ddd98f67a044e2044dfea0d65d0",
+   "bytes": 18043,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:12Z"
+  },
+  "raw/2025/sensor12234690_p2.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 2,
+   "sha256": "02eb9fa779bea4ba15f820a64ec7ea935cf7000a4536c5ffc2d3b0c56558233b",
+   "bytes": 18063,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:14Z"
+  },
+  "raw/2025/sensor12234690_p3.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 3,
+   "sha256": "e559c65f7ea0abe3dce7f376f65cec97b42dd7a91404783c97b27ddc271f20a8",
+   "bytes": 18384,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:17Z"
+  },
+  "raw/2025/sensor12234690_p4.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 4,
+   "sha256": "7c96da1e2d0bb08463eaa2d0459ee3503363a1aa1085e9dd734010d64f27f998",
+   "bytes": 18568,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:20Z"
+  },
+  "raw/2025/sensor12234690_p5.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 5,
+   "sha256": "baecafa870083e2e739db21785bc86708afdaf27f5e3d668ea62ed1911aa20dd",
+   "bytes": 18582,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:23Z"
+  },
+  "raw/2025/sensor12234690_p6.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 6,
+   "sha256": "f208085292bce3742c9498f8460ce09ab91105a97baf0a32c75fc8f447c979e8",
+   "bytes": 18694,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:27Z"
+  },
+  "raw/2025/sensor12234690_p7.json.gz": {
+   "sensor": 12234690,
+   "season": 2025,
+   "page": 7,
+   "sha256": "cee9fa4eb97862e7c648b66e3f8c4e7529577efb1e328198cf840af61a6a282c",
+   "bytes": 2925,
+   "n": 137,
+   "retrieved_utc": "2026-10-01T02:41:31Z"
+  },
+  "raw/2025/sensor12234696_p1.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 1,
+   "sha256": "65938413ef2452714e9104bcfe2198225c95c4881e6755db79e173f7c828ec31",
+   "bytes": 19093,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:51Z"
+  },
+  "raw/2025/sensor12234696_p2.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 2,
+   "sha256": "cb2b52815854258c24a0b65601be8da3d1e06594c4c5760e96539ed9b01e990b",
+   "bytes": 18978,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:53Z"
+  },
+  "raw/2025/sensor12234696_p3.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 3,
+   "sha256": "8f9d79d353d031548c44b5a3dbd50cbf491ec5313c1ec45084335a0acc7a4655",
+   "bytes": 19234,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:54Z"
+  },
+  "raw/2025/sensor12234696_p4.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 4,
+   "sha256": "060a843c27573b87bd0b6aa0d502534f2bcb069dc6ec3792230421856de01ac5",
+   "bytes": 19424,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:57Z"
+  },
+  "raw/2025/sensor12234696_p5.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 5,
+   "sha256": "7bf41820d2a8a7544e7cbcf7f42e50b6d7796ee93c1efd5b050998840727d628",
+   "bytes": 19503,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:00Z"
+  },
+  "raw/2025/sensor12234696_p6.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 6,
+   "sha256": "21038195a11c40dd1022b5c83de6b90eb4fc16b002239bd689b69f91e0a93aaa",
+   "bytes": 18752,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:04Z"
+  },
+  "raw/2025/sensor12234696_p7.json.gz": {
+   "sensor": 12234696,
+   "season": 2025,
+   "page": 7,
+   "sha256": "e7c5e75a5f20c0d63b08f7475951141db5d2cdb45cd302954e6f28af6b543b6f",
+   "bytes": 2047,
+   "n": 89,
+   "retrieved_utc": "2026-10-01T02:44:07Z"
+  },
+  "raw/2025/sensor12234702_p1.json.gz": {
+   "sensor": 12234702,
+   "season": 2025,
+   "page": 1,
+   "sha256": "49afeb77049bcc302fc9d9997e18e3c6079b210d76a2c067fd1c5f4b39b1a78e",
+   "bytes": 24043,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:41Z"
+  },
+  "raw/2025/sensor12234702_p2.json.gz": {
+   "sensor": 12234702,
+   "season": 2025,
+   "page": 2,
+   "sha256": "f467e95a9ded0ff7cebe038c08c479a801ddb34f58422dddcf2d69d0853aa4ce",
+   "bytes": 24283,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:43Z"
+  },
+  "raw/2025/sensor12234702_p3.json.gz": {
+   "sensor": 12234702,
+   "season": 2025,
+   "page": 3,
+   "sha256": "2dab3e92a36054270fdd9bf5f28bd3832617c50d0a7ece41f1060e30d788f563",
+   "bytes": 24187,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:46Z"
+  },
+  "raw/2025/sensor12234702_p4.json.gz": {
+   "sensor": 12234702,
+   "season": 2025,
+   "page": 4,
+   "sha256": "d8cdd180f86578cb3119e1735a7498a026be28b50d4a2be26d2c46d1493d34b3",
+   "bytes": 24264,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:49Z"
+  },
+  "raw/2025/sensor12234702_p5.json.gz": {
+   "sensor": 12234702,
+   "season": 2025,
+   "page": 5,
+   "sha256": "98d9e18ad0d9030353e2b901e211cb0eb8e8a6be64ffcb194715f4102afd6ac2",
+   "bytes": 24343,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:54Z"
+  },
+  "raw/2025/sensor12234702_p6.json.gz": {
+   "sensor": 12234702,
+   "season": 2025,
+   "page": 6,
+   "sha256": "37d7ba9f6d27ff9648289223978925e04d61511397615354f8b7696e6ed60661",
+   "bytes": 20006,
+   "n": 831,
+   "retrieved_utc": "2026-10-01T02:39:58Z"
+  },
+  "raw/2025/sensor12234708_p1.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 1,
+   "sha256": "c3c35efb7707e2521b7b2300cd3e0f3c0fd4cc7a84c77abb58cf3add8bedb513",
+   "bytes": 19011,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:13Z"
+  },
+  "raw/2025/sensor12234708_p2.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 2,
+   "sha256": "2ce8d3683ea4aa85194340bc9ea07b8d3ccd01e4b4a32c7cc01ecd57506a2b69",
+   "bytes": 19017,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:16Z"
+  },
+  "raw/2025/sensor12234708_p3.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 3,
+   "sha256": "2558a0da3192bfda1758c219959dece2c4c68d40e30e20c735696350b5db595f",
+   "bytes": 19156,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:19Z"
+  },
+  "raw/2025/sensor12234708_p4.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 4,
+   "sha256": "cb359b760647e836526e48a9dcb834570db34b28b30d6add861701c04fe582d4",
+   "bytes": 19515,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:23Z"
+  },
+  "raw/2025/sensor12234708_p5.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 5,
+   "sha256": "027c9994bcfde14dc71c18637bd376cf860be9c5a4cbf21d2435254e22c8f610",
+   "bytes": 19534,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:28Z"
+  },
+  "raw/2025/sensor12234708_p6.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 6,
+   "sha256": "b3aae2677222b9246d5813c3e420ba7007fe4a215eae335e0b313d5b1855f054",
+   "bytes": 19565,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:34Z"
+  },
+  "raw/2025/sensor12234708_p7.json.gz": {
+   "sensor": 12234708,
+   "season": 2025,
+   "page": 7,
+   "sha256": "7ebd61d4ebbc383018fe39327023a2b2774c268f16db4b493a77a43761466580",
+   "bytes": 3767,
+   "n": 175,
+   "retrieved_utc": "2026-10-01T02:40:39Z"
+  },
+  "raw/2025/sensor12234714_p1.json.gz": {
+   "sensor": 12234714,
+   "season": 2025,
+   "page": 1,
+   "sha256": "a130b1cd975882465599cf29f8aba470b06422ea7ef31f26a857bbeac5065ec8",
+   "bytes": 19010,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:32Z"
+  },
+  "raw/2025/sensor12234714_p2.json.gz": {
+   "sensor": 12234714,
+   "season": 2025,
+   "page": 2,
+   "sha256": "3a02285da4edc7296f7e8d573de348fa93dcc051174da05c242c0cbe71395417",
+   "bytes": 18175,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:34Z"
+  },
+  "raw/2025/sensor12234714_p3.json.gz": {
+   "sensor": 12234714,
+   "season": 2025,
+   "page": 3,
+   "sha256": "e405e863634ab7fd315190fd60d01da7d11a0147ec5f90eb25fa1481f48fda11",
+   "bytes": 18400,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:38Z"
+  },
+  "raw/2025/sensor12234714_p4.json.gz": {
+   "sensor": 12234714,
+   "season": 2025,
+   "page": 4,
+   "sha256": "9df10296f211f959da4cb7b9f89791ba109f5ebeecf48061d2a6a3492dc7f106",
+   "bytes": 18551,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:41Z"
+  },
+  "raw/2025/sensor12234714_p5.json.gz": {
+   "sensor": 12234714,
+   "season": 2025,
+   "page": 5,
+   "sha256": "2a39edd61b28d924fb062e6dfdbc0a97a7c0f6947ee7384a8de8e1b863368aed",
+   "bytes": 18505,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:45Z"
+  },
+  "raw/2025/sensor12234714_p6.json.gz": {
+   "sensor": 12234714,
+   "season": 2025,
+   "page": 6,
+   "sha256": "579b4d1a3697eaf2f537d59385618cde4bb716c4a3583c8d3d7bb22a9bb74543",
+   "bytes": 8167,
+   "n": 433,
+   "retrieved_utc": "2026-10-01T02:43:50Z"
+  },
+  "raw/2025/sensor12234720_p1.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 1,
+   "sha256": "242f3eee2b0da3851dee813801e8d88d2c9b919a92447391336ffbd1e53b6119",
+   "bytes": 18963,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:46Z"
+  },
+  "raw/2025/sensor12234720_p2.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 2,
+   "sha256": "bc1f9607624f3e553ea77446aa4c3b4ceb1a6d4d73184f29d45e782147d06698",
+   "bytes": 18997,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:49Z"
+  },
+  "raw/2025/sensor12234720_p3.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 3,
+   "sha256": "7fec304391d0f1be4f68ff969a460efb468c2f9aea10e8bcdbc9428304055ec0",
+   "bytes": 19292,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:51Z"
+  },
+  "raw/2025/sensor12234720_p4.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 4,
+   "sha256": "4793ed7172a559ca1658cfbe2be514ab7c37766adfd379ad33bb58b9e4cbd4e5",
+   "bytes": 19294,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:54Z"
+  },
+  "raw/2025/sensor12234720_p5.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 5,
+   "sha256": "47fa52b260ae1faf93e1d389fcf1a047031ef740a4b7237cedb73feb2cf8913e",
+   "bytes": 19172,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:57Z"
+  },
+  "raw/2025/sensor12234720_p6.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 6,
+   "sha256": "1579f568d41df458042169c52765ebfa1be51e764f43025ea8ed42445e568b17",
+   "bytes": 19448,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:01Z"
+  },
+  "raw/2025/sensor12234720_p7.json.gz": {
+   "sensor": 12234720,
+   "season": 2025,
+   "page": 7,
+   "sha256": "c5a876b84b103ab6c844875e47ace4769d428916f20eee2521b0b3e07dbd848f",
+   "bytes": 6383,
+   "n": 308,
+   "retrieved_utc": "2026-10-01T02:42:05Z"
+  },
+  "raw/2025/sensor12234726_p1.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 1,
+   "sha256": "7e49b2fc0e4ef1605f8e62a95beb64502a907a30d914ca4d07ab442d522769f0",
+   "bytes": 16218,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:11Z"
+  },
+  "raw/2025/sensor12234726_p2.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 2,
+   "sha256": "c45079a38bcbb95f21f44740ebb841b7257087af8b07a676604065086ab31f37",
+   "bytes": 16322,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:12Z"
+  },
+  "raw/2025/sensor12234726_p3.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 3,
+   "sha256": "3268bb2d0bdf119ecee4565eb55a5a4b300fdb1ced01915c3bff55ec12c75103",
+   "bytes": 16322,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:16Z"
+  },
+  "raw/2025/sensor12234726_p4.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 4,
+   "sha256": "5e099b5b19ee26e786a6e55d3165c7f0b3702cde42e0e17fe96c0effb3153538",
+   "bytes": 16701,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:19Z"
+  },
+  "raw/2025/sensor12234726_p5.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 5,
+   "sha256": "fe00bb9ffc36f84be58863dc1da832b93402756c7e0cdba6c1932a2be7815055",
+   "bytes": 16516,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:23Z"
+  },
+  "raw/2025/sensor12234726_p6.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 6,
+   "sha256": "2493980d5f6dcdfc4e81169089317fd25118e9b4591daeead82ca9f4f6f3a72a",
+   "bytes": 16828,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:43:27Z"
+  },
+  "raw/2025/sensor12234726_p7.json.gz": {
+   "sensor": 12234726,
+   "season": 2025,
+   "page": 7,
+   "sha256": "296007ead01242370f8a56a805517066be84f2e8b3455e4152ef49a2ba36a49c",
+   "bytes": 3129,
+   "n": 163,
+   "retrieved_utc": "2026-10-01T02:43:31Z"
+  },
+  "raw/2025/sensor12234735_p1.json.gz": {
+   "sensor": 12234735,
+   "season": 2025,
+   "page": 1,
+   "sha256": "7c4a0f026fee278d3efcb9fd606f2261e8ab28cd91639eed2946abcdfb997164",
+   "bytes": 16994,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:50Z"
+  },
+  "raw/2025/sensor12234735_p2.json.gz": {
+   "sensor": 12234735,
+   "season": 2025,
+   "page": 2,
+   "sha256": "d3e4b1c370d95e987fcffed32470b2400aa51214d0eff2f57c506bf8d86f39d1",
+   "bytes": 17237,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:52Z"
+  },
+  "raw/2025/sensor12234735_p3.json.gz": {
+   "sensor": 12234735,
+   "season": 2025,
+   "page": 3,
+   "sha256": "b113b1d920c8a100691e8f263f8c63ffc33d9641dad0dce402fe604c4ba6c112",
+   "bytes": 17696,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:53Z"
+  },
+  "raw/2025/sensor12234735_p4.json.gz": {
+   "sensor": 12234735,
+   "season": 2025,
+   "page": 4,
+   "sha256": "4bb4229bdb9d200c006031d217a303e7ba147d7c4c98275b897e992b5c8f2df5",
+   "bytes": 17591,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:56Z"
+  },
+  "raw/2025/sensor12234735_p5.json.gz": {
+   "sensor": 12234735,
+   "season": 2025,
+   "page": 5,
+   "sha256": "cc770cc94749a74c8d9717c0f8d05ce315ae99fafc5e974ca8899a6dffa0252b",
+   "bytes": 17936,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:59Z"
+  },
+  "raw/2025/sensor12234735_p6.json.gz": {
+   "sensor": 12234735,
+   "season": 2025,
+   "page": 6,
+   "sha256": "bafa3ee1e773da06ff965fd2874f0885c56431b3a3fafa6a2a0ee556e0adcf93",
+   "bytes": 1821,
+   "n": 75,
+   "retrieved_utc": "2026-10-01T02:45:01Z"
+  },
+  "raw/2025/sensor12234744_p1.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 1,
+   "sha256": "f35431d692184ad6642d1c9a14bdafecfa439d84e0f0d57b62aa7bfc9e213505",
+   "bytes": 16336,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:06Z"
+  },
+  "raw/2025/sensor12234744_p2.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 2,
+   "sha256": "e7e84d178e9f7bc9b9ace37a175c1b30ac3573774399dcf1739178eeaa253e95",
+   "bytes": 16501,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:07Z"
+  },
+  "raw/2025/sensor12234744_p3.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 3,
+   "sha256": "a3619b685bbf33b2754585eeceaec9e9f39ed2567921acde23a0bc5f2a35bd51",
+   "bytes": 16818,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:09Z"
+  },
+  "raw/2025/sensor12234744_p4.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 4,
+   "sha256": "d24deca4092870d566b1b0fac3e2f28ca71d6bcff0b1f12f6f9ed669285ae5c6",
+   "bytes": 16866,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:11Z"
+  },
+  "raw/2025/sensor12234744_p5.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 5,
+   "sha256": "354936f6496f7b5829db556696110476210894057cfb0038765734015510f947",
+   "bytes": 16863,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:14Z"
+  },
+  "raw/2025/sensor12234744_p6.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 6,
+   "sha256": "35ccdb5dd8833661ceba0cc9b59b90ef7933fdb9f5b98c12dc4842d8325e988a",
+   "bytes": 16895,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:17Z"
+  },
+  "raw/2025/sensor12234744_p7.json.gz": {
+   "sensor": 12234744,
+   "season": 2025,
+   "page": 7,
+   "sha256": "7ecfdfd61471bca53585ccaa95016045945802ab444feb43cefd398ce1ce8ecf",
+   "bytes": 4435,
+   "n": 240,
+   "retrieved_utc": "2026-10-01T02:42:19Z"
+  },
+  "raw/2025/sensor12234753_p1.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 1,
+   "sha256": "79e021a79fede0473226c133872bccf4bfb950a8d5189fe21078d07839f8330d",
+   "bytes": 16000,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:32Z"
+  },
+  "raw/2025/sensor12234753_p2.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 2,
+   "sha256": "f009905b44d9f1dc7446db0d28e3d977531e9c1d5cc66a1a4bee316905dd2e46",
+   "bytes": 16250,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:33Z"
+  },
+  "raw/2025/sensor12234753_p3.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 3,
+   "sha256": "8100919b940f77cc09e1726e22fe717d91ee9456a356fe0b3ebbfd49a028e5ed",
+   "bytes": 16877,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:35Z"
+  },
+  "raw/2025/sensor12234753_p4.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 4,
+   "sha256": "2878f9506d5a09d57f57a8d19e8ddf54e2629f60e375e550184c5bcc63645e97",
+   "bytes": 17171,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:37Z"
+  },
+  "raw/2025/sensor12234753_p5.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 5,
+   "sha256": "ea403ab22c557f6c7f43900985cb46d3aa59c92e78fa0709912661b3279947d9",
+   "bytes": 17652,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:40Z"
+  },
+  "raw/2025/sensor12234753_p6.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 6,
+   "sha256": "7d6911c55a802af0e6bd015508cbdefb955b79ee99a437573eb1d71b9d8a5f4e",
+   "bytes": 17605,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:43Z"
+  },
+  "raw/2025/sensor12234753_p7.json.gz": {
+   "sensor": 12234753,
+   "season": 2025,
+   "page": 7,
+   "sha256": "a88f01940a6c276fd9aa7f5af80f1ae28e277e307c7fdc32241562b6be39dc0e",
+   "bytes": 4037,
+   "n": 212,
+   "retrieved_utc": "2026-10-01T02:41:45Z"
+  },
+  "raw/2025/sensor12234760_p1.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 1,
+   "sha256": "471fcf5397d489f4928ff13160593769cac32af514b0a1279fc69c1c0205c137",
+   "bytes": 16127,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:20Z"
+  },
+  "raw/2025/sensor12234760_p2.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 2,
+   "sha256": "acf8c3873762c31889fe266a2fd5e5945aa1b46a0485317c3ee9bf4abea2c0f4",
+   "bytes": 16042,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:23Z"
+  },
+  "raw/2025/sensor12234760_p3.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 3,
+   "sha256": "03e5ba43f8bc1d6a5ff9cbaae91b5bc7d7ede3cb336db69c25f2cb7236c72da2",
+   "bytes": 16198,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:26Z"
+  },
+  "raw/2025/sensor12234760_p4.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 4,
+   "sha256": "4e85ceb4c83b0b858443979add077726a8735ea0d6725911973a13fb704296d6",
+   "bytes": 15879,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:29Z"
+  },
+  "raw/2025/sensor12234760_p5.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 5,
+   "sha256": "aa1e1df5114e7bf39785087a7bda5a14d4692e17ff78211fa2b844f888f03266",
+   "bytes": 16080,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:33Z"
+  },
+  "raw/2025/sensor12234760_p6.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 6,
+   "sha256": "8e2334e38df60fdca45990aaad0345bf28e150991b152d5282fcab24105a3e47",
+   "bytes": 16200,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:42:38Z"
+  },
+  "raw/2025/sensor12234760_p7.json.gz": {
+   "sensor": 12234760,
+   "season": 2025,
+   "page": 7,
+   "sha256": "c4128ff6546ad788bf9f4db96d170adbc0a9b7e6c095d0a0bc16acffa7b3d236",
+   "bytes": 6357,
+   "n": 373,
+   "retrieved_utc": "2026-10-01T02:42:43Z"
+  },
+  "raw/2025/sensor12234769_p1.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 1,
+   "sha256": "b4ad077878b291ece6bf426deaabb0ac75c189a32db8a5ff4f63812abc236d9d",
+   "bytes": 16721,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:40Z"
+  },
+  "raw/2025/sensor12234769_p2.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 2,
+   "sha256": "cebab04a97391b9d3af9b7f7ce2b600b05072446c201100a35da1e1244a3264d",
+   "bytes": 16705,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:42Z"
+  },
+  "raw/2025/sensor12234769_p3.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 3,
+   "sha256": "ee437474da8f83f45b55673d38380ebf4ed7debcf1fad2fbb12787f74330451e",
+   "bytes": 16154,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:43Z"
+  },
+  "raw/2025/sensor12234769_p4.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 4,
+   "sha256": "75e1951d932dba7820142ff0581ee18ee6d6927c0418df1b5ad81c856062d77a",
+   "bytes": 16353,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:45Z"
+  },
+  "raw/2025/sensor12234769_p5.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 5,
+   "sha256": "eb1c8aacf0bd100eec876909d3f50cba8a8ecf62470779a68ef2d88b47f9bc52",
+   "bytes": 16108,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:48Z"
+  },
+  "raw/2025/sensor12234769_p6.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 6,
+   "sha256": "7a7e10ed87a7ee31c010a5e5bd3f60e0d338bb3946788f6f1547e75a1b0d02d9",
+   "bytes": 17396,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:51Z"
+  },
+  "raw/2025/sensor12234769_p7.json.gz": {
+   "sensor": 12234769,
+   "season": 2025,
+   "page": 7,
+   "sha256": "92008f63d5e673bb78b236f748914a4857742d448ffc5b33cb239d9464efcdcc",
+   "bytes": 8138,
+   "n": 454,
+   "retrieved_utc": "2026-10-01T02:40:54Z"
+  },
+  "raw/2025/sensor12234778_p1.json.gz": {
+   "sensor": 12234778,
+   "season": 2025,
+   "page": 1,
+   "sha256": "2401e903c8dd254ff3694c09733dcbfe9fa3c660b7ae75d8e7f09ae5aa7b0182",
+   "bytes": 15714,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:39Z"
+  },
+  "raw/2025/sensor12234778_p2.json.gz": {
+   "sensor": 12234778,
+   "season": 2025,
+   "page": 2,
+   "sha256": "7532d53a39f80b34cff07a49a7a51106bfd176a8572aa0af4c77d5f5f9701fd4",
+   "bytes": 15655,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:40Z"
+  },
+  "raw/2025/sensor12234778_p3.json.gz": {
+   "sensor": 12234778,
+   "season": 2025,
+   "page": 3,
+   "sha256": "2dc87bb5fea10d2fd0508b3aefc73f924ce2bbc19b786944a4d5dd551fdda0f7",
+   "bytes": 15596,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:42Z"
+  },
+  "raw/2025/sensor12234778_p4.json.gz": {
+   "sensor": 12234778,
+   "season": 2025,
+   "page": 4,
+   "sha256": "9d1994fc75582928bb18e5f996e0d2e47a0c8ee3acc811f88868166f67b24d17",
+   "bytes": 15768,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:44Z"
+  },
+  "raw/2025/sensor12234778_p5.json.gz": {
+   "sensor": 12234778,
+   "season": 2025,
+   "page": 5,
+   "sha256": "9687f6ce4d0a15c97e1347d1201a3a6eed2000099cf2109a0be8f663818544bf",
+   "bytes": 15898,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:46Z"
+  },
+  "raw/2025/sensor12234778_p6.json.gz": {
+   "sensor": 12234778,
+   "season": 2025,
+   "page": 6,
+   "sha256": "2777a98671feb7775d6c868e5b9911adca986a89660072982f593810e24f91a0",
+   "bytes": 11846,
+   "n": 748,
+   "retrieved_utc": "2026-10-01T02:44:49Z"
+  },
+  "raw/2025/sensor12234787_p1.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 1,
+   "sha256": "817ad1dfb5a0adc21dbb774241f3ba6a1026c741ca58f1e8ae5c681f3a2d8d87",
+   "bytes": 15480,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:38:57Z"
+  },
+  "raw/2025/sensor12234787_p2.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 2,
+   "sha256": "7931b60d5171a904c66a62cb1b46e02073ad9a86aa2fce04a794c66e23f1d5c2",
+   "bytes": 15573,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:38:58Z"
+  },
+  "raw/2025/sensor12234787_p3.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 3,
+   "sha256": "8109f0784c047b03db0a5b11e74ddfd84a5955795a6e82969bd017059e1fa1fb",
+   "bytes": 15606,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:00Z"
+  },
+  "raw/2025/sensor12234787_p4.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 4,
+   "sha256": "78389914a9800af426fa0a28a858ad238594e68497b33bf1ab4b90fc96a2564b",
+   "bytes": 15775,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:02Z"
+  },
+  "raw/2025/sensor12234787_p5.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 5,
+   "sha256": "62053c611bbc5bca4cfe51b4f0697d806d50abbabbac024ba629292329629038",
+   "bytes": 15672,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:04Z"
+  },
+  "raw/2025/sensor12234787_p6.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 6,
+   "sha256": "c1e22ec8333ddac4ab99733b30f1b2aa657074c21d5765d0a094df357303d5fc",
+   "bytes": 15732,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:06Z"
+  },
+  "raw/2025/sensor12234787_p7.json.gz": {
+   "sensor": 12234787,
+   "season": 2025,
+   "page": 7,
+   "sha256": "724240e0a4ea783d11754a81092edce15a4b33c77b1b8058765b5625340571f6",
+   "bytes": 3419,
+   "n": 195,
+   "retrieved_utc": "2026-10-01T02:39:09Z"
+  },
+  "raw/2025/sensor12234796_p1.json.gz": {
+   "sensor": 12234796,
+   "season": 2025,
+   "page": 1,
+   "sha256": "2dd4256019cdc3ebad412854906bdf212d0990f927d45b03a843b33482970795",
+   "bytes": 15527,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:10Z"
+  },
+  "raw/2025/sensor12234796_p2.json.gz": {
+   "sensor": 12234796,
+   "season": 2025,
+   "page": 2,
+   "sha256": "c9ac537d257caaf2cc687a0e5c51c7c5cbf59107ca10ed051e8e37d53eeddf33",
+   "bytes": 15390,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:12Z"
+  },
+  "raw/2025/sensor12234796_p3.json.gz": {
+   "sensor": 12234796,
+   "season": 2025,
+   "page": 3,
+   "sha256": "b87786f3aee55b004ee08f7ad1054d2aaa4e85bd365914471dec27744e3a0ff8",
+   "bytes": 15683,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:13Z"
+  },
+  "raw/2025/sensor12234796_p4.json.gz": {
+   "sensor": 12234796,
+   "season": 2025,
+   "page": 4,
+   "sha256": "bc01963320a0cc5a77b5c8df45909954b4befe3409718d521b9f7c4ee62b355e",
+   "bytes": 15735,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:18Z"
+  },
+  "raw/2025/sensor12234796_p5.json.gz": {
+   "sensor": 12234796,
+   "season": 2025,
+   "page": 5,
+   "sha256": "61a1e083d59df4683c0e4f4b1808ff9995a73b32d82dfbb3ee174d17d817e15a",
+   "bytes": 15730,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:20Z"
+  },
+  "raw/2025/sensor12234796_p6.json.gz": {
+   "sensor": 12234796,
+   "season": 2025,
+   "page": 6,
+   "sha256": "83b4547265769521d0593c8ff107cfccbb70a110e8b0dfdeaf6e695cad669c76",
+   "bytes": 13412,
+   "n": 852,
+   "retrieved_utc": "2026-10-01T02:39:24Z"
+  },
+  "raw/2025/sensor12235002_p1.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 1,
+   "sha256": "f0068a819a403fb7742166085c90cf6fa3ee130d6e39d882e6e761269149ba63",
+   "bytes": 15398,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:39Z"
+  },
+  "raw/2025/sensor12235002_p2.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 2,
+   "sha256": "c59f6d971f4532d639591d6e6f993a92061e43f7a000fdd451d48761a9dcce4c",
+   "bytes": 15261,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:40Z"
+  },
+  "raw/2025/sensor12235002_p3.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 3,
+   "sha256": "d63a2ecec1266e775ee8858f6f9d66e800bb92537339e30bcdf456ae19df3cc4",
+   "bytes": 15559,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:42Z"
+  },
+  "raw/2025/sensor12235002_p4.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 4,
+   "sha256": "68c797cc93d2a4999a2b3c44a4364ee4808134e41ebb3fb4a8b3ba144eddc665",
+   "bytes": 15608,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:44Z"
+  },
+  "raw/2025/sensor12235002_p5.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 5,
+   "sha256": "820848b91edacbf3c06719636153bc705d77428c0235778aa644edaa7c7d11db",
+   "bytes": 15671,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:46Z"
+  },
+  "raw/2025/sensor12235002_p6.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 6,
+   "sha256": "6b7eb186170c6385c58b3570dca01b6197f0b9ba9b762317be553c8430096ce3",
+   "bytes": 15676,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:49Z"
+  },
+  "raw/2025/sensor12235002_p7.json.gz": {
+   "sensor": 12235002,
+   "season": 2025,
+   "page": 7,
+   "sha256": "b7385f2bdca091279fdbfa7c14532c752e50ff4c46419183527ea51ff35f9185",
+   "bytes": 6022,
+   "n": 367,
+   "retrieved_utc": "2026-10-01T02:57:52Z"
+  },
+  "raw/2025/sensor12235011_p1.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 1,
+   "sha256": "0f81e43214cc75148800c8b321783f5a9c39437981928d848a3fe73fa795fba3",
+   "bytes": 15326,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:07Z"
+  },
+  "raw/2025/sensor12235011_p2.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 2,
+   "sha256": "0d3dd57a373ff2099acc4194a70e4af98efa87881a368476bfa6f23dd9478a24",
+   "bytes": 15262,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:08Z"
+  },
+  "raw/2025/sensor12235011_p3.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 3,
+   "sha256": "c2851c277d92399fe9e7d328b301d33be6bca94340fe2701aab11fb292bd7c36",
+   "bytes": 15492,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:10Z"
+  },
+  "raw/2025/sensor12235011_p4.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 4,
+   "sha256": "cf1a02a01f59a7ae3f407a65b2e069ce43ebb3d8dcb157898fbf569b4c1812ad",
+   "bytes": 15575,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:12Z"
+  },
+  "raw/2025/sensor12235011_p5.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 5,
+   "sha256": "cf43dc1898f18053fe7697a55155c772a45ea942f2f760ae7be28703ec82865d",
+   "bytes": 15686,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:14Z"
+  },
+  "raw/2025/sensor12235011_p6.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 6,
+   "sha256": "e6b3ee469ed10eda719f98ffe496b08df0c2a4b2fcdffdda9e30bd8df49f7f6e",
+   "bytes": 15713,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:17Z"
+  },
+  "raw/2025/sensor12235011_p7.json.gz": {
+   "sensor": 12235011,
+   "season": 2025,
+   "page": 7,
+   "sha256": "05aea1b66b35b62d1c219c5cf3a75a4c54f8c116a1c2f6ca9e3cee46ce980c73",
+   "bytes": 5708,
+   "n": 348,
+   "retrieved_utc": "2026-10-01T02:46:19Z"
+  },
+  "raw/2025/sensor12235020_p1.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 1,
+   "sha256": "55f5600606034c8e2a678728b30e57ee869bcc79e6a901d2be5cbf14c262beb2",
+   "bytes": 15407,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:34Z"
+  },
+  "raw/2025/sensor12235020_p2.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 2,
+   "sha256": "0df021bb6763e76908380b0eced27efce9b29d0b1d8011f3e1afd11ac21ee7bd",
+   "bytes": 15295,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:35Z"
+  },
+  "raw/2025/sensor12235020_p3.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 3,
+   "sha256": "2918d74023c1c7dace9d438bec7b38fba0ed30a42c2bbadd00f8e75849374e46",
+   "bytes": 15565,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:37Z"
+  },
+  "raw/2025/sensor12235020_p4.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 4,
+   "sha256": "2365e8fea46af5c6ab7d2c823ff5d3fca2885759acfc701e5a4483cb993257fb",
+   "bytes": 15619,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:39Z"
+  },
+  "raw/2025/sensor12235020_p5.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 5,
+   "sha256": "8e5954199418095cebf2894cb9308415291fc8dd5264af249a9afa3f669a72fd",
+   "bytes": 15651,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:42Z"
+  },
+  "raw/2025/sensor12235020_p6.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 6,
+   "sha256": "468903b3a16c4265e48a2951243062ba1d87fc1e54827e91a2f11ca1256ac639",
+   "bytes": 15688,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:47Z"
+  },
+  "raw/2025/sensor12235020_p7.json.gz": {
+   "sensor": 12235020,
+   "season": 2025,
+   "page": 7,
+   "sha256": "afcb9f03f76b8c321dd8daa834fe2e159dc05f8e0e18cec44218dcf306d04187",
+   "bytes": 4664,
+   "n": 280,
+   "retrieved_utc": "2026-10-01T02:45:49Z"
+  },
+  "raw/2025/sensor12235029_p1.json.gz": {
+   "sensor": 12235029,
+   "season": 2025,
+   "page": 1,
+   "sha256": "c99102491d74c43e7e1634ff4d3ddf864683ef24bb753cc6afa44c77a22aeea1",
+   "bytes": 16534,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:07Z"
+  },
+  "raw/2025/sensor12235029_p2.json.gz": {
+   "sensor": 12235029,
+   "season": 2025,
+   "page": 2,
+   "sha256": "20b00be32debec745f997ea80f3f4e43be6e04b0722a0a8655bbe27449a26ca9",
+   "bytes": 16902,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:08Z"
+  },
+  "raw/2025/sensor12235029_p3.json.gz": {
+   "sensor": 12235029,
+   "season": 2025,
+   "page": 3,
+   "sha256": "d320598c0f334e3b0d4b18de891e364d94731319bccc5924dc0174226c79b352",
+   "bytes": 16452,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:10Z"
+  },
+  "raw/2025/sensor12235029_p4.json.gz": {
+   "sensor": 12235029,
+   "season": 2025,
+   "page": 4,
+   "sha256": "52142931ff9b957d8f5e2f1434c64b711d93890145ad240c067bfae7b498506d",
+   "bytes": 16493,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:12Z"
+  },
+  "raw/2025/sensor12235029_p5.json.gz": {
+   "sensor": 12235029,
+   "season": 2025,
+   "page": 5,
+   "sha256": "3d163de9f40fed97e744a8716155e0552f7f5701b97c9362bf05d57ee68c221f",
+   "bytes": 16513,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:14Z"
+  },
+  "raw/2025/sensor12235029_p6.json.gz": {
+   "sensor": 12235029,
+   "season": 2025,
+   "page": 6,
+   "sha256": "e4288e9d2594686d16df0e159f2d028ae1800adca706de722645110185cfb33e",
+   "bytes": 5054,
+   "n": 283,
+   "retrieved_utc": "2026-10-01T02:48:16Z"
+  },
+  "raw/2025/sensor12235038_p1.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 1,
+   "sha256": "99397551325009b030b391c3b73b2aedd0c5ce8cff66ed18959a237d9153fc7f",
+   "bytes": 15337,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:34Z"
+  },
+  "raw/2025/sensor12235038_p2.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 2,
+   "sha256": "e4b733a96d6cfb5a321486325b477b0ecf2dfcf7091aae11eebbe188747c871a",
+   "bytes": 15257,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:36Z"
+  },
+  "raw/2025/sensor12235038_p3.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 3,
+   "sha256": "60849cf4fb78e37b5576c98ddd6e9f96b524e2b3a26d665c3b6d5c7687cbc3ba",
+   "bytes": 15416,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:37Z"
+  },
+  "raw/2025/sensor12235038_p4.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 4,
+   "sha256": "3a67e54596c536241d83df2affb610ecca6ba5689ca89d64a54305bed6f98ebc",
+   "bytes": 15539,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:39Z"
+  },
+  "raw/2025/sensor12235038_p5.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 5,
+   "sha256": "f215074c6a1b12c23fcb17fd7a0bdad2ae722fe216c926c05927eafbe523b8c2",
+   "bytes": 15605,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:42Z"
+  },
+  "raw/2025/sensor12235038_p6.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 6,
+   "sha256": "b63fd789366ab06e85c49b4a9e7580073e90570eb4ea76cf3e3834fe2d1b42ad",
+   "bytes": 15620,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:44Z"
+  },
+  "raw/2025/sensor12235038_p7.json.gz": {
+   "sensor": 12235038,
+   "season": 2025,
+   "page": 7,
+   "sha256": "00dc1dae709c20d4b3d7e10a0f5e947bc7e604a2f433fa6c8e175e35486e9583",
+   "bytes": 5691,
+   "n": 347,
+   "retrieved_utc": "2026-10-01T02:46:47Z"
+  },
+  "raw/2025/sensor12235047_p1.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 1,
+   "sha256": "d42b72698a52138803820069131a366885fc610cbac7729e11ec533680c3346f",
+   "bytes": 15349,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:17Z"
+  },
+  "raw/2025/sensor12235047_p2.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 2,
+   "sha256": "e6391bcf419972512c3e4edfbea9919ab9c6659eb60ca1d932964c6f80003381",
+   "bytes": 15239,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:19Z"
+  },
+  "raw/2025/sensor12235047_p3.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 3,
+   "sha256": "80963b54071868671a33f2abc527977adb0e2cb77747fd1cc2c443c562f2a3d9",
+   "bytes": 15492,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:21Z"
+  },
+  "raw/2025/sensor12235047_p4.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 4,
+   "sha256": "b3ac75bd6ca1efffaaed1ae86d8d44a7d2169ee137d31b05b67c35e8c5be22ad",
+   "bytes": 15560,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:23Z"
+  },
+  "raw/2025/sensor12235047_p5.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 5,
+   "sha256": "6c8defab125f397d685bfbe492f6975ed0bc2b7f5020af70954b0ca462272727",
+   "bytes": 15617,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:26Z"
+  },
+  "raw/2025/sensor12235047_p6.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 6,
+   "sha256": "a4879ea400c0ceff6a7a9a625735b660010efb80f6ddf923794b80cf83be7253",
+   "bytes": 15591,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:29Z"
+  },
+  "raw/2025/sensor12235047_p7.json.gz": {
+   "sensor": 12235047,
+   "season": 2025,
+   "page": 7,
+   "sha256": "d6cb826ed10f66f658fe9afa65b789dbe22edbc612d4e223ce40218379d0d979",
+   "bytes": 6460,
+   "n": 394,
+   "retrieved_utc": "2026-10-01T02:45:32Z"
+  },
+  "raw/2025/sensor12235074_p1.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 1,
+   "sha256": "ce838a1c94841a14b7820bc113601a4293cebfe8840b0000419038b703ea9bb1",
+   "bytes": 15334,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:18Z"
+  },
+  "raw/2025/sensor12235074_p2.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 2,
+   "sha256": "af0f54cc87440aa8fe1738f1eba05c147d36d72f180a442d56ac4a7dfcce3e48",
+   "bytes": 15325,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:19Z"
+  },
+  "raw/2025/sensor12235074_p3.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 3,
+   "sha256": "fb0629d23c19ffe41e3bcef57ca01f1d819e31f1f421503568aa599a647aa112",
+   "bytes": 15541,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:21Z"
+  },
+  "raw/2025/sensor12235074_p4.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 4,
+   "sha256": "5d032a3a7c4293335eba98d29880eb1e58be553d30931025e295934637b3de9d",
+   "bytes": 15699,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:23Z"
+  },
+  "raw/2025/sensor12235074_p5.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 5,
+   "sha256": "e23b363cd9bc2d16a4d5edb0d5d69479f388c430053b594e5cc595e0429fe236",
+   "bytes": 15569,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:27Z"
+  },
+  "raw/2025/sensor12235074_p6.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 6,
+   "sha256": "ef0435d82d6a5faa6b48badd2b40f8442366d49c1126fd3d4157a3ee5b68b8fc",
+   "bytes": 15659,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:30Z"
+  },
+  "raw/2025/sensor12235074_p7.json.gz": {
+   "sensor": 12235074,
+   "season": 2025,
+   "page": 7,
+   "sha256": "cd0a4cd30caac93333d8dd36f03eb1f442c65fb2087e4852f2e52b45b1851613",
+   "bytes": 2392,
+   "n": 127,
+   "retrieved_utc": "2026-10-01T02:48:33Z"
+  },
+  "raw/2025/sensor12235083_p1.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 1,
+   "sha256": "78d4d636250976de2ee117d73c7ccdaaded6193de41f8d40c81e0ad38d91efcd",
+   "bytes": 15378,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:33Z"
+  },
+  "raw/2025/sensor12235083_p2.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 2,
+   "sha256": "27ffba8c80edc009702625c364b2f6bb185db598f4f9b1990525cc5829ee0587",
+   "bytes": 15340,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:35Z"
+  },
+  "raw/2025/sensor12235083_p3.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 3,
+   "sha256": "b7fae1934e8483130b5e225f731defd857c8a84c582e3da8fc117d130d2768ef",
+   "bytes": 15568,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:36Z"
+  },
+  "raw/2025/sensor12235083_p4.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 4,
+   "sha256": "082c234fbe67828945c29bb64b939c9d5ff40d366d29ac2b037e239593a3d29d",
+   "bytes": 15570,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:38Z"
+  },
+  "raw/2025/sensor12235083_p5.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 5,
+   "sha256": "842641d1903186ea2d6f85630fab051c18baeb80b82117606bb37fd38aa5dd94",
+   "bytes": 15653,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:42Z"
+  },
+  "raw/2025/sensor12235083_p6.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 6,
+   "sha256": "18ffbd280ec767cb7f97b4ad2e21b8a37e19af4ba5d6f4cc8ac005c45434c5b0",
+   "bytes": 15682,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:44Z"
+  },
+  "raw/2025/sensor12235083_p7.json.gz": {
+   "sensor": 12235083,
+   "season": 2025,
+   "page": 7,
+   "sha256": "3cdc69fe95ddbba0e866b8ab662e1fa2a9a678d80bd84f419b296f592433fed0",
+   "bytes": 5514,
+   "n": 333,
+   "retrieved_utc": "2026-10-01T02:48:47Z"
+  },
+  "raw/2025/sensor12235092_p1.json.gz": {
+   "sensor": 12235092,
+   "season": 2025,
+   "page": 1,
+   "sha256": "8891fdd211afaf6f593c0eb3d1509372a9d5936691de5a92a3eeba11d1ccccca",
+   "bytes": 16513,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:24Z"
+  },
+  "raw/2025/sensor12235092_p2.json.gz": {
+   "sensor": 12235092,
+   "season": 2025,
+   "page": 2,
+   "sha256": "30351de75ff5defce6a7178e50e56564a6224c6d7db888938001ad8beb75cf5b",
+   "bytes": 16288,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:25Z"
+  },
+  "raw/2025/sensor12235092_p3.json.gz": {
+   "sensor": 12235092,
+   "season": 2025,
+   "page": 3,
+   "sha256": "57e7acdd2df11f3c93d81bf9aebd6aee1f7f7df01903818800725234a2bbd71c",
+   "bytes": 15582,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:27Z"
+  },
+  "raw/2025/sensor12235092_p4.json.gz": {
+   "sensor": 12235092,
+   "season": 2025,
+   "page": 4,
+   "sha256": "dfc820fed13e8c3a2a86e894764852de6f96f723dd62010fb31063f79e780cf4",
+   "bytes": 16837,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:29Z"
+  },
+  "raw/2025/sensor12235092_p5.json.gz": {
+   "sensor": 12235092,
+   "season": 2025,
+   "page": 5,
+   "sha256": "a9dda68bd74efc739ac48caa7d8f0b6d4932894977e12b3eee29a12161323ed4",
+   "bytes": 16713,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:32Z"
+  },
+  "raw/2025/sensor12235092_p6.json.gz": {
+   "sensor": 12235092,
+   "season": 2025,
+   "page": 6,
+   "sha256": "935965918b6f522e401fb4ad479d71cb1974340357e4100ac40db8a2aa334052",
+   "bytes": 8411,
+   "n": 510,
+   "retrieved_utc": "2026-10-01T02:58:34Z"
+  },
+  "raw/2025/sensor12235101_p1.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 1,
+   "sha256": "6a0a8e42f3d2e2eadc7edd147f8ef538a9e2d038293eb665ea837f2a5e5e830e",
+   "bytes": 15362,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:50Z"
+  },
+  "raw/2025/sensor12235101_p2.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 2,
+   "sha256": "595dc4ec802921d196675c1fd869ef740107194b536b8bd13e1e5bc3419c007a",
+   "bytes": 15290,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:51Z"
+  },
+  "raw/2025/sensor12235101_p3.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 3,
+   "sha256": "fe818d8de588aec212dcd5fcbc8b976859479c82c39203644889886f815dab5e",
+   "bytes": 15524,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:53Z"
+  },
+  "raw/2025/sensor12235101_p4.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 4,
+   "sha256": "9d49a4f665d782c81aa52e71ff9b0041bf191c0976e529b7713c00d7e65a2a9e",
+   "bytes": 15563,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:55Z"
+  },
+  "raw/2025/sensor12235101_p5.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 5,
+   "sha256": "d8f225cfb1214ee0c4aa23f87257d4eb064173ee859adb220cad7af3a34e0560",
+   "bytes": 15686,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:57Z"
+  },
+  "raw/2025/sensor12235101_p6.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 6,
+   "sha256": "54c122c2a3b1ed270e84f0ffa81c05ca04dc24519bd593c68c36b882bad7e9ce",
+   "bytes": 15697,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:01Z"
+  },
+  "raw/2025/sensor12235101_p7.json.gz": {
+   "sensor": 12235101,
+   "season": 2025,
+   "page": 7,
+   "sha256": "5feed8ef03765f3fd400f6a23c34bb7827eec2963371680a40a29214ffcfc63d",
+   "bytes": 5763,
+   "n": 350,
+   "retrieved_utc": "2026-10-01T02:47:05Z"
+  },
+  "raw/2025/sensor12235110_p1.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 1,
+   "sha256": "d14e4cf3046067c7a2d61905ccb10dbc0fd69a923ef8d4b03fbd43cd9bdd055e",
+   "bytes": 15386,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:49Z"
+  },
+  "raw/2025/sensor12235110_p2.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 2,
+   "sha256": "920f64a5e5d017f6cc541d36106f99a4cff202823405123471f130070e4fc3be",
+   "bytes": 15443,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:50Z"
+  },
+  "raw/2025/sensor12235110_p3.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 3,
+   "sha256": "c3c7ffdbbb31307c94a083a27ecf8597bd8293b6b477d64a85e86a6f76b7bf1b",
+   "bytes": 15530,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:52Z"
+  },
+  "raw/2025/sensor12235110_p4.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 4,
+   "sha256": "d129d73ce8571140bc75bbb1341d5af69e6ef9da2fc534ec589dba88e8f2e87a",
+   "bytes": 15608,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:53Z"
+  },
+  "raw/2025/sensor12235110_p5.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 5,
+   "sha256": "fe96add3a492398efa156b9a9aa99e60c46832c309d3e7c3f9e75df9eb24d2e8",
+   "bytes": 15673,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:56Z"
+  },
+  "raw/2025/sensor12235110_p6.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 6,
+   "sha256": "eedab89b25b5da1ad21958be36d5a649c8f8684e30615235feb12d22b249751b",
+   "bytes": 15716,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:00Z"
+  },
+  "raw/2025/sensor12235110_p7.json.gz": {
+   "sensor": 12235110,
+   "season": 2025,
+   "page": 7,
+   "sha256": "9a9f68a061f92f754a049547c781f197155a4b6e3e6728829b0ca7976894f613",
+   "bytes": 2934,
+   "n": 165,
+   "retrieved_utc": "2026-10-01T02:49:04Z"
+  },
+  "raw/2025/sensor12235124_p1.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 1,
+   "sha256": "81d10b9e6ee9e42f54d2c1fd1f227d287821d9ce9c4cb9b1930d267e2d608023",
+   "bytes": 15399,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:05Z"
+  },
+  "raw/2025/sensor12235124_p2.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 2,
+   "sha256": "74df363bf8b935bae96628e4ee506872f6bb1eb136aca772750d5ca6b50c3716",
+   "bytes": 15277,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:06Z"
+  },
+  "raw/2025/sensor12235124_p3.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 3,
+   "sha256": "a16844540a34d8fddfb2b03aad2dd2c39487215dc2dbbdd277df6142922fbac9",
+   "bytes": 15598,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:08Z"
+  },
+  "raw/2025/sensor12235124_p4.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 4,
+   "sha256": "89d043e92ac05a19bb6a83a1aebfccd869f898a196086aba5c9dee7da2b60286",
+   "bytes": 15649,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:10Z"
+  },
+  "raw/2025/sensor12235124_p5.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 5,
+   "sha256": "e5c77543eda59f7612432accbd994216ffdefd643c7eeb7fe57f6ed446aebded",
+   "bytes": 15732,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:13Z"
+  },
+  "raw/2025/sensor12235124_p6.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 6,
+   "sha256": "95ddd37232bc335bb7a8148d8f1938a058708da68faf222fe6584ed1621564c3",
+   "bytes": 15705,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:49:15Z"
+  },
+  "raw/2025/sensor12235124_p7.json.gz": {
+   "sensor": 12235124,
+   "season": 2025,
+   "page": 7,
+   "sha256": "506d2ee61b23f99028a689651640c45f639b7eaeb2cf5773f59b3b98aacba588",
+   "bytes": 5848,
+   "n": 357,
+   "retrieved_utc": "2026-10-01T02:49:18Z"
+  },
+  "raw/2025/sensor12235133_p1.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 1,
+   "sha256": "5aab33ed145dead105546288bad69d4c9cec64ccd52bd05cfc9da6a56af54bc0",
+   "bytes": 15351,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:20Z"
+  },
+  "raw/2025/sensor12235133_p2.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 2,
+   "sha256": "cf79cd0e3c22f399450e236e10fe626b994266e5043e368e2b1c7b06525bfa0a",
+   "bytes": 15428,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:22Z"
+  },
+  "raw/2025/sensor12235133_p3.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 3,
+   "sha256": "71e24446a24bd623041ceb95218a11c55f85640f20c76bd88fd8936b9c58ae74",
+   "bytes": 15607,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:23Z"
+  },
+  "raw/2025/sensor12235133_p4.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 4,
+   "sha256": "2c704a2f6da0921758e63b068abad1097a8120290af4be27dcccce22f3735e95",
+   "bytes": 15741,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:25Z"
+  },
+  "raw/2025/sensor12235133_p5.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 5,
+   "sha256": "8abba93ce52692f0fa36efaaecad168bcc1289e962bb234ab5b8f1a63f03ded7",
+   "bytes": 15736,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:28Z"
+  },
+  "raw/2025/sensor12235133_p6.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 6,
+   "sha256": "a084a3bfdbfa2e16bf59338542fb791781f39b0a5b4459ef20760b519c5f05e0",
+   "bytes": 15844,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:30Z"
+  },
+  "raw/2025/sensor12235133_p7.json.gz": {
+   "sensor": 12235133,
+   "season": 2025,
+   "page": 7,
+   "sha256": "38a517877403a79eb3e679b8b7a7aae3e6858af1c40bc60a2f5191c1097d201a",
+   "bytes": 4053,
+   "n": 238,
+   "retrieved_utc": "2026-10-01T02:46:33Z"
+  },
+  "raw/2025/sensor12235160_p1.json.gz": {
+   "sensor": 12235160,
+   "season": 2025,
+   "page": 1,
+   "sha256": "1d191151c72e31061f714b489ad8377f133566cb64412bf2dc0a2697acee2dd4",
+   "bytes": 15862,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:08Z"
+  },
+  "raw/2025/sensor12235160_p2.json.gz": {
+   "sensor": 12235160,
+   "season": 2025,
+   "page": 2,
+   "sha256": "c923b1ad39886f0c279e5e9ddf4ea11188dfad61e0307e1f7627cee0f75f9d7b",
+   "bytes": 15802,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:10Z"
+  },
+  "raw/2025/sensor12235160_p3.json.gz": {
+   "sensor": 12235160,
+   "season": 2025,
+   "page": 3,
+   "sha256": "4bea08eaa4db8019118d240c2858a46c2ebbc8e7f0d0123b366b4ac6b51afc25",
+   "bytes": 15990,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:13Z"
+  },
+  "raw/2025/sensor12235160_p4.json.gz": {
+   "sensor": 12235160,
+   "season": 2025,
+   "page": 4,
+   "sha256": "b05188e41f835a558a07d518646c207a4f1c75848aa67aa88e7158de8ea4fc28",
+   "bytes": 16227,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:16Z"
+  },
+  "raw/2025/sensor12235160_p5.json.gz": {
+   "sensor": 12235160,
+   "season": 2025,
+   "page": 5,
+   "sha256": "9ec8e06349d062f2e9847e1c8231ddd7e1fe452d0666c902ed3feed5c3720b01",
+   "bytes": 16197,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:20Z"
+  },
+  "raw/2025/sensor12235160_p6.json.gz": {
+   "sensor": 12235160,
+   "season": 2025,
+   "page": 6,
+   "sha256": "e571dd3f1f558acc5fbe1c6dc349e8470ef7c889aa2b8203b0e00f9866e159f4",
+   "bytes": 6111,
+   "n": 363,
+   "retrieved_utc": "2026-10-01T02:44:23Z"
+  },
+  "raw/2025/sensor12235187_p1.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 1,
+   "sha256": "ddfe730914293a151ac8813c2de5483e04e88bb60fbcdf488e290a1c33efb837",
+   "bytes": 15455,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:56Z"
+  },
+  "raw/2025/sensor12235187_p2.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 2,
+   "sha256": "998ee3c6ec2f8b67205bc92d6f5e044e28a80e299cf9b941248fc77e7dc65dde",
+   "bytes": 15376,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:57Z"
+  },
+  "raw/2025/sensor12235187_p3.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 3,
+   "sha256": "e69a0b1485b6a8cf3bf4ec3f39078ae94ccf357a84663cb9662b36a3506f456c",
+   "bytes": 15675,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:40:59Z"
+  },
+  "raw/2025/sensor12235187_p4.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 4,
+   "sha256": "0e2bdc6d27bf2aab31ca65f40d2e9145a4dfab6d38a490eff99935893978b1a1",
+   "bytes": 15794,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:02Z"
+  },
+  "raw/2025/sensor12235187_p5.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 5,
+   "sha256": "2ea1182dd3202db103edf361c0198a9713061207d835a228d7fdf74fac582135",
+   "bytes": 15736,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:04Z"
+  },
+  "raw/2025/sensor12235187_p6.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 6,
+   "sha256": "4023934e0bff61371e4ac03ecf9aa55d798e0368293c1bc0ef55a23428021eb2",
+   "bytes": 15859,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:41:08Z"
+  },
+  "raw/2025/sensor12235187_p7.json.gz": {
+   "sensor": 12235187,
+   "season": 2025,
+   "page": 7,
+   "sha256": "1500a00978938f2d7c6e38b07d0827c9aecc28c5f6a3bc30c7e0fa97a40c3c26",
+   "bytes": 874,
+   "n": 31,
+   "retrieved_utc": "2026-10-01T02:41:11Z"
+  },
+  "raw/2025/sensor12235303_p1.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 1,
+   "sha256": "b52dd3d9ce4d6924aba5b1ca440854fe97f09d5449138b2a56d016f0de7a3976",
+   "bytes": 15424,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:07Z"
+  },
+  "raw/2025/sensor12235303_p2.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 2,
+   "sha256": "9253e40fbc670720ad2a6b3b92592f4c99c3cf3dc0e69b30def11b78ce32165e",
+   "bytes": 15277,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:09Z"
+  },
+  "raw/2025/sensor12235303_p3.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 3,
+   "sha256": "1693e5d12b5662fb0a9506c7ce324c000068d31823e9e9b70e28d9122224267c",
+   "bytes": 15566,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:11Z"
+  },
+  "raw/2025/sensor12235303_p4.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 4,
+   "sha256": "82970ea4736549d049f85f6bc098d4e5ac2586ae10ec2cf3075185774964ce1f",
+   "bytes": 15636,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:13Z"
+  },
+  "raw/2025/sensor12235303_p5.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 5,
+   "sha256": "eece82b4b6e2a63a4fdaf10275fd39a9ebbc0e96a1ffc161337f3e9270c8e202",
+   "bytes": 15696,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:16Z"
+  },
+  "raw/2025/sensor12235303_p6.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 6,
+   "sha256": "72dbac3e9ceb19ed4a7727e6c30cfb0444486558eebca8e7d614c7eca186b6ed",
+   "bytes": 15745,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:18Z"
+  },
+  "raw/2025/sensor12235303_p7.json.gz": {
+   "sensor": 12235303,
+   "season": 2025,
+   "page": 7,
+   "sha256": "315cbcfd6dab0f407c4d3bd607cf2fc8cb48c0c317c554bbd79917e5cbee7ec9",
+   "bytes": 5131,
+   "n": 309,
+   "retrieved_utc": "2026-10-01T02:58:21Z"
+  },
+  "raw/2025/sensor12235312_p1.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 1,
+   "sha256": "e9b6ef2348bfb635de2a04a002aec13069aee81d4244216762985c748c126c62",
+   "bytes": 15312,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:53Z"
+  },
+  "raw/2025/sensor12235312_p2.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 2,
+   "sha256": "55c464c0ce94b40d163ded2691284641403eeb0d0e1c280bab89e2acffe5f806",
+   "bytes": 15618,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:54Z"
+  },
+  "raw/2025/sensor12235312_p3.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 3,
+   "sha256": "de026d2ce48a6cc2994c430d7169cd5dd455f93a098a6f178e9c9d9c887a4245",
+   "bytes": 15382,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:56Z"
+  },
+  "raw/2025/sensor12235312_p4.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 4,
+   "sha256": "5d170044f1c39bf3ef6a9e5ce602f581a2788e1dd87452d3ca6cbd084aedb50c",
+   "bytes": 15586,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:57:59Z"
+  },
+  "raw/2025/sensor12235312_p5.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 5,
+   "sha256": "b3fde6c2ead4c4d0d41b95cbb20d8a0d071f1a39b71f8f5c3e56d465faad63da",
+   "bytes": 15582,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:01Z"
+  },
+  "raw/2025/sensor12235312_p6.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 6,
+   "sha256": "3c28b1cd7f7da61775e31bdfa952afd5503dc010358a4ace312293235a03b17e",
+   "bytes": 15630,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:04Z"
+  },
+  "raw/2025/sensor12235312_p7.json.gz": {
+   "sensor": 12235312,
+   "season": 2025,
+   "page": 7,
+   "sha256": "9264bf0a8f6f86f74b0363cae393655c90cdcad384c50565ee884dfa69cc904b",
+   "bytes": 1654,
+   "n": 81,
+   "retrieved_utc": "2026-10-01T02:58:06Z"
+  },
+  "raw/2025/sensor12235321_p1.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 1,
+   "sha256": "9bf65137aeca365f523aa26a46a231a22bb11a294a77224b6038e70451da99a0",
+   "bytes": 15308,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:24Z"
+  },
+  "raw/2025/sensor12235321_p2.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 2,
+   "sha256": "9ba31187fbdfc56ace0248bd9f1fc4e2190ad928e21538160db0c39684aaff52",
+   "bytes": 15271,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:26Z"
+  },
+  "raw/2025/sensor12235321_p3.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 3,
+   "sha256": "41b1390adb65b9148580845677c5c11791631f4e6a4667b7193961236681d4b4",
+   "bytes": 15519,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:28Z"
+  },
+  "raw/2025/sensor12235321_p4.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 4,
+   "sha256": "f716eedd1c445a25cde88a49539e8e179f3df5cd0161a5a51c0820662d18a998",
+   "bytes": 15563,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:30Z"
+  },
+  "raw/2025/sensor12235321_p5.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 5,
+   "sha256": "961f8fc68be85e75db8af62fb6a9695dc51c79804840c4b742598d7d9ad6b96b",
+   "bytes": 15636,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:33Z"
+  },
+  "raw/2025/sensor12235321_p6.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 6,
+   "sha256": "c124c0d4c5a3099af678f892ad5186975a8c98dd2141563746f6e06f85f10a9d",
+   "bytes": 15635,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:44:35Z"
+  },
+  "raw/2025/sensor12235321_p7.json.gz": {
+   "sensor": 12235321,
+   "season": 2025,
+   "page": 7,
+   "sha256": "1f70a36e43c47d2a6eb00a4e37010e0dde928947849ccb6a5f6f48c730cdeda1",
+   "bytes": 5172,
+   "n": 314,
+   "retrieved_utc": "2026-10-01T02:44:38Z"
+  },
+  "raw/2025/sensor12235610_p1.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 1,
+   "sha256": "0ff6bd307087f28b4990d4d4fc12aede2e74ef56d92d70b0442483b20087c691",
+   "bytes": 15709,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:25Z"
+  },
+  "raw/2025/sensor12235610_p2.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 2,
+   "sha256": "e8a2805f66e30f6c24fcb9647f8db98ef050c4d36df84814ecc5623c769e24ec",
+   "bytes": 15476,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:27Z"
+  },
+  "raw/2025/sensor12235610_p3.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 3,
+   "sha256": "580ce3a6860a2b2811de92d124769a23f103c23407233f90017e52048334e741",
+   "bytes": 15746,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:30Z"
+  },
+  "raw/2025/sensor12235610_p4.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 4,
+   "sha256": "ce153fb87cbb0564b906a51ea309348f6b1ffd0592827b5a093aaadeb5c9355a",
+   "bytes": 15810,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:32Z"
+  },
+  "raw/2025/sensor12235610_p5.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 5,
+   "sha256": "a7b954a9bc788066b2c849ee794a04989bfb1720463a6b4b8437350c6482a890",
+   "bytes": 15732,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:35Z"
+  },
+  "raw/2025/sensor12235610_p6.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 6,
+   "sha256": "a046cad588af341eb2b5a734276fa27df5cd96b87d6d93887f428b393ec916f1",
+   "bytes": 15785,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:39:37Z"
+  },
+  "raw/2025/sensor12235610_p7.json.gz": {
+   "sensor": 12235610,
+   "season": 2025,
+   "page": 7,
+   "sha256": "deeb76d44eb834ab4a4c9f173b59e77e01d7bab2a7d01e3450dc7aee098a5cb2",
+   "bytes": 664,
+   "n": 18,
+   "retrieved_utc": "2026-10-01T02:39:40Z"
+  },
+  "raw/2025/sensor12235698_p1.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 1,
+   "sha256": "2ab5dfc93c872f529a50a5094999344e8ba02ed8b40c92727d29f4bca81199a1",
+   "bytes": 15413,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:50Z"
+  },
+  "raw/2025/sensor12235698_p2.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 2,
+   "sha256": "20c83a7d143bfcede12de4668df2e3a004d57ad4ef868ec453c503c7a4371d8f",
+   "bytes": 15343,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:52Z"
+  },
+  "raw/2025/sensor12235698_p3.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 3,
+   "sha256": "256a5b6cfb3e0ae8b5a71f9ffd65ab611c916b39a561b2e7177ca787769ccab8",
+   "bytes": 15530,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:55Z"
+  },
+  "raw/2025/sensor12235698_p4.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 4,
+   "sha256": "c13f21865cc105e4cc27b2b75be42773a753b387cadce7c5fed1539dcefd7c92",
+   "bytes": 15677,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:57Z"
+  },
+  "raw/2025/sensor12235698_p5.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 5,
+   "sha256": "b82102158a2620078510a85c8c3f240f0da623088341cc245c26731c9c2c9c93",
+   "bytes": 15730,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:00Z"
+  },
+  "raw/2025/sensor12235698_p6.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 6,
+   "sha256": "71aa77e2ba0b988567417b69c824241cc0a99a2e195bbcf317e4b5bdf24c4429",
+   "bytes": 15568,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:46:03Z"
+  },
+  "raw/2025/sensor12235698_p7.json.gz": {
+   "sensor": 12235698,
+   "season": 2025,
+   "page": 7,
+   "sha256": "cbb1268f42aa42202ba994938fee852656512cea37d910349a03b28a566fa4c2",
+   "bytes": 4425,
+   "n": 262,
+   "retrieved_utc": "2026-10-01T02:46:05Z"
+  },
+  "raw/2025/sensor12235707_p1.json.gz": {
+   "sensor": 12235707,
+   "season": 2025,
+   "page": 1,
+   "sha256": "c6724f3657f22742a695eeb076eb5f36df1a995842e57fef32de41f3c35500cb",
+   "bytes": 19050,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:52Z"
+  },
+  "raw/2025/sensor12235707_p2.json.gz": {
+   "sensor": 12235707,
+   "season": 2025,
+   "page": 2,
+   "sha256": "3b39b47ba88e99bd4b698d047e0cfbdcb30eebb0c72eef6b6e1d0afd14964735",
+   "bytes": 18658,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:55Z"
+  },
+  "raw/2025/sensor12235707_p3.json.gz": {
+   "sensor": 12235707,
+   "season": 2025,
+   "page": 3,
+   "sha256": "749eedb71df655a25b14572a7a19bd660bffcff9a40ce3eb9841a4376aea8905",
+   "bytes": 19191,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:57Z"
+  },
+  "raw/2025/sensor12235707_p4.json.gz": {
+   "sensor": 12235707,
+   "season": 2025,
+   "page": 4,
+   "sha256": "df147adc325b79a6caf922d71cd577750f9908eeee8685c2c339690693c0483e",
+   "bytes": 19478,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:01Z"
+  },
+  "raw/2025/sensor12235707_p5.json.gz": {
+   "sensor": 12235707,
+   "season": 2025,
+   "page": 5,
+   "sha256": "dc560e832f5e780591d7bc8aab091716fc6098433e2ed46c7566843e6d22ee20",
+   "bytes": 19414,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:05Z"
+  },
+  "raw/2025/sensor12235707_p6.json.gz": {
+   "sensor": 12235707,
+   "season": 2025,
+   "page": 6,
+   "sha256": "4a3654c91f2c75370cf2788ac53828ec07f228e2dc3dec9f57808cc464cbea80",
+   "bytes": 16425,
+   "n": 841,
+   "retrieved_utc": "2026-10-01T02:59:10Z"
+  },
+  "raw/2025/sensor12235770_p1.json.gz": {
+   "sensor": 12235770,
+   "season": 2025,
+   "page": 1,
+   "sha256": "6c10e7b73573ab937566f474f9bb5c2c5845bfccd29448a274529c1deb9b5876",
+   "bytes": 15731,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:38Z"
+  },
+  "raw/2025/sensor12235770_p2.json.gz": {
+   "sensor": 12235770,
+   "season": 2025,
+   "page": 2,
+   "sha256": "ba98abe14b9d04db6f3f1bbd9da765f35cd2b9c50124cd946a8c71b48e796f3b",
+   "bytes": 15870,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:41Z"
+  },
+  "raw/2025/sensor12235770_p3.json.gz": {
+   "sensor": 12235770,
+   "season": 2025,
+   "page": 3,
+   "sha256": "1f04db52f5e816a512fef374d976131aa25ef6e71652b414a5fc5478c748b69f",
+   "bytes": 16109,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:43Z"
+  },
+  "raw/2025/sensor12235770_p4.json.gz": {
+   "sensor": 12235770,
+   "season": 2025,
+   "page": 4,
+   "sha256": "6ba227273d9617a79ab88cbafe9048abb5634ac3af1dbdc305879c246725364f",
+   "bytes": 16142,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:45Z"
+  },
+  "raw/2025/sensor12235770_p5.json.gz": {
+   "sensor": 12235770,
+   "season": 2025,
+   "page": 5,
+   "sha256": "1678ca286daaaade71b87c39a5da10e3be8ab76f3a51feda58aab3a7618c3440",
+   "bytes": 15882,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:48Z"
+  },
+  "raw/2025/sensor12235770_p6.json.gz": {
+   "sensor": 12235770,
+   "season": 2025,
+   "page": 6,
+   "sha256": "f0b12c77d96ecc9b4b3d9a600da9ce1ca54750cf78919ea4695d9e23d289d419",
+   "bytes": 14686,
+   "n": 934,
+   "retrieved_utc": "2026-10-01T02:58:51Z"
+  },
+  "raw/2025/sensor12235779_p1.json.gz": {
+   "sensor": 12235779,
+   "season": 2025,
+   "page": 1,
+   "sha256": "520b529b003f6e450f935b3495337b8efb29929f51227893e2243a9eb209b44f",
+   "bytes": 15568,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:03Z"
+  },
+  "raw/2025/sensor12235779_p2.json.gz": {
+   "sensor": 12235779,
+   "season": 2025,
+   "page": 2,
+   "sha256": "9bf9454bed280020710c19d01351a20512e9fb267fe9d2750b70965632dae8db",
+   "bytes": 15645,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:05Z"
+  },
+  "raw/2025/sensor12235779_p3.json.gz": {
+   "sensor": 12235779,
+   "season": 2025,
+   "page": 3,
+   "sha256": "95eb8d28095f89ce0521bfe2afa7289b7ae5473cd9b0848c39ef46f374065238",
+   "bytes": 15862,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:07Z"
+  },
+  "raw/2025/sensor12235779_p4.json.gz": {
+   "sensor": 12235779,
+   "season": 2025,
+   "page": 4,
+   "sha256": "d49b128ca15b701d270053388d26c95ff91e1b4658c8fd2db98e9b0c52dbce0f",
+   "bytes": 15914,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:10Z"
+  },
+  "raw/2025/sensor12235779_p5.json.gz": {
+   "sensor": 12235779,
+   "season": 2025,
+   "page": 5,
+   "sha256": "f0041308b778beff44a8391192b51d52d6363402814ebd5c1deacab4359a38be",
+   "bytes": 15928,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:45:13Z"
+  },
+  "raw/2025/sensor12235779_p6.json.gz": {
+   "sensor": 12235779,
+   "season": 2025,
+   "page": 6,
+   "sha256": "b467181960d866e0c324ce8c1526f6d53930a8ecaf26db14949335008604a6d7",
+   "bytes": 3848,
+   "n": 224,
+   "retrieved_utc": "2026-10-01T02:45:16Z"
+  },
+  "raw/2025/sensor12235787_p1.json.gz": {
+   "sensor": 12235787,
+   "season": 2025,
+   "page": 1,
+   "sha256": "34da0968b133481b9eaebf5e086a674180261171621c9fa5ab2ef108ba6ed670",
+   "bytes": 15782,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:55Z"
+  },
+  "raw/2025/sensor12235787_p2.json.gz": {
+   "sensor": 12235787,
+   "season": 2025,
+   "page": 2,
+   "sha256": "fcaa50a82cb33487d51913208b1e316d03409501a5554f287ab5a019901a5927",
+   "bytes": 15809,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:57Z"
+  },
+  "raw/2025/sensor12235787_p3.json.gz": {
+   "sensor": 12235787,
+   "season": 2025,
+   "page": 3,
+   "sha256": "9926d0a7889473aefb7179897fe6d1f7868398540b0394dc5f2e4a934a93693a",
+   "bytes": 15863,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:59Z"
+  },
+  "raw/2025/sensor12235787_p4.json.gz": {
+   "sensor": 12235787,
+   "season": 2025,
+   "page": 4,
+   "sha256": "8b26566a92e5cf616d3a54936e188b451481691deb47bf26e124b33a08d040cf",
+   "bytes": 15948,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:01Z"
+  },
+  "raw/2025/sensor12235787_p5.json.gz": {
+   "sensor": 12235787,
+   "season": 2025,
+   "page": 5,
+   "sha256": "128c747e021349166bd946f1641227d93a20b66926a5f5e9a783835f77415506",
+   "bytes": 16056,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:48:03Z"
+  },
+  "raw/2025/sensor12235787_p6.json.gz": {
+   "sensor": 12235787,
+   "season": 2025,
+   "page": 6,
+   "sha256": "a830857df407201049d6e85266a2e9493e3c219b807dacc2642da2c5ed2e9c05",
+   "bytes": 8166,
+   "n": 499,
+   "retrieved_utc": "2026-10-01T02:48:06Z"
+  },
+  "raw/2025/sensor12235935_p1.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 1,
+   "sha256": "58323640b4f8e6c38327eb75e4a7f7f5dd655ae845f5def1bbe8b9f787f5ce7c",
+   "bytes": 15643,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:26Z"
+  },
+  "raw/2025/sensor12235935_p2.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 2,
+   "sha256": "c0302f24452a149a56f2511b2cc4aa30747f6d833c57e19ff7e0e6ae79f5740e",
+   "bytes": 15536,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:27Z"
+  },
+  "raw/2025/sensor12235935_p3.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 3,
+   "sha256": "f6463abb0f46e6c5c41cc9543b3773bdb4a40aaa32dd6571d0944c4d790fec0d",
+   "bytes": 15712,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:30Z"
+  },
+  "raw/2025/sensor12235935_p4.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 4,
+   "sha256": "a7b4e2c679ece0cf875302c862b3612fbe1e4366babe35b8ba8d9c7b9f8079a3",
+   "bytes": 15800,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:32Z"
+  },
+  "raw/2025/sensor12235935_p5.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 5,
+   "sha256": "3864ceb3bbf6654607298cacb05481d7cd0311d1ebdb26ced85e66c199b4348f",
+   "bytes": 15845,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:35Z"
+  },
+  "raw/2025/sensor12235935_p6.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 6,
+   "sha256": "48d529eebae096b3516d9664a3fd1962c6f4a8906d754d92c7a5b873628e010d",
+   "bytes": 15949,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:38Z"
+  },
+  "raw/2025/sensor12235935_p7.json.gz": {
+   "sensor": 12235935,
+   "season": 2025,
+   "page": 7,
+   "sha256": "81c2a0e0a1b4bb09bd2058e6c823a32328a628544dd7c919383f346bedee3e5e",
+   "bytes": 4168,
+   "n": 244,
+   "retrieved_utc": "2026-10-01T02:47:41Z"
+  },
+  "raw/2025/sensor12235942_p1.json.gz": {
+   "sensor": 12235942,
+   "season": 2025,
+   "page": 1,
+   "sha256": "9f488d9b23f1cce1db0e27a4d19b2e7a35ac1ccae2b5c14804bb17f44bab2825",
+   "bytes": 15530,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:43Z"
+  },
+  "raw/2025/sensor12235942_p2.json.gz": {
+   "sensor": 12235942,
+   "season": 2025,
+   "page": 2,
+   "sha256": "01b5a154af72f939fc722e885f4d4710f845c16e5c1f8e971e4a23a1901a7fb2",
+   "bytes": 15562,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:44Z"
+  },
+  "raw/2025/sensor12235942_p3.json.gz": {
+   "sensor": 12235942,
+   "season": 2025,
+   "page": 3,
+   "sha256": "5d2aa0661bfd2cd9b7b16cd69c488783b5b2a992a6a6ef252f1f12486e5ed010",
+   "bytes": 15724,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:46Z"
+  },
+  "raw/2025/sensor12235942_p4.json.gz": {
+   "sensor": 12235942,
+   "season": 2025,
+   "page": 4,
+   "sha256": "3a879472a4780e203d4ecd8498899200e0fd3ad71684a249d960d469c41cb89f",
+   "bytes": 15850,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:48Z"
+  },
+  "raw/2025/sensor12235942_p5.json.gz": {
+   "sensor": 12235942,
+   "season": 2025,
+   "page": 5,
+   "sha256": "3000d41eb8f5918970955491a59bab6e7e98cb3d1da45b397c28183a7fa2ce61",
+   "bytes": 15869,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:51Z"
+  },
+  "raw/2025/sensor12235942_p6.json.gz": {
+   "sensor": 12235942,
+   "season": 2025,
+   "page": 6,
+   "sha256": "c3c964922077bd9daa42da338c764ae48c40bf54aa61aff28d13596fbecf733d",
+   "bytes": 10330,
+   "n": 642,
+   "retrieved_utc": "2026-10-01T02:47:54Z"
+  },
+  "raw/2025/sensor12235951_p1.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 1,
+   "sha256": "a27c5fe8ee7ceb402fda8eec7e1d78dc33f5cb36ce3ce4e92e2f602d65dabc94",
+   "bytes": 15556,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:06Z"
+  },
+  "raw/2025/sensor12235951_p2.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 2,
+   "sha256": "f89c9143d992d5b6bc93dfc3582863414577395127ca039ad206b40554d47cc1",
+   "bytes": 15478,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:08Z"
+  },
+  "raw/2025/sensor12235951_p3.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 3,
+   "sha256": "ded48f10539e237a263028a8274931f5b703a58bc8736e2ffcceee5792047659",
+   "bytes": 15730,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:10Z"
+  },
+  "raw/2025/sensor12235951_p4.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 4,
+   "sha256": "6bd44d13aaeb69e8c553359b852b9056e6a9412d14d76dd300451ed615757db6",
+   "bytes": 15837,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:13Z"
+  },
+  "raw/2025/sensor12235951_p5.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 5,
+   "sha256": "fa3c6561d3716aabf1eb17bd3d50c2b7a917bc0970023786a9d215d33eeafb95",
+   "bytes": 15844,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:16Z"
+  },
+  "raw/2025/sensor12235951_p6.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 6,
+   "sha256": "a0a1992f7abef592b27d2c895b3bc5e17aeac31785df858fbb1e4caf3c7d0b3c",
+   "bytes": 15886,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:47:21Z"
+  },
+  "raw/2025/sensor12235951_p7.json.gz": {
+   "sensor": 12235951,
+   "season": 2025,
+   "page": 7,
+   "sha256": "11f2b509650de7f44009975934c1c0b01a81358067b1712b8eca861558483b86",
+   "bytes": 1991,
+   "n": 99,
+   "retrieved_utc": "2026-10-01T02:47:24Z"
+  },
+  "raw/2025/sensor12236236_p1.json.gz": {
+   "sensor": 12236236,
+   "season": 2025,
+   "page": 1,
+   "sha256": "ef66b0412ed8e30a52597dacacc0dc39bf680e53512362a60e13852b6b86aad5",
+   "bytes": 5870,
+   "n": 242,
+   "retrieved_utc": "2026-10-01T02:58:22Z"
+  },
+  "raw/2025/sensor12236251_p1.json.gz": {
+   "sensor": 12236251,
+   "season": 2025,
+   "page": 1,
+   "sha256": "21832371e6dbd0a2f6d7a4ee3d0d1413df4967eb00886056e3328e239d60f477",
+   "bytes": 16769,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:58:35Z"
+  },
+  "raw/2025/sensor12236251_p2.json.gz": {
+   "sensor": 12236251,
+   "season": 2025,
+   "page": 2,
+   "sha256": "199b3f68c49ce9b0accb161523f71762541217201024e1af4154a84df10eaa85",
+   "bytes": 15636,
+   "n": 777,
+   "retrieved_utc": "2026-10-01T02:58:37Z"
+  },
+  "raw/2025/sensor12236361_p1.json.gz": {
+   "sensor": 12236361,
+   "season": 2025,
+   "page": 1,
+   "sha256": "85e59e1f976127459f218f7599c0e144ea61e6a3e752fb12fb26e2a8c8e05e30",
+   "bytes": 16664,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:11Z"
+  },
+  "raw/2025/sensor12236361_p2.json.gz": {
+   "sensor": 12236361,
+   "season": 2025,
+   "page": 2,
+   "sha256": "fdbcea924a17a0d1ec8e02b1d5954696c480f6d59872623ed0ac9d4f2fe6cd09",
+   "bytes": 16656,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:13Z"
+  },
+  "raw/2025/sensor12236361_p3.json.gz": {
+   "sensor": 12236361,
+   "season": 2025,
+   "page": 3,
+   "sha256": "b25c07f50151f9c603d841b58e420899408bad78e2ed248e076328985355e529",
+   "bytes": 16937,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:16Z"
+  },
+  "raw/2025/sensor12236361_p4.json.gz": {
+   "sensor": 12236361,
+   "season": 2025,
+   "page": 4,
+   "sha256": "400d0e0e788f3370d80617b056cd7bb3acb7180f59efc6e648799270a29905ad",
+   "bytes": 12714,
+   "n": 601,
+   "retrieved_utc": "2026-10-01T02:59:19Z"
+  },
+  "raw/2025/sensor12236376_p1.json.gz": {
+   "sensor": 12236376,
+   "season": 2025,
+   "page": 1,
+   "sha256": "fb769cf8923c7cee67e74e6a10aaa90b4599611cc1b8252d870d9e68d48f41f2",
+   "bytes": 17791,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:20Z"
+  },
+  "raw/2025/sensor12236376_p2.json.gz": {
+   "sensor": 12236376,
+   "season": 2025,
+   "page": 2,
+   "sha256": "19fb19e006fc8351bf6dc61d7036a9638bfe273029f7ecc1f3a4359f11870772",
+   "bytes": 17839,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:21Z"
+  },
+  "raw/2025/sensor12236376_p3.json.gz": {
+   "sensor": 12236376,
+   "season": 2025,
+   "page": 3,
+   "sha256": "13b5f562dbebe5b3ddbb903fa9f318870c82bfe8d17a7edc97167e3bb37636ec",
+   "bytes": 17802,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:24Z"
+  },
+  "raw/2025/sensor12236376_p4.json.gz": {
+   "sensor": 12236376,
+   "season": 2025,
+   "page": 4,
+   "sha256": "a753b28880d91fa88be1d2917146baad7457a9a65086d95ddf11e9eadf865bb3",
+   "bytes": 17628,
+   "n": 1000,
+   "retrieved_utc": "2026-10-01T02:59:28Z"
+  },
+  "raw/2025/sensor12236376_p5.json.gz": {
+   "sensor": 12236376,
+   "season": 2025,
+   "page": 5,
+   "sha256": "6851ecef8e429ff7eedf619b4aff29616a42ae97e997d84c43ed4b2936714864",
+   "bytes": 11342,
+   "n": 616,
+   "retrieved_utc": "2026-10-01T02:59:30Z"
+  }
+ },
+ "source": "OpenAQ v3 API (CPCB provider)",
+ "licence": "none listed by OpenAQ (checked 1 Oct 2026); used at the developer's decision, DECISIONS P-9"
+}
