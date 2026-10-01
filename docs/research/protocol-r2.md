@@ -226,3 +226,13 @@ None of these changes a scenario, method, grid, seed, budget or endpoint. Each i
     - the fast replay equals the registered edge stages at every ρ on development seed 11;
     - with the release haze, R2's P2 at ρ = 3, its P2-med and its AR equal R1's rows on seed 11 (short protocol);
     - reference values for M20b's geometry, the gain-field correlation, R9, R10 and R11.
+
+## 11. Deviation after registration (logged in DECISIONS R2-D1)
+
+A validity rule for settings that alarm continuously, added on 1 Oct 2026 after the selection stage and before any
+test result was read.
+
+- **Rule:** a setting is invalid when, on any seed, one of its false incidents lasts ≥ 24 h. M46's incident merging
+  then makes its count meaningless.
+- **Reporting:** the registered analysis above is reported unchanged. A sensitivity analysis repeats §4–§5 with
+  valid settings only.

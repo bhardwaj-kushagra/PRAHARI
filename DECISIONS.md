@@ -932,6 +932,28 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - A rerun reproduced every other output exactly.
   - No definition, threshold or selection changed.
 
+- **R2-D1. Deviation in round R2: a validity rule for continuously alarming settings** (decided on 1 Oct 2026 by the
+  developer, after the selection stage and before any test result was read).
+  - *Found:* on the H-mix selection seeds, Mei alarms almost continuously at low h_M (raw alarms at least every 30
+    min).
+    - M46's merge rule (60 min, 2R) folds these alarms into a few long incidents. So the false-incident count
+      collapses (h_M = 20: 7.95 a month) and every fire counts as detected about 20 min after ignition (100%).
+    - That registered operating point is a measurement artifact. At its strictest threshold (h_M = 1500), Mei still
+      raises about 176 false incidents a month.
+  - *Rule, applied to every method and setting:* a setting is **invalid** when, on any seed of the stage, one of its
+    false incidents lasts ≥ 24 h (first to last alarm). 24 h exceeds any single haze episode (at most 14 h plus
+    arrival spread).
+  - *Analysis:*
+    - The **registered analysis is reported in full and unchanged.**
+    - A **sensitivity analysis** (`selection_R2_D1`, `sensitivity_R2_D1` in `r2_analysis.json`) repeats B*, the
+      floor knobs, the operating points and families F and D using valid settings only.
+  - *Recording, additive:* the R2 seed files gain `fi_longest_min` and `n_alarms_quiet` per setting; AR is scored
+    through `operating_r2.eval_ar_r2`, identical apart from those fields.
+  - *Restart:* the selection stage and the 8 test seeds already run (not read) were regenerated with the new fields.
+    Their registered fields must equal the earlier files byte for byte in value; this is checked.
+  - *Why not drop Mei instead:* every registered comparison stays reported (charter rule 3). The rule is symmetric,
+    and it is a validity condition of the M46 metric, not a change made for a result.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

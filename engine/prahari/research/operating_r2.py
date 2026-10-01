@@ -13,19 +13,52 @@ import numpy as np
 from prahari.core.rng import make_rngs
 from prahari.research.edge2 import alarms_at, edge_records
 from prahari.research.gate import evidence_share, gated
-from prahari.research.hazesplit import episodes, fire_overlaps
+from prahari.research.hazesplit import episodes, fire_overlaps, incident_list
 from prahari.research.mei import mei_alarms
-from prahari.research.operating import SeedEval, _cands, _hits, eval_v1_tuned
+from prahari.research.baselines import ar_innovation, capped_z, confirm
+from prahari.research.operating import SeedEval, _cands, _hits
 
 NODE_LAYERS = ("main", "med", "factor")
 
 
+def score_r2(se: SeedEval, quiet, burn) -> tuple:
+    """The registered M46 scoring (`SeedEval.score`) plus two descriptive fields for the validity rule (DECISIONS
+    R2-D1): the longest false incident (minutes, first to last alarm) and the number of quiet-pass alarms in the test
+    period."""
+    k, lat, starts = se.score(quiet, burn)
+    ev = se.ev
+    inc = incident_list(quiet, se.dist, se.R, se.test0, se.T, ev["merge_min"], ev["merge_radius_factor"])
+    longest = max((m[1] - m[0] for m in inc), default=0)
+    n_alarms = sum(1 for a in quiet if se.test0 <= a[0] < se.T)
+    return k, lat, starts, int(longest), int(n_alarms)
+
+
 def _cells(knob: str, grid: list, scored: list, h=None, cap=None) -> dict:
     row = {"knob": knob, "grid": grid, "false_incidents": [int(s[0]) for s in scored],
-           "latencies": [s[1] for s in scored], "fi_starts": [s[2] for s in scored]}
+           "latencies": [s[1] for s in scored], "fi_starts": [s[2] for s in scored],
+           "fi_longest_min": [s[3] for s in scored], "n_alarms_quiet": [s[4] for s in scored]}
     if h is not None:
         row["h_by_target"] = [round(float(v), 6) for v in h]
         row["at_cap_by_target"] = [bool(c) for c in cap]
+    return row
+
+
+def eval_ar_r2(se: SeedEval, targets, cap) -> dict:
+    """R1's AR(1) residual chart (`operating.eval_v1_tuned` with ar=True), unchanged except that it is scored with
+    `score_r2`, so it carries the validity-rule fields too."""
+    p = se.cfg["params"]["baseline_p1t"]
+    k, ref, w, qn = float(p["k"]), int(p["refractory_min"]), int(p["window_min"]), int(p["quorum"])
+    zs, fr = [], []
+    for r in (se.q, se.f):
+        z = capped_z(r.x, p)
+        fr.append((z >= float(p["cm_z"])).mean(axis=1))                  # M28 — elevated share of this z
+        zs.append(ar_innovation(z, int(p["init_min"]), se.ev["calibration_days"] * 1440)[0])
+    hq, hf, cap_hit = se.tuned_both(zs[0], fr[0], zs[1], fr[1], targets, k, p, cap)
+    cq, cf = _hits(zs[0], se.test0, k, hq, ref), _hits(zs[1], se.test0, k, hf, ref)
+    scored = [score_r2(se, confirm(a, se.nbr, w, qn), confirm(b, se.nbr, w, qn)) for a, b in zip(cq, cf)]
+    row = _cells("target", [float(g) for g in targets], scored)
+    row["h"] = [round(float(v), 6) for v in hq]
+    row["at_cap"] = [bool(c) for c in cap_hit]
     return row
 
 
@@ -57,7 +90,7 @@ def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap) -> dict:
         for r, (rq, rf) in zip(targets, recs):
             for rho in rho_grid:
                 grid.append([float(r), float(rho)])
-                scored.append(se.score(alarms_at(rq, rho), alarms_at(rf, rho)))
+                scored.append(score_r2(se, alarms_at(rq, rho), alarms_at(rf, rho)))
         return _cells("target×rho" if len(rho_grid) > 1 else "target", grid if len(rho_grid) > 1 else
                       [g[0] for g in grid], scored, h, c)
 
@@ -69,12 +102,12 @@ def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap) -> dict:
         aq, af = alarms_at(rq, 0.0), alarms_at(rf, 0.0)
         for th in thetas:
             g_grid.append([float(r), th])
-            g_scored.append(se.score(gated(aq, e["q"], th), gated(af, e["f"], th)))
+            g_scored.append(score_r2(se, gated(aq, e["q"], th), gated(af, e["f"], th)))
 
     def mei(v):
         aq = mei_alarms(se.q.nodes[v].p[se.test0:], h_mei, k_mei, ref_mei, se.test0)
         af = mei_alarms(se.f.nodes[v].p[se.test0:], h_mei, k_mei, ref_mei, se.test0)
-        return _cells("h_M", [float(x) for x in h_mei], [se.score(a, b) for a, b in zip(aq, af)])
+        return _cells("h_M", [float(x) for x in h_mei], [score_r2(se, a, b) for a, b in zip(aq, af)])
 
     fe = episodes(se.f.haze)
     return {"seed": seed, "test_days": se.ev["test_days"], "n_fires": len(se.fires),
@@ -88,4 +121,4 @@ def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap) -> dict:
                           "P2-medSCMR": surface("med", rhos), "P2-factor": surface("factor", [0.0]),
                           "P2-gate": _cells("target×theta", g_grid, g_scored, h, c),
                           "Mei": mei("main"), "Mei-med": mei("med"),
-                          "AR": eval_v1_tuned(se, grids["v1t"], cap, ar=True)}}
+                          "AR": eval_ar_r2(se, grids["v1t"], cap)}}

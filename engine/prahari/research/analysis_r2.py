@@ -21,6 +21,7 @@ from prahari.research.analysis import _json, _r, by_pipeline
 from prahari.research.hazesplit import PAD_MIN, active_mask
 
 MISS_MIN = 180                                  # E4 — a missed fire counts as 180 min
+INVALID_INCIDENT_MIN = 1440                     # DECISIONS R2-D1 — a false incident lasting ≥ 24 h: continuous alarming
 
 
 def load_r2_stage(out: Path, stage: str, scenario: str) -> list[dict]:
@@ -28,16 +29,27 @@ def load_r2_stage(out: Path, stage: str, scenario: str) -> list[dict]:
     return [json.loads(f.read_text(encoding="utf-8")) for f in files]
 
 
-def floor_index(fa, det) -> int:
-    """§10.10 — the lowest pooled false incidents; ties: higher detection, then the first cell."""
-    return int(min(range(len(fa)), key=lambda j: (fa[j], -det[j], j)))
+def floor_index(fa, det, allowed=None):
+    """§10.10 — the lowest pooled false incidents; ties: higher detection, then the first cell. `allowed` (R2-D1
+    sensitivity) restricts the cells; None when no cell is allowed."""
+    cells = [j for j in range(len(fa)) if allowed is None or allowed[j]]
+    return int(min(cells, key=lambda j: (fa[j], -det[j], j))) if cells else None
 
 
-def op_index(fa, det, budget: float):
+def op_index(fa, det, budget: float, allowed=None):
     """§10.10 — the highest detection among cells with pooled false incidents ≤ budget; ties: lower false incidents,
-    then the first cell (None when no cell meets the budget)."""
-    ok = [j for j in range(len(fa)) if fa[j] <= budget]
+    then the first cell (None when no cell meets the budget). `allowed` as in `floor_index`."""
+    ok = [j for j in range(len(fa)) if fa[j] <= budget and (allowed is None or allowed[j])]
     return int(min(ok, key=lambda j: (-det[j], fa[j], j))) if ok else None
+
+
+def valid_cells(prow: list[dict]):
+    """DECISIONS R2-D1 — a cell is valid when no seed has a false incident lasting ≥ 24 h (continuous alarming makes
+    M46's incident count meaningless). None when the seed files lack the field."""
+    if not all("fi_longest_min" in r for r in prow):
+        return None
+    K = len(prow[0]["fi_longest_min"])
+    return [all(r["fi_longest_min"][j] < INVALID_INCIDENT_MIN for r in prow) for j in range(K)]
 
 
 def pareto_front(fa, det) -> list[int]:
@@ -63,22 +75,26 @@ def mean_ttc(prow: list[dict], j: int) -> float | None:
     return float(np.mean(lat)) if lat else None
 
 
-def selection_r2(rows: list[dict], r2: dict) -> dict:
-    """§4 — per method: the floor knob, every budget's operating point, and B*."""
+def selection_r2(rows: list[dict], r2: dict, validity: bool = False) -> dict:
+    """§4 — per method: the floor knob, every budget's operating point, and B*. With `validity`, the R2-D1
+    sensitivity: only cells valid on these seeds may be chosen."""
     P = by_pipeline(rows)
-    out = {"methods": {}}
+    out = {"methods": {}, "rule": "R2-D1 validity (no false incident ≥ 24 h on any seed)" if validity else "registered"}
     for name, prow in P.items():
         m = ps.seed_matrix(prow)
         pc = ps.pooled(m)
-        jf = floor_index(pc["fa"], pc["det"])
+        allowed = valid_cells(prow) if validity else None
+        jf = floor_index(pc["fa"], pc["det"], allowed)
         ops = {}
         for b in r2["budgets"]:
-            j = op_index(pc["fa"], pc["det"], b)
+            j = op_index(pc["fa"], pc["det"], b, allowed)
             ops[str(b)] = None if j is None else {"index": j, "cell": m["grid"][j], "fa_per_month": _r(pc["fa"][j]),
                                                   "det": _r(pc["det"][j])}
-        out["methods"][name] = {"knob": m["knob"], "floor": {"index": jf, "cell": m["grid"][jf],
-                                                             "fa_per_month": _r(pc["fa"][jf]), "det": _r(pc["det"][jf])},
-                                "operating": ops}
+        vc = valid_cells(prow)
+        out["methods"][name] = {"knob": m["knob"], "operating": ops,
+                                "floor": None if jf is None else {"index": jf, "cell": m["grid"][jf],
+                                                                  "fa_per_month": _r(pc["fa"][jf]), "det": _r(pc["det"][jf])},
+                                "invalid_cells": None if vc is None else [m["grid"][j] for j, ok in enumerate(vc) if not ok]}
     reach = [b for b in r2["budgets"] if all(out["methods"][x]["operating"][str(b)] is not None for x in r2["compared"])]
     out["b_star"] = reach[0] if reach else None
     return out
@@ -125,11 +141,14 @@ def scenario_results(rows: list[dict], sel: dict, r2: dict, W) -> dict:
         m = ps.seed_matrix(prow)
         pc, bc = ps.pooled(m), ps.boot_curve(m, W)
         s = sel["methods"][name]
-        jf, jo = s["floor"]["index"], (s["operating"].get(str(b)) or {}).get("index") if b is not None else None
+        jf = s["floor"]["index"] if s["floor"] else None
+        jo = (s["operating"].get(str(b)) or {}).get("index") if b is not None else None
         own = floor_index(pc["fa"], pc["det"])
+        vc = valid_cells(prow)
         res = {"knob": m["knob"],
-               "floor_at_selected_knob": {"cell": m["grid"][jf], "false_incidents": ps.fa_intervals(m, jf, W),
-                                          "det": _r(pc["det"][jf]), "decomposition": decomposition(prow, rows, jf)},
+               "floor_at_selected_knob": None if jf is None else {
+                   "cell": m["grid"][jf], "false_incidents": ps.fa_intervals(m, jf, W), "det": _r(pc["det"][jf]),
+                   "decomposition": decomposition(prow, rows, jf), "valid_here": None if vc is None else vc[jf]},
                "own_floor": {"cell": m["grid"][own], "fa_per_month": _r(pc["fa"][own]), "det": _r(pc["det"][own])},
                "det_at_equal_fa": {str(x): _r(det_at_equal_fa(pc["fa"], pc["det"], x)) for x in r2["budgets"]},
                "amoc": [{"cell": m["grid"][j], "fa_per_month": _r(pc["fa"][j]), "det": _r(pc["det"][j]),
@@ -141,7 +160,8 @@ def scenario_results(rows: list[dict], sel: dict, r2: dict, W) -> dict:
                                 "det": _r(pc["det"][jo]), "det_ci95": [_r(v) for v in bc["det_ci"][jo]],
                                 "detected": int(m["D"][:, jo].sum()), "fires": int(m["n"].sum()),
                                 "latency_median_min": _r(np.median(lat), 1) if lat else None,
-                                "mean_ttc_min": _r(mean_ttc(prow, jo), 2), "by_haze_overlap": by_overlap(prow, rows, jo)}
+                                "mean_ttc_min": _r(mean_ttc(prow, jo), 2), "by_haze_overlap": by_overlap(prow, rows, jo),
+                                "valid_here": None if vc is None else vc[jo]}
         out[name] = res
     return out
 
@@ -156,9 +176,12 @@ def families_r2(rows: list[dict], sel: dict, r2: dict, W) -> dict:
         comps, pv = {}, {}
         for x in names:
             if fam == "F":
+                if s[x]["floor"] is None or s["P2"]["floor"] is None:
+                    comps[x] = {"reachable": False}
+                    continue
                 a, c = _per_seed_fa(mats[x], s[x]["floor"]["index"]), _per_seed_fa(mats["P2"], s["P2"]["floor"]["index"])
             else:
-                if b is None:
+                if b is None or s[x]["operating"][str(b)] is None or s["P2"]["operating"][str(b)] is None:
                     comps[x] = {"reachable": False}
                     continue
                 a = ps.per_seed_det(mats[x], s[x]["operating"][str(b)]["index"])
@@ -187,10 +210,12 @@ def write_analysis_r2(r2: dict, out: Path) -> list:
     if not sel_rows:
         raise FileNotFoundError("no H-mix selection seeds under results/research/r2/selection/H-mix")
     sel = selection_r2(sel_rows, r2)
+    sel_v = selection_r2(sel_rows, r2, validity=True)                  # DECISIONS R2-D1 sensitivity
     meta = {"label": "SIMULATION", "protocol": "docs/research/protocol-r2.md (R2)", "base": r2["base"],
             "budgets": r2["budgets"], "selection_seeds": [r["seed"] for r in sel_rows]}
-    files = {"r2_selection.json": {**meta, "selection": sel, **compact_r2(sel_rows)}}
-    analysis = {**meta, "b_star": sel["b_star"], "selection": sel, "scenarios": {}}
+    files = {"r2_selection.json": {**meta, "selection": sel, "selection_R2_D1": sel_v, **compact_r2(sel_rows)}}
+    analysis = {**meta, "b_star": sel["b_star"], "selection": sel, "b_star_R2_D1": sel_v["b_star"],
+                "selection_R2_D1": sel_v, "scenarios": {}}
     tests = {}
     for name, sc in r2["scenarios"].items():
         rows = load_r2_stage(out, "test", name)
@@ -203,6 +228,9 @@ def write_analysis_r2(r2: dict, out: Path) -> list:
                "methods": scenario_results(rows, sel, r2, W)}
         if name == "H-mix":
             res["families"] = families_r2(rows, sel, r2, W)
+        res["sensitivity_R2_D1"] = {"methods": scenario_results(rows, sel_v, r2, W)}
+        if name == "H-mix":
+            res["sensitivity_R2_D1"]["families"] = families_r2(rows, sel_v, r2, W)
         analysis["scenarios"][name] = res
         tests[name] = compact_r2(rows)
     files["r2_test.json"] = {**meta, "scenarios": tests}

@@ -4,7 +4,8 @@ import json
 
 import pytest
 
-from prahari.research.analysis_r2 import (det_at_equal_fa, floor_index, op_index, pareto_front, write_analysis_r2)
+from prahari.research.analysis_r2 import (det_at_equal_fa, floor_index, op_index, pareto_front, selection_r2,
+                                          valid_cells, write_analysis_r2)
 
 METHODS = ["P2", "P2-med", "P2-medSCMR", "P2-factor", "P2-gate", "Mei", "Mei-med", "AR"]
 
@@ -22,10 +23,10 @@ def test_pareto_and_equal_fa():
     assert det_at_equal_fa(fa, det, 3.0) == pytest.approx(0.8) and det_at_equal_fa(fa, det, 0.5) == 0.0
 
 
-def _row(seed, fi, lat, starts):
+def _row(seed, fi, lat, starts, longest=(60, 60)):
     """A seed with two cells per method: cell 0 strict, cell 1 permissive; one haze episode 40 000–41 000 min."""
     pipes = {m: {"knob": "target", "grid": [1.0, 3.0], "false_incidents": fi, "latencies": lat,
-                 "fi_starts": starts} for m in METHODS}
+                 "fi_starts": starts, "fi_longest_min": list(longest), "n_alarms_quiet": [5, 50]} for m in METHODS}
     pipes["P2-med"] = {**pipes["P2"], "false_incidents": [0, fi[1]], "fi_starts": [[], starts[1]]}
     return {"seed": seed, "test_days": 30, "n_fires": 2, "degraded": [], "haze_episodes": [[40000, 41000, 1.0]],
             "fires_haze_overlap": [True, False], "pipelines": pipes}
@@ -56,3 +57,18 @@ def test_end_to_end(tmp_path):
     assert fam["F"]["P2-med"]["mean_diff"] == pytest.approx(-2.0)        # P2-med floor 0 vs P2 2 per month
     assert fam["D"]["P2-med"]["reachable"] and fam["D"]["P2-med"]["mean_diff"] == pytest.approx(0.0)
     assert a["scenarios"]["H-mix"]["complete"]
+
+
+def test_validity_rule_excludes_continuous_alarming():
+    """R2-D1 — a cell whose false alarms form an incident of ≥ 24 h on any seed cannot be chosen; the registered
+    selection is unaffected."""
+    rows = [_row(s, [2, 1], [[10, None], [5, 7]], [[100, 200], [300]], longest=(60, 1440 if s == 2 else 30))
+            for s in range(1, 4)]
+    prow = [{**r["pipelines"]["Mei"], "test_days": 30} for r in rows]
+    assert valid_cells(prow) == [True, False]
+    r2 = {"budgets": [1, 3, 10, 30], "compared": ["Mei"]}
+    reg = selection_r2(rows, r2)["methods"]["Mei"]
+    val = selection_r2(rows, r2, validity=True)["methods"]["Mei"]
+    assert reg["floor"]["cell"] == 3.0 and val["floor"]["cell"] == 1.0      # cell 1 has the lower FA but is invalid
+    assert val["invalid_cells"] == [3.0] and reg["invalid_cells"] == [3.0]
+    assert valid_cells([{"false_incidents": [1]}]) is None                 # files without the field
