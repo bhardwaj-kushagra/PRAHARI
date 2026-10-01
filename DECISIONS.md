@@ -880,6 +880,25 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     method − P2, for both families.
   - *E3 window:* episodes on the quiet pass; the calibration and tuning days are 28.
 
+- **P-9. Indian real data (addendum C of `realdata-plan.md`, committed before any fetch).**
+  - *Why:* a held-out REAL check of the registered M20b haze model on crop-residue-season smoke. R2 was registered
+    before any Indian measurement was seen, so these data set no R2 parameter.
+  - *What OpenAQ offers (checked 1 Oct 2026, metadata only):*
+    - every CPCB and caaqm location in India has no licence listed;
+    - OpenAQ's licence table has no Indian government licence;
+    - its terms leave compliance with source terms to the user and require credit to OpenAQ.
+  - *What was chosen instead:* two licence-clean sources:
+    - **Aakash** (RIHN; 32 low-cost CUPI-G stations, hourly PM₂.₅ and CO, 2022–2024; CC BY-NC-ND 4.0, so no
+      redistribution);
+    - the **Princeton CPCB archive** (Sharma & Mauzerall 2021; hourly, 2015–2019; CC BY 4.0).
+  - *The developer's decision (1 Oct 2026):* also use **CPCB through OpenAQ**, the 15-minute Delhi data that make a
+    node-layer replay possible, as public Government of India monitoring data despite the missing licence.
+    - Conditions: no redistribution, credit to CPCB and OpenAQ, and the gap stated in the paper's limits.
+  - *Coverage found in the metadata:* OpenAQ's Delhi CPCB sensors have no date range spanning the 2023 or 2024
+    seasons (the old ids end in February 2018 and the new ones start in February 2025). So DL15 is the 2025 season
+    (48 stations). Ten older sensors cover 2017, which serves a provenance check against Princeton.
+  - *Earlier OpenAQ reasoning:* Sensor.Community has no Indian stations, which is why OpenAQ was considered.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

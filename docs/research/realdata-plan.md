@@ -121,3 +121,160 @@ network is an analogue, not a validation.
 - No fire attribution is attempted.
 
 **Outputs:** `results/research/real_sensorcommunity_stuttgart.json` and a section in `docs/research/realdata.md`.
+
+## Addendum C — north-west India, crop-residue season (three networks)
+
+**Status.** Written and committed on 1 Oct 2026, before any Indian measurement is fetched or analysed. Exploratory,
+with no hypothesis test. Only station metadata (positions, sensor date ranges, licences) was read beforehand; the
+OpenAQ shortlist is committed with this addendum (`data/real/openaq_cpcb_delhi/shortlist.json`).
+
+**Role.** A **held-out check** of R2's registered haze model M20b (protocol R2 §2, `configs/research/r2.yaml`).
+- R2 was registered (`a24bfbd`) before any Indian measurement was seen, so these data set no R2 parameter (charter
+  rule 7).
+- **Nothing in R2 changes because of this analysis.** Discrepancies are reported as limitations and carried to a
+  future round.
+
+**Questions.**
+
+1. How often do network-wide PM₂.₅ rises occur in north-west India in October–November, compared with the simulator's
+   1 per 10 days?
+2. Do their timing, unevenness, coverage, onset spread and front speed fall inside the registered H-mix ranges?
+3. Does a gas channel (CO) show the same common-mode structure?
+4. On 15-minute data, what share of PRAHARI's node-level candidates in the smoke season falls inside network-wide
+   periods?
+
+### Networks and licences
+
+| Cluster | Source | Licence | Window | Cadence |
+| --- | --- | --- | --- | --- |
+| **AK** | Aakash project, RIHN: 32 CUPI-G low-cost stations, Punjab to Delhi; PM₂.₅ and CO | CC BY-NC-ND 4.0 | 1 Oct–30 Nov 2022, 2023, 2024 (primary); 1–30 Sep of each year (pre-season, descriptive only) | 1 h |
+| **DL** | CPCB stations, Princeton archive (Sharma & Mauzerall 2021, doi:10.34770/60j3-yp02) | CC BY 4.0 | 1 Oct–30 Nov 2017, 2018, 2019 | 1 h |
+| **DL15** | CPCB stations through the OpenAQ v3 API | None listed by OpenAQ (checked 1 Oct 2026); used at the developer's decision of 1 Oct 2026 (DECISIONS P-9) | 1 Oct–30 Nov 2025 (events), fetched from 17 Sep 2025 | Native (15 min expected) |
+
+**Licence conditions:**
+
+- **No redistribution.** No raw or modified series is committed or shared, from any of the three sources. Raw files
+  stay under `data/real/<dataset>/raw/` (gitignored), with committed manifests.
+- **Credits:** RIHN Aakash; Sharma & Mauzerall (Princeton); CPCB with OpenAQ.
+
+**Why the seasons differ.** OpenAQ's Delhi CPCB sensors have date ranges ending in February 2018 or starting in
+February 2025, with none spanning the 2023 or 2024 seasons. So DL15 uses 2025, and DL (Princeton, licence-clean)
+covers 2017–2019.
+
+**Station selection:**
+
+- **DL and DL15:** CPCB PM₂.₅ stations within **25 km of 28.6129° N, 77.2295° E**.
+  - *DL15:* per location, the PM₂.₅ sensor whose own date range spans the window. If several do, the lowest id; if
+    none, the location is skipped.
+  - *DL:* the Princeton `Delhi*` files and the NCR-district files, kept when their coordinates fall within the radius.
+- **AK:** every station in the files.
+- **Inclusion (all clusters):**
+  - a station enters a cluster-year with valid values on ≥ 75% of the window's ticks;
+  - a cluster-year is analysed with ≥ 5 stations.
+
+**Provenance check (no statistic uses it).** The 10 OpenAQ locations whose older sensor spans 1 Oct–30 Nov 2017 are
+fetched for that window and matched to Princeton DL stations (same CPCB station, within 1 km). The median absolute
+relative difference of their hourly means is reported.
+
+### Preprocessing
+
+- **Time:**
+  - Indian sources report IST (UTC+5:30), and times are read as given; a file's own statement of its time zone
+    governs.
+  - OpenAQ values are placed at their period start (`period.datetimeFrom.utc`).
+  - Night is 20:00–08:00 IST.
+- **Channel:** y = ln(1 + PM₂.₅ [µg/m³]); for AK's CO, y = ln(1 + CO) in the file's unit.
+- **Quality control:**
+  - values < 0 become 0;
+  - non-numeric values are missing;
+  - identical consecutive values lasting ≥ 6 h are missing (stuck instruments; the same in time at every cadence).
+- **Grid:** the cluster's cadence; DL15 uses the native `period.interval`.
+  - Gaps of ≤ 15 min are carried forward: none at 1 h, 1 bin at 15 min.
+  - Longer gaps are missing.
+- **Baselines** start from the first data before the window (AK from 1 Sep, DL from 1 Sep, DL15 from 17 Sep), so the
+  24 h baseline is warm on 1 Oct. Only events starting inside the window count.
+- **Coordinates:** spacings come from the files' coordinates. If AK's files lack coordinates, the station table of
+  Singh et al. (Sci Rep 2023) is used. If neither exists, AK's front fit is skipped.
+
+### Events
+
+As in the plan, with durations kept in minutes:
+
+- rolling 24 h robust z, with ≥ 12 h valid;
+- elevated at z ≥ 3;
+- ≥ 5 active stations;
+- **core** f ≥ 0.5 for ≥ 15 min: 1 tick at 1 h, 1 tick at 15 min;
+- **span** f ≥ 0.25;
+- **merge** spans less than 60 min apart: contiguous at 1 h, 4 ticks at 15 min;
+- local excursions as defined.
+
+**Per event:** the plan's statistics (start, duration, share involved, onset spread, and the median and CV of peak
+excess), plus:
+
+- **Front fit** (events with ≥ 5 involved stations):
+  - a least-squares plane t_i = t₀ + s·x_i, where t_i is the first elevated tick and x_i the station position in km
+    on a local tangent plane;
+  - it gives the apparent speed 1/|s| (m/s), the direction, the residual SD (min) and R²;
+  - at 1 h, quantisation alone gives a residual SD of about 17 min.
+- **CO (AK):** the same catalogue on CO, with the share of PM events whose span overlaps a CO event, and the reverse.
+
+### Held-out comparison with the registered H-mix model
+
+**Observation operator:**
+
+- For each cluster-year, 10,000 episodes are drawn from the **unchanged registered class**
+  `prahari.sensors.haze.M20b`. Its parameters are `r2.yaml`'s `m20b` block with H-mix's (empty) overrides, applied to
+  the cluster's station coordinates.
+- Randomness: stream `research` of `make_rngs(20261003)`.
+- **Parameter mapping:**
+  - scale-free parameters are kept: σ_g, s_e, coverage f;
+  - physical parameters are kept: front speed (m/s), jitter (min), and the 200 m gain correlation, under which gains
+    are independent at these spacings;
+  - the swath width uses the cluster's own span (`network_width_m` unset) instead of 630 m.
+- **Per drawn episode:**
+  - stations with coverage c ≥ 0.5 count as involved;
+  - the CV across involved stations of g·u·c;
+  - the onset spread of their delays, floored to the cluster's tick;
+  - the share involved.
+
+**Comparisons:**
+
+| Quantity | Registered reference | Indian estimate | Reading |
+| --- | --- | --- | --- |
+| Event rate per day | H-mix 0.1; R1 dose–response 0–0.6 | Events per day with ≥ 5 active stations | Multiplier on the default rate |
+| Night share | 0.7 | Pooled share with a Wilson 95% interval | Inside if the interval contains 0.7 |
+| Amplitude CV | Operator's 5–95% interval | Median, and share of events inside | — |
+| Onset spread | Operator's 5–95% interval | Median, and share of events inside | — |
+| Share involved | Operator distribution; P(f = 1) = 0.5 | Share of events with ≥ 90% involved | The ≥ 0.5 core truncates the real values |
+| Front speed | 1–6 m/s | Share of fits with R² ≥ 0.5 inside the range (all fits listed) | — |
+| Duration | 300–840 min (trapezoid plus ramps) | Share of event spans inside | Span and trapezoid differ in definition |
+
+**Bias stated in advance:** real CV and onset spread also contain measurement noise and local sources, so they are
+biased upward relative to the model.
+
+### Node-layer replay (DL15 only)
+
+- **Settings:**
+  - release settings converted to the native tick, as for N5 and Stuttgart;
+  - six 4-hour conformal bins (112 calibration values per bin per week at 15 min, minimum p 0.0088);
+  - M28 k = 1.5, a 30-minute refractory period and 60-minute padding.
+- **Days:** calibration on 17–23 Sep 2025 and tuning on 24–30 Sep 2025 (target 1 per node per 30 d). The test is
+  1 Oct–30 Nov 2025, before and into the smoke season, as a deployed network would face it.
+- **Reported:**
+  - candidates per node per 30 d;
+  - exceedance at a nominal 1% outside common mode;
+  - the shares of candidates while ≥ 25% of stations are elevated and inside event spans.
+- **Not run at 1 h (AK, DL).** The 4-hour bins would hold at most 28 calibration values per week and the p-values
+  could not go below 0.034, so nominal levels could not be reached. If DL15's native interval turns out to be 1 h,
+  the same rule applies to it.
+
+### Outputs
+
+- `results/research/real_india.json`, with REAL labels. No per-station series are included.
+- `docs/research/realdata.md` §5.
+- `numbers.md` rows.
+- DECISIONS P-9.
+
+**Fetch scripts** (committed with this addendum, run after it): `scripts/fetch_aakash.py`,
+`scripts/fetch_cpcb_princeton.py`, and `scripts/fetch_openaq_cpcb.py` (`shortlist` already run for metadata; then
+`fetch` and `provenance`).
