@@ -818,6 +818,10 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     - primary: *inside* when a haze episode is active at the incident's first alarm;
     - secondary: active within the 60 minutes before it (the M28 padding).
   - *Output:* `results/research/r1_haze_split.json`.
+  - *Done (1 Oct 2026):* 100 seeds, 0 mismatches against the registered run. At P2's floor knob, 99.4% of false
+    incidents start inside haze (5.04 of 5.07 a month), while haze covers 3.7% of test minutes. Written up in
+    `results-r1.md` §7, with the haze sweep read as the floor's dose–response.
+  - *Wording:* RAQ is relabelled a prior-dependent quorum in `results-r1.md`.
 - **R2-5. Figures with matplotlib** (optional `paper` extra, Dep-7). Figures are built only from
   `results/research/*.json`.
 

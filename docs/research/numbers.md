@@ -119,6 +119,90 @@ Every number the paper may quote, with the result file (under `results/research/
 | R1 wrong prior P2-prior0.1 at P2's ≤10 knob | 81.9% at 8.45/month | `r1_analysis.json` | `priors.P2-prior0.1.10` |
 | R1 wrong prior P2-prior0.2 at P2's ≤10 knob | 80.8% at 8.71/month | `r1_analysis.json` | `priors.P2-prior0.2.10` |
 | R1 wrong prior P2-prior0.3 at P2's ≤10 knob | 79.7% at 8.82/month | `r1_analysis.json` | `priors.P2-prior0.3.10` |
+| R1 sweep default P2: false incidents/month at the strictest knob; detection at 10/month | 6.6; 84.5% | `r1_sweeps.json` | `sweeps.default.pipelines.P2` |
+| R1 sweep default P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 93.3% | `r1_sweeps.json` | `sweeps.default.pipelines.P2-med` |
+| R1 sweep ar_phi=0.8 P2: false incidents/month at the strictest knob; detection at 10/month | 8.0; 84.2% | `r1_sweeps.json` | `sweeps.ar_phi=0.8.pipelines.P2` |
+| R1 sweep ar_phi=0.8 P2-med: false incidents/month at the strictest knob; detection at 10/month | 4.3; 82.9% | `r1_sweeps.json` | `sweeps.ar_phi=0.8.pipelines.P2-med` |
+| R1 sweep ar_phi=0.98 P2: false incidents/month at the strictest knob; detection at 10/month | 6.0; 61.8% | `r1_sweeps.json` | `sweeps.ar_phi=0.98.pipelines.P2` |
+| R1 sweep ar_phi=0.98 P2-med: false incidents/month at the strictest knob; detection at 10/month | 0.1; 77.8% | `r1_sweeps.json` | `sweeps.ar_phi=0.98.pipelines.P2-med` |
+| R1 sweep ar_phi=0.9 P2: false incidents/month at the strictest knob; detection at 10/month | 6.9; 86.2% | `r1_sweeps.json` | `sweeps.ar_phi=0.9.pipelines.P2` |
+| R1 sweep ar_phi=0.9 P2-med: false incidents/month at the strictest knob; detection at 10/month | 3.5; 87.4% | `r1_sweeps.json` | `sweeps.ar_phi=0.9.pipelines.P2-med` |
+| R1 sweep drift=x2 P2: false incidents/month at the strictest knob; detection at 10/month | 5.9; 81.0% | `r1_sweeps.json` | `sweeps.drift=x2.pipelines.P2` |
+| R1 sweep drift=x2 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 91.8% | `r1_sweeps.json` | `sweeps.drift=x2.pipelines.P2-med` |
+| R1 sweep drift=x4 P2: false incidents/month at the strictest knob; detection at 10/month | 6.0; 79.2% | `r1_sweeps.json` | `sweeps.drift=x4.pipelines.P2` |
+| R1 sweep drift=x4 P2-med: false incidents/month at the strictest knob; detection at 10/month | 0.5; 88.3% | `r1_sweeps.json` | `sweeps.drift=x4.pipelines.P2-med` |
+| R1 sweep gain_sd=0.1 P2: false incidents/month at the strictest knob; detection at 10/month | 5.6; 84.4% | `r1_sweeps.json` | `sweeps.gain_sd=0.1.pipelines.P2` |
+| R1 sweep gain_sd=0.1 P2-med: false incidents/month at the strictest knob; detection at 10/month | 0.0; 94.8% | `r1_sweeps.json` | `sweeps.gain_sd=0.1.pipelines.P2-med` |
+| R1 sweep gain_sd=0.4 P2: false incidents/month at the strictest knob; detection at 10/month | 6.9; 81.5% | `r1_sweeps.json` | `sweeps.gain_sd=0.4.pipelines.P2` |
+| R1 sweep gain_sd=0.4 P2-med: false incidents/month at the strictest knob; detection at 10/month | 4.0; 65.8% | `r1_sweeps.json` | `sweeps.gain_sd=0.4.pipelines.P2-med` |
+| R1 sweep haze=0 P2: false incidents/month at the strictest knob; detection at 10/month | 0.2; 95.4% | `r1_sweeps.json` | `sweeps.haze=0.pipelines.P2` |
+| R1 sweep haze=0 P2-med: false incidents/month at the strictest knob; detection at 10/month | 0.0; 95.2% | `r1_sweeps.json` | `sweeps.haze=0.pipelines.P2-med` |
+| R1 sweep haze=3 P2: false incidents/month at the strictest knob; detection at 10/month | 15.8; not reachable | `r1_sweeps.json` | `sweeps.haze=3.pipelines.P2` |
+| R1 sweep haze=3 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 72.1% | `r1_sweeps.json` | `sweeps.haze=3.pipelines.P2-med` |
+| R1 sweep haze=6 P2: false incidents/month at the strictest knob; detection at 10/month | 10.7; not reachable | `r1_sweeps.json` | `sweeps.haze=6.pipelines.P2` |
+| R1 sweep haze=6 P2-med: false incidents/month at the strictest knob; detection at 10/month | 0.7; 66.3% | `r1_sweeps.json` | `sweeps.haze=6.pipelines.P2-med` |
+| R1 sweep nuisance=x0.5 P2: false incidents/month at the strictest knob; detection at 10/month | 6.4; 82.8% | `r1_sweeps.json` | `sweeps.nuisance=x0.5.pipelines.P2` |
+| R1 sweep nuisance=x0.5 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 93.5% | `r1_sweeps.json` | `sweeps.nuisance=x0.5.pipelines.P2-med` |
+| R1 sweep nuisance=x2 P2: false incidents/month at the strictest knob; detection at 10/month | 5.6; 86.3% | `r1_sweeps.json` | `sweeps.nuisance=x2.pipelines.P2` |
+| R1 sweep nuisance=x2 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 93.3% | `r1_sweeps.json` | `sweeps.nuisance=x2.pipelines.P2-med` |
+| R1 sweep nuisance=x4 P2: false incidents/month at the strictest knob; detection at 10/month | 6.3; 81.5% | `r1_sweeps.json` | `sweeps.nuisance=x4.pipelines.P2` |
+| R1 sweep nuisance=x4 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 90.8% | `r1_sweeps.json` | `sweeps.nuisance=x4.pipelines.P2-med` |
+| R1 sweep plume=real P2: false incidents/month at the strictest knob; detection at 10/month | 6.6; 35.9% | `r1_sweeps.json` | `sweeps.plume=real.pipelines.P2` |
+| R1 sweep plume=real P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 39.8% | `r1_sweeps.json` | `sweeps.plume=real.pipelines.P2-med` |
+| R1 sweep sigma_e=0.025 P2: false incidents/month at the strictest knob; detection at 10/month | 7.5; 80.5% | `r1_sweeps.json` | `sweeps.sigma_e=0.025.pipelines.P2` |
+| R1 sweep sigma_e=0.025 P2-med: false incidents/month at the strictest knob; detection at 10/month | 3.4; 84.0% | `r1_sweeps.json` | `sweeps.sigma_e=0.025.pipelines.P2-med` |
+| R1 sweep sigma_e=0.1 P2: false incidents/month at the strictest knob; detection at 10/month | 6.7; 62.8% | `r1_sweeps.json` | `sweeps.sigma_e=0.1.pipelines.P2` |
+| R1 sweep sigma_e=0.1 P2-med: false incidents/month at the strictest knob; detection at 10/month | 0.0; 81.4% | `r1_sweeps.json` | `sweeps.sigma_e=0.1.pipelines.P2-med` |
+| R1 sweep spacing=100 P2: false incidents/month at the strictest knob; detection at 10/month | 6.6; 56.4% | `r1_sweeps.json` | `sweeps.spacing=100.pipelines.P2` |
+| R1 sweep spacing=100 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 70.2% | `r1_sweeps.json` | `sweeps.spacing=100.pipelines.P2-med` |
+| R1 sweep spacing=150 P2: false incidents/month at the strictest knob; detection at 10/month | 6.6; 14.1% | `r1_sweeps.json` | `sweeps.spacing=150.pipelines.P2` |
+| R1 sweep spacing=150 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 23.0% | `r1_sweeps.json` | `sweeps.spacing=150.pipelines.P2-med` |
+| R1 sweep spacing=50 P2: false incidents/month at the strictest knob; detection at 10/month | 6.6; 93.3% | `r1_sweeps.json` | `sweeps.spacing=50.pipelines.P2` |
+| R1 sweep spacing=50 P2-med: false incidents/month at the strictest knob; detection at 10/month | 1.1; 98.8% | `r1_sweeps.json` | `sweeps.spacing=50.pipelines.P2-med` |
+| R1 haze: share of test minutes | 3.7% | `r1_haze_split.json` | `haze.test_time_share` |
+| R1 haze: fires overlapping haze | 307/6043 | `r1_haze_split.json` | `haze.fires_overlapping` |
+| R1 re-run check against the registered run | 100 seeds, 0 mismatches | `r1_haze_split.json` | `check_against_r1` |
+| R1 P0: floor (all / outside haze), false incidents/month | 0.13 / 0.12 | `r1_haze_split.json` | `split.P0` |
+| R1 P0: at the floor knob (30.0), inside / outside haze per month; share inside | 0.01 / 0.12; 7.7% | `r1_haze_split.json` | `split.P0.inside_share[13]` |
+| R1 P1: floor (all / outside haze), false incidents/month | 9.36 / 0.28 | `r1_haze_split.json` | `split.P1` |
+| R1 P1: at the floor knob (800.0), inside / outside haze per month; share inside | 9.08 / 0.28; 97.0% | `r1_haze_split.json` | `split.P1.inside_share[13]` |
+| R1 P1t: floor (all / outside haze), false incidents/month | 6.77 / 0.12 | `r1_haze_split.json` | `split.P1t` |
+| R1 P1t: at the floor knob (0.1), inside / outside haze per month; share inside | 6.65 / 0.12; 98.2% | `r1_haze_split.json` | `split.P1t.inside_share[0]` |
+| R1 AR: floor (all / outside haze), false incidents/month | 6.56 / 0.00 | `r1_haze_split.json` | `split.AR` |
+| R1 AR: at the floor knob (0.2), inside / outside haze per month; share inside | 6.56 / 0.0; 100.0% | `r1_haze_split.json` | `split.AR.inside_share[1]` |
+| R1 P2: floor (all / outside haze), false incidents/month | 5.07 / 0.03 | `r1_haze_split.json` | `split.P2` |
+| R1 P2: at the floor knob (0.1), inside / outside haze per month; share inside | 5.04 / 0.03; 99.4% | `r1_haze_split.json` | `split.P2.inside_share[0]` |
+| R1 P2-SCMR: floor (all / outside haze), false incidents/month | 6.86 / 0.03 | `r1_haze_split.json` | `split.P2-SCMR` |
+| R1 P2-SCMR: at the floor knob (0.1), inside / outside haze per month; share inside | 6.83 / 0.03; 99.6% | `r1_haze_split.json` | `split.P2-SCMR.inside_share[0]` |
+| R1 P2-Q2: floor (all / outside haze), false incidents/month | 6.71 / 0.05 | `r1_haze_split.json` | `split.P2-Q2` |
+| R1 P2-Q2: at the floor knob (0.1), inside / outside haze per month; share inside | 6.66 / 0.05; 99.3% | `r1_haze_split.json` | `split.P2-Q2.inside_share[0]` |
+| R1 P2-Q3: floor (all / outside haze), false incidents/month | 3.33 / 0.01 | `r1_haze_split.json` | `split.P2-Q3` |
+| R1 P2-Q3: at the floor knob (0.2), inside / outside haze per month; share inside | 3.32 / 0.01; 99.7% | `r1_haze_split.json` | `split.P2-Q3.inside_share[1]` |
+| R1 P2-med: floor (all / outside haze), false incidents/month | 0.95 / 0.42 | `r1_haze_split.json` | `split.P2-med` |
+| R1 P2-med: at the floor knob (0.1), inside / outside haze per month; share inside | 0.53 / 0.42; 55.8% | `r1_haze_split.json` | `split.P2-med.inside_share[0]` |
+| R1 P2-QCC: floor (all / outside haze), false incidents/month | 6.13 / 0.42 | `r1_haze_split.json` | `split.P2-QCC` |
+| R1 P2-QCC: at the floor knob (0.1), inside / outside haze per month; share inside | 5.71 / 0.42; 93.1% | `r1_haze_split.json` | `split.P2-QCC.inside_share[0]` |
+| R1 P2-TTC: floor (all / outside haze), false incidents/month | 7.58 / 0.05 | `r1_haze_split.json` | `split.P2-TTC` |
+| R1 P2-TTC: at the floor knob (0.1), inside / outside haze per month; share inside | 7.53 / 0.05; 99.3% | `r1_haze_split.json` | `split.P2-TTC.inside_share[0]` |
+| R1 P2-prior0.1: floor (all / outside haze), false incidents/month | 5.05 / 0.03 | `r1_haze_split.json` | `split.P2-prior0.1` |
+| R1 P2-prior0.1: at the floor knob (0.1), inside / outside haze per month; share inside | 5.02 / 0.03; 99.4% | `r1_haze_split.json` | `split.P2-prior0.1.inside_share[0]` |
+| R1 P2-prior0.2: floor (all / outside haze), false incidents/month | 4.98 / 0.02 | `r1_haze_split.json` | `split.P2-prior0.2` |
+| R1 P2-prior0.2: at the floor knob (0.1), inside / outside haze per month; share inside | 4.96 / 0.02; 99.6% | `r1_haze_split.json` | `split.P2-prior0.2.inside_share[0]` |
+| R1 P2-prior0.3: floor (all / outside haze), false incidents/month | 5.15 / 0.02 | `r1_haze_split.json` | `split.P2-prior0.3` |
+| R1 P2-prior0.3: at the floor knob (0.1), inside / outside haze per month; share inside | 5.13 / 0.02; 99.6% | `r1_haze_split.json` | `split.P2-prior0.3.inside_share[0]` |
+| R1 P0 at ≤10/month: detection, fires overlapping haze / not | 164/307 / 2627/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P0` |
+| R1 P1t at ≤10/month: detection, fires overlapping haze / not | 193/307 / 1722/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P1t` |
+| R1 AR at ≤10/month: detection, fires overlapping haze / not | 204/307 / 2853/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.AR` |
+| R1 P2 at ≤10/month: detection, fires overlapping haze / not | 246/307 / 4789/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2` |
+| R1 P2-SCMR at ≤10/month: detection, fires overlapping haze / not | 225/307 / 3758/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-SCMR` |
+| R1 P2-Q2 at ≤10/month: detection, fires overlapping haze / not | 231/307 / 4254/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-Q2` |
+| R1 P2-Q3 at ≤10/month: detection, fires overlapping haze / not | 231/307 / 4981/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-Q3` |
+| R1 P2-med at ≤10/month: detection, fires overlapping haze / not | 285/307 / 5281/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-med` |
+| R1 P2-QCC at ≤10/month: detection, fires overlapping haze / not | 228/307 / 3978/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-QCC` |
+| R1 P2-TTC at ≤10/month: detection, fires overlapping haze / not | 153/307 / 2520/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-TTC` |
+| R1 P2-prior0.1 at ≤10/month: detection, fires overlapping haze / not | 242/307 / 4709/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-prior0.1` |
+| R1 P2-prior0.2 at ≤10/month: detection, fires overlapping haze / not | 240/307 / 4640/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-prior0.2` |
+| R1 P2-prior0.3 at ≤10/month: detection, fires overlapping haze / not | 236/307 / 4581/5736 | `r1_haze_split.json` | `fires_by_haze_at_10.P2-prior0.3` |
 | REAL India AK-2022: stations, events | 23 stations; 0 events in 61.0 days (0.0/day, ×None H-mix) | `real_india.json` | `clusters.AK-2022.held_out.events_per_day` |
 | REAL India AK-2022: night share (Wilson 95%) | None (None); reference 0.7 | `real_india.json` | `clusters.AK-2022.held_out.night_share` |
 | REAL India AK-2022: amplitude CV median; share inside operator 90% | None; None (operator [0.276, 0.442, 0.738]) | `real_india.json` | `clusters.AK-2022.held_out.cv_median` |

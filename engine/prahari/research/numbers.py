@@ -54,6 +54,21 @@ def rows_r1(a: dict) -> list[tuple]:
     return out
 
 
+def rows_sweeps(w: dict) -> list[tuple]:
+    """R1 sensitivity sweeps (r1_sweeps.json): per point, P2 and P2-med at their strictest knob and at 10 a month."""
+    out = []
+    for lab, sw in w["sweeps"].items():
+        for name in ("P2", "P2-med"):
+            q = sw["pipelines"].get(name)
+            if not q:
+                continue
+            d = q["10"]["det_at_equal_fa"]
+            out.append((f"R1 sweep {lab} {name}: false incidents/month at the strictest knob; detection at 10/month",
+                        f"{q['fa_at_first_knob']}; {'not reachable' if not d else _pct(d)}", "r1_sweeps.json",
+                        f"sweeps.{lab}.pipelines.{name}"))
+    return out
+
+
 def rows_split(h: dict) -> list[tuple]:
     """R2-10: inside/outside-haze split (r1_haze_split.json)."""
     out = [("R1 haze: share of test minutes", _pct(h["haze"]["test_time_share"]), "r1_haze_split.json", "haze.test_time_share"),
@@ -64,6 +79,15 @@ def rows_split(h: dict) -> list[tuple]:
     for name, s in h["split"].items():
         out.append((f"R1 {name}: floor (all / outside haze), false incidents/month",
                     f"{s['floor_total']:.2f} / {s['floor_outside']:.2f}", "r1_haze_split.json", f"split.{name}"))
+        j = min(range(len(s["total_per_month"])), key=lambda k: s["total_per_month"][k])
+        out.append((f"R1 {name}: at the floor knob ({s['grid'][j]}), inside / outside haze per month; share inside",
+                    f"{s['inside_per_month'][j]} / {s['outside_per_month'][j]}; {_pct(s['inside_share'][j])}",
+                    "r1_haze_split.json", f"split.{name}.inside_share[{j}]"))
+    for name, f in h.get("fires_by_haze_at_10", {}).items():
+        o, n = f["overlap"], f["no_overlap"]
+        out.append((f"R1 {name} at ≤10/month: detection, fires overlapping haze / not",
+                    f"{o['detected']}/{o['fires']} / {n['detected']}/{n['fires']}", "r1_haze_split.json",
+                    f"fires_by_haze_at_10.{name}"))
     return out
 
 
@@ -168,6 +192,9 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
     a = _load(out / "r1_analysis.json")
     if a:
         rows += rows_r1(a)
+    w = _load(out / "r1_sweeps.json")
+    if w:
+        rows += rows_sweeps(w)
     h = _load(out / "r1_haze_split.json")
     if h:
         rows += rows_split(h)

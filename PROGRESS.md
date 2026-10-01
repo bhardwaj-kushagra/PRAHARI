@@ -639,3 +639,20 @@ number-to-source table. Then the real data, once the environment's network acces
 - When the R1 re-run finishes: `hazesplit` (0 mismatches expected), then the update to `results-r1.md` and the
   `numbers` regeneration.
 - When the R2 runs finish: `r2-analyse`, `r2-figures` and `results-r2.md`.
+
+### 2026-10-01 — Session 21 (continued): R1 close-out
+
+- **Queue:** the run queue now runs as a harness-tracked background task. Detached runs died whenever the idle
+  container was reclaimed; this happened five times.
+- **R1 haze-split re-run:** complete, 100 seeds. `hazesplit` reports **0 mismatches** with the registered R1 run.
+- **`results-r1.md` §7** (descriptive, R2-10):
+  - at P2's floor, 99.4% of false incidents start inside haze, while haze covers 3.7% of test minutes;
+  - median subtraction removes most of the in-haze incidents but adds some outside haze;
+  - fires overlapping haze are detected about as well as the others by P2 (80.1% against 83.5%);
+  - the haze sweep is read as the floor's dose–response;
+  - RAQ is relabelled a prior-dependent quorum.
+- **`numbers.md`:** new rows for the haze split, fires by haze and the sweeps.
+- **Tests:** engine suite 261 passed, 21 skipped.
+
+**Next step:** R2. The H-mix selection seeds are running, then the test seeds of every scenario. After that,
+`r2-analyse`, `r2-figures` and `results-r2.md`.

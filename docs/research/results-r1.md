@@ -75,7 +75,7 @@ Family B of the tests [`comparisons.10.B`]:
 
 **Reading the ablations:**
 
-- **SCMR, QCC, TTC and the risk-adaptive quorum each add detection** at equal false alarms. The two-timescale
+- **SCMR, QCC, TTC and the prior-dependent quorum (RAQ; §7) each add detection** at equal false alarms. The two-timescale
   residual (TTC) matters most.
 - **A fixed quorum of 3 is statistically indistinguishable from RAQ** by the pre-registered test. Its bootstrap
   interval leans slightly in its favour, and the seed counts are nearly even (40 / 45).
@@ -92,7 +92,7 @@ Family B of the tests [`comparisons.10.B`]:
 - P1t 0.04;
 - P1 0.01.
 
-## 4. A wrong prior (RAQ)
+## 4. A wrong prior (RAQ, the prior-dependent quorum)
 
 The srp day types were flipped at random, and P2 was scored at its selected knob (r = 2) [`priors`]:
 
@@ -170,6 +170,66 @@ grid; that is not a 200 m network. The reason is recorded in `r1_sweeps.json` (`
 - A legacy-mode plume.
 - A 100-node, 70 m grid.
 - Median subtraction assumes that a fire affects well under half the nodes.
+
+## 7. Close-out: where the false incidents come from (DECISIONS R2-10; descriptive, not a registered test)
+
+The test seeds were re-run with the haze level recorded each minute and each false incident's first alarm kept
+[`r1_haze_split.json`]. **All 100 seeds reproduce the registered run exactly** (counts and latencies; 0 mismatches,
+`check_against_r1`).
+
+Haze is active on 3.7% of test minutes (5.78 episodes per seed). An incident is
+*inside* haze when an episode is active at its first alarm.
+
+**At each pipeline's strictest knob (its floor):**
+
+| Pipeline | Knob | False incidents / month | Inside haze | Outside haze | Share inside |
+| --- | --- | --- | --- | --- | --- |
+| P2 | 0.1 | 5.07 | 5.04 | 0.03 | 99.4% |
+| P2-med | 0.1 | 0.95 | 0.53 | 0.42 | 55.8% |
+| P2-SCMR | 0.1 | 6.86 | 6.83 | 0.03 | 99.6% |
+| P2-Q3 | 0.2 | 3.33 | 3.32 | 0.01 | 99.7% |
+| P2-QCC | 0.1 | 6.13 | 5.71 | 0.42 | 93.1% |
+| P2-TTC | 0.1 | 7.58 | 7.53 | 0.05 | 99.3% |
+| AR | 0.2 | 6.56 | 6.56 | 0.0 | 100.0% |
+| P1t | 0.1 | 6.77 | 6.65 | 0.12 | 98.2% |
+| P1 | 800.0 | 9.36 | 9.08 | 0.28 | 97.0% |
+| P0 | 30.0 | 0.13 | 0.01 | 0.12 | 7.7% |
+
+**Reading:**
+
+- **P2's floor is regional haze.** 99.4% of its floor incidents start inside haze; outside haze its rate is
+  0.03 a month. The same holds for every SCMR-based variant and for the tuned baselines (AR, P1t, P1). P0 is the
+  exception: at its strictest threshold (k = 30) it alarms only 0.13 times a month, mostly outside haze.
+- **Median subtraction removes most of the in-haze incidents** (P2-med 0.95 a month at its floor),
+  but it pays outside haze (0.42 a month against P2's 0.03).
+
+**Fires whose first 3 h overlap haze**, at the knobs selected for 10 a month [`fires_by_haze_at_10`]:
+
+| Pipeline | Overlapping haze | Not overlapping |
+| --- | --- | --- |
+| P2 | 246/307 (80.1%) | 4789/5736 (83.5%) |
+| P2-med | 285/307 (92.8%) | 5281/5736 (92.1%) |
+| P2-SCMR | 225/307 (73.3%) | 3758/5736 (65.5%) |
+| AR | 204/307 (66.4%) | 2853/5736 (49.7%) |
+| P1t | 193/307 (62.9%) | 1722/5736 (30.0%) |
+| P0 | 164/307 (53.4%) | 2627/5736 (45.8%) |
+
+**The haze sweep as the floor's dose–response** (sweep seeds 1001–1010, [`r1_sweeps.json`]):
+
+| Haze rate | P2 false incidents / month at its strictest knob | P2 detection at 10 / month | P2-med at its strictest knob | P2-med detection at 10 / month |
+| --- | --- | --- | --- | --- |
+| ×0 | 0.2 | 95.4% | 0.0 | 95.2% |
+| ×1 (default) | 6.6 | 84.5% | 1.1 | 93.3% |
+| ×3 | 15.8 | not reachable | 1.1 | 72.1% |
+| ×6 | 10.7 | not reachable | 0.7 | 66.3% |
+
+Without haze the floor all but disappears. With more haze, P2 can no longer reach 10 a month, while median
+subtraction keeps a low floor. (The ×6 point's floor is below ×3's on these ten seeds; the sweep is not monotone at
+the strictest knob.)
+
+**RAQ, stated plainly.** In the legacy form tested here, RAQ is a **prior-dependent quorum**: 2 agreeing nodes on
+days the prior marks dry, 3 on wet days. With one p-value per candidate, its Fisher combination reduces to a count.
+That is why a fixed quorum of 3 performs the same (§3). Protocol R2 carries this wording.
 
 ## Figures
 
