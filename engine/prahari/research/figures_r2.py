@@ -15,11 +15,25 @@ LABEL = {"P2": "P2 (SCMR)", "P2-med": "median subtraction", "P2-medSCMR": "media
          "AR": "AR(1) chart"}
 
 
+def _invalid(a: dict, sc: str, m: str) -> bool:
+    """R2-D1: the method's selected floor setting alarms continuously on these seeds."""
+    f = a["scenarios"][sc]["methods"].get(m, {}).get("floor_at_selected_knob") or {}
+    return f.get("valid_here") is False
+
+
+def _label(a: dict, sc: str, m: str) -> str:
+    return LABEL[m] + (" †" if _invalid(a, sc, m) else "")
+
+
+DAGGER = "† setting alarms continuously; its incident count and detection are not meaningful (DECISIONS R2-D1)"
+
+
 def _footer(fig, a: dict, sc: str) -> None:
     s = a["scenarios"][sc]
     seeds = s["seeds"]
     fig.text(0.01, 0.005, f"SIMULATION · PRAHARI-SIM, protocol R2 · scenario {sc} · test seeds {seeds[0]}–{seeds[-1]} "
-             f"({len(seeds)})\n{s['test_days_per_seed']} simulated test days per seed after 28 d calibration and tuning",
+             f"({len(seeds)})\n{s['test_days_per_seed']} simulated test days per seed after 28 d calibration and tuning"
+             + (f"\n{DAGGER}" if any(_invalid(a, sc, m) for m in METHODS) else ""),
              fontsize=5, color=MUTED, ha="left", va="bottom", linespacing=1.3)
 
 
@@ -37,11 +51,11 @@ def fig_floor(plt, a: dict, sc: str = "H-mix") -> list[str]:
         ax.barh(i, d["inside"], left=d["outside"], color=c, alpha=0.4, height=0.6, edgecolor="white", linewidth=1,
                 hatch=hatch)
         ax.plot(ci, [i, i], color=INK, lw=0.8)
-    ax.set_yticks(range(len(ms)), [LABEL[m] for m in ms])
+    ax.set_yticks(range(len(ms)), [_label(a, sc, m) for m in ms])
     ax.invert_yaxis()
     ax.set_xlabel("false incidents per month at the floor knob\n(solid: started outside haze · light: inside haze)")
     ax.grid(axis="y", visible=False)
-    fig.subplots_adjust(left=0.3, bottom=0.25, right=0.97, top=0.97)
+    fig.subplots_adjust(left=0.3, bottom=0.28, right=0.97, top=0.97)
     _footer(fig, a, sc)
     return _save(fig, f"r2_floor_{sc}")
 
@@ -59,7 +73,7 @@ def fig_pareto(plt, a: dict, sc: str = "H-mix", amoc: bool = False) -> list[str]
         pts = [r["amoc"][j] for j in r["pareto"] if r["amoc"][j]["fa_per_month"] > 0]
         c, ls = STYLE[m]
         y = [p["mean_ttc_min"] if amoc else p["det"] for p in pts]
-        ax.plot([p["fa_per_month"] for p in pts], y, color=c, ls=ls, marker="o", ms=2.5, label=LABEL[m])
+        ax.plot([p["fa_per_month"] for p in pts], y, color=c, ls=ls, marker="o", ms=2.5, label=_label(a, sc, m))
     ax.set_xscale("log")
     from matplotlib.ticker import FuncFormatter, LogLocator
     ax.xaxis.set_major_locator(LogLocator(subs=(1.0, 3.0)))
@@ -68,7 +82,7 @@ def fig_pareto(plt, a: dict, sc: str = "H-mix", amoc: bool = False) -> list[str]
     ax.set_xlabel("false incidents per month (network, test seeds)")
     ax.set_ylabel("mean time to confirmation, min (miss = 180)" if amoc else "fires confirmed within 3 h")
     ax.legend(fontsize=5.5, loc="best")
-    fig.subplots_adjust(left=0.17, bottom=0.22, right=0.97, top=0.97)
+    fig.subplots_adjust(left=0.17, bottom=0.25, right=0.97, top=0.97)
     _footer(fig, a, sc)
     return _save(fig, f"r2_{'amoc' if amoc else 'pareto'}_{sc}")
 
@@ -83,15 +97,17 @@ def fig_scenarios(plt, a: dict) -> list[str]:
         c, ls = STYLE[m]
         vals = [a["scenarios"][s]["methods"][m]["own_floor"]["fa_per_month"] for s in scs]
         ax.bar([i + (k - len(ms) / 2 + 0.5) * w for i in range(len(scs))], vals, width=w * 0.9, color=c,
-               hatch="////" if ls == "--" else None, edgecolor="white", linewidth=0.5, label=LABEL[m])
+               hatch="////" if ls == "--" else None, edgecolor="white", linewidth=0.5,
+               label=LABEL[m] + (" †" if any(_invalid(a, x, m) for x in scs) else ""))
     ax.set_xticks(range(len(scs)), scs)
     ax.set_ylabel("lowest false incidents per month")
     ax.grid(axis="x", visible=False)
     ax.legend(fontsize=5.5, ncol=4, loc="upper left")
-    fig.subplots_adjust(left=0.08, bottom=0.18, right=0.99, top=0.97)
+    fig.subplots_adjust(left=0.08, bottom=0.2, right=0.99, top=0.97)
     seeds = {s: a["scenarios"][s]["seeds"] for s in scs}
     fig.text(0.01, 0.005, "SIMULATION · PRAHARI-SIM, protocol R2 · " + " · ".join(
-        f"{s} seeds {v[0]}–{v[-1]}" for s, v in seeds.items()), fontsize=5, color=MUTED, ha="left", va="bottom")
+        f"{s} seeds {v[0]}–{v[-1]}" for s, v in seeds.items()) + "\n" + DAGGER, fontsize=5, color=MUTED, ha="left",
+        va="bottom", linespacing=1.3)
     return _save(fig, "r2_scenarios")
 
 

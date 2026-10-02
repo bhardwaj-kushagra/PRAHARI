@@ -953,6 +953,8 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     Their registered fields must equal the earlier files byte for byte in value; this is checked.
   - *Why not drop Mei instead:* every registered comparison stays reported (charter rule 3). The rule is symmetric,
     and it is a validity condition of the M46 metric, not a change made for a result.
+  - *Outcome (2 Oct 2026):* only Mei and Mei-med have invalid settings. Under the rule, B* is undefined, so the
+    sensitivity family D cannot be computed; family F is unchanged. Both analyses are in `results-r2.md` §3–4.
 
 ## Public site (branch model)
 

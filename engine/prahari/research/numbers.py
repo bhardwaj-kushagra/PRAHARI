@@ -94,27 +94,37 @@ def rows_split(h: dict) -> list[tuple]:
 def rows_r2(a: dict) -> list[tuple]:
     """R2 (SIM): B*, every scenario's floors with their haze split, detection at B*, and families F and D."""
     f = "r2_analysis.json"
-    out = [("R2 B* (false incidents/month, set on the H-mix selection seeds)", str(a["b_star"]), f, "b_star")]
+    out = [("R2 B* (false incidents/month, set on the H-mix selection seeds)", str(a["b_star"]), f, "b_star"),
+           ("R2 B* under the R2-D1 validity rule", "undefined (no budget reached by every compared method)"
+            if a.get("b_star_R2_D1") is None else str(a["b_star_R2_D1"]), f, "b_star_R2_D1")]
     for sc, s in a["scenarios"].items():
         tag = f"R2 {sc}" + ("" if s["complete"] else " (incomplete)")
         for name, m in s["methods"].items():
             key = f"scenarios.{sc}.methods.{name}"
             fl = m["floor_at_selected_knob"]
             fi, d = fl["false_incidents"], fl["decomposition"]
+            flag = "; INVALID (R2-D1: continuous alarming)" if fl.get("valid_here") is False else ""
             out.append((f"{tag} {name}: floor, false incidents/month (selected knob {fl['cell']})",
                         f"{fi['rate']:.2f} (bootstrap {fi['ci95_bootstrap'][0]:.2f}–{fi['ci95_bootstrap'][1]:.2f}); "
-                        f"inside haze {d['inside']}, outside {d['outside']}", f, key + ".floor_at_selected_knob"))
+                        f"inside haze {d['inside']}, outside {d['outside']}{flag}", f, key + ".floor_at_selected_knob"))
             out.append((f"{tag} {name}: own floor", f"{m['own_floor']['fa_per_month']} at {m['own_floor']['cell']}",
                         f, key + ".own_floor"))
             b = m.get("at_b_star")
             if b:
                 out.append((f"{tag} {name}: confirmed within 3 h at B*",
                             f"{_pct(b['det'])} ({_pct(b['det_ci95'][0])}–{_pct(b['det_ci95'][1])}); "
-                            f"{b['detected']}/{b['fires']}; {b['false_incidents']['rate']:.2f} false incidents/month",
+                            f"{b['detected']}/{b['fires']}; {b['false_incidents']['rate']:.2f} false incidents/month"
+                            + ("; INVALID (R2-D1)" if b.get("valid_here") is False else ""),
                             f, key + ".at_b_star"))
             if a["b_star"] is not None:
                 out.append((f"{tag} {name}: detection at equal FA = B*", _pct(m["det_at_equal_fa"][str(a["b_star"])]),
                             f, key + ".det_at_equal_fa"))
+        for fam, comps in s.get("sensitivity_R2_D1", {}).get("families", {}).items():
+            for x, c in comps.items():
+                out.append((f"{tag} [R2-D1] {x} − P2 (family {fam})",
+                            "not computable (B* undefined)" if not c.get("reachable") else
+                            f"{c['mean_diff']:+.3f}; Holm p {c['p_holm']:.2g}", f,
+                            f"scenarios.{sc}.sensitivity_R2_D1.families.{fam}.{x}"))
         for fam, comps in s.get("families", {}).items():
             for x, c in comps.items():
                 if c.get("reachable"):
