@@ -37,7 +37,7 @@ def _job(args) -> str:
     if path.exists():
         return str(path)
     cap = (float(r2["cap"]["h_hi"]), int(r2["cap"]["bisect_iters"]))
-    res = evaluate_seed_r2(cfg, seed, r2["grids"], cap)
+    res = evaluate_seed_r2(cfg, seed, r2["grids"], cap, r2.get("methods"))
     write_text_atomic(path, json.dumps(res, separators=(",", ":")))
     return str(path)
 
@@ -49,7 +49,7 @@ def run_r2(r2: dict, stage: str, scenarios=None, jobs: int = 1, out_dir: Path = 
         if (scenarios and name not in scenarios) or stage not in sc["seeds"]:
             continue
         cfg = scenario_config(r2, name)
-        out = Path(out_dir) / "r2" / stage / name
+        out = Path(out_dir) / r2.get("round", "r2") / stage / name
         out.mkdir(parents=True, exist_ok=True)
         tasks += [(cfg, s, r2, out / f"seed{s}.json") for s in (seeds or seed_list(sc["seeds"][stage]))]
     return _pool_map(_job, tasks, jobs)

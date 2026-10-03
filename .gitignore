@@ -17,6 +17,7 @@ results/research/*
 !results/research/r1_*.json
 !results/research/real_*.json
 !results/research/r2_*.json
+!results/research/r3_*.json
 node_modules/
 dashboard/dist/
 *.health.json

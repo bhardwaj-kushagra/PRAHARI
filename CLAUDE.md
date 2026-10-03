@@ -125,4 +125,7 @@ python -m prahari.research r2-run selection --jobs 4 [--scenarios H-mix]   # pro
 python -m prahari.research r2-run test --jobs 4     # every scenario with test seeds (~12 h; resumes)
 python -m prahari.research r2-analyse               # → results/research/r2_*.json; then r2-figures
 pytest engine/tests/unit/test_research_r2.py        # R2 unit and fidelity tests (~2 min)
+python -m prahari.research r3-run selection --jobs 4   # protocol R3 (docs/research/protocol-r3.md); then r3-run test
+python -m prahari.research r3-analyse               # → results/research/r3_*.json; then r3-figures
+pytest engine/tests/unit/test_research_r3.py        # R3 fidelity and analysis tests (~1 min)
 ```

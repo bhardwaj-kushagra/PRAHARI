@@ -956,6 +956,20 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - *Outcome (2 Oct 2026):* only Mei and Mei-med have invalid settings. Under the rule, B* is undefined, so the
     sensitivity family D cannot be computed; family F is unchanged. Both analyses are in `results-r2.md` §3–4.
 
+- **R3-1. Round R3: median + SCMR against the evidence gate, head to head** (3 Oct 2026, requested by the developer;
+  protocol `docs/research/protocol-r3.md`, DRAFT until approved).
+  - *Why:* R2 compared each method with P2 only. Its two strongest, P2-medSCMR (highest detection at B*) and P2-gate
+    (lowest floor), were never tested against each other. Per the charter, the question goes to a new round on fresh
+    seeds (H-mix 3901–3920 and 4001–4100; H-sync, H-gain, H-patch 4101–4250).
+  - *Unchanged from R2:* M20b and its scenarios, the methods' code, grids, budgets, the fast replay and the selection
+    rules. The R2-D1 validity rule is registered from the start.
+  - *Code changes (output-neutral for R2):* `evaluate_seed_r2` takes a method subset and runs only the node layers it
+    needs (the default is every R2 method, as registered); the runner reads `methods` and `round` from the
+    configuration; `figures_r2` is round-aware; new `analysis_r3.py`, CLI `r3-run | r3-analyse | r3-figures`, and
+    `numbers.rows_r3`.
+  - *Checks:* the subset evaluation equals the full R2 evaluation on development seed 11; R2 test seed 2102 and the R2
+    figures regenerate byte for byte; R3's seeds overlap no R1, R2 or development seed.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

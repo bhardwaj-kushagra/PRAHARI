@@ -10,6 +10,9 @@
   r2-run selection|test [--scenarios H-mix,..]  protocol R2 → results/research/r2/<stage>/<scenario>/seed<N>.json
   r2-analyse                                    → results/research/r2_*.json
   r2-figures                                    → docs/research/figures/r2_*
+  r3-run selection|test [--scenarios H-mix,..]  protocol R3 → results/research/r3/<stage>/<scenario>/seed<N>.json
+  r3-analyse                                    → results/research/r3_*.json
+  r3-figures                                    → docs/research/figures/r3_*
 """
 from __future__ import annotations
 
@@ -24,7 +27,8 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="python -m prahari.research", description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run", "sweep", "analyse", "figures", "realdata", "realdata-sc", "hazesplit",
-                                        "numbers", "r2-run", "r2-analyse", "r2-figures", "realdata-india"])
+                                        "numbers", "r2-run", "r2-analyse", "r2-figures", "realdata-india",
+                                        "r3-run", "r3-analyse", "r3-figures"])
     ap.add_argument("stage", nargs="?", choices=["selection", "test"])
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -35,6 +39,8 @@ def main(argv=None) -> int:
     a = ap.parse_args(argv)
     if a.command.startswith("r2-"):
         return _r2(a, ap)
+    if a.command.startswith("r3-"):
+        return _r3(a, ap)
     r1 = load_r1(a.config)
     seeds = [int(s) for s in a.seeds.split(",")] if a.seeds else None
     out = Path(a.out)
@@ -84,6 +90,25 @@ def _r2(a, ap) -> int:
     else:
         from prahari.research.figures_r2 import write_figures_r2
         done = write_figures_r2(out)
+    print(f"{len(done)} files")
+    return 0
+
+
+def _r3(a, ap) -> int:
+    from prahari.research.runner_r2 import load_r2, run_r2
+    r3 = load_r2(a.config if a.config != str(DEFAULT_CONFIG) else "configs/research/r3.yaml")
+    out = Path(a.out)
+    if a.command == "r3-run":
+        if not a.stage:
+            ap.error("r3-run needs a stage: selection or test")
+        seeds = [int(s) for s in a.seeds.split(",")] if a.seeds else None
+        done = run_r2(r3, a.stage, a.scenarios.split(",") if a.scenarios else None, a.jobs, out, seeds)
+    elif a.command == "r3-analyse":
+        from prahari.research.analysis_r3 import write_analysis_r3
+        done = write_analysis_r3(r3, out)
+    else:
+        from prahari.research.figures_r2 import write_figures_r2
+        done = write_figures_r2(out, "r3_analysis.json")
     print(f"{len(done)} files")
     return 0
 

@@ -682,3 +682,20 @@ number-to-source table. Then the real data, once the environment's network acces
 
 **Next step:** the developer drafts the paper from `results-r1.md`, `results-r2.md` and `realdata.md`, in their own
 words. An optional future round R3 could test median plus SCMR and the evidence gate on new seeds.
+
+### 2026-10-03 — Session 22: R3 built and drafted (no runs)
+
+- **Request:** a new round on fresh seeds testing median + SCMR (P2-medSCMR) against the evidence gate (P2-gate) head
+  to head (DECISIONS R3-1).
+- **Protocol:** `docs/research/protocol-r3.md`, **DRAFT** for the developer's review.
+  - H1 (primary): detection at B*. H2: the floor. Holm across both; differences P2-medSCMR − P2-gate.
+  - R2's scenarios, grids and selection rules unchanged; the R2-D1 validity rule registered from the start.
+  - Fresh seeds: H-mix 3901–3920 and 4001–4100; H-sync, H-gain, H-patch 4101–4250. P2 is the reference only.
+- **Code:** method subsets in `evaluate_seed_r2` (R2 default unchanged), round-aware runner and figures,
+  `analysis_r3.py`, `r3.yaml`, CLI `r3-run | r3-analyse | r3-figures`, `numbers.rows_r3`.
+- **Checks:** the subset evaluation equals the full R2 evaluation on development seed 11; R2 test seed 2102 and the R2
+  figures regenerate byte for byte; R3's seeds overlap no R1, R2 or development seed.
+- **Tests:** see the commit (engine suite run before committing).
+
+**Next step:** the developer reviews the draft. On approval: mark it REGISTERED (commit), run the H-mix selection,
+commit the selection, then the 250 test seeds in supervised 2-hour blocks.

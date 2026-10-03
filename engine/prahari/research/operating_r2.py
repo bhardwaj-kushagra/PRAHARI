@@ -19,6 +19,11 @@ from prahari.research.baselines import ar_innovation, capped_z, confirm
 from prahari.research.operating import SeedEval, _cands, _hits
 
 NODE_LAYERS = ("main", "med", "factor")
+# Node layers each method needs (R3 evaluates a subset; protocol R3). "main" is always recorded (the factor reference
+# and every main-layer method read it).
+METHOD_LAYERS = {"P2": "main", "P2-med": "med", "P2-medSCMR": "med", "P2-factor": "factor", "P2-gate": "main",
+                 "Mei": "main", "Mei-med": "med", "AR": None}
+ALL_METHODS = tuple(METHOD_LAYERS)
 
 
 def score_r2(se: SeedEval, quiet, burn) -> tuple:
@@ -76,13 +81,18 @@ def _records(se: SeedEval, v: str, targets, cap) -> tuple:
     return recs, hq, cap_hit
 
 
-def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap) -> dict:
-    """Protocol R2 for one seed: every method's operating surface, the haze episodes and the fires' haze overlap."""
-    se = SeedEval(base_cfg, seed, NODE_LAYERS)
+def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap, methods=None) -> dict:
+    """Protocol R2 for one seed: every method's operating surface, the haze episodes and the fires' haze overlap.
+    `methods` (protocol R3) restricts the evaluation to a subset and records only the node layers it needs; the
+    default (None) is the registered R2 evaluation."""
+    methods = tuple(methods) if methods else ALL_METHODS
+    layers = tuple(v for v in NODE_LAYERS if v == "main" or any(METHOD_LAYERS[m] == v for m in methods))
+    se = SeedEval(base_cfg, seed, layers)
     targets, rhos = grids["node"], grids["rho"]
-    thetas, h_mei = grids["theta"], grids["h_mei"]
-    k_mei, ref_mei = float(grids["mei_k"]), int(grids["mei_refractory_min"])
-    rec = {v: _records(se, v, targets, cap) for v in NODE_LAYERS}
+    thetas = grids["theta"]
+    h_mei = grids.get("h_mei", [])
+    k_mei, ref_mei = float(grids.get("mei_k", 1.5)), int(grids.get("mei_refractory_min", 30))
+    rec = {v: _records(se, v, targets, cap) for v in layers}
 
     def surface(v, rho_grid):
         recs, h, c = rec[v]
@@ -94,21 +104,27 @@ def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap) -> dict:
         return _cells("target×rho" if len(rho_grid) > 1 else "target", grid if len(rho_grid) > 1 else
                       [g[0] for g in grid], scored, h, c)
 
-    e = {name: evidence_share(r.nodes["main"].p, float(grids["gate_p"]), int(grids["gate_window_min"]))
-         for name, r in (("q", se.q), ("f", se.f))}
-    recs, h, c = rec["main"]
-    g_grid, g_scored = [], []
-    for r, (rq, rf) in zip(targets, recs):
-        aq, af = alarms_at(rq, 0.0), alarms_at(rf, 0.0)
-        for th in thetas:
-            g_grid.append([float(r), th])
-            g_scored.append(score_r2(se, gated(aq, e["q"], th), gated(af, e["f"], th)))
+    def gate():
+        e = {name: evidence_share(r.nodes["main"].p, float(grids["gate_p"]), int(grids["gate_window_min"]))
+             for name, r in (("q", se.q), ("f", se.f))}
+        recs, h, c = rec["main"]
+        g_grid, g_scored = [], []
+        for r, (rq, rf) in zip(targets, recs):
+            aq, af = alarms_at(rq, 0.0), alarms_at(rf, 0.0)
+            for th in thetas:
+                g_grid.append([float(r), th])
+                g_scored.append(score_r2(se, gated(aq, e["q"], th), gated(af, e["f"], th)))
+        return _cells("target×theta", g_grid, g_scored, h, c)
 
     def mei(v):
         aq = mei_alarms(se.q.nodes[v].p[se.test0:], h_mei, k_mei, ref_mei, se.test0)
         af = mei_alarms(se.f.nodes[v].p[se.test0:], h_mei, k_mei, ref_mei, se.test0)
         return _cells("h_M", [float(x) for x in h_mei], [score_r2(se, a, b) for a, b in zip(aq, af)])
 
+    build = {"P2": lambda: surface("main", rhos), "P2-med": lambda: surface("med", [0.0]),
+             "P2-medSCMR": lambda: surface("med", rhos), "P2-factor": lambda: surface("factor", [0.0]),
+             "P2-gate": gate, "Mei": lambda: mei("main"), "Mei-med": lambda: mei("med"),
+             "AR": lambda: eval_ar_r2(se, grids["v1t"], cap)}
     fe = episodes(se.f.haze)
     return {"seed": seed, "test_days": se.ev["test_days"], "n_fires": len(se.fires),
             "degraded": sorted(n for n, slot in se.sim.slots.items() if slot.health.state == "degraded"),
@@ -117,8 +133,4 @@ def evaluate_seed_r2(base_cfg: dict, seed: int, grids: dict, cap) -> dict:
             "haze_passes_equal": bool(np.array_equal(se.q.haze, se.f.haze)),
             "fires_haze_overlap": fire_overlaps(fe, se.fires, se.T, se.ev["detect_window_min"]),
             "factor_gain": None if se.q.factor_gain is None else [round(float(g), 4) for g in se.q.factor_gain],
-            "pipelines": {"P2": surface("main", rhos), "P2-med": surface("med", [0.0]),
-                          "P2-medSCMR": surface("med", rhos), "P2-factor": surface("factor", [0.0]),
-                          "P2-gate": _cells("target×theta", g_grid, g_scored, h, c),
-                          "Mei": mei("main"), "Mei-med": mei("med"),
-                          "AR": eval_ar_r2(se, grids["v1t"], cap)}}
+            "pipelines": {m: build[m]() for m in ALL_METHODS if m in methods}}

@@ -153,6 +153,44 @@ def rows_real(r: dict, file: str) -> list[tuple]:
     return out
 
 
+def rows_r3(a: dict) -> list[tuple]:
+    """R3 (SIM): B*, the head-to-head tests H1/H2 (P2-medSCMR − P2-gate), each method's floor and detection at B*."""
+    f = "r3_analysis.json"
+    out = [("R3 B* (both compared methods, valid settings, H-mix selection seeds)", str(a["b_star"]), f, "b_star")]
+    for sc, s in a["scenarios"].items():
+        tag = f"R3 {sc}" + ("" if s["complete"] else " (incomplete)")
+        h = s["head_to_head"]
+        for key, label in (("H1_detection_at_b_star", "detection at B*"), ("H2_floor", "floor, false incidents/month")):
+            c = h.get(key, {})
+            if c.get("reachable") is False:
+                out.append((f"{tag} {key}", "not computable", f, f"scenarios.{sc}.head_to_head.{key}"))
+                continue
+            scale = 100 if key.startswith("H1") else 1
+            holm = f", Holm p {c['p_holm']:.2g}" if "p_holm" in c else ""
+            out.append((f"{tag} {key} (P2-medSCMR − P2-gate, {label})",
+                        f"{scale * c['mean_diff']:+.2f} ({scale * c['ci95'][0]:+.2f} to {scale * c['ci95'][1]:+.2f}); "
+                        f"Wilcoxon p {c['p_wilcoxon']:.2g}{holm}; seeds {c['wins']}/{c['losses']}", f,
+                        f"scenarios.{sc}.head_to_head.{key}"))
+        for name, m in s["methods"].items():
+            key = f"scenarios.{sc}.methods.{name}"
+            fl = m["floor_at_selected_knob"]
+            if fl:
+                fi = fl["false_incidents"]
+                out.append((f"{tag} {name}: floor, false incidents/month (setting {fl['cell']})",
+                            f"{fi['rate']:.2f} (bootstrap {fi['ci95_bootstrap'][0]:.2f}–{fi['ci95_bootstrap'][1]:.2f}); "
+                            f"inside haze {fl['decomposition']['inside']}, outside {fl['decomposition']['outside']}",
+                            f, key + ".floor_at_selected_knob"))
+            b = m.get("at_b_star")
+            if b:
+                out.append((f"{tag} {name}: confirmed within 3 h at B*",
+                            f"{_pct(b['det'])} ({_pct(b['det_ci95'][0])}–{_pct(b['det_ci95'][1])}); "
+                            f"{b['false_incidents']['rate']:.2f} false incidents/month", f, key + ".at_b_star"))
+            if a["b_star"] is not None:
+                out.append((f"{tag} {name}: detection at equal FA = B*", _pct(m["det_at_equal_fa"][str(a["b_star"])]),
+                            f, key + ".det_at_equal_fa"))
+    return out
+
+
 def rows_india(r: dict) -> list[tuple]:
     """Addendum C (REAL): per cluster-year events, rates and the held-out comparison; pooled per cluster; DL15 node
     replay; provenance check."""
@@ -208,6 +246,9 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
     h = _load(out / "r1_haze_split.json")
     if h:
         rows += rows_split(h)
+    a3 = _load(out / "r3_analysis.json")
+    if a3:
+        rows += rows_r3(a3)
     ri = _load(out / "real_india.json")
     if ri:
         rows += rows_india(ri)
