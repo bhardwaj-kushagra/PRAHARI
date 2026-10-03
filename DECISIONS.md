@@ -957,7 +957,8 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     sensitivity family D cannot be computed; family F is unchanged. Both analyses are in `results-r2.md` §3–4.
 
 - **R3-1. Round R3: median + SCMR against the evidence gate, head to head** (3 Oct 2026, requested by the developer;
-  protocol `docs/research/protocol-r3.md`, DRAFT until approved).
+  protocol `docs/research/protocol-r3.md`, registered on 3 Oct 2026 after the developer's approval, before
+  any R3 run).
   - *Why:* R2 compared each method with P2 only. Its two strongest, P2-medSCMR (highest detection at B*) and P2-gate
     (lowest floor), were never tested against each other. Per the charter, the question goes to a new round on fresh
     seeds (H-mix 3901–3920 and 4001–4100; H-sync, H-gain, H-patch 4101–4250).

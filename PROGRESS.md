@@ -697,5 +697,7 @@ words. An optional future round R3 could test median plus SCMR and the evidence 
   figures regenerate byte for byte; R3's seeds overlap no R1, R2 or development seed.
 - **Tests:** engine suite 265 passed, 21 skipped.
 
-**Next step:** the developer reviews the draft. On approval: mark it REGISTERED (commit), run the H-mix selection,
+- **Registered:** the developer approved the draft unchanged; `protocol-r3.md` marked REGISTERED (3 Oct 2026).
+
+**Next step:** run the H-mix selection,
 commit the selection, then the 250 test seeds in supervised 2-hour blocks.

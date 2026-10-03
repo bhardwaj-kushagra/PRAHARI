@@ -1,8 +1,8 @@
 # Research protocol R3 — median + SCMR against the evidence gate, head to head
 
-**Status: DRAFT (3 Oct 2026), for the developer's review.** No R3 seed has been run. Once approved, this page is marked
-REGISTERED in a commit that precedes every R3 result file (charter rule 1); any later change is a logged deviation in
-`DECISIONS.md`.
+**Status: REGISTERED on 3 Oct 2026**, after the developer's review and approval, and before any R3 seed was run
+(charter rule 1). The registered code is commit `68ef179`; §9 records what was fixed at registration. Any change from
+here on is a logged deviation in `DECISIONS.md`.
 
 **Configuration:** [`configs/research/r3.yaml`](../../configs/research/r3.yaml). **Code:** `python -m prahari.research
 r3-run | r3-analyse | r3-figures` (`engine/prahari/research/analysis_r3.py`; the R2 runner, replay and methods are
@@ -117,3 +117,8 @@ overlaps).
 - **Configuration:** `r3.yaml`'s M20b defaults, scenarios, grids, budgets and cap equal `r2.yaml`'s, and its seeds are
   fresh (unit test).
 - **Analysis:** the H1/H2 tests and Holm step are unit-tested on synthetic seed files.
+
+## 9. Fixed at registration
+
+Nothing beyond §1–§8. The draft was approved unchanged on 3 Oct 2026. The implementation checks of §8 passed before
+registration, and the engine suite passed (265 passed, 21 skipped).
