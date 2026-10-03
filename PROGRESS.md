@@ -695,7 +695,7 @@ words. An optional future round R3 could test median plus SCMR and the evidence 
   `analysis_r3.py`, `r3.yaml`, CLI `r3-run | r3-analyse | r3-figures`, `numbers.rows_r3`.
 - **Checks:** the subset evaluation equals the full R2 evaluation on development seed 11; R2 test seed 2102 and the R2
   figures regenerate byte for byte; R3's seeds overlap no R1, R2 or development seed.
-- **Tests:** see the commit (engine suite run before committing).
+- **Tests:** engine suite 265 passed, 21 skipped.
 
 **Next step:** the developer reviews the draft. On approval: mark it REGISTERED (commit), run the H-mix selection,
 commit the selection, then the 250 test seeds in supervised 2-hour blocks.
