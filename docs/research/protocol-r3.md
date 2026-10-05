@@ -8,6 +8,8 @@ here on is a logged deviation in `DECISIONS.md`.
 r3-run | r3-analyse | r3-figures` (`engine/prahari/research/analysis_r3.py`; the R2 runner, replay and methods are
 reused unchanged: `operating_r2.py`, `runner_r2.py`, `edge2.py`, `gate.py`).
 
+**Results:** [results-r3.md](results-r3.md).
+
 **Scope.** Simulation only. Every number R3 produces is labelled **SIM**.
 
 **Why R3.** In R2 ([results-r2.md](results-r2.md)) the two strongest common-mode strategies pulled in opposite

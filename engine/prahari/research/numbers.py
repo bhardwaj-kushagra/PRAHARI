@@ -116,9 +116,6 @@ def rows_r2(a: dict) -> list[tuple]:
                             f"{b['detected']}/{b['fires']}; {b['false_incidents']['rate']:.2f} false incidents/month"
                             + ("; INVALID (R2-D1)" if b.get("valid_here") is False else ""),
                             f, key + ".at_b_star"))
-            if a["b_star"] is not None:
-                out.append((f"{tag} {name}: detection at equal FA = B*", _pct(m["det_at_equal_fa"][str(a["b_star"])]),
-                            f, key + ".det_at_equal_fa"))
         for fam, comps in s.get("sensitivity_R2_D1", {}).get("families", {}).items():
             for x, c in comps.items():
                 out.append((f"{tag} [R2-D1] {x} − P2 (family {fam})",
@@ -160,11 +157,16 @@ def rows_r3(a: dict) -> list[tuple]:
     for name, m in a["selection"]["methods"].items():
         key = f"selection.methods.{name}"
         if m["floor"]:
-            out.append((f"R3 selection {name}: floor setting", f"{m['floor']['cell']}", f, key + ".floor.cell"))
+            fl = m["floor"]
+            out.append((f"R3 selection {name}: floor setting (selection seeds: FA/month, detection)",
+                        f"{fl['cell']}: {fl['fa_per_month']:g}, {_pct(fl['det'])}", f, key + ".floor"))
         for b, o in m["operating"].items():
             if o:
-                out.append((f"R3 selection {name}: operating setting at {b}/month", f"{o['cell']}", f,
-                            key + f".operating.{b}.cell"))
+                out.append((f"R3 selection {name}: operating setting at {b}/month (selection seeds: FA/month, "
+                            f"detection)", f"{o['cell']}: {o['fa_per_month']:g}, {_pct(o['det'])}", f,
+                            key + f".operating.{b}"))
+        out.append((f"R3 selection {name}: invalid settings (≥ 24 h incident)", str(m["invalid_cells"]), f,
+                    key + ".invalid_cells"))
     for sc, s in a["scenarios"].items():
         tag = f"R3 {sc}" + ("" if s["complete"] else " (incomplete)")
         h = s["head_to_head"]
@@ -174,10 +176,12 @@ def rows_r3(a: dict) -> list[tuple]:
                             f"scenarios.{sc}.head_to_head.descriptive_by_budget.{b}"))
                 continue
             c = d["paired"]
-            out.append((f"{tag} descriptive at {b}/month (P2-medSCMR − P2-gate, detection)",
+            out.append((f"{tag} descriptive at {b}/month (P2-medSCMR − P2-gate, detection; each: detection, FA/month)",
+                        f"P2-medSCMR {_pct(d['P2-medSCMR']['det'])}, {d['P2-medSCMR']['fa_per_month']:.2f}; P2-gate "
+                        f"{_pct(d['P2-gate']['det'])}, {d['P2-gate']['fa_per_month']:.2f}; difference "
                         f"{100 * c['mean_diff']:+.2f} ({100 * c['ci95'][0]:+.2f} to {100 * c['ci95'][1]:+.2f}); "
                         f"Wilcoxon p {c['p_wilcoxon']:.2g} (unadjusted); seeds {c['wins']}/{c['losses']}", f,
-                        f"scenarios.{sc}.head_to_head.descriptive_by_budget.{b}.paired"))
+                        f"scenarios.{sc}.head_to_head.descriptive_by_budget.{b}"))
         for key, label in (("H1_detection_at_b_star", "detection at B*"), ("H2_floor", "floor, false incidents/month")):
             c = h.get(key, {})
             if c.get("reachable") is False:
@@ -196,21 +200,26 @@ def rows_r3(a: dict) -> list[tuple]:
                 fi = fl["false_incidents"]
                 out.append((f"{tag} {name}: floor, false incidents/month (setting {fl['cell']})",
                             f"{fi['rate']:.2f} (bootstrap {fi['ci95_bootstrap'][0]:.2f}–{fi['ci95_bootstrap'][1]:.2f}); "
-                            f"inside haze {fl['decomposition']['inside']}, outside {fl['decomposition']['outside']}",
-                            f, key + ".floor_at_selected_knob"))
+                            f"inside haze {fl['decomposition']['inside']}, outside {fl['decomposition']['outside']} "
+                            f"(share inside {_pct(fl['decomposition']['share_inside'])}); detection {_pct(fl['det'])}; "
+                            f"valid {fl['valid_here']}", f, key + ".floor_at_selected_knob"))
+            own = m["own_floor"]
+            out.append((f"{tag} {name}: own lowest floor on these seeds", f"{own['fa_per_month']:.2f} at {own['cell']} "
+                        f"(detection {_pct(own['det'])})", f, key + ".own_floor"))
+            out.append((f"{tag} {name}: detection at equal FA (R8; 0 below the curve's floor), per budget",
+                        "; ".join(f"{x}: {_pct(v)}" for x, v in m["det_at_equal_fa"].items()), f,
+                        key + ".det_at_equal_fa"))
             b = m.get("at_b_star")
             if b:
                 out.append((f"{tag} {name}: confirmed within 3 h at B*",
                             f"{_pct(b['det'])} ({_pct(b['det_ci95'][0])}–{_pct(b['det_ci95'][1])}); "
                             f"{b['false_incidents']['rate']:.2f} false incidents/month", f, key + ".at_b_star"))
                 ov = b["by_haze_overlap"]
-                out.append((f"{tag} {name}: at B*, mean time to confirmation (miss = 180 min); fires overlapping haze "
-                            f"/ not", f"{b['mean_ttc_min']} min; {_pct(ov['overlap']['det'])} of "
-                            f"{ov['overlap']['fires']} / {_pct(ov['no_overlap']['det'])} of {ov['no_overlap']['fires']}",
+                out.append((f"{tag} {name}: at B*, mean time to confirmation (miss = 180 min), median latency; fires "
+                            f"overlapping haze / not", f"{b['mean_ttc_min']} min, {b['latency_median_min']} min; "
+                            f"{_pct(ov['overlap']['det'])} ({ov['overlap']['detected']} of {ov['overlap']['fires']}) / "
+                            f"{_pct(ov['no_overlap']['det'])} ({ov['no_overlap']['detected']} of {ov['no_overlap']['fires']})",
                             f, key + ".at_b_star.by_haze_overlap"))
-            if a["b_star"] is not None:
-                out.append((f"{tag} {name}: detection at equal FA = B*", _pct(m["det_at_equal_fa"][str(a["b_star"])]),
-                            f, key + ".det_at_equal_fa"))
     return out
 
 
