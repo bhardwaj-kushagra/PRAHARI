@@ -157,9 +157,27 @@ def rows_r3(a: dict) -> list[tuple]:
     """R3 (SIM): B*, the head-to-head tests H1/H2 (P2-medSCMR − P2-gate), each method's floor and detection at B*."""
     f = "r3_analysis.json"
     out = [("R3 B* (both compared methods, valid settings, H-mix selection seeds)", str(a["b_star"]), f, "b_star")]
+    for name, m in a["selection"]["methods"].items():
+        key = f"selection.methods.{name}"
+        if m["floor"]:
+            out.append((f"R3 selection {name}: floor setting", f"{m['floor']['cell']}", f, key + ".floor.cell"))
+        for b, o in m["operating"].items():
+            if o:
+                out.append((f"R3 selection {name}: operating setting at {b}/month", f"{o['cell']}", f,
+                            key + f".operating.{b}.cell"))
     for sc, s in a["scenarios"].items():
         tag = f"R3 {sc}" + ("" if s["complete"] else " (incomplete)")
         h = s["head_to_head"]
+        for b, d in h.get("descriptive_by_budget", {}).items():
+            if not d.get("reachable"):
+                out.append((f"{tag} descriptive at {b}/month", "not reachable by both", f,
+                            f"scenarios.{sc}.head_to_head.descriptive_by_budget.{b}"))
+                continue
+            c = d["paired"]
+            out.append((f"{tag} descriptive at {b}/month (P2-medSCMR − P2-gate, detection)",
+                        f"{100 * c['mean_diff']:+.2f} ({100 * c['ci95'][0]:+.2f} to {100 * c['ci95'][1]:+.2f}); "
+                        f"Wilcoxon p {c['p_wilcoxon']:.2g} (unadjusted); seeds {c['wins']}/{c['losses']}", f,
+                        f"scenarios.{sc}.head_to_head.descriptive_by_budget.{b}.paired"))
         for key, label in (("H1_detection_at_b_star", "detection at B*"), ("H2_floor", "floor, false incidents/month")):
             c = h.get(key, {})
             if c.get("reachable") is False:
@@ -185,6 +203,11 @@ def rows_r3(a: dict) -> list[tuple]:
                 out.append((f"{tag} {name}: confirmed within 3 h at B*",
                             f"{_pct(b['det'])} ({_pct(b['det_ci95'][0])}–{_pct(b['det_ci95'][1])}); "
                             f"{b['false_incidents']['rate']:.2f} false incidents/month", f, key + ".at_b_star"))
+                ov = b["by_haze_overlap"]
+                out.append((f"{tag} {name}: at B*, mean time to confirmation (miss = 180 min); fires overlapping haze "
+                            f"/ not", f"{b['mean_ttc_min']} min; {_pct(ov['overlap']['det'])} of "
+                            f"{ov['overlap']['fires']} / {_pct(ov['no_overlap']['det'])} of {ov['no_overlap']['fires']}",
+                            f, key + ".at_b_star.by_haze_overlap"))
             if a["b_star"] is not None:
                 out.append((f"{tag} {name}: detection at equal FA = B*", _pct(m["det_at_equal_fa"][str(a["b_star"])]),
                             f, key + ".det_at_equal_fa"))

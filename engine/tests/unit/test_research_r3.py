@@ -6,6 +6,7 @@ import pytest
 
 from prahari.core.config import load_config
 from prahari.research.analysis_r3 import write_analysis_r3
+from prahari.research.numbers import rows_r3
 from prahari.research.operating_r2 import evaluate_seed_r2
 from prahari.research.runner_r2 import load_r2
 
@@ -82,3 +83,11 @@ def test_head_to_head_analysis(tmp_path):
     assert h["H2_floor"]["mean_diff"] == pytest.approx(1.0)                   # 2 − 1 per month
     assert "p_holm" in h["H1_detection_at_b_star"] and "p_holm" in h["H2_floor"]
     assert h["descriptive_by_budget"]["1"]["reachable"] is False and h["descriptive_by_budget"]["10"]["reachable"]
+    rows = rows_r3(a)                                            # every reported number maps to an existing key
+    for _, _, f, key in rows:
+        assert f == "r3_analysis.json"
+        node = a
+        for part in key.split("."):
+            node = node[part]
+    labels = [r[0] for r in rows]
+    assert any("descriptive at 10/month" in x for x in labels) and any("operating setting at 3/month" in x for x in labels)
