@@ -761,4 +761,4 @@ round could select operating points on more seeds, since settings near 1 a month
   - next, the selection stage (H-none and H-mix, seeds 5901–5950), committed with its seed archive before any test
     seed;
   - then the test stage in supervised blocks.
-- **Tests:** R4 checks 7 passed; engine suite result in the next commit (no seed runs before it passes).
+- **Tests:** R4 checks 7 passed; engine suite 275 passed, 21 skipped (before any R4 seed ran).
