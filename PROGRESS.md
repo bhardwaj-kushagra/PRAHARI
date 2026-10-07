@@ -770,3 +770,5 @@ round could select operating points on more seeds, since settings near 1 a month
 - **R4 test, block 1** (7 Oct, 13:45–15:45 UTC; stopped at the 2-hour limit): 152 of 300 seed files (H-none 100/100,
   H-mix 52/100, H-mix-x0.3 0/50, H-mix-x3 0/50). Every file postdates the selection commit; none has been read. The
   runner resumes from them.
+- **R4 test, block 2** (7 Oct, 19:31–21:31 UTC; stopped at the 2-hour limit): 235 of 300 seed files (H-none 100/100,
+  H-mix 100/100, H-mix-x0.3 35/50, H-mix-x3 0/50). Every file postdates the selection commit; none has been read.
