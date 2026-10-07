@@ -154,6 +154,12 @@ At B* it detects -1.5 points against P2.
 43.5% at its H-mix setting, against 90.5% on H-mix). False alarms do not depend on the plume, because the quiet
 pass has no fire.
 
+**7. Added on 7 Oct 2026 (audit; descriptive).** R1's floor of about 5 a month belongs to SCMR's fixed ratio
+ρ = 3. On these seeds, P2's lowest rate at ρ = 3 is 4.52 a month on H-sync and 5.47 on H-mix, against 0.22 and 0.56
+at ρ = 10, at about the same detection at that setting (55.2–56.2% on H-sync). ρ = 10 is close to the ratio's ceiling
+for an interior cluster (100/9 ≈ 11.1 with 9-node neighbourhoods, DER), so it means "confirm only while the rest of
+the network is quiet". See [audit-2026-10-07.md](audit-2026-10-07.md) §4.1.
+
 **Limits:**
 - simulated MOX network at 70 m;
 - one haze model family (M20b), with ranges from real data that is km-scale and PM-based (realdata.md);

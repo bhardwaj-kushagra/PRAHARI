@@ -973,6 +973,33 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - *Outcome (5 Oct 2026):* run as registered, with no deviation. B* = 1 a month; H1 and H2 both favour the
     evidence gate under Holm; results in `docs/research/results-r3.md`.
 
+- **A-1. Audit of the evidence base** (7 Oct 2026, the developer's request; `docs/research/audit-2026-10-07.md`).
+  - *Findings:*
+    - The integrity trail is clean.
+    - R1's floor of about 5 a month belongs to SCMR's fixed ratio ρ = 3. With ρ free (R2, R3), P2's floor is
+      0.22–1.28 a month.
+    - The remaining false alarms are haze for SCMR, gate and AR methods, but much less so for median-referenced ones.
+    - Strict budgets cost detection; that the cost is caused by haze is shown only indirectly.
+    - Most strict grid edges are natural limits: SCMR's ratio ceiling of 100/9 for interior clusters, and a fire's own
+      footprint for θ. The node target r = 0.1 is a real edge.
+    - The floor estimand picks near-silent settings for the gate.
+  - *Additions, descriptive only:*
+    - `numbers.rows_audit` (readings of the registered result files);
+    - R2's number rows now carry the share inside haze and the detection at the floor setting, and every method's
+      equal-false-alarm detection (completing the map for `results-r2.md` §5);
+    - labelled notes in `results-r1.md` §1 and `results-r2.md` §6;
+    - three backlog items in `KNOWN_ISSUES.md`.
+  - *Unchanged:* no result file changed, and no round was re-analysed. The paper's reframing is the developer's
+    decision.
+- **R4-0. Protocol R4 drafted, "the price of haze"** (7 Oct 2026; `docs/research/protocol-r4.md`, DRAFT for review).
+  - *Design:*
+    - paired seeds with haze off and on, since the haze stream is read by no other module;
+    - family P (detection at 1 a month, haze off minus on, per method, Holm across three);
+    - a useful-floor estimand;
+    - node targets 0.03 and 0.05 added;
+    - a dose–response at ×0, ×0.3, ×1 and ×3.
+  - *Before any run:* nothing runs before approval, the implementation checks and registration.
+
 ## Public site (branch model)
 
 - **Site-1. The public website lives on separate branches, not on `main` (developer decision, 2026-09-24).** The

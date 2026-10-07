@@ -106,9 +106,13 @@ def rows_r2(a: dict) -> list[tuple]:
             flag = "; INVALID (R2-D1: continuous alarming)" if fl.get("valid_here") is False else ""
             out.append((f"{tag} {name}: floor, false incidents/month (selected knob {fl['cell']})",
                         f"{fi['rate']:.2f} (bootstrap {fi['ci95_bootstrap'][0]:.2f}–{fi['ci95_bootstrap'][1]:.2f}); "
-                        f"inside haze {d['inside']}, outside {d['outside']}{flag}", f, key + ".floor_at_selected_knob"))
+                        f"inside haze {d['inside']}, outside {d['outside']} (share inside {_pct(d['share_inside'])}); "
+                        f"detection {_pct(fl['det'])}{flag}", f, key + ".floor_at_selected_knob"))
             out.append((f"{tag} {name}: own floor", f"{m['own_floor']['fa_per_month']} at {m['own_floor']['cell']}",
                         f, key + ".own_floor"))
+            out.append((f"{tag} {name}: detection at equal FA (R8; 0 below the curve's floor), per budget",
+                        "; ".join(f"{x}: {_pct(v)}" for x, v in m["det_at_equal_fa"].items()), f,
+                        key + ".det_at_equal_fa"))
             b = m.get("at_b_star")
             if b:
                 out.append((f"{tag} {name}: confirmed within 3 h at B*",
@@ -265,6 +269,80 @@ def rows_india(r: dict) -> list[tuple]:
     return out
 
 
+_STRICT = {"target": ("node", min), "rho": ("rho", max), "theta": ("theta", min), "h_M": ("h_mei", max)}
+
+
+def strict_edges(knob: str, cell, grids: dict) -> list[str]:
+    """Audit of 7 Oct 2026: the knob axes on which a selected setting sits at the strict end of its registered grid
+    (smallest target r, largest SCMR ratio ρ, smallest gate share θ, largest Mei threshold), so the optimum may lie
+    beyond the grid. 'off' (None) is a natural end of the grid, not an edge."""
+    vals = cell if isinstance(cell, list) else [cell]
+    out = []
+    for ax, v in zip(knob.split("×"), vals):
+        g, pick = _STRICT[ax]
+        if v is not None and v == pick([x for x in grids[g] if x is not None]):
+            out.append(f"{ax} = {v:g}")
+    return out
+
+
+def _lowest(cells: list[dict]):
+    """The lowest false-incident cell, ties to the higher detection, then the first (as analysis_r2.floor_index)."""
+    j = min(range(len(cells)), key=lambda i: (cells[i]["fa_per_month"], -cells[i]["det"], i))
+    return j, cells[j]
+
+
+def rows_audit(sweeps: dict | None, rounds: dict, grids: dict, r1: dict | None = None) -> list[tuple]:
+    """Audit of 7 Oct 2026 (docs/research/audit-2026-10-07.md; descriptive): the textbook-threshold range over the R1
+    sweeps, P2's lowest rate at R1's fixed SCMR ratio (ρ = 3) against any ρ in R2 and R3, the share of floor incidents
+    inside haze per method across scenarios, and the selected settings that sit on a strict grid edge."""
+    out = []
+    if r1:
+        c = r1["test"]["P0"]["curve"]
+        j, lo = _lowest(c)
+        out.append(("Audit R1 P0: at its strictest knob (its floor), false incidents/month; detection",
+                    f"{lo['fa_per_month']} at k = {lo['knob']:g}; {_pct(lo['det'])}", "r1_analysis.json",
+                    f"test.P0.curve[{j}]"))
+    if sweeps:
+        pts = {k: v["pipelines"]["P1"]["fa_at_first_knob"] for k, v in sweeps["sweeps"].items() if "P1" in v["pipelines"]}
+        out.append(("Audit R1 sweeps: P1 at the textbook threshold (h = 8.8), false incidents/month, range over points",
+                    f"{min(pts.values()):.1f}–{max(pts.values()):.1f} ({len(pts)} points)", "r1_sweeps.json",
+                    "sweeps.<point>.pipelines.P1.fa_at_first_knob"))
+        for pt in ("haze=0", "default", "haze=3", "haze=6"):
+            for name in ("P2", "P2-med", "AR"):
+                p = sweeps["sweeps"].get(pt, {}).get("pipelines", {}).get(name)
+                if p:
+                    out.append((f"Audit R1 sweep {pt} {name}: detection at equal FA (R8; 0 = not reachable) at 1 / 3 / "
+                                f"10 per month", " / ".join(_pct(p[b]["det_at_equal_fa"]) for b in ("1", "3", "10")),
+                                "r1_sweeps.json", f"sweeps.{pt}.pipelines.{name}.<budget>.det_at_equal_fa"))
+    for rnd, (f, a) in rounds.items():
+        for sc, s in a["scenarios"].items():
+            amoc = s["methods"]["P2"]["amoc"]
+            r3 = [i for i, c in enumerate(amoc) if c["cell"][1] == 3.0]
+            j3 = r3[_lowest([amoc[i] for i in r3])[0]]
+            ja, ca = _lowest(amoc)
+            c3 = amoc[j3]
+            out.append((f"Audit {rnd} {sc} P2: lowest false incidents/month at ρ = 3 (R1's fixed ratio) vs at any ρ",
+                        f"{c3['fa_per_month']:.2f} at {c3['cell']} (detection {_pct(c3['det'])}) vs {ca['fa_per_month']:.2f} "
+                        f"at {ca['cell']} (detection {_pct(ca['det'])})", f, f"scenarios.{sc}.methods.P2.amoc[{j3}], [{ja}]"))
+        names = list(next(iter(a["scenarios"].values()))["methods"])
+        for name in names:
+            sh = {sc: s["methods"][name]["floor_at_selected_knob"]["decomposition"]["share_inside"]
+                  for sc, s in a["scenarios"].items()}
+            vals = [v for v in sh.values() if v is not None]
+            if vals:
+                out.append((f"Audit {rnd} {name}: share of floor incidents inside haze, range over scenarios",
+                            f"{_pct(min(vals))}–{_pct(max(vals))} (" + ", ".join(f"{k} {_pct(v)}" for k, v in sh.items())
+                            + ")", f, f"scenarios.<s>.methods.{name}.floor_at_selected_knob.decomposition.share_inside"))
+        for name, m in a["selection"]["methods"].items():
+            sets = [("floor", m["floor"])] + [(f"operating {b}/month", o) for b, o in m["operating"].items()]
+            for what, o in sets:
+                if o and strict_edges(m["knob"], o["cell"], grids):
+                    out.append((f"Audit {rnd} selection {name}: {what} setting on a strict grid edge",
+                                f"{o['cell']}: " + ", ".join(strict_edges(m["knob"], o["cell"], grids)), f,
+                                f"selection.methods.{name}." + ("floor" if what == "floor" else f"operating.{what.split()[1][:-6]}")))
+    return out
+
+
 def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> list[str]:
     """Collect every table the result files allow and write docs/research/numbers.md."""
     out = Path(out)
@@ -291,6 +369,10 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
         r = _load(out / f)
         if r:
             rows += rows_real(r, f)
+    rounds = {k: (f, x) for k, f, x in (("R2", "r2_analysis.json", a2), ("R3", "r3_analysis.json", a3)) if x}
+    if rounds:
+        from prahari.research.runner_r2 import load_r2
+        rows += rows_audit(w, rounds, load_r2()["grids"], a)
     lines = ["# Number-to-source table (generated; do not edit)", "",
              "Every number the paper may quote, with the result file (under `results/research/`) and key it comes from. "
              "Regenerate with `python -m prahari.research numbers`. SIM = simulator output; REAL = public data.", "",

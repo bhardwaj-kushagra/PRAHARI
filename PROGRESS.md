@@ -718,3 +718,32 @@ commit the selection, then the 250 test seeds in supervised 2-hour blocks.
 
 **Next step:** the developer reads `results-r3.md` and drafts the paper's comparison in their own words. A later
 round could select operating points on more seeds, since settings near 1 a month transferred imperfectly.
+
+### 2026-10-07 — Session 23: audit of the evidence base; protocol R4 drafted
+
+- **Request:** a thorough audit against the master plan and the direction, with a judgement on whether the results
+  advance the evidence base and whether everything is done.
+- **Audit** (`docs/research/audit-2026-10-07.md`; every number in `numbers.md`):
+  - Integrity is clean in every round.
+  - Every experiment in the direction was run.
+  - Not done: the scan statistic, a real MOX dataset (plan B5/B6), the paper figures and tables, the tag and DOI.
+  - **Key finding:** R1's floor of about 5 a month was set by SCMR's fixed ratio ρ = 3. With ρ free, P2's floor is
+    0.22–1.28 a month. The title claim needs reframing toward "smoke sets the price of strict budgets", which has only
+    indirect support so far.
+  - **Verdict:** a worthy regional-conference contribution in method and comparative evidence, but not under the
+    current title; one confirmatory round is proposed.
+- **Protocol R4 drafted** (`docs/research/protocol-r4.md`): paired haze-off against haze-on seeds; DRAFT, nothing run.
+- **Code and docs:**
+  - `numbers.rows_audit` and fuller R2 rows; tests `test_research_audit.py`;
+  - labelled notes in `results-r1.md` and `results-r2.md`;
+  - `KNOWN_ISSUES.md` backlog;
+  - DECISIONS A-1 and R4-0.
+- **Tests:** engine suite running at commit time; result in the next commit.
+
+**Next step:**
+
+- **The developer:**
+  - read the audit;
+  - decide the reframing;
+  - review the R4 draft.
+- **After approval:** R4's implementation checks, registration, then runs in supervised blocks.

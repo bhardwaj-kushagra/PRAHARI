@@ -34,6 +34,12 @@ reachable when a knob value keeps the selection seeds' false incidents at or bel
 - Long haze episodes still raise node candidates, and SCMR holds back only part of them.
 - Subtracting the network median before the node test removes most of that common mode: P2-med reaches 0.95 a month.
 
+**Note added on 7 Oct 2026 (audit; descriptive, the registered results above are unchanged).** R1's P2 used SCMR's
+ratio threshold fixed at ρ = 3, and that fixed value sets the floor of about 5 a month. In R2 and R3, where ρ is a
+second knob, P2's lowest rate on R1's own haze model is 0.22 (R2 H-sync) and 0.40 (R3 H-sync) a month at ρ = 10, at
+about the same detection at that setting. See [audit-2026-10-07.md](audit-2026-10-07.md) §4.1 and the "Audit" rows in
+[numbers.md](numbers.md).
+
 ## 2. PRAHARI against the baselines at 10 false incidents a month
 
 This is the pre-registered secondary budget, and family A of the tests.
