@@ -762,3 +762,8 @@ round could select operating points on more seeds, since settings near 1 a month
     seed;
   - then the test stage in supervised blocks.
 - **Tests:** R4 checks 7 passed; engine suite 275 passed, 21 skipped (before any R4 seed ran).
+- **R4 selection** (7 Oct, 12:28–13:44 UTC): H-none and H-mix, 50 selection seeds each.
+  - Committed with its seed archive `r4_seeds_selection.tar.gz` (sha256 29d916b8…, rebuilt byte-identically) before
+    any test seed.
+  - No invalid setting. All three methods reach 1 a month in both scenarios, so family P is computable; selection
+    values are in `numbers.md` ("R4 selection" rows).

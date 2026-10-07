@@ -525,6 +525,60 @@ Every number the paper may quote, with the result file (under `results/research/
 | R2 H-mix-gauss AR: own floor | 6.16 at 0.1 | `r2_analysis.json` | `scenarios.H-mix-gauss.methods.AR.own_floor` |
 | R2 H-mix-gauss AR: detection at equal FA (R8; 0 below the curve's floor), per budget | 1: 0.0%; 3: 0.0%; 10: 20.9%; 30: 37.8% | `r2_analysis.json` | `scenarios.H-mix-gauss.methods.AR.det_at_equal_fa` |
 | R2 H-mix-gauss AR: confirmed within 3 h at B* | 18.1% (16.4%–19.8%); 526/2907; 8.74 false incidents/month | `r2_analysis.json` | `scenarios.H-mix-gauss.methods.AR.at_b_star` |
+| R4 selection H-none P2: operating setting at 0.3/month (FA/month, detection) | [0.5, 10.0]: 0.3, 83.7% | `r4_selection.json` | `selection.H-none.methods.P2.operating[0.3]` |
+| R4 selection H-none P2: operating setting at 1/month (FA/month, detection) | [1.0, 6.0]: 0.72, 88.3% | `r4_selection.json` | `selection.H-none.methods.P2.operating[1]` |
+| R4 selection H-none P2: operating setting at 3/month (FA/month, detection) | [3.0, 10.0]: 2.68, 92.2% | `r4_selection.json` | `selection.H-none.methods.P2.operating[3]` |
+| R4 selection H-none P2: operating setting at 10/month (FA/month, detection) | [4.3, 4.0]: 8.36, 94.9% | `r4_selection.json` | `selection.H-none.methods.P2.operating[10]` |
+| R4 selection H-none P2: floor setting (FA/month, detection) | [0.05, 0.0]: 0, 70.7% | `r4_selection.json` | `selection.H-none.methods.P2[floor]` |
+| R4 selection H-none P2: useful floor setting (FA/month, detection) | [0.05, 0.0]: 0, 70.7% | `r4_selection.json` | `selection.H-none.methods.P2[useful_floor]` |
+| R4 selection H-none P2: floor r ge 0.1 setting (FA/month, detection) | [0.1, 0.0]: 0.04, 74.1% | `r4_selection.json` | `selection.H-none.methods.P2[floor_r_ge_0.1]` |
+| R4 selection H-none P2: useful floor r ge 0.1 setting (FA/month, detection) | [0.1, 0.0]: 0.04, 74.1% | `r4_selection.json` | `selection.H-none.methods.P2[useful_floor_r_ge_0.1]` |
+| R4 selection H-none P2: invalid settings (≥ 24 h incident) | [] | `r4_selection.json` | `selection.H-none.methods.P2.invalid_cells` |
+| R4 selection H-none P2-medSCMR: operating setting at 0.3/month (FA/month, detection) | [1.0, 0.0]: 0.26, 88.8% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR.operating[0.3]` |
+| R4 selection H-none P2-medSCMR: operating setting at 1/month (FA/month, detection) | [1.5, 0.0]: 0.68, 91.4% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR.operating[1]` |
+| R4 selection H-none P2-medSCMR: operating setting at 3/month (FA/month, detection) | [3.0, 10.0]: 2.68, 93.1% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR.operating[3]` |
+| R4 selection H-none P2-medSCMR: operating setting at 10/month (FA/month, detection) | [4.3, 6.0]: 5.94, 95.3% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR.operating[10]` |
+| R4 selection H-none P2-medSCMR: floor setting (FA/month, detection) | [0.03, 0.0]: 0, 70.2% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR[floor]` |
+| R4 selection H-none P2-medSCMR: useful floor setting (FA/month, detection) | [0.03, 0.0]: 0, 70.2% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR[useful_floor]` |
+| R4 selection H-none P2-medSCMR: floor r ge 0.1 setting (FA/month, detection) | [0.1, 0.0]: 0.02, 75.6% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR[floor_r_ge_0.1]` |
+| R4 selection H-none P2-medSCMR: useful floor r ge 0.1 setting (FA/month, detection) | [0.1, 0.0]: 0.02, 75.6% | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR[useful_floor_r_ge_0.1]` |
+| R4 selection H-none P2-medSCMR: invalid settings (≥ 24 h incident) | [] | `r4_selection.json` | `selection.H-none.methods.P2-medSCMR.invalid_cells` |
+| R4 selection H-none P2-gate: operating setting at 0.3/month (FA/month, detection) | [0.5, 0.3]: 0.3, 84.2% | `r4_selection.json` | `selection.H-none.methods.P2-gate.operating[0.3]` |
+| R4 selection H-none P2-gate: operating setting at 1/month (FA/month, detection) | [1.0, 0.5]: 0.92, 88.3% | `r4_selection.json` | `selection.H-none.methods.P2-gate.operating[1]` |
+| R4 selection H-none P2-gate: operating setting at 3/month (FA/month, detection) | [2.0, 0.5]: 2.7, 91.5% | `r4_selection.json` | `selection.H-none.methods.P2-gate.operating[3]` |
+| R4 selection H-none P2-gate: operating setting at 10/month (FA/month, detection) | [4.3, None]: 8.8, 94.9% | `r4_selection.json` | `selection.H-none.methods.P2-gate.operating[10]` |
+| R4 selection H-none P2-gate: floor setting (FA/month, detection) | [0.05, 0.5]: 0, 70.7% | `r4_selection.json` | `selection.H-none.methods.P2-gate[floor]` |
+| R4 selection H-none P2-gate: useful floor setting (FA/month, detection) | [0.05, 0.5]: 0, 70.7% | `r4_selection.json` | `selection.H-none.methods.P2-gate[useful_floor]` |
+| R4 selection H-none P2-gate: floor r ge 0.1 setting (FA/month, detection) | [0.1, 0.15]: 0, 23.3% | `r4_selection.json` | `selection.H-none.methods.P2-gate[floor_r_ge_0.1]` |
+| R4 selection H-none P2-gate: useful floor r ge 0.1 setting (FA/month, detection) | [0.1, 0.2]: 0.02, 54.7% | `r4_selection.json` | `selection.H-none.methods.P2-gate[useful_floor_r_ge_0.1]` |
+| R4 selection H-none P2-gate: invalid settings (≥ 24 h incident) | [] | `r4_selection.json` | `selection.H-none.methods.P2-gate.invalid_cells` |
+| R4 selection H-mix P2: operating setting at 0.3/month (FA/month, detection) | not reached | `r4_selection.json` | `selection.H-mix.methods.P2.operating[0.3]` |
+| R4 selection H-mix P2: operating setting at 1/month (FA/month, detection) | [0.5, 10.0]: 0.88, 62.8% | `r4_selection.json` | `selection.H-mix.methods.P2.operating[1]` |
+| R4 selection H-mix P2: operating setting at 3/month (FA/month, detection) | [2.0, 10.0]: 2.12, 80.8% | `r4_selection.json` | `selection.H-mix.methods.P2.operating[3]` |
+| R4 selection H-mix P2: operating setting at 10/month (FA/month, detection) | [4.3, 6.0]: 8.6, 89.2% | `r4_selection.json` | `selection.H-mix.methods.P2.operating[10]` |
+| R4 selection H-mix P2: floor setting (FA/month, detection) | [0.03, 10.0]: 0.58, 39.5% | `r4_selection.json` | `selection.H-mix.methods.P2[floor]` |
+| R4 selection H-mix P2: useful floor setting (FA/month, detection) | [0.2, 10.0]: 0.8, 52.6% | `r4_selection.json` | `selection.H-mix.methods.P2[useful_floor]` |
+| R4 selection H-mix P2: floor r ge 0.1 setting (FA/month, detection) | [0.1, 10.0]: 0.64, 46.0% | `r4_selection.json` | `selection.H-mix.methods.P2[floor_r_ge_0.1]` |
+| R4 selection H-mix P2: useful floor r ge 0.1 setting (FA/month, detection) | [0.2, 10.0]: 0.8, 52.6% | `r4_selection.json` | `selection.H-mix.methods.P2[useful_floor_r_ge_0.1]` |
+| R4 selection H-mix P2: invalid settings (≥ 24 h incident) | [] | `r4_selection.json` | `selection.H-mix.methods.P2.invalid_cells` |
+| R4 selection H-mix P2-medSCMR: operating setting at 0.3/month (FA/month, detection) | not reached | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR.operating[0.3]` |
+| R4 selection H-mix P2-medSCMR: operating setting at 1/month (FA/month, detection) | [0.5, 10.0]: 0.96, 44.9% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR.operating[1]` |
+| R4 selection H-mix P2-medSCMR: operating setting at 3/month (FA/month, detection) | [3.0, 10.0]: 2.4, 82.8% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR.operating[3]` |
+| R4 selection H-mix P2-medSCMR: operating setting at 10/month (FA/month, detection) | [10.0, 10.0]: 9.94, 92.8% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR.operating[10]` |
+| R4 selection H-mix P2-medSCMR: floor setting (FA/month, detection) | [0.03, 10.0]: 0.42, 14.9% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR[floor]` |
+| R4 selection H-mix P2-medSCMR: useful floor setting (FA/month, detection) | [0.75, 10.0]: 1.06, 54.3% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR[useful_floor]` |
+| R4 selection H-mix P2-medSCMR: floor r ge 0.1 setting (FA/month, detection) | [0.1, 10.0]: 0.66, 19.6% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR[floor_r_ge_0.1]` |
+| R4 selection H-mix P2-medSCMR: useful floor r ge 0.1 setting (FA/month, detection) | [0.75, 10.0]: 1.06, 54.3% | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR[useful_floor_r_ge_0.1]` |
+| R4 selection H-mix P2-medSCMR: invalid settings (≥ 24 h incident) | [] | `r4_selection.json` | `selection.H-mix.methods.P2-medSCMR.invalid_cells` |
+| R4 selection H-mix P2-gate: operating setting at 0.3/month (FA/month, detection) | [0.03, 0.15]: 0.3, 14.6% | `r4_selection.json` | `selection.H-mix.methods.P2-gate.operating[0.3]` |
+| R4 selection H-mix P2-gate: operating setting at 1/month (FA/month, detection) | [0.3, 0.2]: 0.82, 47.5% | `r4_selection.json` | `selection.H-mix.methods.P2-gate.operating[1]` |
+| R4 selection H-mix P2-gate: operating setting at 3/month (FA/month, detection) | [1.0, 0.3]: 2.94, 73.5% | `r4_selection.json` | `selection.H-mix.methods.P2-gate.operating[3]` |
+| R4 selection H-mix P2-gate: operating setting at 10/month (FA/month, detection) | [3.0, 0.3]: 7.44, 86.2% | `r4_selection.json` | `selection.H-mix.methods.P2-gate.operating[10]` |
+| R4 selection H-mix P2-gate: floor setting (FA/month, detection) | [0.05, 0.05]: 0.06, 0.8% | `r4_selection.json` | `selection.H-mix.methods.P2-gate[floor]` |
+| R4 selection H-mix P2-gate: useful floor setting (FA/month, detection) | [0.5, 0.2]: 1.18, 53.1% | `r4_selection.json` | `selection.H-mix.methods.P2-gate[useful_floor]` |
+| R4 selection H-mix P2-gate: floor r ge 0.1 setting (FA/month, detection) | [1.0, 0.05]: 0.12, 2.4% | `r4_selection.json` | `selection.H-mix.methods.P2-gate[floor_r_ge_0.1]` |
+| R4 selection H-mix P2-gate: useful floor r ge 0.1 setting (FA/month, detection) | [0.5, 0.2]: 1.18, 53.1% | `r4_selection.json` | `selection.H-mix.methods.P2-gate[useful_floor_r_ge_0.1]` |
+| R4 selection H-mix P2-gate: invalid settings (≥ 24 h incident) | [] | `r4_selection.json` | `selection.H-mix.methods.P2-gate.invalid_cells` |
 | REAL WR: common-mode events | 1 in 30.0 days | `real_thompson2026.json` | `clusters.WR.n_events` |
 | REAL WR: node candidates per node per 30 d | 6.375 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
 | REAL WR: exceedance at nominal 1% (outside common mode) | 1.2% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
