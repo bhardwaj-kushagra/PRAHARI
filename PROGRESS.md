@@ -738,7 +738,7 @@ round could select operating points on more seeds, since settings near 1 a month
   - labelled notes in `results-r1.md` and `results-r2.md`;
   - `KNOWN_ISSUES.md` backlog;
   - DECISIONS A-1 and R4-0.
-- **Tests:** engine suite running at commit time; result in the next commit.
+- **Tests:** engine suite 268 passed, 21 skipped (3 new audit tests).
 
 **Next step:**
 
