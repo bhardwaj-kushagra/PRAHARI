@@ -202,3 +202,16 @@ def _pooled_curve(rows: list[dict], name: str):
     pc = ps.pooled(ps.seed_matrix(by_pipeline(rows)[name]))
     return pc["fa"], pc["det"]
 
+
+def write_test_table_r4(r4: dict, out: Path) -> list:
+    """The test stage's compact per-seed table (`r4_test.json`, as R2/R3: per scenario and method, the per-seed false
+    incidents and detections at every cell), written without computing any endpoint. Used to log the runs while the
+    analysis waits (protocol R4 §10)."""
+    out = Path(out)
+    test = {sc: load_stage(out, "test", sc, r4.get("round", "r4")) for sc in r4["scenarios"]}
+    meta = {"label": "SIMULATION", "protocol": "docs/research/protocol-r4.md (R4)", "base": r4["base"],
+            "methods": r4["methods"], "seeds": {sc: [r["seed"] for r in rows] for sc, rows in test.items()}}
+    obj = {**meta, "scenarios": {sc: compact_r2(rows) for sc, rows in test.items() if rows}}
+    write_text_atomic(out / "r4_test.json", json.dumps(obj, indent=1, default=_json))
+    return [str(out / "r4_test.json")]
+

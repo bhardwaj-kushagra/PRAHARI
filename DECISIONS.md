@@ -1015,6 +1015,11 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
   - *Records:* each stage's seed files are archived and committed, so they outlive the container.
   - *Analysis:* the analysis and the results page wait until the developer asks for them. The selection is still
     committed before any test seed.
+- **R4-2. Records-only addition during R4's test stage** (7 Oct 2026).
+  - *What:* `analysis_r4.write_test_table_r4` (CLI `r4-analyse --test-table`) writes `r4_test.json`, the compact
+    per-seed table, so the runs are logged while the analysis waits (the developer's request).
+  - *Effect:* it computes no endpoint and changes no registered method, setting, rule or analysis.
+  - *Tests:* the synthetic test checks that no analysis file is written.
 
 ## Public site (branch model)
 

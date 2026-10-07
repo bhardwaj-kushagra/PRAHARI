@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from prahari.core.config import load_config
-from prahari.research.analysis_r4 import useful_floor_index, write_analysis_r4
+from prahari.research.analysis_r4 import useful_floor_index, write_analysis_r4, write_test_table_r4
 from prahari.research.archive import archive_seeds, extract_seeds
 from prahari.research.numbers import rows_r4_selection
 from prahari.research.operating import SeedEval
@@ -130,6 +130,10 @@ def test_r4_analysis_on_synthetic_seeds(tmp_path):
         node = sfile
         for br, dot in re.findall(r"\[([^\]]+)\]|([^.\[\]]+)", key):
             node = node[br or dot]
+    write_test_table_r4(r4, tmp_path)
+    t = json.loads((tmp_path / "r4_test.json").read_text())
+    assert t["scenarios"]["H-mix"]["pipelines"]["P2"]["false_incidents"][0] == [0, 1, 6]
+    assert not (tmp_path / "r4_analysis.json").exists()                     # the table computes no endpoint
     write_analysis_r4(r4, tmp_path)
     a = json.loads((tmp_path / "r4_analysis.json").read_text())
     for m in METHODS:

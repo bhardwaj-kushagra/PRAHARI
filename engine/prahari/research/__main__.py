@@ -14,7 +14,7 @@
   r3-analyse                                    → results/research/r3_*.json
   r3-figures                                    → docs/research/figures/r3_*
   r4-run selection|test [--scenarios H-none,..] protocol R4 → results/research/r4/<stage>/<scenario>/seed<N>.json
-  r4-analyse [--selection-only]                 → results/research/r4_selection.json (and r4_test/r4_analysis)
+  r4-analyse [--selection-only|--test-table]    → results/research/r4_selection.json (and r4_test/r4_analysis)
   r4-seeds-archive selection|test               → results/research/r4_seeds_<stage>.tar.gz (byte-reproducible)
 """
 from __future__ import annotations
@@ -41,6 +41,7 @@ def main(argv=None) -> int:
     ap.add_argument("--only", default=None, help="sweep names, comma list")
     ap.add_argument("--scenarios", default=None, help="R2 scenarios, comma list (default: every one with the stage)")
     ap.add_argument("--selection-only", action="store_true", help="r4-analyse: the selection file only")
+    ap.add_argument("--test-table", action="store_true", help="r4-analyse: only the compact test table, no endpoint")
     a = ap.parse_args(argv)
     if a.command.startswith("r2-"):
         return _r2(a, ap)
@@ -130,8 +131,8 @@ def _r4(a, ap) -> int:
         seeds = [int(s) for s in a.seeds.split(",")] if a.seeds else None
         done = run_r2(r4, a.stage, a.scenarios.split(",") if a.scenarios else None, a.jobs, out, seeds)
     elif a.command == "r4-analyse":
-        from prahari.research.analysis_r4 import write_analysis_r4
-        done = write_analysis_r4(r4, out, selection_only=a.selection_only)
+        from prahari.research.analysis_r4 import write_analysis_r4, write_test_table_r4
+        done = write_test_table_r4(r4, out) if a.test_table else write_analysis_r4(r4, out, a.selection_only)
     else:
         if not a.stage:
             ap.error("r4-seeds-archive needs a stage: selection or test")
