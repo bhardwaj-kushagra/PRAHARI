@@ -1,8 +1,14 @@
 # Research protocol R4 — the price of haze at strict false-alarm budgets
 
-**Status: DRAFT (7 Oct 2026), for the developer's review.** No R4 code beyond R2/R3's exists yet, and no R4 seed has
-been run. Once approved, the implementation checks of §9 run on development seeds only. This page is then marked
-REGISTERED in a commit that precedes every R4 result file (charter rule 1).
+**Status: REGISTERED on 7 Oct 2026**, after the developer's go-ahead ("go ahead with R4 seeds running and log them as
+usual for future analysis") and before any R4 seed was run (charter rule 1). The implementation checks of §9 passed
+first; §10 records what was fixed at registration. Any change from here on is a logged deviation in `DECISIONS.md`.
+The developer decided not to reframe the paper's claim yet: R4 is run and logged, and its analysis is written up when
+the developer asks.
+
+**Configuration:** [`configs/research/r4.yaml`](../../configs/research/r4.yaml). **Code:** `python -m prahari.research
+r4-run | r4-analyse | r4-seeds-archive` (`engine/prahari/research/analysis_r4.py`, `archive.py`; the R2/R3 runner,
+replay and methods unchanged).
 
 **Why R4.** The audit of 7 Oct 2026 ([audit-2026-10-07.md](audit-2026-10-07.md) §4) found four things:
 
@@ -165,3 +171,27 @@ result file.
 4. **Analysis.** Selection per scenario, the useful floor, the paired family P with Holm, and the dose–response
    tables are unit-tested on synthetic seed files.
 5. The full engine suite passes.
+
+## 10. Fixed at registration
+
+None of these changes a scenario, method, grid, budget, seed or endpoint; each is how the text above is implemented.
+
+1. **Scenario names.** The dose points are named `H-mix-x0.3` and `H-mix-x3` (ASCII, used as directory names).
+2. **Selection code.** R2's `selection_r2` with the validity rule, applied to each of H-none and H-mix on its own
+   selection seeds, plus the useful floor and the floors without r < 0.1 (`analysis_r4.selection_r4`). The analysis
+   reports every method "at B*" at the primary budget, 1 a month.
+3. **Family P pairing.** The per-seed values of H-none and H-mix are matched by seed number; the bootstrap resamples
+   seeds jointly (seed 20261007, 10,000 resamples).
+4. **Dose–response seeds.** The dose table (§6.4) uses seeds 6001–6050 in every scenario, so all four rates are
+   compared on the same seeds.
+5. **Records kept for later analysis.** Each stage's seed files are packed into a byte-reproducible archive
+   (`results/research/r4_seeds_<stage>.tar.gz`: sorted names, fixed metadata, mtime 0) and committed, because the
+   seed files themselves are not tracked by git.
+6. **Implementation checks (§9), passed before registration** (`engine/tests/unit/test_research_r4.py`; development
+   seed 11, short configuration):
+   - pairing: H-none and H-mix×3 have the same fires and day types; readings are identical in both passes until the
+     first haze minute (443), and on every haze-free minute after it;
+   - R4's H-mix is R2/R3's H-mix exactly, and adding r = 0.03 leaves every other cell unchanged;
+   - r = 0.03 tunes without reaching the cap (h ≈ 315 for the main node layer, ≈ 372 for the median layer);
+   - synthetic tests of the selection, the useful floor, family P with Holm and the dose table; the archive is
+     byte-reproducible.

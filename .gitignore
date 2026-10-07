@@ -18,6 +18,8 @@ results/research/*
 !results/research/real_*.json
 !results/research/r2_*.json
 !results/research/r3_*.json
+!results/research/r4_*.json
+!results/research/r4_seeds_*.tar.gz
 node_modules/
 dashboard/dist/
 *.health.json

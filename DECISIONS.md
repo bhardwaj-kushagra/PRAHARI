@@ -999,6 +999,22 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     - node targets 0.03 and 0.05 added;
     - a dose–response at ×0, ×0.3, ×1 and ×3.
   - *Before any run:* nothing runs before approval, the implementation checks and registration.
+- **R4-1. Protocol R4 registered** (7 Oct 2026, the developer's go-ahead: "dont reframe the claim yet but go ahead
+  with R4 seeds running and log them as usual for future analysis").
+  - *Claim:* not reframed; the title and `direction.md` stay as they are.
+  - *Registered:* `protocol-r4.md` (§10 lists what was fixed at registration), `configs/research/r4.yaml`, and new code:
+    - `analysis_r4.py`: selection per scenario with the useful floor, family P, the dose table;
+    - `archive.py`: byte-reproducible seed archives;
+    - CLI `r4-run | r4-analyse | r4-seeds-archive`;
+    - `numbers.rows_r4_selection`.
+  - *Implementation checks passed* (`test_research_r4.py`):
+    - pairing: on seed 11, readings are identical until the first haze minute and on every haze-free minute;
+    - strict targets leave the other cells unchanged;
+    - r = 0.03 tunes without reaching the cap;
+    - synthetic analysis tests.
+  - *Records:* each stage's seed files are archived and committed, so they outlive the container.
+  - *Analysis:* the analysis and the results page wait until the developer asks for them. The selection is still
+    committed before any test seed.
 
 ## Public site (branch model)
 

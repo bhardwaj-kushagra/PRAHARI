@@ -269,6 +269,27 @@ def rows_india(r: dict) -> list[tuple]:
     return out
 
 
+def rows_r4_selection(a: dict) -> list[tuple]:
+    """R4 (SIM) selection, per scenario on its own selection seeds: operating settings at every budget, the floor, the
+    useful floor and both floors without r < 0.1 (selection seeds; FA/month, detection)."""
+    f, out = "r4_selection.json", []
+    for sc, sel in a["selection"].items():
+        for name, m in sel["methods"].items():
+            key = f"selection.{sc}.methods.{name}"
+            for b, o in m["operating"].items():
+                out.append((f"R4 selection {sc} {name}: operating setting at {b}/month (FA/month, detection)",
+                            "not reached" if o is None else f"{o['cell']}: {o['fa_per_month']:g}, {_pct(o['det'])}",
+                            f, key + f".operating[{b}]"))
+            for k in ("floor", "useful_floor", "floor_r_ge_0.1", "useful_floor_r_ge_0.1"):
+                o = m.get(k)
+                out.append((f"R4 selection {sc} {name}: {k.replace('_', ' ')} setting (FA/month, detection)",
+                            "none" if o is None else f"{o['cell']}: {o['fa_per_month']:g}, {_pct(o['det'])}", f,
+                            key + f"[{k}]"))
+            out.append((f"R4 selection {sc} {name}: invalid settings (≥ 24 h incident)", str(m["invalid_cells"]), f,
+                        key + ".invalid_cells"))
+    return out
+
+
 _STRICT = {"target": ("node", min), "rho": ("rho", max), "theta": ("theta", min), "h_M": ("h_mei", max)}
 
 
@@ -365,6 +386,9 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
     a2 = _load(out / "r2_analysis.json")
     if a2:
         rows += rows_r2(a2)
+    s4 = _load(out / "r4_selection.json")
+    if s4:
+        rows += rows_r4_selection(s4)
     for f in ("real_thompson2026.json", "real_sensorcommunity_stuttgart.json"):
         r = _load(out / f)
         if r:

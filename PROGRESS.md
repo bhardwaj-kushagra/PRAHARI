@@ -747,3 +747,18 @@ round could select operating points on more seeds, since settings near 1 a month
   - decide the reframing;
   - review the R4 draft.
 - **After approval:** R4's implementation checks, registration, then runs in supervised blocks.
+
+### 2026-10-07 — Session 23 (continued): R4 registered; seeds running
+
+- **Decision (developer):** do not reframe the claim yet. Run R4's seeds and log them for later analysis.
+- **Built and checked before registration** (`test_research_r4.py`):
+  - `r4.yaml`, `analysis_r4.py`, `archive.py`, CLI and number rows;
+  - pairing exact (seed 11: identical readings on every haze-free minute);
+  - strict targets leave other cells unchanged;
+  - r = 0.03 not capped.
+- **Registered:** `protocol-r4.md`, with §10 "Fixed at registration"; DECISIONS R4-1.
+- **Runs:**
+  - next, the selection stage (H-none and H-mix, seeds 5901–5950), committed with its seed archive before any test
+    seed;
+  - then the test stage in supervised blocks.
+- **Tests:** R4 checks 7 passed; engine suite result in the next commit (no seed runs before it passes).

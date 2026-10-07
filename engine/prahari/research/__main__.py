@@ -13,6 +13,9 @@
   r3-run selection|test [--scenarios H-mix,..]  protocol R3 → results/research/r3/<stage>/<scenario>/seed<N>.json
   r3-analyse                                    → results/research/r3_*.json
   r3-figures                                    → docs/research/figures/r3_*
+  r4-run selection|test [--scenarios H-none,..] protocol R4 → results/research/r4/<stage>/<scenario>/seed<N>.json
+  r4-analyse [--selection-only]                 → results/research/r4_selection.json (and r4_test/r4_analysis)
+  r4-seeds-archive selection|test               → results/research/r4_seeds_<stage>.tar.gz (byte-reproducible)
 """
 from __future__ import annotations
 
@@ -28,7 +31,8 @@ def main(argv=None) -> int:
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("command", choices=["run", "sweep", "analyse", "figures", "realdata", "realdata-sc", "hazesplit",
                                         "numbers", "r2-run", "r2-analyse", "r2-figures", "realdata-india",
-                                        "r3-run", "r3-analyse", "r3-figures"])
+                                        "r3-run", "r3-analyse", "r3-figures", "r4-run", "r4-analyse",
+                                        "r4-seeds-archive"])
     ap.add_argument("stage", nargs="?", choices=["selection", "test"])
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -36,11 +40,14 @@ def main(argv=None) -> int:
     ap.add_argument("--seeds", default=None, help="comma list (default: the protocol's seeds)")
     ap.add_argument("--only", default=None, help="sweep names, comma list")
     ap.add_argument("--scenarios", default=None, help="R2 scenarios, comma list (default: every one with the stage)")
+    ap.add_argument("--selection-only", action="store_true", help="r4-analyse: the selection file only")
     a = ap.parse_args(argv)
     if a.command.startswith("r2-"):
         return _r2(a, ap)
     if a.command.startswith("r3-"):
         return _r3(a, ap)
+    if a.command.startswith("r4-"):
+        return _r4(a, ap)
     r1 = load_r1(a.config)
     seeds = [int(s) for s in a.seeds.split(",")] if a.seeds else None
     out = Path(a.out)
@@ -109,6 +116,27 @@ def _r3(a, ap) -> int:
     else:
         from prahari.research.figures_r2 import write_figures_r2
         done = write_figures_r2(out, "r3_analysis.json")
+    print(f"{len(done)} files")
+    return 0
+
+
+def _r4(a, ap) -> int:
+    from prahari.research.runner_r2 import load_r2, run_r2
+    r4 = load_r2(a.config if a.config != str(DEFAULT_CONFIG) else "configs/research/r4.yaml")
+    out = Path(a.out)
+    if a.command == "r4-run":
+        if not a.stage:
+            ap.error("r4-run needs a stage: selection or test")
+        seeds = [int(s) for s in a.seeds.split(",")] if a.seeds else None
+        done = run_r2(r4, a.stage, a.scenarios.split(",") if a.scenarios else None, a.jobs, out, seeds)
+    elif a.command == "r4-analyse":
+        from prahari.research.analysis_r4 import write_analysis_r4
+        done = write_analysis_r4(r4, out, selection_only=a.selection_only)
+    else:
+        if not a.stage:
+            ap.error("r4-seeds-archive needs a stage: selection or test")
+        from prahari.research.archive import archive_seeds
+        done = [str(archive_seeds(out, r4.get("round", "r4"), a.stage))]
     print(f"{len(done)} files")
     return 0
 
