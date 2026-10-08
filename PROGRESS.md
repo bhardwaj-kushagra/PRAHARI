@@ -778,7 +778,7 @@ round could select operating points on more seeds, since settings near 1 a month
   - `r4_seeds_test.tar.gz`: the 300 seed files, byte-reproducible (sha256 8166105c…, rebuilt identically);
   - `r4_test.json`: the compact per-seed table, with no endpoint computed (DECISIONS R4-2);
   - seed 6001 (H-mix) regenerates byte-identically.
-- **Tests:** R4 and audit tests 10 passed; engine suite result in the next commit.
+- **Tests:** R4 and audit tests 10 passed; engine suite 275 passed, 21 skipped.
 
 **Next step:** R4's registered analysis (`r4-analyse`) and its results page, when the developer asks. The claim is not
 reframed.
