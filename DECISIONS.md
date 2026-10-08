@@ -1020,6 +1020,11 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     per-seed table, so the runs are logged while the analysis waits (the developer's request).
   - *Effect:* it computes no endpoint and changes no registered method, setting, rule or analysis.
   - *Tests:* the synthetic test checks that no analysis file is written.
+  - *Runs complete (8 Oct 2026):*
+    - all 100 selection and 300 test seed files are archived and committed (`r4_seeds_selection.tar.gz`,
+      `r4_seeds_test.tar.gz`), with the selection committed before any test seed;
+    - one test seed regenerates byte-identically;
+    - the analysis waits for the developer.
 
 ## Public site (branch model)
 
