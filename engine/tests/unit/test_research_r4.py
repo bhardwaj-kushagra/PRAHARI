@@ -9,7 +9,7 @@ import numpy as np
 import pytest
 
 from prahari.core.config import load_config
-from prahari.research.analysis_r4 import useful_floor_index, write_analysis_r4, write_test_table_r4
+from prahari.research.analysis_r4 import method_differences, useful_floor_index, write_analysis_r4, write_test_table_r4
 from prahari.research.archive import archive_seeds, extract_seeds
 from prahari.research.numbers import rows_r4_selection
 from prahari.research.operating import SeedEval
@@ -146,6 +146,39 @@ def test_r4_analysis_on_synthetic_seeds(tmp_path):
     assert a["scenarios"]["H-mix"]["methods"]["P2"]["at_b_star"]["det"] == pytest.approx(0.5)
     assert a["descriptive"]["dose_response"]["H-none"]["methods"]["P2"]["det_at_1"] == pytest.approx(1.0)
     assert a["descriptive"]["price_at_equal_fa"]["P2"]["1"] == pytest.approx(0.5)
+    # §6.2 — every floor carries its haze split: H-mix's useful floor (cell 1) has one incident a month, inside the
+    # episode; H-none's floor setting has none
+    uf = a["scenarios"]["H-mix"]["floors"]["P2"]["useful_floor"]["decomposition"]
+    assert uf["inside"] == pytest.approx(1.0) and uf["outside"] == 0 and uf["share_inside"] == pytest.approx(1.0)
+    assert a["scenarios"]["H-none"]["floors"]["P2"]["floor"]["decomposition"]["count"] == 0
+    # §6.4 — deployment-view floors in the dose table (H-none's own selection: floor cell 1, 0 FA, both fires)
+    dn = a["descriptive"]["dose_response"]["H-none"]["methods"]["P2"]
+    assert dn["floor_at_selected"] == {"cell": [0.1, 10.0], "fa_per_month": 0.0, "det": 1.0}
+    assert a["descriptive"]["dose_response"]["H-mix"]["methods"]["P2"]["useful_floor_at_selected"]["fa_per_month"] == 1.0
+    # §6.5 — method differences: identical synthetic methods give zero differences at every budget
+    md = a["scenarios"]["H-mix"]["method_differences"]["1"]
+    assert list(md) == ["P2-medSCMR − P2-gate", "P2 − P2-medSCMR", "P2 − P2-gate"]
+    assert all(v["mean_diff"] == 0 and v["p_wilcoxon"] == 1.0 for v in md.values())
+    # the committed test table is not rewritten differently by the full analysis
+    assert json.loads((tmp_path / "r4_test.json").read_text()) == t
+
+
+def test_method_differences_reference_values():
+    """§6.5 on hand-made rows: P2-medSCMR detects both fires on every seed at its 1-a-month cell, P2-gate one on two
+    seeds and none on two; P2 equals P2-gate."""
+    def pipe(lat):
+        return {"knob": "target×rho", "grid": [[0.1, 10.0]], "false_incidents": [0], "latencies": [lat]}
+    gate = [[10, None], [10, None], [None, None], [None, None]]
+    rows = [{"seed": i, "test_days": 30, "pipelines": {"P2-medSCMR": pipe([5, 6]), "P2-gate": pipe(g), "P2": pipe(g)}}
+            for i, g in enumerate(gate)]
+    op = {"operating": {"1": {"index": 0, "cell": [0.1, 10.0]}, "3": None}}
+    sel = {"methods": {m: op for m in METHODS}}
+    W = np.ones((50, 4))
+    md = method_differences(rows, sel, {"budgets": [1, 3]}, W)
+    d = md["1"]["P2-medSCMR − P2-gate"]
+    assert d["mean_diff"] == pytest.approx(0.75) and d["wins"] == 4 and d["losses"] == 0   # (0.5 + 0.5 + 1 + 1) / 4
+    assert md["1"]["P2 − P2-gate"]["mean_diff"] == 0 and md["1"]["P2 − P2-medSCMR"]["mean_diff"] == pytest.approx(-0.75)
+    assert md["3"]["P2-medSCMR − P2-gate"] == {"reachable": False}
 
 
 def test_seed_archive_is_byte_reproducible(tmp_path):

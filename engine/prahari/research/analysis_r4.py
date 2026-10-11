@@ -4,7 +4,8 @@ Selection (§5), per scenario on its own selection seeds (H-none, H-mix), valid 
 budget, the floor, the useful floor (the lowest false incidents among cells whose pooled detection is at least 50%),
 and both floors with the strict node targets r < 0.1 left out. Family P (§6), on the test seeds: per method, per-seed
 detection at 1 a month in H-none minus H-mix, each at its own operating point, paired by seed number; two-sided
-Wilcoxon with a paired seed-bootstrap interval; Holm across the three methods. Everything else is descriptive. Writes
+Wilcoxon with a paired seed-bootstrap interval; Holm across the three methods. Everything else is descriptive
+(price at the other budgets, floors with their haze split, node thresholds, dose table, method differences). Writes
 `r4_selection.json` (selection only) or also `r4_test.json` and `r4_analysis.json`. All SIM.
 """
 from __future__ import annotations
@@ -18,10 +19,12 @@ from prahari.core.rng import make_rngs
 from prahari.record.writer import write_text_atomic
 from prahari.research import pstats as ps
 from prahari.research.analysis import _json, _r, by_pipeline
-from prahari.research.analysis_r2 import compact_r2, det_at_equal_fa, scenario_results, selection_r2, valid_cells
+from prahari.research.analysis_r2 import (compact_r2, decomposition, det_at_equal_fa, scenario_results, selection_r2,
+                                          valid_cells)
 from prahari.research.analysis_r3 import load_stage
 
 STRICT_TARGET = 0.1          # §5 — floors are also selected without the node targets below this value
+PAIRS = (("P2-medSCMR", "P2-gate"), ("P2", "P2-medSCMR"), ("P2", "P2-gate"))   # §6.5 — R3's pair first
 
 
 def _target(cell) -> float:
@@ -98,8 +101,9 @@ def family_p(rows_none, rows_mix, sel_none, sel_mix, r4: dict, W) -> dict:
 
 
 def floors_on_test(rows: list[dict], sel: dict, W) -> dict:
-    """Descriptive — on a scenario's test seeds, every selected floor setting (floor, useful floor, both without
-    r < 0.1): false incidents with seed-bootstrap intervals, pooled detection and validity there."""
+    """Descriptive (§6.2–6.3) — on a scenario's test seeds, every selected floor setting (floor, useful floor, both
+    without r < 0.1): false incidents with seed-bootstrap intervals, pooled detection, validity there, and the
+    inside/outside-haze split (E3); plus the share of capped node thresholds per target."""
     out = {}
     for name, prow in by_pipeline(rows).items():
         m = ps.seed_matrix(prow)
@@ -113,7 +117,7 @@ def floors_on_test(rows: list[dict], sel: dict, W) -> dict:
                 continue
             j = s["index"]
             res[key] = {"cell": m["grid"][j], "false_incidents": ps.fa_intervals(m, j, W), "det": _r(pc["det"][j]),
-                        "valid_here": None if vc is None else vc[j]}
+                        "valid_here": None if vc is None else vc[j], "decomposition": decomposition(prow, rows, j)}
         caps = np.array([r["at_cap_by_target"] for r in prow], dtype=float)
         targets = sorted({_target(c) for c in m["grid"]})
         res["share_capped_by_target"] = {f"{t:g}": _r(caps[:, i].mean()) for i, t in enumerate(targets)}
@@ -123,8 +127,8 @@ def floors_on_test(rows: list[dict], sel: dict, W) -> dict:
 
 def dose_response(scen_rows: dict, sels: dict, r4: dict, seeds_max: int) -> dict:
     """Descriptive (§6.4) — on the shared seeds ≤ seeds_max: detection at 1 and 3 a month in the deployment view
-    (each scenario's selection: its own for H-none and H-mix, H-mix's for the dose points) and at equal false alarms,
-    and the pooled floor of every method."""
+    (each scenario's selection: its own for H-none and H-mix, H-mix's for the dose points) and at equal false alarms;
+    the floors in the deployment view (the selected floor and useful-floor settings) and each curve's own floor."""
     out = {}
     for sc, rows in scen_rows.items():
         rows = [r for r in rows if r["seed"] <= seeds_max]
@@ -141,11 +145,48 @@ def dose_response(scen_rows: dict, sels: dict, r4: dict, seeds_max: int) -> dict
                 d[f"det_at_{b}"] = None if o is None else _r(pc["det"][o["index"]])
                 d[f"fa_at_{b}"] = None if o is None else _r(pc["fa"][o["index"]])
                 d[f"det_at_equal_fa_{b}"] = _r(det_at_equal_fa(pc["fa"], pc["det"], b))
+            for key in ("floor", "useful_floor"):
+                s_ = sel["methods"][name].get(key)
+                d[f"{key}_at_selected"] = None if s_ is None else {
+                    "cell": m["grid"][s_["index"]], "fa_per_month": _r(pc["fa"][s_["index"]]),
+                    "det": _r(pc["det"][s_["index"]])}
             j = int(np.lexsort((np.arange(len(pc["fa"])), -pc["det"], pc["fa"]))[0])
             d["own_floor"] = {"cell": m["grid"][j], "fa_per_month": _r(pc["fa"][j]), "det": _r(pc["det"][j])}
             res["methods"][name] = d
         out[sc] = res
     return out
+
+
+def method_differences(rows: list[dict], sel: dict, r4: dict, W) -> dict:
+    """Descriptive (§6.5) — within one scenario, per budget and pair of methods (R3's pair P2-medSCMR − P2-gate first),
+    the per-seed detection difference, each method at its own operating point; unadjusted Wilcoxon p."""
+    det = {name: ps.seed_matrix(prow) for name, prow in by_pipeline(rows).items()}
+    out = {}
+    for b in r4["budgets"]:
+        res = {}
+        for x, y in PAIRS:
+            if x not in det or y not in det:
+                continue
+            ox, oy = sel["methods"][x]["operating"].get(str(b)), sel["methods"][y]["operating"].get(str(b))
+            key = f"{x} − {y}"
+            if ox is None or oy is None:
+                res[key] = {"reachable": False}
+                continue
+            res[key] = {"reachable": True, "cells": [ox["cell"], oy["cell"]],
+                        **ps.paired(ps.per_seed_det(det[x], ox["index"]), ps.per_seed_det(det[y], oy["index"]), W)}
+        out[str(b)] = res
+    return out
+
+
+def _load_test(out: Path, r4: dict) -> dict:
+    return {sc: load_stage(out, "test", sc, r4.get("round", "r4")) for sc in r4["scenarios"]}
+
+
+def _test_table(r4: dict, test: dict) -> dict:
+    """`r4_test.json`: per scenario and method, the per-seed false incidents and detections at every cell."""
+    meta = {"label": "SIMULATION", "protocol": "docs/research/protocol-r4.md (R4)", "base": r4["base"],
+            "methods": r4["methods"], "seeds": {sc: [r["seed"] for r in rows] for sc, rows in test.items()}}
+    return {**meta, "scenarios": {sc: compact_r2(rows) for sc, rows in test.items() if rows}}
 
 
 def write_analysis_r4(r4: dict, out: Path, selection_only: bool = False) -> list:
@@ -164,8 +205,8 @@ def write_analysis_r4(r4: dict, out: Path, selection_only: bool = False) -> list
                                    "seed_tables": {sc: compact_r2(rows) for sc, rows in sel_rows.items()}}}
     if not selection_only:
         rng = make_rngs(int(r4["bootstrap"]["seed"]))["research"]
-        test = {sc: load_stage(out, "test", sc, r4.get("round", "r4")) for sc in r4["scenarios"]}
-        test = {sc: rows for sc, rows in test.items() if rows}
+        test_all = _load_test(out, r4)
+        test = {sc: rows for sc, rows in test_all.items() if rows}
         none, mix = r4["contrast"]
         n = len(set(r["seed"] for r in test.get(none, [])) & set(r["seed"] for r in test.get(mix, [])))
         W = ps.resample_weights(n, int(r4["bootstrap"]["resamples"]), rng)
@@ -188,8 +229,9 @@ def write_analysis_r4(r4: dict, out: Path, selection_only: bool = False) -> list
                 "role": sc_cfg["role"], "selection_from": sc if sc in sels else mix,
                 "seeds": [r["seed"] for r in rows], "test_days_per_seed": rows[0]["test_days"],
                 "complete": len(rows) == sc_cfg["seeds"]["test"]["to"] - sc_cfg["seeds"]["test"]["from"] + 1,
-                "methods": scenario_results(rows, sel, r4, Ws), "floors": floors_on_test(rows, sel, Ws)}
-        files["r4_test.json"] = {**meta, "scenarios": {sc: compact_r2(rows) for sc, rows in test.items()}}
+                "methods": scenario_results(rows, sel, r4, Ws), "floors": floors_on_test(rows, sel, Ws),
+                "method_differences": method_differences(rows, sel, r4, Ws)}
+        files["r4_test.json"] = _test_table(r4, test_all)                 # the same bytes as `r4-analyse --test-table`
         files["r4_analysis.json"] = analysis
     paths = []
     for fname, obj in files.items():
@@ -208,10 +250,7 @@ def write_test_table_r4(r4: dict, out: Path) -> list:
     incidents and detections at every cell), written without computing any endpoint. Used to log the runs while the
     analysis waits (protocol R4 §10)."""
     out = Path(out)
-    test = {sc: load_stage(out, "test", sc, r4.get("round", "r4")) for sc in r4["scenarios"]}
-    meta = {"label": "SIMULATION", "protocol": "docs/research/protocol-r4.md (R4)", "base": r4["base"],
-            "methods": r4["methods"], "seeds": {sc: [r["seed"] for r in rows] for sc, rows in test.items()}}
-    obj = {**meta, "scenarios": {sc: compact_r2(rows) for sc, rows in test.items() if rows}}
+    obj = _test_table(r4, _load_test(out, r4))
     write_text_atomic(out / "r4_test.json", json.dumps(obj, indent=1, default=_json))
     return [str(out / "r4_test.json")]
 

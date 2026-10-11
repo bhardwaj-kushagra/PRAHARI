@@ -1025,6 +1025,19 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
       `r4_seeds_test.tar.gz`), with the selection committed before any test seed;
     - one test seed regenerates byte-identically;
     - the analysis waits for the developer.
+- **R4-3. Registered descriptive items completed in code before the analysis ran** (11 Oct 2026, before any R4 test
+  result was read; found by checking `analysis_r4.py` against protocol §6).
+  - *Completed:*
+    - §6.2: the inside/outside-haze split for every floor setting (floor, useful floor, and both with r ≥ 0.1), not
+      only for the floor;
+    - §6.4: the dose table's deployment-view floors (the selected floor and useful-floor settings on seeds
+      6001–6050);
+    - §6.5: the per-seed detection difference between methods within each scenario, at every budget, for
+      P2-medSCMR − P2-gate (R3's pair), P2 − P2-medSCMR and P2 − P2-gate (descriptive, unadjusted p).
+  - *Also:* the full analysis writes `r4_test.json` through the same code as `--test-table`, so the committed file
+    keeps its bytes.
+  - *Unchanged:* family P, the selection, every rule and setting. The added items reuse the existing bootstrap
+    weights, so no other number moves. Unit tests with reference values in `test_research_r4.py`.
 
 ## Public site (branch model)
 
