@@ -133,4 +133,7 @@ python -m prahari.research r4-analyse --selection-only # → results/research/r4
 python -m prahari.research r4-seeds-archive test      # → results/research/r4_seeds_test.tar.gz (byte-reproducible seed records)
 python -m prahari.research r4-figures                # → docs/research/figures/r4_* (from r4_analysis.json only)
 pytest engine/tests/unit/test_research_r4.py        # R4 checks: pairing, strict targets, analysis (~1 min)
+python -m prahari.research paper                    # → docs/research/paper/ (tables T1–T3 .md/.tex, evidence-map.md; outline.md is hand-written)
+python -m prahari.research paper-figures            # → docs/research/figures/paper_{strategies,realdata} (from committed results only)
+pytest engine/tests/unit/test_research_paper.py     # paper package: parsers, rows, byte-identical regeneration (~5 s)
 ```

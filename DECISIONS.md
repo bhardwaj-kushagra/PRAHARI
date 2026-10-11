@@ -1043,6 +1043,26 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     (the protocol's registered §7 reading).
   - *No other deviation.* The claim and title are not reframed (the developer's decision of 7 Oct).
   - *Determinism:* `r4_analysis.json` and the R4 figures regenerate byte-identically.
+- **PP-1. Paper package** (11 Oct 2026, the developer's go-ahead: "go ahead with the paper package").
+  - *What:* it is not a round. Nothing is simulated, and no result is new or changed. Everything is generated from the
+    committed result files and the configuration:
+    - `paper.py` (CLI `paper`) writes `docs/research/paper/`:
+      - T1 (parameters with provenance; inputs);
+      - T2 (every registered confirmatory comparison of R1–R4);
+      - T3 (REAL summary), in Markdown and booktabs LaTeX (ASCII only);
+      - `evidence-map.md`, bullets only;
+    - `figures_paper.py` (CLI `paper-figures`) draws `paper_strategies` (SIM, R2) and `paper_realdata` (REAL);
+    - `outline.md`, hand-written, holds no results.
+  - *Claim:* not reframed. The evidence map gives each contribution's status and a candidate revised wording for
+    contribution 2, for the developer to decide.
+  - *Numbers:* `numbers.rows_real` gains per-cluster keys, stations and spacing, event rates and node-replay test
+    days. `rows_india` gains spacing and DL15's replay test days. No value changes.
+  - *No new dependency:* matplotlib is already the `paper` extra (Dep-7).
+  - *Tests:* `test_research_paper.py`:
+    - reference values for the parsers and row builders;
+    - the ASCII escape;
+    - byte-identical regeneration, equal to the committed package;
+    - a deterministic figure build.
 
 ## Public site (branch model)
 

@@ -138,19 +138,24 @@ def rows_r2(a: dict) -> list[tuple]:
 
 
 def rows_real(r: dict, file: str) -> list[tuple]:
-    """Real data (REAL): per cluster, events and the node-replay decomposition."""
+    """Real data (REAL): per cluster, stations, spacing, events and their rate, and the node-replay decomposition."""
     out = []
     clusters = r["clusters"] if "clusters" in r else {"ST": r["cluster"]}
     for cl, c in clusters.items():
         nr = c["node_replay"]
+        k = f"clusters.{cl}" if "clusters" in r else "cluster"
+        out.append((f"REAL {cl}: stations; median spacing (km)", f"{c['stations']}; {c['spacing_km']['median']}", file,
+                    k + ".spacing_km"))
         out.append((f"REAL {cl}: common-mode events", f"{c['n_events']} in {c['days_with_share']} days", file,
-                    f"clusters.{cl}.n_events" if "clusters" in r else "cluster.n_events"))
+                    k + ".n_events"))
+        out.append((f"REAL {cl}: common-mode events per day", str(c["events_per_day"]), file, k + ".events_per_day"))
+        out.append((f"REAL {cl}: node replay test days", str(nr["test_days"]), file, k + ".node_replay.test_days"))
         out.append((f"REAL {cl}: node candidates per node per 30 d", str(nr["candidates_per_node_30d"]), file,
-                    "node_replay.candidates_per_node_30d"))
+                    k + ".node_replay.candidates_per_node_30d"))
         out.append((f"REAL {cl}: exceedance at nominal 1% (outside common mode)", _pct(nr["exceedance_outside_cm_at_1pct"]),
-                    file, "node_replay.exceedance_outside_cm_at_1pct"))
+                    file, k + ".node_replay.exceedance_outside_cm_at_1pct"))
         out.append((f"REAL {cl}: share of candidates while ≥ 25% of stations elevated", _pct(nr["share_in_cm_mask"]),
-                    file, "node_replay.share_in_cm_mask"))
+                    file, k + ".node_replay.share_in_cm_mask"))
     return out
 
 
@@ -237,6 +242,9 @@ def rows_india(r: dict) -> list[tuple]:
             out.append((f"REAL India {key}", f"not analysed: {c.get('reason')}", f, k))
             continue
         h = c["held_out"]
+        if c.get("spacing_km"):
+            out.append((f"REAL India {key}: median station spacing (km)", str(c["spacing_km"]["median"]), f,
+                        k + ".spacing_km"))
         out.append((f"REAL India {key}: stations, events", f"{c['stations']} stations; {c['n_events']} events in "
                     f"{c['days_with_share']} days ({c['events_per_day']}/day, ×{h['rate_multiplier_vs_h_mix']} H-mix)",
                     f, k + ".held_out.events_per_day"))
@@ -254,6 +262,7 @@ def rows_india(r: dict) -> list[tuple]:
                         f"{nr['candidates_per_node_30d']}; {_pct(nr['share_in_cm_mask'])}", f, k + ".node_replay"))
             out.append((f"REAL India {key}: exceedance at nominal 1% (outside common mode)",
                         _pct(nr["exceedance_outside_cm_at_1pct"]), f, k + ".node_replay.exceedance_outside_cm_at_1pct"))
+            out.append((f"REAL India {key}: node replay test days", str(nr["test_days"]), f, k + ".node_replay.test_days"))
         if "co" in c and c["co"].get("n_events") is not None:
             out.append((f"REAL India {key}: CO events; share of PM events overlapping a CO event",
                         f"{c['co']['n_events']}; {c['co']['share_pm_events_overlapping_co']}", f, k + ".co"))

@@ -306,39 +306,47 @@ Every number the paper may quote, with the result file (under `results/research/
 | R3 H-patch P2-gate: detection at equal FA (R8; 0 below the curve's floor), per budget | 1: 59.2%; 3: 81.5%; 10: 92.0%; 30: 95.2% | `r3_analysis.json` | `scenarios.H-patch.methods.P2-gate.det_at_equal_fa` |
 | R3 H-patch P2-gate: confirmed within 3 h at B* | 38.2% (30.1%–46.8%); 0.48 false incidents/month | `r3_analysis.json` | `scenarios.H-patch.methods.P2-gate.at_b_star` |
 | R3 H-patch P2-gate: at B*, mean time to confirmation (miss = 180 min), median latency; fires overlapping haze / not | 144.72 min, 82.0 min; 27.6% (51 of 185) / 38.9% (1068 of 2743) | `r3_analysis.json` | `scenarios.H-patch.methods.P2-gate.at_b_star.by_haze_overlap` |
+| REAL India AK-2022: median station spacing (km) | 157.15 | `real_india.json` | `clusters.AK-2022.spacing_km` |
 | REAL India AK-2022: stations, events | 23 stations; 0 events in 61.0 days (0.0/day, ×None H-mix) | `real_india.json` | `clusters.AK-2022.held_out.events_per_day` |
 | REAL India AK-2022: night share (Wilson 95%) | None (None); reference 0.7 | `real_india.json` | `clusters.AK-2022.held_out.night_share` |
 | REAL India AK-2022: amplitude CV median; share inside operator 90% | None; None (operator [0.276, 0.442, 0.738]) | `real_india.json` | `clusters.AK-2022.held_out.cv_median` |
 | REAL India AK-2022: onset spread median (min); share inside operator 90% | None; None (operator [420.0, 1320.0, 4320.0]) | `real_india.json` | `clusters.AK-2022.held_out.onset_spread_median_min` |
 | REAL India AK-2022: CO events; share of PM events overlapping a CO event | 3; None | `real_india.json` | `clusters.AK-2022.co` |
+| REAL India AK-2023: median station spacing (km) | 157.15 | `real_india.json` | `clusters.AK-2023.spacing_km` |
 | REAL India AK-2023: stations, events | 23 stations; 0 events in 61.0 days (0.0/day, ×None H-mix) | `real_india.json` | `clusters.AK-2023.held_out.events_per_day` |
 | REAL India AK-2023: night share (Wilson 95%) | None (None); reference 0.7 | `real_india.json` | `clusters.AK-2023.held_out.night_share` |
 | REAL India AK-2023: amplitude CV median; share inside operator 90% | None; None (operator [0.273, 0.44, 0.735]) | `real_india.json` | `clusters.AK-2023.held_out.cv_median` |
 | REAL India AK-2023: onset spread median (min); share inside operator 90% | None; None (operator [420.0, 1320.0, 4320.0]) | `real_india.json` | `clusters.AK-2023.held_out.onset_spread_median_min` |
 | REAL India AK-2023: CO events; share of PM events overlapping a CO event | 1; None | `real_india.json` | `clusters.AK-2023.co` |
+| REAL India AK-2024: median station spacing (km) | 157.15 | `real_india.json` | `clusters.AK-2024.spacing_km` |
 | REAL India AK-2024: stations, events | 24 stations; 1 events in 61.0 days (0.016/day, ×0.16 H-mix) | `real_india.json` | `clusters.AK-2024.held_out.events_per_day` |
 | REAL India AK-2024: night share (Wilson 95%) | 1.0 ([0.207, 1.0]); reference 0.7 | `real_india.json` | `clusters.AK-2024.held_out.night_share` |
 | REAL India AK-2024: amplitude CV median; share inside operator 90% | 0.382; 1.0 (operator [0.277, 0.439, 0.74]) | `real_india.json` | `clusters.AK-2024.held_out.cv_median` |
 | REAL India AK-2024: onset spread median (min); share inside operator 90% | 240.0; 0.0 (operator [420.0, 1320.0, 4320.0]) | `real_india.json` | `clusters.AK-2024.held_out.onset_spread_median_min` |
 | REAL India AK-2024: CO events; share of PM events overlapping a CO event | 5; 1.0 | `real_india.json` | `clusters.AK-2024.co` |
+| REAL India DL-2017: median station spacing (km) | 21.16 | `real_india.json` | `clusters.DL-2017.spacing_km` |
 | REAL India DL-2017: stations, events | 5 stations; 1 events in 38.92 days (0.026/day, ×0.26 H-mix) | `real_india.json` | `clusters.DL-2017.held_out.events_per_day` |
 | REAL India DL-2017: night share (Wilson 95%) | 1.0 ([0.207, 1.0]); reference 0.7 | `real_india.json` | `clusters.DL-2017.held_out.night_share` |
 | REAL India DL-2017: amplitude CV median; share inside operator 90% | 0.089; 0.0 (operator [0.098, 0.343, 0.684]) | `real_india.json` | `clusters.DL-2017.held_out.cv_median` |
 | REAL India DL-2017: onset spread median (min); share inside operator 90% | 120.0; 1.0 (operator [0.0, 60.0, 300.0]) | `real_india.json` | `clusters.DL-2017.held_out.onset_spread_median_min` |
+| REAL India DL-2018: median station spacing (km) | 16.5 | `real_india.json` | `clusters.DL-2018.spacing_km` |
 | REAL India DL-2018: stations, events | 31 stations; 2 events in 61.0 days (0.033/day, ×0.33 H-mix) | `real_india.json` | `clusters.DL-2018.held_out.events_per_day` |
 | REAL India DL-2018: night share (Wilson 95%) | 1.0 ([0.342, 1.0]); reference 0.7 | `real_india.json` | `clusters.DL-2018.held_out.night_share` |
 | REAL India DL-2018: amplitude CV median; share inside operator 90% | 0.192; 0.0 (operator [0.272, 0.442, 0.738]) | `real_india.json` | `clusters.DL-2018.held_out.cv_median` |
 | REAL India DL-2018: onset spread median (min); share inside operator 90% | 120.0; 1.0 (operator [60.0, 120.0, 420.0]) | `real_india.json` | `clusters.DL-2018.held_out.onset_spread_median_min` |
+| REAL India DL-2019: median station spacing (km) | 17.93 | `real_india.json` | `clusters.DL-2019.spacing_km` |
 | REAL India DL-2019: stations, events | 36 stations; 2 events in 61.0 days (0.033/day, ×0.33 H-mix) | `real_india.json` | `clusters.DL-2019.held_out.events_per_day` |
 | REAL India DL-2019: night share (Wilson 95%) | 1.0 ([0.342, 1.0]); reference 0.7 | `real_india.json` | `clusters.DL-2019.held_out.night_share` |
 | REAL India DL-2019: amplitude CV median; share inside operator 90% | 0.242; 0.5 (operator [0.28, 0.446, 0.743]) | `real_india.json` | `clusters.DL-2019.held_out.cv_median` |
 | REAL India DL-2019: onset spread median (min); share inside operator 90% | 150.0; 1.0 (operator [60.0, 180.0, 480.0]) | `real_india.json` | `clusters.DL-2019.held_out.onset_spread_median_min` |
+| REAL India DL15-2025: median station spacing (km) | 15.85 | `real_india.json` | `clusters.DL15-2025.spacing_km` |
 | REAL India DL15-2025: stations, events | 45 stations; 1 events in 57.24 days (0.017/day, ×0.17 H-mix) | `real_india.json` | `clusters.DL15-2025.held_out.events_per_day` |
 | REAL India DL15-2025: night share (Wilson 95%) | 0.0 ([0.0, 0.793]); reference 0.7 | `real_india.json` | `clusters.DL15-2025.held_out.night_share` |
 | REAL India DL15-2025: amplitude CV median; share inside operator 90% | 0.265; 0.0 (operator [0.287, 0.452, 0.736]) | `real_india.json` | `clusters.DL15-2025.held_out.cv_median` |
 | REAL India DL15-2025: onset spread median (min); share inside operator 90% | 75.0; 1.0 (operator [75.0, 180.0, 510.0]) | `real_india.json` | `clusters.DL15-2025.held_out.onset_spread_median_min` |
 | REAL India DL15-2025: node candidates per node per 30 d; share while ≥ 25% elevated | 1.41; 3.1% | `real_india.json` | `clusters.DL15-2025.node_replay` |
 | REAL India DL15-2025: exceedance at nominal 1% (outside common mode) | 1.6% | `real_india.json` | `clusters.DL15-2025.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL India DL15-2025: node replay test days | 61.0 | `real_india.json` | `clusters.DL15-2025.node_replay.test_days` |
 | REAL India AK pooled: events per day; night share (Wilson 95%) | 0.005 (×0.05 H-mix); 1.0 ([0.207, 1.0]) | `real_india.json` | `pooled.AK` |
 | REAL India DL pooled: events per day; night share (Wilson 95%) | 0.031 (×0.31 H-mix); 1.0 ([0.566, 1.0]) | `real_india.json` | `pooled.DL` |
 | REAL India DL15 pooled: events per day; night share (Wilson 95%) | 0.017 (×0.17 H-mix); 0.0 ([0.0, 0.793]) | `real_india.json` | `pooled.DL15` |
@@ -786,26 +794,41 @@ Every number the paper may quote, with the result file (under `results/research/
 | R4 dose H-mix-x3 P2-gate: floor at selected (FA/month, detection) | [0.05, 0.05]: 0.32, 1.2% | `r4_analysis.json` | `descriptive.dose_response[H-mix-x3].methods[P2-gate][floor_at_selected]` |
 | R4 dose H-mix-x3 P2-gate: useful floor at selected (FA/month, detection) | [0.5, 0.2]: 3.6, 32.0% | `r4_analysis.json` | `descriptive.dose_response[H-mix-x3].methods[P2-gate][useful_floor_at_selected]` |
 | R4 dose H-mix-x3 P2-gate: own floor (FA/month, detection) | [0.03, 0.05]: 0.22, 1.0% | `r4_analysis.json` | `descriptive.dose_response[H-mix-x3].methods[P2-gate][own_floor]` |
+| REAL WR: stations; median spacing (km) | 10; 5.28 | `real_thompson2026.json` | `clusters.WR.spacing_km` |
 | REAL WR: common-mode events | 1 in 30.0 days | `real_thompson2026.json` | `clusters.WR.n_events` |
-| REAL WR: node candidates per node per 30 d | 6.375 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
-| REAL WR: exceedance at nominal 1% (outside common mode) | 1.2% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
-| REAL WR: share of candidates while ≥ 25% of stations elevated | 70.6% | `real_thompson2026.json` | `node_replay.share_in_cm_mask` |
+| REAL WR: common-mode events per day | 0.033 | `real_thompson2026.json` | `clusters.WR.events_per_day` |
+| REAL WR: node replay test days | 16.0 | `real_thompson2026.json` | `clusters.WR.node_replay.test_days` |
+| REAL WR: node candidates per node per 30 d | 6.375 | `real_thompson2026.json` | `clusters.WR.node_replay.candidates_per_node_30d` |
+| REAL WR: exceedance at nominal 1% (outside common mode) | 1.2% | `real_thompson2026.json` | `clusters.WR.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL WR: share of candidates while ≥ 25% of stations elevated | 70.6% | `real_thompson2026.json` | `clusters.WR.node_replay.share_in_cm_mask` |
+| REAL BC: stations; median spacing (km) | 10; 7.2 | `real_thompson2026.json` | `clusters.BC.spacing_km` |
 | REAL BC: common-mode events | 0 in 30.0 days | `real_thompson2026.json` | `clusters.BC.n_events` |
-| REAL BC: node candidates per node per 30 d | 0.188 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
-| REAL BC: exceedance at nominal 1% (outside common mode) | 1.6% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
-| REAL BC: share of candidates while ≥ 25% of stations elevated | 0.0% | `real_thompson2026.json` | `node_replay.share_in_cm_mask` |
+| REAL BC: common-mode events per day | 0.0 | `real_thompson2026.json` | `clusters.BC.events_per_day` |
+| REAL BC: node replay test days | 16.0 | `real_thompson2026.json` | `clusters.BC.node_replay.test_days` |
+| REAL BC: node candidates per node per 30 d | 0.188 | `real_thompson2026.json` | `clusters.BC.node_replay.candidates_per_node_30d` |
+| REAL BC: exceedance at nominal 1% (outside common mode) | 1.6% | `real_thompson2026.json` | `clusters.BC.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL BC: share of candidates while ≥ 25% of stations elevated | 0.0% | `real_thompson2026.json` | `clusters.BC.node_replay.share_in_cm_mask` |
+| REAL VC: stations; median spacing (km) | 10; 6.42 | `real_thompson2026.json` | `clusters.VC.spacing_km` |
 | REAL VC: common-mode events | 2 in 23.3 days | `real_thompson2026.json` | `clusters.VC.n_events` |
-| REAL VC: node candidates per node per 30 d | 1.687 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
-| REAL VC: exceedance at nominal 1% (outside common mode) | 0.4% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
-| REAL VC: share of candidates while ≥ 25% of stations elevated | 22.2% | `real_thompson2026.json` | `node_replay.share_in_cm_mask` |
+| REAL VC: common-mode events per day | 0.086 | `real_thompson2026.json` | `clusters.VC.events_per_day` |
+| REAL VC: node replay test days | 16.0 | `real_thompson2026.json` | `clusters.VC.node_replay.test_days` |
+| REAL VC: node candidates per node per 30 d | 1.687 | `real_thompson2026.json` | `clusters.VC.node_replay.candidates_per_node_30d` |
+| REAL VC: exceedance at nominal 1% (outside common mode) | 0.4% | `real_thompson2026.json` | `clusters.VC.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL VC: share of candidates while ≥ 25% of stations elevated | 22.2% | `real_thompson2026.json` | `clusters.VC.node_replay.share_in_cm_mask` |
+| REAL RC: stations; median spacing (km) | 6; 1.72 | `real_thompson2026.json` | `clusters.RC.spacing_km` |
 | REAL RC: common-mode events | 1 in 19.25 days | `real_thompson2026.json` | `clusters.RC.n_events` |
-| REAL RC: node candidates per node per 30 d | 0.0 | `real_thompson2026.json` | `node_replay.candidates_per_node_30d` |
-| REAL RC: exceedance at nominal 1% (outside common mode) | 1.1% | `real_thompson2026.json` | `node_replay.exceedance_outside_cm_at_1pct` |
-| REAL RC: share of candidates while ≥ 25% of stations elevated | None | `real_thompson2026.json` | `node_replay.share_in_cm_mask` |
+| REAL RC: common-mode events per day | 0.052 | `real_thompson2026.json` | `clusters.RC.events_per_day` |
+| REAL RC: node replay test days | 5.41 | `real_thompson2026.json` | `clusters.RC.node_replay.test_days` |
+| REAL RC: node candidates per node per 30 d | 0.0 | `real_thompson2026.json` | `clusters.RC.node_replay.candidates_per_node_30d` |
+| REAL RC: exceedance at nominal 1% (outside common mode) | 1.1% | `real_thompson2026.json` | `clusters.RC.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL RC: share of candidates while ≥ 25% of stations elevated | None | `real_thompson2026.json` | `clusters.RC.node_replay.share_in_cm_mask` |
+| REAL ST: stations; median spacing (km) | 9; 1.7 | `real_sensorcommunity_stuttgart.json` | `cluster.spacing_km` |
 | REAL ST: common-mode events | 7 in 31.0 days | `real_sensorcommunity_stuttgart.json` | `cluster.n_events` |
-| REAL ST: node candidates per node per 30 d | 0.0 | `real_sensorcommunity_stuttgart.json` | `node_replay.candidates_per_node_30d` |
-| REAL ST: exceedance at nominal 1% (outside common mode) | 1.3% | `real_sensorcommunity_stuttgart.json` | `node_replay.exceedance_outside_cm_at_1pct` |
-| REAL ST: share of candidates while ≥ 25% of stations elevated | None | `real_sensorcommunity_stuttgart.json` | `node_replay.share_in_cm_mask` |
+| REAL ST: common-mode events per day | 0.226 | `real_sensorcommunity_stuttgart.json` | `cluster.events_per_day` |
+| REAL ST: node replay test days | 17.0 | `real_sensorcommunity_stuttgart.json` | `cluster.node_replay.test_days` |
+| REAL ST: node candidates per node per 30 d | 0.0 | `real_sensorcommunity_stuttgart.json` | `cluster.node_replay.candidates_per_node_30d` |
+| REAL ST: exceedance at nominal 1% (outside common mode) | 1.3% | `real_sensorcommunity_stuttgart.json` | `cluster.node_replay.exceedance_outside_cm_at_1pct` |
+| REAL ST: share of candidates while ≥ 25% of stations elevated | None | `real_sensorcommunity_stuttgart.json` | `cluster.node_replay.share_in_cm_mask` |
 | Audit R1 P0: at its strictest knob (its floor), false incidents/month; detection | 0.13 at k = 30; 9.2% | `r1_analysis.json` | `test.P0.curve[13]` |
 | Audit R1 sweeps: P1 at the textbook threshold (h = 8.8), false incidents/month, range over points | 123.9–170.5 (20 points) | `r1_sweeps.json` | `sweeps.<point>.pipelines.P1.fa_at_first_knob` |
 | Audit R1 sweep haze=0 P2: detection at equal FA (R8; 0 = not reachable) at 1 / 3 / 10 per month | 90.1% / 92.3% / 95.4% | `r1_sweeps.json` | `sweeps.haze=0.pipelines.P2.<budget>.det_at_equal_fa` |

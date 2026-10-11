@@ -17,6 +17,8 @@
   r4-analyse [--selection-only|--test-table]    → results/research/r4_selection.json (and r4_test/r4_analysis)
   r4-seeds-archive selection|test               → results/research/r4_seeds_<stage>.tar.gz (byte-reproducible)
   r4-figures                                    → docs/research/figures/r4_*
+  paper                                         → docs/research/paper/ (T1–T3 tables, evidence map)
+  paper-figures                                 → docs/research/figures/paper_* (strategies, real data)
 """
 from __future__ import annotations
 
@@ -33,7 +35,7 @@ def main(argv=None) -> int:
     ap.add_argument("command", choices=["run", "sweep", "analyse", "figures", "realdata", "realdata-sc", "hazesplit",
                                         "numbers", "r2-run", "r2-analyse", "r2-figures", "realdata-india",
                                         "r3-run", "r3-analyse", "r3-figures", "r4-run", "r4-analyse",
-                                        "r4-seeds-archive", "r4-figures"])
+                                        "r4-seeds-archive", "r4-figures", "paper", "paper-figures"])
     ap.add_argument("stage", nargs="?", choices=["selection", "test"])
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -50,6 +52,14 @@ def main(argv=None) -> int:
         return _r3(a, ap)
     if a.command.startswith("r4-"):
         return _r4(a, ap)
+    if a.command == "paper":
+        from prahari.research.paper import write_paper
+        print(f"{len(write_paper())} files")
+        return 0
+    if a.command == "paper-figures":
+        from prahari.research.figures_paper import write_figures_paper
+        print(f"{len(write_figures_paper(Path(a.out)))} files")
+        return 0
     r1 = load_r1(a.config)
     seeds = [int(s) for s in a.seeds.split(",")] if a.seeds else None
     out = Path(a.out)

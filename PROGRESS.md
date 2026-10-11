@@ -808,3 +808,29 @@ reframed.
 
 **Next step:** the developer reads `results-r4.md` and decides on the reframing; then the paper package (evidence map,
 figures, tables).
+
+### 2026-10-11 — Session 24 (continued): the paper package
+
+- **Request:** "go ahead with the paper package". The claim and the title are not reframed; the package leaves that
+  decision open.
+- **Generated** from the committed result files and configuration only. Nothing was simulated, and no result is new
+  (DECISIONS PP-1).
+  - `python -m prahari.research paper` writes `docs/research/paper/`:
+    - `tables/T1_parameters` (inputs with provenance);
+    - `tables/T2_main_results` (every registered confirmatory comparison of R1–R4);
+    - `tables/T3_real_data` (REAL), each as `.md` and booktabs `.tex`;
+    - `evidence-map.md`: per contribution its status, headline numbers with their `numbers.md` keys, figures,
+      tables and caveats; then claims to avoid and open decisions.
+  - `python -m prahari.research paper-figures`: `docs/research/figures/paper_strategies` (SIM, R2) and
+    `paper_realdata` (REAL), checked by eye.
+- **Hand-written:** `docs/research/paper/outline.md`, an IEEE section skeleton in bullets with no results. It has
+  slots for either reading of contribution 2.
+- **Checks:**
+  - every number in T2, T3 and the evidence map is in `numbers.md` (scripted);
+  - relative links resolve;
+  - `paper` and `paper-figures` regenerate byte-identically.
+- **Also updated:** `numbers.md` (new REAL rows; no value changes); the audit's next-steps line; CLAUDE.md commands.
+- **Tests:** `test_research_paper.py` 9 passed; engine suite 285 passed, 21 skipped.
+
+**Next step:** the developer reads `docs/research/paper/evidence-map.md` and decides the claim and the title (and
+the venue, the tag and the DOI). Then the authors write from `outline.md`.
