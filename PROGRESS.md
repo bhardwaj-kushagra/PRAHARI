@@ -804,7 +804,7 @@ reframed.
   on redraw.
 - **Numbers:** `numbers.rows_r4`; every number on the page is in `numbers.md`.
 - **Also updated:** KNOWN_ISSUES items pointed to R4; the audit's next-steps line updated.
-- **Tests:** R4 tests pass; engine suite result in the next commit.
+- **Tests:** engine suite 276 passed, 21 skipped.
 
 **Next step:** the developer reads `results-r4.md` and decides on the reframing; then the paper package (evidence map,
 figures, tables).
