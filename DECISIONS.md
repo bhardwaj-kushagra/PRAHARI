@@ -1038,6 +1038,11 @@ Found by recomputing every §9.2 reference value and cross-checking M-numbers. A
     keeps its bytes.
   - *Unchanged:* family P, the selection, every rule and setting. The added items reuse the existing bootstrap
     weights, so no other number moves. Unit tests with reference values in `test_research_r4.py`.
+- **R4 outcome** (11 Oct 2026; `docs/research/results-r4.md`, SIM).
+  - *Family P:* rejected for all three methods with Δ > 0. Regional haze costs detection at 1 false incident a month
+    (the protocol's registered §7 reading).
+  - *No other deviation.* The claim and title are not reframed (the developer's decision of 7 Oct).
+  - *Determinism:* `r4_analysis.json` and the R4 figures regenerate byte-identically.
 
 ## Public site (branch model)
 

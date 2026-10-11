@@ -11,7 +11,7 @@ import pytest
 from prahari.core.config import load_config
 from prahari.research.analysis_r4 import method_differences, useful_floor_index, write_analysis_r4, write_test_table_r4
 from prahari.research.archive import archive_seeds, extract_seeds
-from prahari.research.numbers import rows_r4_selection
+from prahari.research.numbers import rows_r4, rows_r4_selection
 from prahari.research.operating import SeedEval
 from prahari.research.operating_r2 import evaluate_seed_r2
 from prahari.research.runner_r2 import load_r2, scenario_config
@@ -159,6 +159,10 @@ def test_r4_analysis_on_synthetic_seeds(tmp_path):
     md = a["scenarios"]["H-mix"]["method_differences"]["1"]
     assert list(md) == ["P2-medSCMR − P2-gate", "P2 − P2-medSCMR", "P2 − P2-gate"]
     assert all(v["mean_diff"] == 0 and v["p_wilcoxon"] == 1.0 for v in md.values())
+    for _, _, _, key in rows_r4(a):                                            # every number-table key resolves
+        node = a
+        for br, dot in re.findall(r"\[([^\]]+)\]|([^.\[\]]+)", key):
+            node = node[br or dot]
     # the committed test table is not rewritten differently by the full analysis
     assert json.loads((tmp_path / "r4_test.json").read_text()) == t
 

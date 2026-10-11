@@ -16,6 +16,7 @@
   r4-run selection|test [--scenarios H-none,..] protocol R4 → results/research/r4/<stage>/<scenario>/seed<N>.json
   r4-analyse [--selection-only|--test-table]    → results/research/r4_selection.json (and r4_test/r4_analysis)
   r4-seeds-archive selection|test               → results/research/r4_seeds_<stage>.tar.gz (byte-reproducible)
+  r4-figures                                    → docs/research/figures/r4_*
 """
 from __future__ import annotations
 
@@ -32,7 +33,7 @@ def main(argv=None) -> int:
     ap.add_argument("command", choices=["run", "sweep", "analyse", "figures", "realdata", "realdata-sc", "hazesplit",
                                         "numbers", "r2-run", "r2-analyse", "r2-figures", "realdata-india",
                                         "r3-run", "r3-analyse", "r3-figures", "r4-run", "r4-analyse",
-                                        "r4-seeds-archive"])
+                                        "r4-seeds-archive", "r4-figures"])
     ap.add_argument("stage", nargs="?", choices=["selection", "test"])
     ap.add_argument("--config", default=str(DEFAULT_CONFIG))
     ap.add_argument("--out", default=str(DEFAULT_OUT))
@@ -133,6 +134,9 @@ def _r4(a, ap) -> int:
     elif a.command == "r4-analyse":
         from prahari.research.analysis_r4 import write_analysis_r4, write_test_table_r4
         done = write_test_table_r4(r4, out) if a.test_table else write_analysis_r4(r4, out, a.selection_only)
+    elif a.command == "r4-figures":
+        from prahari.research.figures_r4 import write_figures_r4
+        done = write_figures_r4(out)
     else:
         if not a.stage:
             ap.error("r4-seeds-archive needs a stage: selection or test")

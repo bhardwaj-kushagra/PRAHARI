@@ -131,5 +131,6 @@ pytest engine/tests/unit/test_research_r3.py        # R3 fidelity and analysis t
 python -m prahari.research r4-run selection --jobs 4   # protocol R4 (docs/research/protocol-r4.md); then r4-run test
 python -m prahari.research r4-analyse --selection-only # → results/research/r4_selection.json (--test-table: r4_test.json only; no flag: full analysis)
 python -m prahari.research r4-seeds-archive test      # → results/research/r4_seeds_test.tar.gz (byte-reproducible seed records)
+python -m prahari.research r4-figures                # → docs/research/figures/r4_* (from r4_analysis.json only)
 pytest engine/tests/unit/test_research_r4.py        # R4 checks: pairing, strict targets, analysis (~1 min)
 ```

@@ -290,6 +290,86 @@ def rows_r4_selection(a: dict) -> list[tuple]:
     return out
 
 
+def _pts(c: dict) -> str:
+    return (f"{100 * c['mean_diff']:+.2f} points ({100 * c['ci95'][0]:+.2f} to {100 * c['ci95'][1]:+.2f}); "
+            f"Wilcoxon p {c['p_wilcoxon']:.2g}")
+
+
+def rows_r4(a: dict) -> list[tuple]:
+    """R4 (SIM) analysis: family P with Holm, the price at the other budgets (both views), every scenario's detection
+    at 1 a month with E5 and time to confirmation, equal-FA detection, all floors with their haze split, the capped
+    shares, the dose table and the method differences."""
+    f, out = "r4_analysis.json", []
+    for m, c in a["family_P"].items():
+        k = f"family_P[{m}]"
+        if c.get("reachable") is False:
+            out.append((f"R4 family P {m}", "not computable", f, k))
+            continue
+        out.append((f"R4 family P {m}: detection at 1/month, H-none − H-mix (cells {c['H-none_cell']} / {c['H-mix_cell']})",
+                    f"{_pts(c)}, Holm p {c['p_holm']:.2g} ({'rejected' if c['reject'] else 'not rejected'}); "
+                    f"seeds {c['wins']}/{c['losses']} of {c['n_seeds']}", f, k))
+    for b, d in a["descriptive"]["price_by_budget"].items():
+        for m, c in d.items():
+            k = f"descriptive.price_by_budget[{b}][{m}]"
+            val = (f"not computable (reached: H-none {c['H-none_reached']}, H-mix {c['H-mix_reached']})"
+                   if c.get("reachable") is False else f"{_pts(c)} (unadjusted); seeds {c['wins']}/{c['losses']}")
+            out.append((f"R4 price of haze {m} at {b}/month (deployment; H-none − H-mix)", val, f, k))
+    for m, d in a["descriptive"]["price_at_equal_fa"].items():
+        out.append((f"R4 price of haze {m} at equal FA (R8; points, H-none − H-mix) per budget",
+                    "; ".join(f"{b}: {100 * v:+.1f}" for b, v in d.items()), f, f"descriptive.price_at_equal_fa[{m}]"))
+    for sc, s in a["scenarios"].items():
+        for m, r in s["methods"].items():
+            k = f"scenarios[{sc}].methods[{m}]"
+            b = r.get("at_b_star")
+            if b:
+                ov = b["by_haze_overlap"]
+                out.append((f"R4 {sc} {m}: at 1/month (setting {b['cell']}): detection; FA/month; mean TTC; median latency",
+                            f"{_pct(b['det'])} ({_pct(b['det_ci95'][0])}–{_pct(b['det_ci95'][1])}); "
+                            f"{b['false_incidents']['rate']:.2f}; {b['mean_ttc_min']} min; {b['latency_median_min']} min",
+                            f, k + "[at_b_star]"))
+                out.append((f"R4 {sc} {m}: at 1/month, fires overlapping haze / not",
+                            f"{_pct(ov['overlap']['det'])} ({ov['overlap']['detected']} of {ov['overlap']['fires']}) / "
+                            f"{_pct(ov['no_overlap']['det'])} ({ov['no_overlap']['detected']} of "
+                            f"{ov['no_overlap']['fires']})", f, k + "[at_b_star][by_haze_overlap]"))
+            out.append((f"R4 {sc} {m}: detection at equal FA (R8; 0 = not reachable) per budget",
+                        "; ".join(f"{x}: {_pct(v)}" for x, v in r["det_at_equal_fa"].items()), f, k + "[det_at_equal_fa]"))
+        for m, fl in s["floors"].items():
+            for kind in ("floor", "useful_floor", "floor_r_ge_0.1", "useful_floor_r_ge_0.1"):
+                v = fl[kind]
+                k = f"scenarios[{sc}].floors[{m}][{kind}]"
+                if v is None:
+                    out.append((f"R4 {sc} {m}: {kind.replace('_', ' ')}", "none", f, k))
+                    continue
+                fi, dc = v["false_incidents"], v["decomposition"]
+                out.append((f"R4 {sc} {m}: {kind.replace('_', ' ')} (setting {v['cell']}): FA/month (95% CI); detection; "
+                            f"inside / outside haze (share inside)",
+                            f"{fi['rate']:.2f} ({fi['ci95_bootstrap'][0]:.2f}–{fi['ci95_bootstrap'][1]:.2f}); "
+                            f"{_pct(v['det'])}; {dc['inside']} / {dc['outside']} ({_pct(dc['share_inside'])}); "
+                            f"valid {v['valid_here']}", f, k))
+            out.append((f"R4 {sc} {m}: share of capped node thresholds by target",
+                        "; ".join(f"{t}: {_pct(c)}" for t, c in fl["share_capped_by_target"].items()), f,
+                        f"scenarios[{sc}].floors[{m}][share_capped_by_target]"))
+        for b, pairs in s["method_differences"].items():
+            for pair, c in pairs.items():
+                k = f"scenarios[{sc}].method_differences[{b}][{pair}]"
+                out.append((f"R4 {sc} at {b}/month: {pair} (detection, per seed; descriptive)",
+                            "not reachable by both" if not c.get("reachable") else
+                            f"{_pts(c)} (unadjusted); seeds {c['wins']}/{c['losses']}", f, k))
+    for sc, d in a["descriptive"]["dose_response"].items():
+        for m, v in d["methods"].items():
+            k = f"descriptive.dose_response[{sc}].methods[{m}]"
+            out.append((f"R4 dose {sc} {m} (seeds ≤ 6050, {d['selection_from']} settings): detection at 1/month (FA); "
+                        f"at equal FA; at 3/month (FA); at equal FA",
+                        f"{_pct(v['det_at_1'])} ({v['fa_at_1']}); {_pct(v['det_at_equal_fa_1'])}; {_pct(v['det_at_3'])} "
+                        f"({v['fa_at_3']}); {_pct(v['det_at_equal_fa_3'])}", f, k))
+            for key in ("floor_at_selected", "useful_floor_at_selected", "own_floor"):
+                o = v[key]
+                out.append((f"R4 dose {sc} {m}: {key.replace('_', ' ')} (FA/month, detection)",
+                            "none" if o is None else f"{o['cell']}: {o['fa_per_month']}, {_pct(o['det'])}", f,
+                            k + f"[{key}]"))
+    return out
+
+
 _STRICT = {"target": ("node", min), "rho": ("rho", max), "theta": ("theta", min), "h_M": ("h_mei", max)}
 
 
@@ -389,6 +469,9 @@ def write_numbers(out: Path, doc: Path = Path("docs/research/numbers.md")) -> li
     s4 = _load(out / "r4_selection.json")
     if s4:
         rows += rows_r4_selection(s4)
+    a4 = _load(out / "r4_analysis.json")
+    if a4:
+        rows += rows_r4(a4)
     for f in ("real_thompson2026.json", "real_sensorcommunity_stuttgart.json"):
         r = _load(out / f)
         if r:

@@ -10,6 +10,8 @@ the developer asks.
 r4-run | r4-analyse | r4-seeds-archive` (`engine/prahari/research/analysis_r4.py`, `archive.py`; the R2/R3 runner,
 replay and methods unchanged).
 
+**Results:** [results-r4.md](results-r4.md).
+
 **Why R4.** The audit of 7 Oct 2026 ([audit-2026-10-07.md](audit-2026-10-07.md) §4) found four things:
 
 - **R1's floor came from a fixed value.** R1's "floor of about 5 false incidents a month" belongs to SCMR's fixed ratio
